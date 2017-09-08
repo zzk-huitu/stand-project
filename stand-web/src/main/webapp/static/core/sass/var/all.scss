@@ -1,0 +1,47 @@
+/*
+ * This is is imported by virtue of "sass.var" in "app.json".
+ */
+
+$enable-font-awesome: dynamic(true);
+
+
+//$base-color: lighten(red, 10%);
+//$base-color: dynamic(#de3a2e);		//红色
+//$app-head-bgcolor:dynamic(#c3190c);	//主页头部背景色，红色
+//$app-head-border-color:dynamic(#c44444);	//主页头部底部边框色，红色
+//$app-menu-header-bgcolor:dynamic(#b51509);	//主页菜单栏背景色，红色
+//$app-tab-navigation-bgcolor:dynamic(#b51509);	//主页tab导航栏背景色，红色
+//$app-tab-navigation-item-bgcolor:dynamic(#c44444);	//主页tab导航栏item背景色，红色
+//$app-tab-navigation-font-color-active:dynamic(#c61b1b);	//主页tab导航栏item文字颜色（活动项），红色
+//$app-tab-navigation-font-color:dynamic(#f0f0f0);  //主页tab导航栏item文字颜色（非活动项），红色
+//$app-mainmenu-font-color-hover:dynamic(#b51509);	//主页tab界面的mainmenu菜单的鼠标经过文字颜色，红色
+//$app-mainmenu-icon-tag-bgcolor:dynamic(#F80000);	//主页tab界面的mainmenu菜单的tag标签文字颜色，红色
+//$app-grid-actioncolumn-font-color:dynamic(#c3190c);	//表格文字操作列的颜色，红色
+
+$base-color: dynamic(#65bbff);			//浅蓝色
+$app-head-bgcolor:dynamic(#0e9fd6);		//主页头部背景色，蓝色
+$app-head-border-color:dynamic(#448bc4);	//主页头部底部边框色，蓝色
+$app-menu-header-bgcolor:dynamic(#097db5);	//主页菜单栏背景色，蓝色
+$app-tab-navigation-bgcolor:dynamic(#097db5);	//主页tab导航背景色，蓝色
+$app-tab-navigation-item-bgcolor:dynamic(#448bc4);	//主页tab导航栏item背景色，蓝色
+$app-tab-navigation-font-color-active:dynamic(#1b85c6);	//主页tab导航栏item文字颜色（活动项），蓝色
+$app-tab-navigation-font-color:dynamic(#f0f0f0);  //主页tab导航栏item文字颜色（非活动项），蓝色
+$app-mainmenu-icon-font-color-hover:dynamic(#097db5);	//主页tab界面的mainmenu菜单的鼠标经过文字颜色，蓝色
+$app-mainmenu-icon-tag-bgcolor:dynamic(#00adff);		//主页tab界面的mainmenu菜单的tag标签文字颜色，蓝色
+$app-grid-actioncolumn-font-color:dynamic(#389dec);	//表格文字操作列的颜色，蓝色
+
+//$panel-body-font-weight:400 !important;
+
+$button-toolbar-color : #fff;
+$button-toolbar-color-over : #fff;
+$button-toolbar-glyph-color: #fff;
+//$button-toolbar-background-color : #de3a2e;		//红色
+//$button-toolbar-background-color-over : #cc352a;	//红色2
+$button-toolbar-background-color : dynamic(#65bbff);			//浅蓝色
+$button-toolbar-background-color-over : dynamic(#0e95d6);	//浅蓝色2
+$grid-paging-toolbar-glyph-color:#bbb;
+
+
+//指定默认字体为 微软雅黑
+$font-family: dynamic('微软雅黑', helvetica, arial, sans-serif);
+//$font-weight: dynamic(400);

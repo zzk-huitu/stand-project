@@ -1,0 +1,45 @@
+# Compiled class file
+*.class
+*.classpath
+*.project
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+rebel*
+
+# files
+.idea/
+zd-core/target/
+stand-model/target/
+stand-service/target/
+stand-dao/target/
+stand-web/target/
+stand-web/src/main/webapp/static/core/build
+stand-web/src/main/resources/sqlserver.properties
+.settings/
+stand.iml
+stand-web/src/main/webapp/static/core/bootstrap.json
+stand-web/src/main/webapp/static/core/bootstrap.jsonp
+stand-web/src/main/webapp/static/core/sass/example/bootstrap.json
+stand-web/src/main/webapp/static/core/sass/example/bootstrap.jsonp
+stand-web/src/main/webapp/static/core/bootstrap.css
+stand-web/src/main/webapp/static/core/bootstrap.js
+stand-web/src/main/webapp/static/core/sass/example/bootstrap.js
+stand-web/src/main/webapp/static/core/sass/example/example.css

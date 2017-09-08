@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.zd</groupId>
+		<artifactId>stand</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>stand-web</artifactId>
+	<packaging>war</packaging>
+	<name>stand-web</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.zd</groupId>
+			<artifactId>stand-zd-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zd</groupId>
+			<artifactId>stand-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zd</groupId>
+			<artifactId>stand-dao</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zd</groupId>
+			<artifactId>stand-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+
+    </dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.4.6.v20170531</version>
+				<configuration>
+					<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
+					<!-- 自动扫描时间参数，此处设置为3秒，为0表示 不自动扫描 -->
+					<scanIntervalSeconds>0</scanIntervalSeconds>
+					<!-- 工程的虚拟目录名 -->
+					<webAppConfig>
+						<contextPath>/</contextPath>
+					</webAppConfig>
+					<!-- 配置的停止jetty服务 -->
+					<stopKey>shutdown</stopKey>
+					<stopPort>9993</stopPort>
+				</configuration>
+			</plugin>
+		</plugins>
+		<finalName>school-web</finalName>
+	</build>
+</project>
