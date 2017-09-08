@@ -13,7 +13,7 @@ Ext.define("core.systemset.campus.view.MainGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'button',
-            text: '添加',
+            text: '添加111',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
