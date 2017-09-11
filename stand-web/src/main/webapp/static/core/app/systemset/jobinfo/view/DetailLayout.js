@@ -17,6 +17,6 @@ Ext.define("core.systemset.jobinfo.view.DetailLayout",{
     /*关联此视图控制器*/
 	controller: 'systemset.jobinfo.detailcontroller',
 	items: [{
-		xtype: "systemset.jobinfo.deailform"
+		xtype: "systemset.jobinfo.detailform"
 	}]
 })
