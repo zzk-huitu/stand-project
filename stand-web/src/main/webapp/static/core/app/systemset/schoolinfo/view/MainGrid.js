@@ -1,13 +1,12 @@
 
-
-
-Ext.define("core.systemset.campus.view.MainGrid", {
+Ext.define("core.systemset.schoolinfo.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.systemset.campus.maingrid",
-    dataUrl: comm.get('baseUrl') + "/BaseCampus/list",
-    model: 'com.zd.school.plartform.baseset.model.BaseCampus',
+    alias: "widget.systemset.schoolinfo.maingrid",
+    dataUrl: comm.get('baseUrl') + "/BaseSchool/list",
+    model: 'com.zd.school.plartform.baseset.model.BaseSchool',
+    
 
-    menuCode:"BASECAMPUS", //new：此表格与权限相关的菜单编码
+    menuCode:"SCHOOLINFO", //new：此表格与权限相关的菜单编码
 
     panelTopBar:{
         xtype:'toolbar',
@@ -24,14 +23,7 @@ Ext.define("core.systemset.campus.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
-        },{
-            xtype: 'button',
-            text: '详细',
-            ref: 'gridDetail_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
-        },{
+        }, {
             xtype: 'button',
             text: '删除',
             ref: 'gridDelete',
@@ -41,12 +33,12 @@ Ext.define("core.systemset.campus.view.MainGrid", {
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
-        },{
+        }, {
             xtype:'textfield',
-            name:'campusName',
+            name:'schoolName',
             funCode: 'girdFastSearchText',
-            emptyText: '请输入校区名称'
-        },{
+            emptyText: '请输入学校名称'
+        },  {
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
@@ -58,9 +50,12 @@ Ext.define("core.systemset.campus.view.MainGrid", {
             iconCls: 'x-fa fa-sliders'
         }],
     }, 
+   
+
     panelButtomBar:{
-        xtype:'systemset.campus.mainquerypanel'
+        xtype:'systemset.schoolinfo.mainquerypanel'
     },
+  
     
     //排序字段及模式定义
     defSort: [{
@@ -72,49 +67,52 @@ Ext.define("core.systemset.campus.view.MainGrid", {
         defaults:{
             titleAlign:"center"
         },
-        items:[{
+        items: [{
             xtype: "rownumberer",
-            width: 50,
+            width: 150,
             text: '序号',
             align: 'center'
-        },{
-            text: "主键",
-            dataIndex: "uuid",
-            hidden: true
         }, {
-            width:100,
-            text: "校区名称",
-            dataIndex: "campusName"
-        }, {
-            width:100,
-            text: "校区编码",
-            dataIndex: "campusCode"
-        }, {
-            text: "学校名称",
-            dataIndex: "schoolName",
-            hidden: true
-        }, {
-            width:100,
-            text: "校区地址",
-            dataIndex: "campusAddr",
+            text: "学校代码",
+            dataIndex: "schoolCode",
             flex: 1,
-            minWidth: 150,
+            minWidth: 150
         }, {
-            width:100,
-            text: "邮政编码",
+            width: 150,
+            text: "学校名称",
+            dataIndex: "schoolName"
+           
+        }, {
+            width: 150,
+            text: "学校英文名",
+            dataIndex: "schoolEng"
+         
+        }, {
+            width: 150,
+            text: "学校邮政编码",
             dataIndex: "zipCode"
+           
+        }, { 
+            width: 150,
+            text: "建校年月",
+            dataIndex: "foundYear"
+           
         }, {
-            width:100,
-            text: "校区联系电话",
-            dataIndex: "campusPhone"
+            width: 150,
+            text: "办学类型",
+            dataIndex: "officeType",
+            columnType: "basecombobox", //列类型
+            ddCode: "BXLX" //字典代码
+         
+        },{
+            width: 150,
+            text: "校长姓名",
+            dataIndex: "schoolmasterName"
         }, {
-            width:100,
-            text: "校区传真电话",
-            dataIndex: "campusFax"
-        }, {
-            width:100,
-            text: "校区负责人号",
-            dataIndex: "campusHead"
+            width: 150,
+            text: "联系电话",
+            dataIndex: "telephone"
+          
         },{
             xtype: 'actiontextcolumn',
             text: "操作",
@@ -152,7 +150,7 @@ Ext.define("core.systemset.campus.view.MainGrid", {
                 ref: 'gridDelete',
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                     if(comm.get("isAdmin")!="1"){
-                        var menuCode="BASECAMPUS";     // 此菜单的前缀
+                        var menuCode="SCHOOLINFO";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
                         if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
                             return 'x-hidden-display';
@@ -165,7 +163,8 @@ Ext.define("core.systemset.campus.view.MainGrid", {
                     this.fireEvent('deleteClick', {
                         view: view.grid,
                         record: rec
-                    });
+           
+                 });
                 }
             }]
         }]
