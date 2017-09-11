@@ -46,7 +46,7 @@ public class BaseJobController extends FrameWorkController<BaseJob> implements C
      */
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
-    public void list(@ModelAttribute BaseJob entity, HttpServletRequest request, HttpServletResponse response)
+    public void list(BaseJob entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String strData = ""; // 返回给js的数据
         QueryResult<BaseJob> qr = thisService.queryPageResult(super.start(request), super.limit(request),

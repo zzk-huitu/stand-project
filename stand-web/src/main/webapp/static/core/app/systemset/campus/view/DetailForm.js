@@ -3,7 +3,7 @@ Ext.define("core.systemset.campus.view.DetailForm", {
     alias: "widget.systemset.campus.detailform",
     layout: "form",
     autoHeight: true,
-    frame: true,
+    frame: false,
     fieldDefaults: { // 统一设置表单字段默认属性
         labelSeparator: '：', // 分隔符
         msgTarget: 'qtip',
@@ -14,29 +14,31 @@ Ext.define("core.systemset.campus.view.DetailForm", {
         fieldLabel: "主键",
         name: "uuid",
         hidden: true
-    }, /*{
-        //xtype: "textfield",
-        xtype: "basefuncfield",
-        funcController: "core.systemset.schoolinfo.controller.SchoolController", //该功能主控制器
-        funcPanel: "schoolinfo.mainlayout", //该功能显示的主视图
-        funcTitle: "学校选择", //查询窗口的标题
-        configInfo: {
-            fieldInfo: "schoolId~schoolName,uuid~schoolName",
-            whereSql: " and isDelete='0' ",
-            orderSql: " order by schoolCode ",
-            muiltSelect: false //是否多选
-        },
-        beforeLabelTextTpl: comm.get("required"),
-        fieldLabel: "所属学校",
-        name: "schoolName",
-        hidden: false,
-        allowBlank: false,
-    }*/, {
-        xtype: "textfield",
+    }, {
         fieldLabel: "学校主键",
         name: "schoolId",
+        xtype: "textfield",
         hidden: true
     }, {
+        beforeLabelTextTpl: comm.get('required'),
+        allowBlank: false,
+        xtype: "basefuncfield",
+        refController: "", //该功能主控制器，这里重新指定为当前视图的控制器了
+        funcPanel: "systemset.schoolinfo.mainlayout", //该功能显示的主视图
+        formPanel: "systemset.campus.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
+        funcTitle: "学校选择", //查询窗口的标题
+        configInfo: {
+            width: 1200,
+            height: 650,
+            fieldInfo: "schoolId~schoolName,uuid~schoolName",
+            whereSql: " and isDelete='0' and startUsing=1 ",
+            orderSql: " order by createTime DESC ",
+            muiltSelect: false //是否多选
+        },
+        fieldLabel: "所属学校",
+        emptyText: "请选择所属学校",
+        name: "schoolName"
+    },{
         xtype: "textfield",
         fieldLabel: "版本号",
         name: "version",

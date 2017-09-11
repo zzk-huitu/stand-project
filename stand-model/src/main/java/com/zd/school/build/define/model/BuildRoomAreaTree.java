@@ -24,100 +24,102 @@ import java.util.List;
  * @see
  */
 public class BuildRoomAreaTree extends ExtTreeNode<BuildRoomAreaTree> {
-    @FieldInfo(name = "区域编码")
-    private String areaCode;
+	@FieldInfo(name = "区域编码")
+	private String areaCode;
 
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
 
-    public String getAreaCode() {
-        return areaCode;
-    }
+	public String getAreaCode() {
+		return areaCode;
+	}
 
-    @FieldInfo(name = "区域类型")
-    private String areaType;
+	@FieldInfo(name = "区域类型")
+	private String areaType;
 
-    public void setAreaType(String areaType) {
-        this.areaType = areaType;
-    }
+	public void setAreaType(String areaType) {
+		this.areaType = areaType;
+	}
 
-    public String getAreaType() {
-        return areaType;
-    }
+	public String getAreaType() {
+		return areaType;
+	}
 
-    @FieldInfo(name = "区域状态")
-    private Integer areaStatu;
+	@FieldInfo(name = "区域状态")
+	private Integer areaStatu;
 
-    public void setAreaStatu(Integer areaStatu) {
-        this.areaStatu = areaStatu;
-    }
+	public void setAreaStatu(Integer areaStatu) {
+		this.areaStatu = areaStatu;
+	}
 
-    public Integer getAreaStatu() {
-        return areaStatu;
-    }
+	public Integer getAreaStatu() {
+		return areaStatu;
+	}
 
-    @FieldInfo(name = "区域说明")
-    private String areaDesc;
+	@FieldInfo(name = "区域说明")
+	private String areaDesc;
 
-    public void setAreaDesc(String areaDesc) {
-        this.areaDesc = areaDesc;
-    }
+	public void setAreaDesc(String areaDesc) {
+		this.areaDesc = areaDesc;
+	}
 
-    public String getAreaDesc() {
-        return areaDesc;
-    }
+	public String getAreaDesc() {
+		return areaDesc;
+	}
 
-    @FieldInfo(name = "区域地址")
-    private String areaAddr;
+	@FieldInfo(name = "区域地址")
+	private String areaAddr;
 
-    public void setAreaAddr(String areaAddr) {
-        this.areaAddr = areaAddr;
-    }
+	public void setAreaAddr(String areaAddr) {
+		this.areaAddr = areaAddr;
+	}
 
-    public String getAreaAddr() {
-        return areaAddr;
-    }
+	public String getAreaAddr() {
+		return areaAddr;
+	}
 
-    @FieldInfo(name = "上级区域")
-    private String parentNode;
+	@FieldInfo(name = "上级区域")
+	private String parentNode;
 
-    public String getParentNode() {
-        return parentNode;
-    }
+	public String getParentNode() {
+		return parentNode;
+	}
 
-    public void setParentNode(String parentNode) {
-        this.parentNode = parentNode;
-    }
+	public void setParentNode(String parentNode) {
+		this.parentNode = parentNode;
+	}
 
+	public BuildRoomAreaTree(String id, List<BuildRoomAreaTree> children) {
 
-    public BuildRoomAreaTree(String id, List<BuildRoomAreaTree> children) {
+		super(id, children);
 
-        super(id, children);
+	}
 
-    }
+	@FieldInfo(name = "区域房间数")
+	private Integer roomCount;
 
-    @FieldInfo(name = "区域房间数")
-    private Integer roomCount;
+	public Integer getRoomCount() {
+		return roomCount;
+	}
 
-    public Integer getRoomCount() {
-        return roomCount;
-    }
+	public void setRoomCount(Integer roomCount) {
+		this.roomCount = roomCount;
+	}
 
-    public void setRoomCount(Integer roomCount) {
-        this.roomCount = roomCount;
-    }
+	public BuildRoomAreaTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,
+			List<BuildRoomAreaTree> children, String areaCode, String areaType, Integer areaStatu, String areaDesc,
+			String areaAddr, String parentNode, Integer orderIndex, Integer roomCount) {
 
-    public BuildRoomAreaTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid, String parent,Integer orderIndex,
-            List<BuildRoomAreaTree> children, String areaCode, String areaType, Integer areaStatu, String areaDesc,
-            String areaAddr, Integer roomCount) {
-
-        super(id, text, iconCls, leaf, level, treeid,parent,orderIndex, children);
-        this.areaCode = areaCode;
-        this.areaType = areaType;
-        this.areaStatu = areaStatu;
-        this.areaDesc = areaDesc;
-        this.areaAddr = areaAddr;
-        this.roomCount = roomCount;
-    }
+		//super(id, text, iconCls, leaf, level, treeid, children, parentNode, orderIndex);
+		super(id,text,iconCls,leaf,level,treeid,parentNode,orderIndex,children);
+		this.areaCode = areaCode;
+		this.areaType = areaType;
+		this.areaStatu = areaStatu;
+		this.areaDesc = areaDesc;
+		this.areaAddr = areaAddr;
+		this.parentNode = parentNode;
+		// this.orderIndex = orderIndex;
+		this.roomCount = roomCount;
+	}
 }
