@@ -251,7 +251,8 @@ public class BaseOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements Base
 			BaseOrg parEntity = this.get(parentNode);
 			parEntity.setLeaf(false);
 			this.merge(parEntity);
-			entity.BuildNode(parEntity);
+			entity.BuildNode(parEntity);		
+			entity.setAllDeptName(parEntity.getAllDeptName() + "/" + nodeText);			
 		} else
 			entity.BuildNode(null);
 

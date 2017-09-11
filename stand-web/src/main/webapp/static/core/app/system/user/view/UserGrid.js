@@ -4,6 +4,9 @@ Ext.define("core.system.user.view.UserGrid", {
 	dataUrl: comm.get('baseUrl') + "/SysUser/list",
 	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysUser", "checked").modelName,
 	al: false,
+
+    menuCode:"SYSUSER", //new：此表格与权限相关的菜单编码
+
 	//排序字段及模式定义
 	defSort: [{
 		property: 'userNumb',
@@ -21,14 +24,20 @@ Ext.define("core.system.user.view.UserGrid", {
 
 	panelTopBar:{
         xtype:'toolbar',
-        items: [/*{
+        items: [{
+            xtype: 'button',
+            text: '添加',
+            ref: 'gridAdd_Tab',
+            iconCls: 'x-fa fa-plus-square',
+            disabled: false
+        },{
             xtype: 'button',
             text: '编辑',
-            ref: 'gridEdit',
+            ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
-        },*/{
+        },{
             xtype: 'button',
             text: '锁定账户',
             ref: 'gridLock',
@@ -156,7 +165,7 @@ Ext.define("core.system.user.view.UserGrid", {
         },{
             xtype:'actiontextcolumn',
             text: "操作",
-            width:150,
+            width:220,
             fixed:true,
             items: [{
                 text:'部门岗位',
@@ -198,7 +207,7 @@ Ext.define("core.system.user.view.UserGrid", {
                     });
                 }
             },{
-                text:'详情',  
+                text:'详情',     
                 style:'font-size:12px;',
                 tooltip: '详情',
                 ref: 'gridDetail',
@@ -206,6 +215,28 @@ Ext.define("core.system.user.view.UserGrid", {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('detailClick_Tab', {
                         view:view.grid,
+                        record: rec
+                    });
+                }
+            } ,{
+                text:'删除',  
+                style:'font-size:12px;', 
+                tooltip: '删除',
+                ref: 'gridDelete',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSUSER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },  
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('deleteClick', {
+                        view: view.grid,
                         record: rec
                     });
                 }

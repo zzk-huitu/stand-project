@@ -215,7 +215,7 @@ Ext.define("core.base.controller.GridController", {
             },30);
                            
         }else if(tabItem.itemPKV&&tabItem.itemPKV!=tabInfo.pkValue){     //判断是否点击的是同一条数据
-            self.Warning("您当前已经打开了一个编辑窗口了！");
+            self.msgbox("您当前已经打开了一个编辑窗口了！");
             return;
         }
 
@@ -295,13 +295,18 @@ Ext.define("core.base.controller.GridController", {
         Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
             if (btn == 'yes') {            
 
+                var loading = new Ext.LoadMask(baseGrid, {
+                    msg: '正在提交，请稍等...',
+                    removeMask: true// 完成后移除
+                });
+                loading.show();
+
                 self.asyncAjax({
                     url: funData.action + "/doDelete",
                     params: {
                         ids: record.get(pkName),
                         pkName: pkName
-                    },
-                    loadMask:true,
+                    },                    
                     success: function(response) {
                         var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
@@ -320,7 +325,11 @@ Ext.define("core.base.controller.GridController", {
                         }else {
                             self.Error(data.obj);
                         }
-                                    
+                        loading.hide();      
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
                     }
                 });     
             }

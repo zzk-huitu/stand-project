@@ -53,7 +53,7 @@ Ext.define("core.system.role.view.MainGrid", {
 
     //排序字段及模式定义
     defSort: [{
-        property: 'orderIndex',
+        property: 'createTime',
         direction: 'DESC'
     }],
     extParams: {
@@ -68,8 +68,7 @@ Ext.define("core.system.role.view.MainGrid", {
         },
         items:[{
             xtype: "rownumberer",
-            flex:0,
-            width: 60,
+            width: 50,
             text: '序号',
             align: 'center',
             resizable :false
@@ -89,7 +88,7 @@ Ext.define("core.system.role.view.MainGrid", {
             text: "是否系统角色",
             dataIndex: "issystem",
             renderer: function(value) {
-                return value=="1"?"<font color=red>是</font>":"<font color=green>否</font>"
+                return value=="1"?"<font color=green>是</font>":"<font color=red>否</font>"
             }
         }, {
             text: "角色说明",

@@ -64,17 +64,17 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         return issystem;
     }
 
-    @FieldInfo(name = "主负责岗位")
-    @Column(name = "MAIN_LEADER", length = 64, nullable = true)
-    private String mainLeader;
+	@FieldInfo(name = "主负责岗位")
+	@Column(name = "MAIN_LEADER", length = 64, nullable = true)
+	private String mainLeader;
 
-    public void setMainLeader(String mainLeader) {
-        this.mainLeader = mainLeader;
-    }
+	public void setMainLeader(String mainLeader) {
+		this.mainLeader = mainLeader;
+	}
 
-    public String getMainLeader() {
-        return mainLeader;
-    }
+	public String getMainLeader() {
+		return mainLeader;
+	}
 
     @FieldInfo(name = "外线电话")
     @Column(name = "OUT_PHONE", length = 64, nullable = true)
@@ -99,18 +99,18 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
     public String getRemark() {
         return remark;
     }
-
+    
     @FieldInfo(name = "副负责岗位")
-    @Column(name = "VICE_LEADER", length = 64, nullable = true)
-    private String viceLeader;
+	@Column(name = "VICE_LEADER", length = 64, nullable = true)
+	private String viceLeader;
 
-    public void setViceLeader(String viceLeader) {
-        this.viceLeader = viceLeader;
-    }
+	public void setViceLeader(String viceLeader) {
+		this.viceLeader = viceLeader;
+	}
 
-    public String getViceLeader() {
-        return viceLeader;
-    }
+	public String getViceLeader() {
+		return viceLeader;
+	}
 
     @FieldInfo(name = "部门类型 01-学校 02-校区 03-部门  04-年级  05-班级　06-学科")
     @Column(name = "DEPT_TYPE", length = 36, nullable = true)
@@ -227,28 +227,29 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         this.parentType = parentType;
     }
 
-    @FieldInfo(name = "主负责岗位名称")
-    @Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=MAIN_LEADER)")
-    private String mainLeaderName;
 
-    public String getMainLeaderName() {
-        return mainLeaderName;
-    }
+	@FieldInfo(name = "主负责岗位名称")
+	@Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=MAIN_LEADER)")
+	private String mainLeaderName;
 
-    public void setMainLeaderName(String mainLeaderName) {
-        this.mainLeaderName = mainLeaderName;
-    }
+	public String getMainLeaderName() {
+		return mainLeaderName;
+	}
 
-    @FieldInfo(name = "副负责岗位名称")
-    @Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=VICE_LEADER)")
-    private String viceLeaderName;
+	public void setMainLeaderName(String mainLeaderName) {
+		this.mainLeaderName = mainLeaderName;
+	}
 
-    public String getViceLeaderName() {
-        return viceLeaderName;
-    }
+	@FieldInfo(name = "副负责岗位名称")
+	@Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=VICE_LEADER)")
+	private String viceLeaderName;
 
-    public void setViceLeaderName(String viceLeaderName) {
-        this.viceLeaderName = viceLeaderName;
-    }
+	public String getViceLeaderName() {
+		return viceLeaderName;
+	}
+
+	public void setViceLeaderName(String viceLeaderName) {
+		this.viceLeaderName = viceLeaderName;
+	}
 
 }

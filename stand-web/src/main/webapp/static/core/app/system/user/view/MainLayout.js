@@ -41,6 +41,7 @@ Ext.define("core.system.user.view.MainLayout", {
 			issystem: '1'
 		},
 		tabConfig: {         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
+			titleField:'userName',
             addTitle: '添加用户',
             editTitle: '编辑用户',
             detailTitle: '用户详情'
@@ -50,7 +51,7 @@ Ext.define("core.system.user.view.MainLayout", {
 
 	/*设置最小宽度，并且自动滚动*/
     minWidth: 1000,
-    scrollable: true,
+    scrollable: 'x',
 
 
 	//bodyPadding: '2 0 0 0',

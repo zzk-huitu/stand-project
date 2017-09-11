@@ -80,21 +80,17 @@ public class BaseDeptjobController extends FrameWorkController<BaseDeptjob> impl
 		String deptId = request.getParameter("deptId");
 		String jobId = request.getParameter("ids");
 		if (StringUtils.isEmpty(jobId) || StringUtils.isEmpty(jobId)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'没有传入设置的参数'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入设置的参数\""));
 			return;
 		}
 		// 获取当前的操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		try {
-			Boolean flag = thisService.batchSetDeptJob(deptId, jobId, currentUser);
-			if (flag)
-				writeJSON(response, jsonBuilder.returnSuccessJson("'添加岗位成功'"));
-			else
-				writeJSON(response, jsonBuilder.returnFailureJson("'添加岗位失败,详情见错误日志'"));
-		} catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'添加岗位失败，请参见错误日志'"));
-		}
+		Boolean flag = thisService.batchSetDeptJob(deptId, jobId, currentUser);
+		if (flag)
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"添加部门岗位成功\""));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"添加部门岗位失败,详情见错误日志\""));
+		
 	}
 
 	/**
@@ -111,19 +107,15 @@ public class BaseDeptjobController extends FrameWorkController<BaseDeptjob> impl
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
-			SysUser currentUser = getCurrentSysUser();
-			try {
-				Boolean flag = thisService.delDeptJob(delIds, currentUser);
-				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
-				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
-				}
-			} catch (Exception e) {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
+			SysUser currentUser = getCurrentSysUser();			
+			Boolean flag = thisService.delDeptJob(delIds, currentUser);
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
 			}
 		}
 	}
@@ -132,18 +124,16 @@ public class BaseDeptjobController extends FrameWorkController<BaseDeptjob> impl
 	public void chkIsSuperJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids = request.getParameter("ids");
 		if (StringUtils.isEmpty(ids)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'没有传入删除的参数'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除的参数\""));
 			return;
-		}
-		try {
-			String flag = thisService.chkIsSuperJob(ids);
-			if (StringUtils.isEmpty(flag))
-				writeJSON(response, jsonBuilder.returnSuccessJson("''"));
-			else
-				writeJSON(response, jsonBuilder.returnSuccessJson("'" + flag + "'"));
-		} catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'检查是否上级岗位失败，请参见错误日志'"));
-		}
+		}	
+		
+		String flag = thisService.chkIsSuperJob(ids);
+		if (StringUtils.isEmpty(flag))
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"\""));
+		else
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"" + flag + "\""));
+		
 	}
 
 	@RequestMapping("/setLeaderJob")
@@ -151,19 +141,15 @@ public class BaseDeptjobController extends FrameWorkController<BaseDeptjob> impl
 		String deptJobId = request.getParameter("ids");
 		String deptId = request.getParameter("deptId");
 		if (StringUtils.isEmpty(deptJobId) || StringUtils.isEmpty(deptId)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'参数传入错误'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"参数传入错误\""));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			try {
-				Boolean flag = thisService.setDeptLeaderJob(deptId, deptJobId, currentUser);
-				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("'设置成功'"));
-				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("'设置失败,详情见错误日志'"));
-				}
-			} catch (Exception e) {
-				writeJSON(response, jsonBuilder.returnFailureJson("'设置失败,详情见错误日志'"));
+			Boolean flag = thisService.setDeptLeaderJob(deptId, deptJobId, currentUser);
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败,详情见错误日志\""));
 			}
 		}
 	}
@@ -199,16 +185,13 @@ public class BaseDeptjobController extends FrameWorkController<BaseDeptjob> impl
 		String setType = request.getParameter("types");
 		SysUser currentUser = getCurrentSysUser();
 
-		try {
-			Boolean flag = thisService.setSuperJob(ids, setIds, setType, currentUser);
-			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'设置成功'"));
-			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'设置失败,详情见错误日志'"));
-			}
-		} catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'设置失败,详情见错误日志'"));
+		Boolean flag = thisService.setSuperJob(ids, setIds, setType, currentUser);
+		if (flag) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败,详情见错误日志\""));
 		}
+		
 	}
 	
 	

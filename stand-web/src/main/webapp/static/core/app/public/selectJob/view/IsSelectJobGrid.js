@@ -1,8 +1,8 @@
-Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
+Ext.define("core.public.selectJob.view.IsSelectJobGrid", {
     extend: "Ext.grid.Panel",
-    alias: "widget.pubselect.isselectusergrid",
-    ref: 'isselectusergrid',
-    title: "<font color='#ffeb00'>已选用户(选中后向左拖动或双击移除）</font>",
+    alias: "widget.pubselect.isselectjobgrid",
+    ref: 'isselectjobgrid',
+    title: "<font color='#ffeb00'>已选岗位(选中后向左拖动或双击移除）</font>",
     columnLines: true,
     loadMask: true,
     multiSelect: true,
@@ -10,37 +10,31 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
         selType: "checkboxmodel",
         width: 10
     },
+    store: {
+        type: "public.selectJob.isselectedjobstore"
+    },
+    
     viewConfig: {
         stripeRows: true
     },
-    store: {
-        type: "class.isselectedteacherStore"
-    },
     columns: [{
         xtype: "rownumberer",
-        flex: 0,
+        flex:0,
         width: 50,
         text: '序号',
         align: 'center'
+    },{
+        text: "名称",
+        dataIndex: "jobName",
+        flex: 2
     }, {
-        width: 70,
-        text: "姓名",
-        dataIndex: "xm"
+        text: "编码",
+        dataIndex: "jobCode",
+        flex: 1
     }, {
-        width: 50,
-        text: "性别",
-        dataIndex: "xbm",
-        renderer: function(value){
-            return value == 1 ? "男" : "女";
-        }
-    }, {
-        flex:1,
-        text: "部门",
-        dataIndex: "deptName"
-    }, {
-        width: 120,
-        text: "岗位",
-        dataIndex: "jobName"
+        text: "级别",
+        dataIndex: "orderIndex",
+        flex: 1
     }],
     viewConfig: {
         plugins: {
@@ -54,8 +48,8 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
                 IsSelectStore = grid.getStore();
                 IsSelectStore.removeAt(index);
 
-                var basePanel = grid.up("panel[xtype=pubselect.selectuserlayout]");
-                var selectGrid = basePanel.down("panel[xtype=pubselect.selectusergrid]");
+                var basePanel = grid.up("panel[xtype=pubselect.selectjoblayout]");
+                var selectGrid = basePanel.down("panel[xtype=pubselect.selectjobgrid]");
                 var selectStore = selectGrid.getStore();
                 selectStore.insert(0, [record]);
                 return false;

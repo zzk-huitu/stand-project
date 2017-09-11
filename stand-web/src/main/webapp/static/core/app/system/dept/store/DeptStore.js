@@ -20,5 +20,5 @@ Ext.define("core.system.dept.store.DeptStore", {
             type: "json"
         }
     },
-    autoLoad: true
+    autoLoad: false
 });

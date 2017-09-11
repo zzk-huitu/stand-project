@@ -1,4 +1,4 @@
-Ext.define("ccore.public.SelectRoom.view.IsSelectRoomGrid", {
+Ext.define("core.public.SelectRoom.view.IsSelectRoomGrid", {
     extend: "Ext.grid.Panel",
     alias: "widget.pubselect.isselectroomgrid",
     ref: 'isselectroomgrid',

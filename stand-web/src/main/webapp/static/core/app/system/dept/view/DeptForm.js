@@ -140,7 +140,7 @@ Ext.define("core.system.dept.view.DeptForm", {
             ref: "comboxCourse",
             //store: "core.system.dept.store.CourseStore",
             store: {
-                type: 'system.dept.deptstore',
+                type: 'system.dept.coursestore',
                 //.......这里可以写传入这个store的其他参数
                 //model:'core.good.signup.model.SignupGridModel',
             },

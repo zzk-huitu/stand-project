@@ -61,72 +61,82 @@ Ext.define("core.systemset.jobinfo.view.MainGrid", {
         defaults:{
             titleAlign:"center"
         },
-    items: [{
-        text: "主键",
-        dataIndex: "uuid",
-        hidden: true
-    }, {
-        text: "名称",
-        dataIndex: "jobName",
-        flex: 1,
-        minWidth: 150,
-    }, {
-        text: "级别",
-        dataIndex: "orderIndex",
-        width:350
-    },{
-        xtype: 'actiontextcolumn',
-        text: "操作",
-        align: 'center',
-        width: 200,
-        fixed: true,
         items: [{
-            text:'编辑',  
-            style:'font-size:12px;', 
-            tooltip: '编辑',
-            ref: 'gridEdit',
-            handler: function(view, rowIndex, colIndex, item) {
-                var rec = view.getStore().getAt(rowIndex);
-                this.fireEvent('editClick_Tab', {
-                    view: view.grid,
-                    record: rec
-                });
-            }
+            xtype: "rownumberer",
+            flex:0,
+            width: 50,
+            text: '序号',
+            align: 'center'
+        },{
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
         }, {
-            text:'详细',  
-            style:'font-size:12px;', 
-            tooltip: '详细',
-            ref: 'gridDetail',
-            handler: function(view, rowIndex, colIndex, item) {
-                var rec = view.getStore().getAt(rowIndex);
-                this.fireEvent('detailClick_Tab', {
-                    view: view.grid,
-                    record: rec
-                });
-            }
+            text: "名称",
+            dataIndex: "jobName",
+            flex: 1,
+            minWidth: 150,
         }, {
-            text:'删除',  
-            style:'font-size:12px;', 
-            tooltip: '删除',
-            ref: 'gridDelete',
-            getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="JOBINFO";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");                 
-                    if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                        return 'x-hidden-display';
-                    }
+            text: "编码",
+            dataIndex: "jobCode",
+            width:200
+        }, {
+            text: "级别",
+            dataIndex: "orderIndex",
+            width:200
+        },{
+            xtype: 'actiontextcolumn',
+            text: "操作",
+            align: 'center',
+            width: 200,
+            fixed: true,
+            items: [{
+                text:'编辑',  
+                style:'font-size:12px;', 
+                tooltip: '编辑',
+                ref: 'gridEdit',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('editClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
                 }
-                return null; 
-            },  
-            handler: function(view, rowIndex, colIndex, item) {
-                var rec = view.getStore().getAt(rowIndex);
-                this.fireEvent('deleteClick', {
-                    view: view.grid,
-                    record: rec
-                });
-            }
+            }, {
+                text:'详细',  
+                style:'font-size:12px;', 
+                tooltip: '详细',
+                ref: 'gridDetail',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }, {
+                text:'删除',  
+                style:'font-size:12px;', 
+                tooltip: '删除',
+                ref: 'gridDelete',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="JOBINFO";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },  
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('deleteClick', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }]
         }]
-    }]
     }    
 });

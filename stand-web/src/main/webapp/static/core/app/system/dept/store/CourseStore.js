@@ -1,5 +1,7 @@
 Ext.define("core.system.dept.store.CourseStore", {
 	extend: "Ext.data.Store",
+	alias: 'store.system.dept.coursestore',
+
 	model: factory.ModelFactory.getModelByName("com.zd.school.jw.eduresources.model.JwTBasecourse", "checked").modelName,
 	proxy: {
 		type: "ajax",
@@ -9,7 +11,7 @@ Ext.define("core.system.dept.store.CourseStore", {
 		},
 		reader: {
 			type: "json",
-			root: "rows",
+			rootProperty: "rows",
 			totalProperty: 'totalCount'
 		},
 		writer: {

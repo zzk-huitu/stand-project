@@ -20,7 +20,7 @@ Ext.define("core.system.dept.view.MainLayout", {
     detLayout: "system.dept.detaillayout",
     funData: {
         action: comm.get('baseUrl') + "/BaseOrg", //请求controller路径       
-        pkName: "uuid", //主键id    
+        pkName: "id", //主键id    
         defaultObj: {
             orderIndex: 1
         },
@@ -28,7 +28,7 @@ Ext.define("core.system.dept.view.MainLayout", {
             titleField:'text',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
 		    addTitle:'添加下级',
 		    editTitle:'编辑',
-		    AddBrotherTitle:'添加同级'
+		    detailTitle:'部门详情'
 		}
     },
     /*设置最小宽度，并且自动滚动*/

@@ -114,7 +114,7 @@ public class BaseDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> impleme
 			// 待设置的部门清单
 			List<BaseOrg> setDeptList = deptService.queryByProerties("uuid", deptIds);
 
-			// 待设置部门的负责岗位清单
+			// 待设置部门的主负责岗位清单
 			String[] propName = { "deptId", "jobType" };
 			Object[] propValue = { deptIds, 0 };
 			List<BaseDeptjob> mainJob = this.queryByProerties(propName, propValue);

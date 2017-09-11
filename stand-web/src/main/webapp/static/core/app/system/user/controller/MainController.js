@@ -529,53 +529,68 @@ Ext.define("core.system.user.controller.MainController", {
         //选择的用户
         var selectUser = userGrid.getSelectionModel().getSelection();
         if (selectUser.length == 0) {
-            self.Warning(info);
+            self.msgbox(info);
             return false;
         }
-        //拼装所选择的用户
-        var ids = new Array();
-        Ext.each(selectUser, function(rec) {
-            var pkValue = rec.get("uuid");
-            ids.push(pkValue);
-        });
+       
 
         //ajax的方式提交数据
-        Ext.Msg.confirm('信息', title, function(btn, text) {
+        Ext.Msg.confirm('温馨提示', title, function(btn, text) {
             if (btn == 'yes') {
-                //发送ajax请求
-                var resObj = self.ajax({
+                //显示loadMask
+                var myMask = self.LoadMask(userGrid);
+
+                //拼装所选择的用户
+                var ids = new Array();
+                Ext.each(selectUser, function(rec) {
+                    var pkValue = rec.get("uuid");
+                    ids.push(pkValue);
+                });
+
+                //提交入库
+                self.asyncAjax({
                     url: url,
                     params: {
                         ids: ids.join(",")
+                    },
+                    //loadMask:true,
+                    //回调代码必须写在里面
+                    success: function(response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        if (data.success) { 
+
+                            switch (cmd) {
+                                case "lock":
+                                    //静态的更新数据
+                                    Ext.each(selectUser, function(rec) {
+                                        rec.set("state","1");    //改变数据
+                                        rec.commit();   //提交一下 
+                                    }, this);
+                                    break;
+                                case "unlock":
+                                    //静态的更新数据
+                                    Ext.each(selectUser, function(rec) {
+                                        rec.set("state","0");    //改变数据
+                                        rec.commit();   //提交一下 
+                                    }, this);
+                                    break;
+                                case "setpwd":                                    
+                                    break;
+                            }            
+                            self.msgbox(data.obj);      
+                        }else{
+                            self.Error(data.obj);   
+                        }
+                        myMask.hide();
+                    },
+                    failure: function(response) {           
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                        myMask.hide();
                     }
-                });
-                if (resObj.success) {
-                    //刷新用户所属角色列表
-                    // var store = userRoleGrid.getStore();
-                    // var proxy = store.getProxy();
-                    // proxy.extraParams = {
-                    //     userId: "0"
-                    // };
-                    // store.load();
-
-                    //刷新用户列表
-                    var userStore = userGrid.getStore();
-                    var userPoxy = userStore.getProxy();
-                    userPoxy.extraParams = {
-                        deptId:deptId
-                    };
-                    userStore.load();
-
-                    self.msgbox(resObj.obj);
-                } else {
-                    self.Error(resObj.obj);
-                }
+                });              
             }
         });
-        //执行回调函数
-        if (btn.callback) {
-            btn.callback();
-        }
     },
 
     doDetail_Tab:function(btn, cmd, grid, record) {

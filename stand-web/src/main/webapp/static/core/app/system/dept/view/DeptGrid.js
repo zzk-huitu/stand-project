@@ -1,10 +1,8 @@
 Ext.define("core.system.dept.view.DeptGrid", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.system.dept.deptgrid",
-    //dataUrl: comm.get('baseUrl') + "/BaseOrg/treelist",
-    //model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgTree", "checked").modelName,
     dataUrl: comm.get('baseUrl') + "/BaseOrg/chkTreeList",
-    model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgChkTree", "checked").modelName,
+    model: "com.zd.school.plartform.baseset.model.BaseOrgChkTree",
     al: true,
     selModel: null,    
     extParams: {
@@ -52,6 +50,18 @@ Ext.define("core.system.dept.view.DeptGrid", {
         text: '刷新',
         ref: 'gridRefresh',
         iconCls: 'x-fa fa-refresh'
+    },{
+        xtype: 'button',
+        text: '部门岗位设置',
+        ref: 'gridSetJob',
+        funCode: 'girdFuntionBtn',
+        iconCls: 'x-fa fa-pencil-square'
+    },{
+        xtype: 'button',
+        text: '设置主管岗位',
+        ref: 'gridSetMainJob',
+        funCode: 'girdFuntionBtn',
+        iconCls: 'x-fa fa-pencil-square'
     }],
     
     columns:  {        

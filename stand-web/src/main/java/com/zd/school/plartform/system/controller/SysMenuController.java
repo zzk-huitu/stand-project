@@ -247,9 +247,11 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
         }
         
         //删除有权限的角色的用户的redis数据
-        SysPermission sysPermission= perimissonSevice.get(entity.getPerId());
-        if(sysPermission!=null)
-        	userSerive.deleteUserMenuTreeRedis(sysPermission);
+        if(entity.getPerId()!=null){
+	        SysPermission sysPermission= perimissonSevice.get(entity.getPerId());
+	        if(sysPermission!=null)
+	        	userSerive.deleteUserMenuTreeRedis(sysPermission);
+        }
  	
         writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
 

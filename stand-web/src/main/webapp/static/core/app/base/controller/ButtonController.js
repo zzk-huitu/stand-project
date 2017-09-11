@@ -427,6 +427,13 @@ Ext.define("core.base.controller.ButtonController", {
             //封装ids数组
             Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
                 if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
+
                     var ids = new Array();
                     Ext.each(records, function (rec) {
                         var pkValue = rec.get(pkName);
@@ -438,8 +445,7 @@ Ext.define("core.base.controller.ButtonController", {
                         params: {
                             ids: ids.join(","),
                             pkName: pkName
-                        },
-                        loadMask:true,
+                        },                       
                         success: function(response) {
                             var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
@@ -458,6 +464,11 @@ Ext.define("core.base.controller.ButtonController", {
                             }else {
                                 self.Error(data.obj);
                             }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
                         }
                     });     
                 }
