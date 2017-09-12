@@ -18,15 +18,15 @@ Ext.define("core.systemset.schoolinfo.view.MainQueryPanel", {
             columnWidth: 0.25,
             xtype: "basequeryfield",
             name: "schoolName",
-            fieldLabel: "學校名称",
+            fieldLabel: "学校名称",
             queryType: "textfield",
-        }/*, {
+        }, {
             columnWidth: 0.25,
             xtype: "basequeryfield",
-            name: "campusCode",
-            fieldLabel: "校区编码",
+            name: "schoolCode",
+            fieldLabel: "学校代码",
             queryType: "textfield",
-        }*/]
+        }]
     }],
     buttonAlign: "center",
     buttons: [{
