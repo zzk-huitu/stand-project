@@ -69,47 +69,47 @@ Ext.define("core.systemset.schoolinfo.view.MainGrid", {
         },
         items: [{
             xtype: "rownumberer",
-            width: 150,
+            width: 50,
             text: '序号',
             align: 'center'
         }, {
             text: "学校代码",
             dataIndex: "schoolCode",
             flex: 1,
-            minWidth: 150
+            minWidth: 100
         }, {
-            width: 150,
+            width: 100,
             text: "学校名称",
             dataIndex: "schoolName"
            
         }, {
-            width: 150,
+            width: 100,
             text: "学校英文名",
             dataIndex: "schoolEng"
          
         }, {
-            width: 150,
+            width: 100,
             text: "学校邮政编码",
             dataIndex: "zipCode"
            
         }, { 
-            width: 150,
+            width: 100,
             text: "建校年月",
             dataIndex: "foundYear"
            
         }, {
-            width: 150,
+            width: 100,
             text: "办学类型",
             dataIndex: "officeType",
             columnType: "basecombobox", //列类型
             ddCode: "BXLX" //字典代码
          
         },{
-            width: 150,
+            width: 100,
             text: "校长姓名",
             dataIndex: "schoolmasterName"
         }, {
-            width: 150,
+            width: 100,
             text: "联系电话",
             dataIndex: "telephone"
           
