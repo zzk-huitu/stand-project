@@ -1,6 +1,6 @@
-Ext.define("core.systemset.jobinfo.view.DetailForm", {
+Ext.define("core.system.jobinfo.view.DetailForm", {
     extend: "core.base.view.BaseForm",
-    alias: "widget.systemset.jobinfo.detailform",
+    alias: "widget.system.jobinfo.detailform",
     layout: "form",
     autoHeight: true,
     frame: false,

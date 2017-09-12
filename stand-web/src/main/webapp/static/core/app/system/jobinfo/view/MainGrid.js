@@ -1,6 +1,6 @@
-Ext.define("core.systemset.jobinfo.view.MainGrid", {
+Ext.define("core.system.jobinfo.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.systemset.jobinfo.maingrid",
+    alias: "widget.system.jobinfo.maingrid",
     dataUrl: comm.get('baseUrl') + "/BaseJob/list",
     model: 'com.zd.school.plartform.baseset.model.BaseJob',
 

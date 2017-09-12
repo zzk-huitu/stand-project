@@ -3,9 +3,9 @@
     此视图控制器，用于注册window之类的组件的事件，该类组件不属于 mainLayout和detailLayout范围内。
     但需要在创建window中，使用controller属性来指定此视图控制器，才可生效
 */
-Ext.define("core.systemset.jobinfo.controller.OtherController", {
+Ext.define("core.system.jobinfo.controller.OtherController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.systemset.jobinfo.othercontroller',
+    alias: 'controller.system.jobinfo.othercontroller',
     mixins: {
         suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",

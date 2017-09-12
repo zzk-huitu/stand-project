@@ -2,9 +2,9 @@
     ( *非必须，只要需要使用时，才创建他 )
     此视图控制器，提供于DeatilLayout范围内的界面组件注册事件
 */
-Ext.define("core.systemset.jobinfo.controller.DetailController", {
+Ext.define("core.system.jobinfo.controller.DetailController", {
 	  extend: "Ext.app.ViewController",
-	    alias: 'controller.systemset.jobinfo.detailcontroller',
+	    alias: 'controller.system.jobinfo.detailcontroller',
 	    mixins: {
 	    	/*
 	        suppleUtil: "core.util.SuppleUtil",

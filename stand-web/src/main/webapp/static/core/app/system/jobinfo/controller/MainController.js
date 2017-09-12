@@ -1,6 +1,6 @@
-Ext.define("core.systemset.jobinfo.controller.MainController", {
+Ext.define("core.system.jobinfo.controller.MainController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.systemset.jobinfo.maincontroller',
+    alias: 'controller.system.jobinfo.maincontroller',
     mixins: {
         suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",

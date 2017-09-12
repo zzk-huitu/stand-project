@@ -2,6 +2,7 @@ package com.zd.school.build.define.service;
 
 import com.zd.core.service.BaseService;
 import com.zd.school.build.define.model.BuildRoominfo ;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -18,5 +19,5 @@ import com.zd.school.build.define.model.BuildRoominfo ;
  */
  
 public interface BuildRoominfoService extends BaseService<BuildRoominfo> {
-
+	public Boolean batchAddRoom(BuildRoominfo roominfo, SysUser currentUser);
 }

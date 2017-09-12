@@ -1,23 +1,23 @@
-Ext.define("core.systemset.jobinfo.view.MainLayout", {
+Ext.define("core.system.jobinfo.view.MainLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.systemset.jobinfo.mainlayout',
+    alias: 'widget.system.jobinfo.mainlayout',
     
     requires: [   
-    	"core.systemset.jobinfo.controller.MainController",
-        "core.systemset.jobinfo.view.MainLayout",
-        "core.systemset.jobinfo.view.DetailLayout",
-        "core.systemset.jobinfo.view.MainGrid",
-        "core.systemset.jobinfo.view.DetailForm"
+    	"core.system.jobinfo.controller.MainController",
+        "core.system.jobinfo.view.MainLayout",
+        "core.system.jobinfo.view.DetailLayout",
+        "core.system.jobinfo.view.MainGrid",
+        "core.system.jobinfo.view.DetailForm"
     ],
     
     /** 关联此视图控制器 */
-    controller: 'systemset.jobinfo.maincontroller',
+    controller: 'system.jobinfo.maincontroller',
     /** 页面代码定义 */
     funCode: "jobinfo_main",
     detCode: "jobinfo_detail",
-    detLayout: "systemset.jobinfo.detaillayout",
+    detLayout: "system.jobinfo.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-    otherController:'systemset.jobinfo.othercontroller',
+    otherController:'system.jobinfo.othercontroller',
     layout:'border',
     border:false,
     funData: {
@@ -35,7 +35,7 @@ Ext.define("core.systemset.jobinfo.view.MainLayout", {
     minWidth:1000,
     scrollable:true,
     items: [{
-        xtype: "systemset.jobinfo.maingrid",
+        xtype: "system.jobinfo.maingrid",
         region: "center"
     }]
 })

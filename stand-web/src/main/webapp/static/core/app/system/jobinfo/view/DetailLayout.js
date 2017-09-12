@@ -1,6 +1,6 @@
-Ext.define("core.systemset.jobinfo.view.DetailLayout",{
+Ext.define("core.system.jobinfo.view.DetailLayout",{
 	extend:"core.base.view.BasePanel",
-	alias : 'widget.systemset.jobinfo.detaillayout',
+	alias : 'widget.system.jobinfo.detaillayout',
 	funCode:"jobinfo_detail",
 	funData: {
 		action: comm.get('baseUrl') + "/BaseJob", //请求Action
@@ -15,8 +15,8 @@ Ext.define("core.systemset.jobinfo.view.DetailLayout",{
     scrollable:true,
 
     /*关联此视图控制器*/
-	controller: 'systemset.jobinfo.detailcontroller',
+	controller: 'system.jobinfo.detailcontroller',
 	items: [{
-		xtype: "systemset.jobinfo.detailform"
+		xtype: "system.jobinfo.detailform"
 	}]
 })
