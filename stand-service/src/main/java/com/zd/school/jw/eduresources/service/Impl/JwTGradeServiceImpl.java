@@ -6,9 +6,10 @@ import com.zd.school.jw.eduresources.dao.JwTGradeDao;
 import com.zd.school.jw.eduresources.model.JwTGrade;
 import com.zd.school.jw.eduresources.service.JwGradeteacherService;
 import com.zd.school.jw.eduresources.service.JwTGradeService;
-import com.zd.school.plartform.baseset.service.BaseJobService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysJobService;
+import com.zd.school.plartform.system.service.SysOrgService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +34,10 @@ public class JwTGradeServiceImpl extends BaseServiceImpl<JwTGrade> implements Jw
     }
 
     @Resource
-    private BaseOrgService orgService; //部门数据服务接口
+    private SysOrgService orgService; //部门数据服务接口
 
     @Resource
-    private BaseJobService jobService;
+    private SysJobService jobService;
 
     @Resource
     private JwGradeteacherService gradeTeaService;

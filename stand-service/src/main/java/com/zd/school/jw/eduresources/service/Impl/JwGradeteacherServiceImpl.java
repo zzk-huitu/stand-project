@@ -12,11 +12,11 @@ import com.zd.school.jw.eduresources.model.JwTGrade;
 import com.zd.school.jw.eduresources.service.JwGradeclassteacherService;
 import com.zd.school.jw.eduresources.service.JwGradeteacherService;
 import com.zd.school.jw.eduresources.service.JwTGradeService;
-import com.zd.school.plartform.baseset.service.BaseJobService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.comm.model.CommBase;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysJobService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 import org.springframework.stereotype.Service;
@@ -48,10 +48,10 @@ public class JwGradeteacherServiceImpl extends BaseServiceImpl<JwGradeteacher> i
     }
 
     @Resource
-    private BaseOrgService orgService;
+    private SysOrgService orgService;
 
     @Resource
-    private BaseJobService jobService;
+    private SysJobService jobService;
 
     @Resource
     private SysUserService userService;

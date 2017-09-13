@@ -1,7 +1,7 @@
 Ext.define("core.system.dept.view.DeptJobGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.system.dept.deptjobgrid",
-	dataUrl: comm.get('baseUrl') + "/BaseDeptjob/list",
+	dataUrl: comm.get('baseUrl') + "/SysDeptjob/list",
 	model: "com.zd.school.plartform.baseset.model.BaseDeptjob",
 	al: false,
 	//排序字段及模式定义
@@ -76,7 +76,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 			width:150,
 			dataIndex: "jobType",
 			renderer: function(value) {
-				return (value != 0) ? '<font color=green>否</font>' : '<font color=red>是</font>';
+				return (value != 0) ? '<font color=red>否</font>' : '<font color=green>是</font>';
 			}
 		}, {
 			text: "主管部门",

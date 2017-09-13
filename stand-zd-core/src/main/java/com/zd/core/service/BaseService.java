@@ -328,7 +328,7 @@ public interface BaseService<E> {
      * @param hql 要执行的HQL语句
      * @return 受影响的记录数
      */
-    public Integer getExecuteCountByHql(String hql);
+    public Integer doExecuteCountByHql(String hql);
 
     /**
      * 判断字段的值是否存在 如果是插入id赋值-1或者new Guid,如果是修改id赋值 要修改项的值
@@ -360,7 +360,7 @@ public interface BaseService<E> {
      * @return
      * @return
      */
-    public boolean logicDelOrRestore(String ids, String isDelete,String operator);
+    public boolean doLogicDelOrRestore(String ids, String isDelete,String operator);
 
     /**
      * 生成指定实体的默认排序号
@@ -443,7 +443,7 @@ public interface BaseService<E> {
      * @param sql SQL语句
      * @return
      */
-    public Integer getExecuteCountBySql(String sql);
+    public Integer doExecuteCountBySql(String sql);
 
     /**
      * 执行SQL语句，并返回查询记录数

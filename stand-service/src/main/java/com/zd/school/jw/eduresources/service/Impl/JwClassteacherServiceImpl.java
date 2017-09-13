@@ -13,12 +13,12 @@ import com.zd.school.jw.eduresources.service.JwClassteacherService;
 import com.zd.school.jw.eduresources.service.JwGradeclassteacherService;
 import com.zd.school.jw.eduresources.service.JwTGradeService;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
-import com.zd.school.plartform.baseset.service.BaseJobService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.comm.model.CommBase;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysJobService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 import org.springframework.stereotype.Service;
@@ -53,10 +53,10 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
     private CommTreeService treeService; //通用树形数据获取service
 
     @Resource
-    private BaseOrgService orgService;
+    private SysOrgService orgService;
 
     @Resource
-    private BaseJobService jobService;
+    private SysJobService jobService;
 
     @Resource
     private SysUserService userService;

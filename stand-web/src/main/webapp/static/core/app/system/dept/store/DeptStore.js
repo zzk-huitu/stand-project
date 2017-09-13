@@ -7,7 +7,7 @@ Ext.define("core.system.dept.store.DeptStore", {
     model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgTree", "checked").modelName,
     proxy: {
         type: "ajax",
-        url: comm.get('baseUrl') + "/BaseOrg/treeList",
+        url: comm.get('baseUrl') + "/SysOrg/treeList",
         extraParams: {
             excludes: 'checked',
             whereSql: "  and isDelete='0'",

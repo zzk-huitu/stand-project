@@ -175,7 +175,7 @@ public class TrainClasstraineeServiceImpl extends BaseServiceImpl<TrainClasstrai
 					String hqlUpdate = "update TrainClasstrainee t set t.roomId='"+roomId+"',t.roomName='"+roomName+"',"
 							+ "	t.updateUser='" + currentUser.getXm()+ "',t.updateTime='" +  sdf.format(new Date()) + "' "
 							+ "where t.isDelete!=1 and t.uuid in ('" + ids.replace(",", "','") + "')";
-					this.getExecuteCountByHql(hqlUpdate);
+					this.doExecuteCountByHql(hqlUpdate);
 					result=1;
 				}																							
 			}
@@ -199,7 +199,7 @@ public class TrainClasstraineeServiceImpl extends BaseServiceImpl<TrainClasstrai
 			String hqlUpdate = "update TrainClasstrainee t set t.roomId=NULL,t.roomName=NULL,"
 					+ "	t.updateUser='" + currentUser.getXm()+ "',t.updateTime='" +  sdf.format(new Date()) + "' "
 					+ "where t.uuid in ('" + ids.replace(",", "','") + "')";
-			this.getExecuteCountByHql(hqlUpdate);
+			this.doExecuteCountByHql(hqlUpdate);
 			result=1;
 			
 		} catch (Exception e) {

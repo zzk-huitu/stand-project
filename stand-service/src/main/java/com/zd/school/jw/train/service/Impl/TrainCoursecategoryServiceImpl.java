@@ -71,7 +71,7 @@ public class TrainCoursecategoryServiceImpl extends BaseServiceImpl<TrainCoursec
 
             //把课程分类下的课程也逻辑删除
             String hql = MessageFormat.format("update TrainCourseinfo set isDelete=1 where categoryId in (''{0}'')", ids.replace(",", "','"));
-            courseinfoService.getExecuteCountByHql(hql);
+            courseinfoService.doExecuteCountByHql(hql);
 /*            for (int i = 0; i < conditionValue.length; i++) {
                 String hql = "update TrainCourseinfo set isDelete=1 where categoryId='" + conditionValue[i].toString() + "' ";
                 courseinfoService.getExecuteCountByHql(hql);
@@ -207,7 +207,7 @@ public class TrainCoursecategoryServiceImpl extends BaseServiceImpl<TrainCoursec
 
         String sql1 = " update TRAIN_T_COURSEINFO set COURSE_CODE = replace(COURSE_CODE,''{0}'',''{1}'') where COURSE_CODE like ''{2}'%'' ";
         sql1 = MessageFormat.format(sql1, oldNodeCode, newNodeCode, oldNodeCode);
-        this.getExecuteCountBySql(sql + sql1);
+        this.doExecuteCountBySql(sql + sql1);
     }
 
     /**

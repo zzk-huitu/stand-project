@@ -130,7 +130,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 			return;
 		} else {
             SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.logicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {
 				if(delIds.length()>0){
 					BaseDicitem baseDicItem=thisService.get(delIds.split(",")[0]);
@@ -160,7 +160,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 			return;
 		} else {
             SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.logicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
 			if (flag) {
 				if(delIds.length()>0){
 					BaseDicitem baseDicItem=thisService.get(delIds.split(",")[0]);

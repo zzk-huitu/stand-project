@@ -7,7 +7,7 @@ Ext.define("core.system.user.view.selectUserLayout", {
 	border: false,
 	//funData用来定义一些常规的参数
 	funData: {
-		action: comm.get('baseUrl') + "/sysuser", //请求controller
+		action: comm.get('baseUrl') + "/SysUser", //请求controller
 		filter: "[{'type':'numeric','comparison':'=','value':0,'field':'isDelete'},	  {'type':'string','comparison':'=','value':'1','field':'category'}, {'type': 'numeric','comparison': '=','value': '1','field': 'issystem'}]",
 		pkName: "uuid", //主键
 		//默认的初始值设置

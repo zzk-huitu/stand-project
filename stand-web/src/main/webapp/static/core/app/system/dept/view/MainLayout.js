@@ -19,7 +19,7 @@ Ext.define("core.system.dept.view.MainLayout", {
     detCode: "deptinfo_detail",
     detLayout: "system.dept.detaillayout",
     funData: {
-        action: comm.get('baseUrl') + "/BaseOrg", //请求controller路径       
+        action: comm.get('baseUrl') + "/SysOrg", //请求controller路径       
         pkName: "id", //主键id    
         defaultObj: {
             orderIndex: 1

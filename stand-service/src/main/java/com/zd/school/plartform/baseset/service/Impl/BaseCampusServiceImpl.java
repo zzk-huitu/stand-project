@@ -15,13 +15,13 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.BuildRoomarea;
-import com.zd.school.build.define.service.BuildRoomareaService;
 import com.zd.school.plartform.baseset.dao.BaseCampusDao;
 import com.zd.school.plartform.baseset.model.BaseCampus;
 import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.baseset.service.BaseCampusService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
+import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysOrgService;
 
 /**
  * 
@@ -42,10 +42,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 	}
 
 	@Resource
-	private BuildRoomareaService areaService;
+	private BaseRoomareaService areaService;
 
 	@Resource
-	private BaseOrgService orgService;
+	private SysOrgService orgService;
 
 	@Override
 	public BaseCampus doAdd(BaseCampus entity, SysUser currentUser)
@@ -150,9 +150,9 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		}
 		if (canSb.length() > 0) {
 			String s = StringUtils.trimLast(canSb.toString());
-			rs = orgService.logicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
-			rs = areaService.logicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
-			rs = this.logicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
+			rs = orgService.doLogicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
+			rs = areaService.doLogicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
+			rs = this.doLogicDelOrRestore(s, StatuVeriable.ISDELETE, currentUser.getXm());
 		} else {
 			rs = false;
 		}

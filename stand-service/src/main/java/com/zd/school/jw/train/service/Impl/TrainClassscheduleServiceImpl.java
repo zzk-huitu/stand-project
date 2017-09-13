@@ -220,7 +220,7 @@ public class TrainClassscheduleServiceImpl extends BaseServiceImpl<TrainClasssch
 					+ roomName + "'," + "	t.updateUser='" + currentUser.getXm() + "',t.updateTime='"
 					+ sdf.format(new Date()) + "' " + "where t.isDelete!=1 and t.uuid in ('" + ids.replace(",", "','")
 					+ "')";
-			this.getExecuteCountByHql(hqlUpdate);
+			this.doExecuteCountByHql(hqlUpdate);
 			result = 1;
 
 		} catch (Exception e) {
@@ -241,7 +241,7 @@ public class TrainClassscheduleServiceImpl extends BaseServiceImpl<TrainClasssch
 			String hqlUpdate = "update TrainClassschedule t set t.roomId=NULL,t.scheduleAddress=NULL,"
 					+ "	t.updateUser='" + currentUser.getXm() + "',t.updateTime='" + sdf.format(new Date()) + "' "
 					+ "where t.uuid in ('" + ids.replace(",", "','") + "')";
-			this.getExecuteCountByHql(hqlUpdate);
+			this.doExecuteCountByHql(hqlUpdate);
 			result = 1;
 
 		} catch (Exception e) {

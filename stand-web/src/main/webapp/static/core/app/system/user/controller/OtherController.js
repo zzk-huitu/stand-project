@@ -314,7 +314,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     whereSql: "",
                     orderSql: " ",
                     excludes: "",
-                    url: comm.get('baseUrl') + "/BaseDeptjob/getDeptJobTree",
+                    url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
                 };
 
                 self.selTreeWin({
@@ -483,7 +483,7 @@ Ext.define("core.system.user.controller.OtherController", {
         "mtsswinview[funcPanel=user.userdeptjob] button[ref=ssOkBtn]": {
             beforeclick: function(btn) {
                 var self=this;
-
+                
                 var win = btn.up("mtsswinview");
                 var setIds = win.setIds;
                 var funData = win.funData;

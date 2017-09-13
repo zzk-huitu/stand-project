@@ -1,7 +1,7 @@
 Ext.define("core.system.user.view.DeptTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.system.user.depttree",
-    dataUrl: comm.get('baseUrl') + "/BaseOrg/treeList",
+    dataUrl: comm.get('baseUrl') + "/SysOrg/treeList",
     model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgTree", "checked").modelName,
     al: true,
     scrollable:true,

@@ -293,7 +293,7 @@ public class TrainCourseevalresultServiceImpl extends BaseServiceImpl<TrainCours
             sb.append(MessageFormat.format("update TRAIN_T_CLASSSCHEDULE set ranking={0} where CLASS_SCHEDULE_ID=''{1}'';", i + 1, classCourse.get(i).getUuid()));
         }
         if (sb.length() > 0) {
-            this.getExecuteCountBySql(sb.toString());
+            this.doExecuteCountBySql(sb.toString());
             return true;
         } else
             return true;

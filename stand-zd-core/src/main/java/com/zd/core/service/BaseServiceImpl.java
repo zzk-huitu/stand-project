@@ -542,7 +542,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 * @return 受影响的记录数
 	 */
 	@Override
-	public Integer getExecuteCountByHql(String hql) {
+	public Integer doExecuteCountByHql(String hql) {
 		return this.dao.getExecuteCountByHql(hql);
 	}
 
@@ -590,7 +590,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 * @return true, if successful
 	 */
 	@Override
-	public boolean logicDelOrRestore(String ids, String isDelete, String operator) {
+	public boolean doLogicDelOrRestore(String ids, String isDelete, String operator) {
 		return this.dao.logicDelOrRestore(ids, isDelete, operator);
 	}
 
@@ -780,7 +780,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	}
 
 	@Override
-	public Integer getExecuteCountBySql(String sql) {
+	public Integer doExecuteCountBySql(String sql) {
 
 		// TODO Auto-generated method stub
 		return this.dao.getExecuteCountBySql(sql);
@@ -841,13 +841,13 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 * @param operator
 	 *            操作人姓名或ID
 	 * @return 返回持久化对象
-	 */
+	 */	
 	@Override
 	public E doAddEntity(E entity,String operator) {
 		// TODO Auto-generated method stub
 		E saveEntity;
 		try {
-			Class clazz = entity.getClass();
+			Class<? extends Object> clazz = entity.getClass();
 			saveEntity = (E) clazz.newInstance();
 
 			List<String> excludedProp = new ArrayList<>();
@@ -894,7 +894,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 			else
 				BeanUtils.copyPropertiesExceptNull(saveEntity, entity,excludedProp);
 			
-			Class clazz = saveEntity.getClass();
+			Class<? extends Object> clazz = saveEntity.getClass();
 			clazz.getMethod("setUpdateTime", Date.class).invoke(saveEntity, new Date());// 设置修改时间
 			clazz.getMethod("setUpdateUser", String.class).invoke(saveEntity, operator);// 设置修改人
 			entity = this.merge(saveEntity);// 执行修改方法
