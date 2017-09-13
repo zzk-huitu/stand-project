@@ -1,7 +1,7 @@
 Ext.define("core.baseset.room.view.AreaGrid", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.baseset.room.areagrid",
-    dataUrl: comm.get('baseUrl') + "/BuildRoomarea/list",
+    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
     extParams: {

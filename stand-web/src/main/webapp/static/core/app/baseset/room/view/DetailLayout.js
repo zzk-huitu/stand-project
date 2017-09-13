@@ -3,7 +3,7 @@ Ext.define("core.baseset.room.view.DetailLayout", {
     alias: 'widget.baseset.room.detaillayout',
     funCode: "room_roomdetail",
     funData: {
-        action: comm.get('baseUrl') + "/BuildRoominfo", //请求Action
+        action: comm.get('baseUrl') + "/BaseRoominfo", //请求Action
         whereSql: "", //表格查询条件
         whereSql: "", //表格查询条件
         orderSql: "", //表格排序条件

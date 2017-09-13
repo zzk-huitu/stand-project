@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.view.itemGrid", {
+Ext.define("core.baseset.dictionary.view.ItemGrid", {
 	extend: "core.base.view.BaseGrid",
-	alias: "widget.systemset.dictionary.itemgrid",
+	alias: "widget.baseset.dictionary.itemgrid",
 	title: "字典项列表",
 	dataUrl: comm.get('baseUrl') + "/BaseDicitem/list",
 	model: 'com.zd.school.plartform.baseset.model.BaseDicitem',

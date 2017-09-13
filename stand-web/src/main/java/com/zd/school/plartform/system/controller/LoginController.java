@@ -108,7 +108,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			String updateHql = "update SysUserLoginLog o set o.offlineDate=CONVERT(datetime,'" + updateTime
 					+ "'),o.offlineIntro='切换账户退出' where o.offlineDate is null and o.isDelete=0 and o.sessionId='"
 					+ sessionId + "' and o.userId!='"+userId+"'";
-			sysUserLoginLogService.getExecuteCountByHql(updateHql);
+			sysUserLoginLogService.doExecuteCountByHql(updateHql);
 			
 			if (!sysUserLoginLogService.IsFieldExist("userId", userId, "-1", " o.sessionId='" + sessionId + "'")) {
 				SysUserLoginLog loginLog = new SysUserLoginLog();

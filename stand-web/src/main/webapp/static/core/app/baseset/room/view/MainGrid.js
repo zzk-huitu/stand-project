@@ -1,7 +1,7 @@
 Ext.define("core.baseset.room.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.baseset.room.maingrid",
-    dataUrl: comm.get('baseUrl') + "/BuildRoominfo/list",
+    dataUrl: comm.get('baseUrl') + "/BaseRoominfo/list",
     model: "com.zd.school.build.define.model.BuildRoominfo",
     al:false,
     extParams: {

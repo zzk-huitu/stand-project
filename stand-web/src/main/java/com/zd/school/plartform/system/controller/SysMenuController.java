@@ -281,7 +281,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
             return;
         } else {
             String hql = " update SysMenu set isHidden='" + lockFlag + "'  where uuid in ('" + delIds.replace(",", "','")  + "') ";
-            thisService.getExecuteCountByHql(hql);
+            thisService.doExecuteCountByHql(hql);
                        
             //删除有权限的角色的用户的redis数据
             String[] delIdArr=delIds.split(",");

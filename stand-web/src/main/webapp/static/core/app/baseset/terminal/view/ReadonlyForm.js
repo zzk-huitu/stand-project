@@ -56,7 +56,7 @@ Ext.define("core.baseset.terminal.view.ReadonlyForm", {
             tbar: false,
             panelBottomBar:false,
             panelTopBar:false,
-            dataUrl: comm.get("baseUrl") + "/OaInfotermuse/list", //数据获取地址
+            dataUrl: comm.get("baseUrl") + "/BaseInfotermuse/list", //数据获取地址
             model: "com.zd.school.oa.terminal.model.OaInfotermuse", //对应的数据模型 
             //排序字段
             defSort: [{

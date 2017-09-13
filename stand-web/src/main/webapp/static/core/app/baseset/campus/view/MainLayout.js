@@ -1,22 +1,22 @@
 
 
-Ext.define("core.systemset.campus.view.MainLayout", {
+Ext.define("core.baseset.campus.view.MainLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.systemset.campus.mainlayout',
+    alias: 'widget.baseset.campus.mainlayout',
     
     requires: [   
-        "core.systemset.campus.controller.MainController"
+        "core.baseset.campus.controller.MainController"
     ],
     
     /** 关联此视图控制器 */
-    controller: 'systemset.campus.maincontroller',
+    controller: 'baseset.campus.maincontroller',
     /** 页面代码定义 */
     funCode: "campus_main",
     detCode: 'campus_detail',
-    detLayout: 'systemset.campus.detaillayout',    
+    detLayout: 'baseset.campus.detaillayout',    
 
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-    otherController:'systemset.campus.othercontroller',
+    otherController:'baseset.campus.othercontroller',
  
     funData: {
         action: comm.get('baseUrl') + "/BaseCampus", //请求Action 
@@ -54,6 +54,6 @@ Ext.define("core.systemset.campus.view.MainLayout", {
 
     layout:'fit',
     items: [{
-        xtype: "systemset.campus.maingrid"
+        xtype: "baseset.campus.maingrid"
     }]
 })

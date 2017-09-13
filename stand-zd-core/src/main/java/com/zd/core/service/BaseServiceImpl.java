@@ -542,7 +542,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 * @return 受影响的记录数
 	 */
 	@Override
-	public Integer getExecuteCountByHql(String hql) {
+	public Integer doExecuteCountByHql(String hql) {
 		return this.dao.getExecuteCountByHql(hql);
 	}
 
@@ -590,7 +590,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 * @return true, if successful
 	 */
 	@Override
-	public boolean logicDelOrRestore(String ids, String isDelete, String operator) {
+	public boolean doLogicDelOrRestore(String ids, String isDelete, String operator) {
 		return this.dao.logicDelOrRestore(ids, isDelete, operator);
 	}
 
@@ -780,7 +780,7 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	}
 
 	@Override
-	public Integer getExecuteCountBySql(String sql) {
+	public Integer doExecuteCountBySql(String sql) {
 
 		// TODO Auto-generated method stub
 		return this.dao.getExecuteCountBySql(sql);

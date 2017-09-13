@@ -1,9 +1,9 @@
 
 
 
-Ext.define("core.systemset.campus.view.MainGrid", {
+Ext.define("core.baseset.campus.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.systemset.campus.maingrid",
+    alias: "widget.baseset.campus.maingrid",
     dataUrl: comm.get('baseUrl') + "/BaseCampus/list",
     model: 'com.zd.school.plartform.baseset.model.BaseCampus',
 
@@ -59,7 +59,7 @@ Ext.define("core.systemset.campus.view.MainGrid", {
         }],
     }, 
     panelButtomBar:{
-        xtype:'systemset.campus.mainquerypanel'
+        xtype:'baseset.campus.mainquerypanel'
     },
     
     //排序字段及模式定义

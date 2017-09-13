@@ -10,8 +10,8 @@ import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
-import com.zd.school.plartform.baseset.service.BaseUserdeptjobService;
 import com.zd.school.plartform.system.model.*;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 import com.zd.school.plartform.system.service.SysMenuService;
 import com.zd.school.plartform.system.service.SysUserService;
 import org.apache.shiro.SecurityUtils;
@@ -51,7 +51,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	SysMenuService sysMenuService;
 
 	@Resource
-	BaseUserdeptjobService userDeptjobService;
+	SysUserdeptjobService userDeptjobService;
 	
 	@Resource  
 	private RedisTemplate<String, Object> redisTemplate;  

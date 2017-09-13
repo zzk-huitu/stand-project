@@ -1,6 +1,6 @@
-Ext.define("core.systemset.schoolinfo.view.MainQueryPanel", {
+Ext.define("core.baseset.schoolinfo.view.MainQueryPanel", {
     extend: "core.base.view.BaseQueryForm",
-    alias: "widget.systemset.schoolinfo.mainquerypanel",
+    alias: "widget.baseset.schoolinfo.mainquerypanel",
     layout: "form",
     frame: false,
     height: 100,

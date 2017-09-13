@@ -14,8 +14,8 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.student.studentclass.dao.JwClassstudentDao;
 import com.zd.school.student.studentclass.model.JwClassstudent;
 import com.zd.school.student.studentclass.service.JwClassstudentService;
@@ -40,7 +40,7 @@ public class JwClassstudentServiceImpl extends BaseServiceImpl<JwClassstudent> i
     }
 
     @Resource
-    private BaseOrgService orgService;
+    private SysOrgService orgService;
     @Resource
     private JwTGradeclassService classService;
 

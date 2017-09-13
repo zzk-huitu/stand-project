@@ -26,7 +26,6 @@ import com.zd.core.util.BeanUtils;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.SortListUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.dao.SysUserDao;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
 import com.zd.school.plartform.system.model.SysMenuPermission;
@@ -34,6 +33,7 @@ import com.zd.school.plartform.system.model.SysPermission;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserToUP;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysMenuPermissionService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
@@ -61,7 +61,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	private SysRoleService roleService; // 角色数据服务接口
 
 	@Resource
-	private BaseOrgService orgService; // 部门数据服务接口
+	private SysOrgService orgService; // 部门数据服务接口
 
 	@Resource
 	private TeaTeacherbaseService teacherService;
@@ -338,14 +338,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 							+ sysUserInfo.getSid() + "','" + sysUserInfo.getEmployeePwd() + "','"
 							+ sysUserInfo.getSexId() + "','" + sysUserInfo.getIdentifier() + "',0,1,24)";
 
-					row = this.getExecuteCountBySql(sqlInsert);
+					row = this.doExecuteCountBySql(sqlInsert);
 				}
 			} else { // 若存在，则判断是修改还是删除
 				SysUserToUP upUserInfo = upUserInfos.get(0);
 
 				if (sysUserInfo == null) { // 没有此人数据，则删除
 					String sqlDelete = "update Tc_Employee set EmployeeStatusID='26' where UserId='" + userId + "'";// 逻辑删除
-					row = this.getExecuteCountBySql(sqlDelete);
+					row = this.doExecuteCountBySql(sqlDelete);
 
 				} else { // 若数据都存在，则判断是否有修改
 					/*
@@ -374,7 +374,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 								+ sysUserInfo.getEmployeeStrId() + "'," + "SexID='" + sysUserInfo.getSexId()
 								+ "',identifier='" + sysUserInfo.getIdentifier() + "' where UserId='" + userId + "'";
 
-						row = this.getExecuteCountBySql(sqlUpdate);
+						row = this.doExecuteCountBySql(sqlUpdate);
 					}
 				}
 			}
@@ -485,14 +485,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 				// 若积累的语句长度大于2000（大约50条语句左右），则执行
 				if (sqlSb.length() > 2000) {
-					row += this.getExecuteCountBySql(sqlSb.toString());
+					row += this.doExecuteCountBySql(sqlSb.toString());
 					sqlSb.setLength(0); // 清空
 				}
 			}
 
 			// 最后执行一次
 			if (sqlSb.length() > 0)
-				row += this.getExecuteCountBySql(sqlSb.toString());
+				row += this.doExecuteCountBySql(sqlSb.toString());
 
 			// 剩下的，表明不存在平台的库中，进行删除
 			/*
@@ -549,7 +549,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			// 当参数为null或内容为空，则直接删除发卡信息
 			if (upCardUserInfos == null || upCardUserInfos.size() == 0) {
 				sqlStr = "	delete from CARD_T_USEINFO ";
-				this.getExecuteCountBySql(sqlSb.toString());
+				this.doExecuteCountBySql(sqlSb.toString());
 			} else {
 				for (int i = 0; i < upCardUserInfos.size(); i++) {
 					upCardUser = upCardUserInfos.get(i);
@@ -601,14 +601,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 					// 若积累的语句长度大于3000（大约50条语句左右），则执行
 					if (sqlSb.length() > 3000) {
-						row += this.getExecuteCountBySql(sqlSb.toString());
+						row += this.doExecuteCountBySql(sqlSb.toString());
 						sqlSb.setLength(0); // 清空
 					}
 				}
 
 				// 最后执行一次
 				if (sqlSb.length() > 0)
-					row += this.getExecuteCountBySql(sqlSb.toString());
+					row += this.doExecuteCountBySql(sqlSb.toString());
 
 				// 如果还有没执行到的发卡数据，则进行循环删除
 				if (webCardUserInfos.size() > 0) {
@@ -618,7 +618,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 						sqlStr = "delete from CARD_T_USEINFO where CARD_ID='" + webCardUser.getUuid() + "';";
 						sqlSb.append(sqlStr + "  ");
 					}
-					this.getExecuteCountBySql(sqlSb.toString());
+					this.doExecuteCountBySql(sqlSb.toString());
 					// 若web库中存在此发卡信息
 				}
 			}
@@ -659,7 +659,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			if (upCardUserInfos == null || upCardUserInfos.size() == 0) {
 				sqlStr = "	delete from CARD_T_USEINFO where USER_ID in "
 						+ "(	select CLASS_TRAINEE_ID from TRAIN_T_CLASSTRAINEE where CLASS_ID='" + classId + "')";
-				this.getExecuteCountBySql(sqlSb.toString());
+				this.doExecuteCountBySql(sqlSb.toString());
 
 			} else {// 否则循环判断。
 				for (int i = 0; i < upCardUserInfos.size(); i++) {
@@ -713,14 +713,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 					// 若积累的语句长度大于3000（大约50条语句左右），则执行
 					if (sqlSb.length() > 3000) {
-						row += this.getExecuteCountBySql(sqlSb.toString());
+						row += this.doExecuteCountBySql(sqlSb.toString());
 						sqlSb.setLength(0); // 清空
 					}
 				}
 
 				// 最后执行一次
 				if (sqlSb.length() > 0)
-					row += this.getExecuteCountBySql(sqlSb.toString());
+					row += this.doExecuteCountBySql(sqlSb.toString());
 			}
 
 		} catch (Exception e) {

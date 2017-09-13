@@ -1,23 +1,23 @@
 
 
-Ext.define("core.systemset.schoolinfo.view.MainLayout", {
+Ext.define("core.baseset.schoolinfo.view.MainLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.systemset.schoolinfo.mainlayout',
+    alias: 'widget.baseset.schoolinfo.mainlayout',
     
     requires: [   
-        "core.systemset.schoolinfo.controller.MainController"
+        "core.baseset.schoolinfo.controller.MainController"
     ],
     
     /** 关联此视图控制器 */
-    controller: 'systemset.schoolinfo.maincontroller',
+    controller: 'baseset.schoolinfo.maincontroller',
     /** 页面代码定义 */
     funCode: "schoolinfo_main",
     detCode: 'school_detail',
-    detLayout: 'systemset.school.detaillayout',   
+    detLayout: 'baseset.school.detaillayout',   
     
 
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-    otherController:'systemset.schoolinfo.othercontroller',
+    otherController:'baseset.schoolinfo.othercontroller',
  
     funData: {
         action: comm.get('baseUrl') + "/BaseSchool", //请求Action 
@@ -56,6 +56,6 @@ Ext.define("core.systemset.schoolinfo.view.MainLayout", {
 
     layout:'fit',
     items: [{
-        xtype: "systemset.schoolinfo.maingrid"
+        xtype: "baseset.schoolinfo.maingrid"
     }]
 })

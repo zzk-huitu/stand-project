@@ -1,7 +1,7 @@
 Ext.define("core.system.jobinfo.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.system.jobinfo.maingrid",
-    dataUrl: comm.get('baseUrl') + "/BaseJob/list",
+    dataUrl: comm.get('baseUrl') + "/SysJob/list",
     model: 'com.zd.school.plartform.baseset.model.BaseJob',
 
     menuCode:"JOBINFO", //new：此表格与权限相关的菜单编码

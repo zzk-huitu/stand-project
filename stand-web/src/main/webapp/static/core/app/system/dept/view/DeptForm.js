@@ -65,7 +65,7 @@ Ext.define("core.system.dept.view.DeptForm", {
                 fieldInfo: "parentName~parentNode~parentType,text~id~parentType",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
-                url: comm.get('baseUrl') + "/BaseOrg/treeList",
+                url: comm.get('baseUrl') + "/SysOrg/treeList",
             } 
         }, 
         {

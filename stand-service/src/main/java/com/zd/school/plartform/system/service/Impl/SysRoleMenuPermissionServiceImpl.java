@@ -86,7 +86,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 				// 删除角色菜单功能不属于roleMenuPerIds中的功能
 				String deleteHql = "delete from SysRoleMenuPermission a where a.roleId='" + roleId + "' and a.perId='" + perId
 						+ "' and a.menuPerId not in ('" + roleMenuPers.replace(",", "','") + "')";
-				int row=this.getExecuteCountByHql(deleteHql);
+				int row=this.doExecuteCountByHql(deleteHql);
 				if(row>0)
 					isUpdate=true;
 			}
@@ -95,7 +95,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 			if(currentRoleMenuPerIds.size()>0){
 				// 删除角色菜单所有功能
 				String deleteHql = "delete from SysRoleMenuPermission a where a.roleId='" + roleId + "' and a.perId='" + perId + "'";
-				this.getExecuteCountByHql(deleteHql);
+				this.doExecuteCountByHql(deleteHql);
 				isUpdate=true;
 			}
 		}
@@ -128,7 +128,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		for(int i=0;i< cancelPerimission.size();i++){
 			// 删除角色菜单所有功能
 			String deleteHql = "delete from SysRoleMenuPermission a where a.roleId='" + roleId + "' and a.perId='" + cancelPerimission.get(i).getUuid() + "'";
-			row+=this.getExecuteCountByHql(deleteHql);
+			row+=this.doExecuteCountByHql(deleteHql);
 		}
 		
 		

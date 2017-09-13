@@ -19,7 +19,7 @@ Ext.define("core.baseset.terminal.view.MainLayout", {
     detCode: "terminal_detail",
     detLayout: "baseset.terminal.detaillayout",
     funData: {
-        action: comm.get("baseUrl") + "/OaInfoterm", //请求Action
+        action: comm.get("baseUrl") + "/BaseInfoterm", //请求Action
         whereSql: "", //表格查询条件
         orderSql: "", //表格排序条件
         filter: "",
@@ -38,6 +38,8 @@ Ext.define("core.baseset.terminal.view.MainLayout", {
         	detailTitle:'终端详情'
         }
     },
+    minWidth:1000,
+    scrollable:true,
     items: [{
         xtype: "baseset.terminal.maingrid"
     }]

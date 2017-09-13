@@ -12,8 +12,8 @@ import com.zd.school.jw.eduresources.model.JwTGrade;
 import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
 import com.zd.school.plartform.baseset.model.BaseOrg;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class JwCourseteacherServiceImpl extends BaseServiceImpl<JwCourseteacher>
     }
 
     @Resource
-    private BaseOrgService orgService;
+    private SysOrgService orgService;
 
     @Resource
     private SysUserService userService;
@@ -229,7 +229,7 @@ public class JwCourseteacherServiceImpl extends BaseServiceImpl<JwCourseteacher>
 		String hql ="update JwCourseteacher ct set ct.acszjs="+zjs+" where "
 				+ " ct.claiId in( select gc.uuid from JwTGradeclass gc where gc.graiId"
 				+ " in (select uuid from JwTGrade  where sectionCode='"+grade.getSectionCode()+"' )) and  ct.courseId='"+courseid+"' ";
-		getExecuteCountByHql(hql);
+		doExecuteCountByHql(hql);
 		return null;
 	}
 }

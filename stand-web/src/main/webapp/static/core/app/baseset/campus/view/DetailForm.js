@@ -1,6 +1,6 @@
-Ext.define("core.systemset.campus.view.DetailForm", {
+Ext.define("core.baseset.campus.view.DetailForm", {
     extend: "core.base.view.BaseForm",
-    alias: "widget.systemset.campus.detailform",
+    alias: "widget.baseset.campus.detailform",
     layout: "form",
     autoHeight: true,
     frame: false,
@@ -24,13 +24,13 @@ Ext.define("core.systemset.campus.view.DetailForm", {
         xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-            columnWidth:0.8,
+            columnWidth:0.5,
             beforeLabelTextTpl: comm.get('required'),
             allowBlank: false,
             xtype: "basefuncfield",
             refController: "", //该功能主控制器，这里重新指定为当前视图的控制器了
-            funcPanel: "systemset.schoolinfo.mainlayout", //该功能显示的主视图
-            formPanel: "systemset.campus.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
+            funcPanel: "baseset.schoolinfo.mainlayout", //该功能显示的主视图
+            formPanel: "baseset.campus.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
             funcTitle: "学校选择", //查询窗口的标题
             configInfo: {
                 width: 1200,

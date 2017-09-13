@@ -12,9 +12,9 @@ import com.zd.school.jw.train.model.*;
 import com.zd.school.jw.train.model.vo.TrainClassEval;
 import com.zd.school.jw.train.service.*;
 import com.zd.school.plartform.baseset.model.BaseOrgToUP;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserToUP;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 	private TrainClassscheduleService trainClassscheduleService;
 
 	@Resource
-	BaseOrgService baseOrgService;
+	SysOrgService baseOrgService;
 
 	@Resource
 	SysUserService sysUserService;
@@ -340,7 +340,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 				// 清除班级学员的早 中 晚餐的数据
 				String hql = "update TrainClasstrainee set breakfast=0,lunch=0,dinner=0 where classId='"
 						+ saveEntity.getUuid() + "'";
-				this.getExecuteCountByHql(hql);
+				this.doExecuteCountByHql(hql);
 			}
 			result = 1;
 		} catch (IllegalAccessException e) {
@@ -640,7 +640,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 
 				// 每20条语句执行一次插入
 				if ((i + 1) % 20 == 0) {				
-					result += this.getExecuteCountBySql(executeSb.toString());
+					result += this.doExecuteCountBySql(executeSb.toString());
 					executeSb.setLength(0); // 清空
 				}
 
@@ -648,7 +648,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 
 			// 最后执行一次
 			if (executeSb.length() > 0)
-				result += this.getExecuteCountBySql(executeSb.toString());
+				result += this.doExecuteCountBySql(executeSb.toString());
 		
 			// 提交数据
 			// TransactionAspectSupport.currentTransactionStatus().flush();
@@ -657,7 +657,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 			updateSql = "update XF_MealCouponSet set MealCouponTypeID =" + " isnull((select top 1 MealCouponTypeID from"
 					+ "		XF_MealCouponType where MealId=XF_MealCouponSet.MealId),0) "
 					+ " where MealCouponTypeID=0 and MealId is not null";
-			this.getExecuteCountBySql(updateSql);
+			this.doExecuteCountBySql(updateSql);
 		} catch (Exception e) {
 			result = -1;
 			// TODO: handle exception
@@ -759,7 +759,7 @@ public class TrainClassServiceImpl extends BaseServiceImpl<TrainClass> implement
 			sb.append(String.format(insertSql, className + "-早午晚餐类", 50102, 1, breakFastStand, 1, lunchStand, 1,
 					dinnerStand, 0, 0.00, 1, 0, beginDate, endDate, currentDate, uuid7, classId));
 
-			this.getExecuteCountBySql(sb.toString());
+			this.doExecuteCountBySql(sb.toString());
 
 		}
 

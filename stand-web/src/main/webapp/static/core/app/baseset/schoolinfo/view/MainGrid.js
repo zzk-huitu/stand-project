@@ -1,7 +1,7 @@
 
-Ext.define("core.systemset.schoolinfo.view.MainGrid", {
+Ext.define("core.baseset.schoolinfo.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.systemset.schoolinfo.maingrid",
+    alias: "widget.baseset.schoolinfo.maingrid",
     dataUrl: comm.get('baseUrl') + "/BaseSchool/list",
     model: 'com.zd.school.plartform.baseset.model.BaseSchool',
     
@@ -53,7 +53,7 @@ Ext.define("core.systemset.schoolinfo.view.MainGrid", {
    
 
     panelButtomBar:{
-        xtype:'systemset.schoolinfo.mainquerypanel'
+        xtype:'baseset.schoolinfo.mainquerypanel'
     },
   
     

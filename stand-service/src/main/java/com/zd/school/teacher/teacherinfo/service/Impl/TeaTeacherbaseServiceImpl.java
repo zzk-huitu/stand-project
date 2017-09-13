@@ -5,9 +5,9 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseOrg;
-import com.zd.school.plartform.baseset.service.BaseJobService;
-import com.zd.school.plartform.baseset.service.BaseOrgService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysJobService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.teacher.teacherinfo.dao.TeaTeacherbaseDao;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
@@ -38,10 +38,10 @@ public class TeaTeacherbaseServiceImpl extends BaseServiceImpl<TeaTeacherbase> i
     }
 
     @Resource
-    private BaseOrgService orgService; // 部门服务层
+    private SysOrgService orgService; // 部门服务层
 
     @Resource
-    private BaseJobService jobService;
+    private SysJobService jobService;
 
     @Override
     public QueryResult<TeaTeacherbase> getDeptTeacher(Integer start, Integer limit, String sort, String filter,

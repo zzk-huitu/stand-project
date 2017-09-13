@@ -1,21 +1,21 @@
-Ext.define("core.systemset.dictionary.view.MainLayout", {
+Ext.define("core.baseset.dictionary.view.MainLayout", {
 	extend: "core.base.view.BasePanel",
-	alias: 'widget.systemset.dictionary.mainlayout',
+	alias: 'widget.baseset.dictionary.mainlayout',
     requires: [    
-		"core.systemset.dictionary.view.MainLayout",
-		"core.systemset.dictionary.view.dicDetailLayout",
-		"core.systemset.dictionary.view.dicGrid",
-		"core.systemset.dictionary.view.dicForm",
-		"core.systemset.dictionary.view.itemLayout",
-		"core.systemset.dictionary.view.itemGrid",
-		"core.systemset.dictionary.view.itemForm"
-   
+		"core.baseset.dictionary.view.MainLayout",
+		"core.baseset.dictionary.view.DicDetailLayout",
+		"core.baseset.dictionary.view.DicGrid",
+		"core.baseset.dictionary.view.DicForm",
+		"core.baseset.dictionary.view.ItemLayout",
+		"core.baseset.dictionary.view.ItemGrid",
+		"core.baseset.dictionary.view.ItemForm"
+
     ],
 
-    controller: 'systemset.dictionary.maincontroller',
+    controller: 'baseset.dictionary.maincontroller',
 	funCode: "dic_main",
 	detCode: 'dic_detail',
-	detLayout: 'systemset.dictionary.dicdetaillayout',
+	detLayout: 'baseset.dictionary.dicdetaillayout',
 	border: false,
 	funData: {
 		action: comm.get('baseUrl') + "/BaseDic", //请求Action		
@@ -38,7 +38,7 @@ Ext.define("core.systemset.dictionary.view.MainLayout", {
     scrollable:'x',
 	//bodyPadding: 2,
 	items: [{
-		xtype: "systemset.dictionary.dicgrid",
+		xtype: "baseset.dictionary.dicgrid",
 		region: "west",
 		width:550,
 		split:true,
@@ -50,7 +50,7 @@ Ext.define("core.systemset.dictionary.view.MainLayout", {
   //       },
 		frame:false
 	}, {
-		xtype: "systemset.dictionary.itemgrid",
+		xtype: "baseset.dictionary.itemgrid",
 		region: "center",
 		border: false,
 		// style:{

@@ -1,6 +1,6 @@
-Ext.define("core.systemset.schoolinfo.view.schoolDetailLayout",{
+Ext.define("core.baseset.schoolinfo.view.DetailLayout",{
 	extend:"core.base.view.BasePanel",
-	alias : 'widget.systemset.school.detaillayout',
+	alias : 'widget.baseset.school.detaillayout',
 	funCode:"school_detail",
 	funData: {
 		action: comm.get('baseUrl') + "/BaseSchool", //请求Action
@@ -16,10 +16,10 @@ Ext.define("core.systemset.schoolinfo.view.schoolDetailLayout",{
     scrollable:true,
 
     /*关联此视图控制器*/
-	controller: 'systemset.schoolinfo.detailcontroller',
+	controller: 'baseset.schoolinfo.detailcontroller',
 
 	layout:'fit',
 	items: [{
-		xtype: "systemset.schoolinfo.detailform"
+		xtype: "baseset.schoolinfo.detailform"
 	}]
 })

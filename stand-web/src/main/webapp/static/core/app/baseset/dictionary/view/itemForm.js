@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.view.itemForm", {
+Ext.define("core.baseset.dictionary.view.ItemForm", {
     extend: "core.base.view.BaseForm",
-    alias: "widget.systemset.dictionary.itemform",
+    alias: "widget.baseset.dictionary.itemform",
     layout: "form",
     align: "left",
     frame: false,

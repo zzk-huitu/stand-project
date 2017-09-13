@@ -168,10 +168,10 @@ public class TrainEvalIndicatorServiceImpl extends BaseServiceImpl<TrainEvalIndi
         try {
             String hql = "delete from TrainIndicatorStand where uuid in (''{0}'')";
             hql = MessageFormat.format(hql,ids);
-            this.getExecuteCountByHql(hql);
+            this.doExecuteCountByHql(hql);
 
             String sql = "delete from TRAIN_T_EVALINDICATOR where (SELECT COUNT(*) FROM dbo.TRAIN_T_INDICATORSTAND WHERE INDICATOR_ID=TRAIN_T_EVALINDICATOR.INDICATOR_ID AND ISDELETE=0)=0";
-            this.getExecuteCountBySql(sql);
+            this.doExecuteCountBySql(sql);
 
             return  true;
         } catch (Exception e) {

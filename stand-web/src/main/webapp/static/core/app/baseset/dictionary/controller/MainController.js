@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.controller.MainController", {
+Ext.define("core.baseset.dictionary.controller.MainController", {
 	extend: "Ext.app.ViewController",
-    alias: 'controller.systemset.dictionary.maincontroller',
+    alias: 'controller.baseset.dictionary.maincontroller',
 	
 	mixins: {
 		suppleUtil: "core.util.SuppleUtil",
@@ -21,12 +21,12 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 			 * 1.展开树 2.刷新右边的字典项 3.显示按钮
 			 * @type {[type]}
 			 */
-			"panel[xtype=systemset.dictionary.dicgrid]": {
+			"panel[xtype=baseset.dictionary.dicgrid]": {
 				itemclick: function(grid, record, item, index, e, eOpts) {
-					var baseMainPanel = grid.up("panel[xtype=systemset.dictionary.mainlayout]");
+					var baseMainPanel = grid.up("panel[xtype=baseset.dictionary.mainlayout]");
 					var funCode = baseMainPanel.funCode;
 					var records = grid.getSelectionModel().getSelection();
-					var itemGrid = baseMainPanel.down("panel[xtype=systemset.dictionary.itemgrid]");
+					var itemGrid = baseMainPanel.down("panel[xtype=baseset.dictionary.itemgrid]");
 
 					//加载对应的字典项信息
 					var store = itemGrid.getStore();
@@ -56,26 +56,26 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 			},
 
 			//增加下级按钮事件
-			"panel[xtype=systemset.dictionary.dicgrid] button[ref=gridAdd]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridAdd]": {
 				click: function(btn) {
 					self.doDetail(btn, "child");
 				}
 			},
 			//增加同级按钮事件
-			"panel[xtype=systemset.dictionary.dicgrid] button[ref=gridAddBrother]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridAddBrother]": {
 				click: function(btn) {
 					self.doDetail(btn, "brother");
 				}
 			},
 
 			//修改按钮事件
-			"panel[xtype=systemset.dictionary.dicgrid] button[ref=gridEdit]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridEdit]": {
 				click: function(btn) {
 					self.doDetail(btn, "edit");
 				}
 			},
 			//删除按钮事件
-			"panel[xtype=systemset.dictionary.dicgrid] button[ref=gridDelete]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridDelete]": {
 				beforeclick: function(btn) {
 					var baseGrid = btn.up("basetreegrid");
 					var funCode = baseGrid.funCode;
@@ -132,7 +132,7 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 				}
 			},
 			//刷新按钮事件
-			"panel[xtype=systemset.dictionary.dicgrid] button[ref=gridRefresh]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridRefresh]": {
 				click: function(btn) {
 					var baseGrid = btn.up("basetreegrid");
 					var store = baseGrid.getStore();
@@ -148,14 +148,14 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 			},
 
 			//字典项增加按钮事件
-			"basegrid[xtype=systemset.dictionary.itemgrid] button[ref=gridAdd]": {
+			"basegrid[xtype=baseset.dictionary.itemgrid] button[ref=gridAdd]": {
 				click: function(btn) {
 					self.doItmeDetail(btn, "add");
 					return false;
 				}
 			},
 			//字典项修改按钮事件
-			"panel[xtype=systemset.dictionary.itemgrid] button[ref=gridEdit]": {
+			"panel[xtype=baseset.dictionary.itemgrid] button[ref=gridEdit]": {
 				beforeclick: function(btn) {
 					self.doItmeDetail(btn, "edit");
 					return false;
@@ -163,14 +163,14 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 			},
 			
 			
-			"basegrid[xtype=systemset.dictionary.itemgrid] button[ref=gridAdd_Tab]": {
+			"basegrid[xtype=baseset.dictionary.itemgrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     this.doDetail_Tab(btn,"add");
                     return false;
                 }
             },
 
-            "basegrid[xtype=systemset.dictionary.itemgrid] button[ref=gridEdit_Tab]": {
+            "basegrid[xtype=baseset.dictionary.itemgrid] button[ref=gridEdit_Tab]": {
                 beforeclick: function(btn) {
                     this.doDetail_Tab(btn,"edit");
                     return false;
@@ -180,7 +180,7 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
             
 
 			//字典项删除按钮事件
-			"panel[xtype=systemset.dictionary.itemgrid] button[ref=gridDelete]": {
+			"panel[xtype=baseset.dictionary.itemgrid] button[ref=gridDelete]": {
 				beforeclick: function(btn) {
 					var baseGrid = btn.up("basegrid");
 					var pkName = "uuid";
@@ -248,7 +248,7 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 	        if (!otherController)
 	            otherController = '';
 		//选择的字典信息
-		var dicGrid = baseGrid.up("panel[xtype=systemset.dictionary.mainlayout]").down("panel[xtype=systemset.dictionary.dicgrid]");
+		var dicGrid = baseGrid.up("panel[xtype=baseset.dictionary.mainlayout]").down("panel[xtype=baseset.dictionary.dicgrid]");
 		var selectObject = dicGrid.getSelectionModel().getSelection();
 		if (selectObject.length <= 0) {
 			self.Warning("请选择数据字典!");
@@ -341,10 +341,10 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
                     insertObj:insertObj,                //保存一些需要默认值，提供给提交事件中使用
                     funData: popFunData,                //保存funData数据，提供给提交事件中使用
                     items:[{
-                        xtype:"systemset.dictionary.itemlayout",                        
+                        xtype:"baseset.dictionary.itemlayout",                        
                         funCode: detCode,
                         items: [{
-                            xtype: "systemset.dictionary.itemform",
+                            xtype: "baseset.dictionary.itemform",
                             funCode: detCode                  
                         }]
                     }]
@@ -377,7 +377,7 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 		var self = this;
 		var baseGrid = btn.up("basetreegrid");
 		var funCode = baseGrid.funCode;
-		var basePanel = baseGrid.up("panel[xtype=systemset.dictionary.mainlayout]");
+		var basePanel = baseGrid.up("panel[xtype=baseset.dictionary.mainlayout]");
 		var funData = basePanel.funData;
 		var detCode = basePanel.detCode;
 		var detLayout = basePanel.detLayout;
@@ -459,7 +459,7 @@ Ext.define("core.systemset.dictionary.controller.MainController", {
 				//给form赋初始值
 				insertObj: insertObj,
 				items: [{
-					xtype: "systemset.dictionary.dicdetaillayout"
+					xtype: "baseset.dictionary.dicdetaillayout"
 				}]
 			});
 		}

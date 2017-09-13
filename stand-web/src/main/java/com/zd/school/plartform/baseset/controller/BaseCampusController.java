@@ -18,9 +18,9 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.build.define.service.BuildRoomareaService;
 import com.zd.school.plartform.baseset.model.BaseCampus;
 import com.zd.school.plartform.baseset.service.BaseCampusService;
+import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
@@ -40,7 +40,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
     BaseCampusService thisService; // service层接口
 
     @Resource
-    private BuildRoomareaService areaService;
+    private BaseRoomareaService areaService;
 
     /**
      * list查询 @Title: list @Description: TODO @param @param entity
@@ -144,7 +144,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
             return;
         } else {
         	SysUser currentUser = getCurrentSysUser();
-            boolean flag = thisService.logicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
+            boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
             if (flag) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"还原成功\""));
             } else {

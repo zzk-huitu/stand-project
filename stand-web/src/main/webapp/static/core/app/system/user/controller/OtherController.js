@@ -314,7 +314,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     whereSql: "",
                     orderSql: " ",
                     excludes: "",
-                    url: comm.get('baseUrl') + "/BaseDeptjob/getDeptJobTree",
+                    url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
                 };
 
                 self.selTreeWin({

@@ -1,7 +1,7 @@
 Ext.define("core.baseset.terminal.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.baseset.terminal.maingrid",
-    dataUrl: comm.get("baseUrl") + "/OaInfoterm/list", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/BaseInfoterm/list", //数据获取地址
     model: "com.zd.school.oa.terminal.model.OaInfoterm", //对应的数据模型
     fileName:"信息终端",//导出Excel文件名称
     exWhereSql:" and isUse=1", //导出Excel 过滤
@@ -14,13 +14,13 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
-        },{
+        },/*{暂未实现
             xtype: 'button',
             text: '导出Excel',
             ref: 'exportExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },*/'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -96,7 +96,7 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             var title = "使用状态";
             var html = value;
             metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
-            return (value == 0) ? "<font color=red>未使用</font>" : "已使用";
+            return (value == 0) ? "<font color=red>未使用</font>" : "<font color=green>已使用</font>";
         }
     }, {
         text: "房间名称",
@@ -113,7 +113,7 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 180,
+        width: 80,
         fixed: true,
         items: [{
             text:'详细',  

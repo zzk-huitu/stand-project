@@ -260,7 +260,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var pkValue = records.get(pkName);
         //发送ajax请求,检查删除的岗位是否是其它部门或岗位的上级岗位
         self.asyncAjax({
-            url: comm.get('baseUrl') + "/BaseDeptjob/chkIsSuperJob",
+            url: comm.get('baseUrl') + "/SysDeptjob/chkIsSuperJob",
             params: {
                 ids: pkValue
             },
@@ -276,7 +276,7 @@ Ext.define("core.system.dept.controller.OtherController", {
                         Ext.Msg.confirm('删除确认', title, function(btn, text) {
                             if (btn == 'yes') {
                                 self.asyncAjax({
-                                    url:  comm.get('baseUrl') + "/BaseDeptjob/doDelete",
+                                    url:  comm.get('baseUrl') + "/SysDeptjob/doDelete",
                                     params: {
                                         ids: pkValue
                                     },
@@ -358,7 +358,7 @@ Ext.define("core.system.dept.controller.OtherController", {
 
                 //发送ajax请求,检查删除的岗位是否是其它部门或岗位的上级岗位
                 self.asyncAjax({
-                    url:  comm.get('baseUrl') + "/BaseDeptjob/setLeaderJob",
+                    url:  comm.get('baseUrl') + "/SysDeptjob/setLeaderJob",
                     params: {
                         ids: pkValue,
                         deptId: insertObj.deptId
@@ -438,7 +438,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             multiSelect: false,
             whereSql: "",
             orderSql: " ",
-            url: comm.get('baseUrl') + "/BaseDeptjob/getDeptJobTree",
+            url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
         }
 
         self.selTreeWin({
@@ -486,7 +486,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             var pkValue = records[0].get("id");
             
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/BaseDeptjob/setSuperJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/setSuperJob",
                 params: {
                     ids: pkValue,
                     setIds: setIds,
@@ -533,7 +533,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             var pkValue = records[0].get("id");
             
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/BaseDeptjob/setSuperJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/setSuperJob",
                 params: {
                     ids: pkValue,
                     setIds: setIds,
@@ -583,7 +583,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             var loadMask=self.LoadMask(win);    //显示遮罩
 
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/BaseDeptjob/batchSetDeptJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/batchSetDeptJob",
                 params: {
                     deptId: deptId,
                     ids: ids.join(",")

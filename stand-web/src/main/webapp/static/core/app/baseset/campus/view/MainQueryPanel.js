@@ -1,6 +1,6 @@
-Ext.define("core.systemset.campus.view.MainQueryPanel", {
+Ext.define("core.baseset.campus.view.MainQueryPanel", {
     extend: "core.base.view.BaseQueryForm",
-    alias: "widget.systemset.campus.mainquerypanel",
+    alias: "widget.baseset.campus.mainquerypanel",
     layout: "form",
     frame: false,
     height: 100,

@@ -33,9 +33,14 @@ public class MyLoggingAspest {
 		String methodName=pjd.getSignature().getName();
 	
 		try{
-			SysUser sysUser = (SysUser)getHttpServletRequest().getSession().getAttribute(Constant.SESSION_SYS_USER);
+			HttpServletRequest request = this.getHttpServletRequest();
+			SysUser sysUser = (SysUser)request.getSession().getAttribute(Constant.SESSION_SYS_USER);
+			String userName="未知用户";	//当接口不需要登录时，就直接使用这个名称。
+			if(sysUser!=null)
+				userName=sysUser.getUserName();
+			
 			//前置
-			logger.info("【请求开始】用户名："+sysUser.getUserName()+"；方法名："+methodName+"；参数："+Arrays.toString(pjd.getArgs()));
+			logger.info("【请求开始】用户名："+userName+"；用户IP："+this.getIpAddress(request)+"；方法名："+methodName+"；参数："+Arrays.toString(pjd.getArgs()));
 	
 			result=pjd.proceed();
 			
@@ -56,6 +61,31 @@ public class MyLoggingAspest {
      */  
     protected HttpServletRequest getHttpServletRequest(){  
         return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();  
+    }  
+    
+    /**
+     * 获取用户的ip
+     * @param request
+     * @return
+     */
+    public String getIpAddress(HttpServletRequest request) {  
+        String ip = request.getHeader("x-forwarded-for");  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_CLIENT_IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getRemoteAddr();  
+        }  
+        return ip;  
     }  
 	
 }

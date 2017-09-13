@@ -1,6 +1,6 @@
-Ext.define("core.systemset.schoolinfo.view.DetailForm", {
+Ext.define("core.baseset.schoolinfo.view.DetailForm", {
 	extend: "core.base.view.BaseForm",
-	alias: "widget.systemset.schoolinfo.detailform",
+	alias: "widget.baseset.schoolinfo.detailform",
 	layout: 'form', // 格式采用列的方式显示
 	
 	autoHeight: true,

@@ -21,7 +21,7 @@ Ext.define("core.baseset.room.view.MainLayout", {
     det1Layout: 'baseset.room.batchroomdetaillayout',
     border: false,
     funData: {
-        action: comm.get('baseUrl') + "/BuildRoominfo", //请求Action
+        action: comm.get('baseUrl') + "/BaseRoominfo", //请求Action
         whereSql: "", //表格查询条件
         orderSql: "", //表格排序条件
         filter:"",

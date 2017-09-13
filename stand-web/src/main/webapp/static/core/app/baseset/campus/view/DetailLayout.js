@@ -1,6 +1,6 @@
-Ext.define("core.systemset.campus.view.DetailLayout", {
+Ext.define("core.baseset.campus.view.DetailLayout", {
 	extend: "core.base.view.BasePanel",
-	alias: 'widget.systemset.campus.detaillayout',
+	alias: 'widget.baseset.campus.detaillayout',
 	funCode: "campus_detail",
 	funData: {
 		action: comm.get('baseUrl') + "/BaseCampus", //请求Action	
@@ -15,10 +15,10 @@ Ext.define("core.systemset.campus.view.DetailLayout", {
     scrollable:true,
 
     /*关联此视图控制器*/
-	controller: 'systemset.campus.detailcontroller',
+	controller: 'baseset.campus.detailcontroller',
 
 	layout:'fit',
 	items: [{
-		xtype: "systemset.campus.detailform"
+		xtype: "baseset.campus.detailform"
 	}]
 })

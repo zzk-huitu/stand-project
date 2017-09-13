@@ -1,6 +1,6 @@
-Ext.define("core.systemset.schoolinfo.controller.OtherController", {
+Ext.define("core.baseset.schoolinfo.controller.OtherController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.systemset.schoolinfo.othercontroller',
+    alias: 'controller.baseset.schoolinfo.othercontroller',
     mixins: {
     },
     init: function () {

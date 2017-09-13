@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.view.itemLayout", {
+Ext.define("core.baseset.dictionary.view.ItemLayout", {
 	extend: "core.base.view.BasePanel",
-	alias: 'widget.systemset.dictionary.itemlayout',
+	alias: 'widget.baseset.dictionary.itemlayout',
 	funCode: "dicItem_main",
 	border: false,
 	funData: {
@@ -16,6 +16,6 @@ Ext.define("core.systemset.dictionary.view.itemLayout", {
     minWidth:1000,
     scrollable:'x',
 	items: [{
-		xtype: "systemset.dictionary.itemform"
+		xtype: "baseset.dictionary.itemform"
 	}]
 })

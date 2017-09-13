@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.view.dicForm", {
+Ext.define("core.baseset.dictionary.view.DicForm", {
 	extend: "core.base.view.BaseForm",
-	alias: "widget.systemset.dictionary.dicform",
+	alias: "widget.baseset.dictionary.dicform",
 	
 	layout: "form",
 	autoHeight: true,

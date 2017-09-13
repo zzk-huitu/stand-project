@@ -7,7 +7,7 @@ Ext.define("core.base.view.BaseForm",{
 	layout:"form",
 	autoScroll : true,
 	animCollapse : false,
-	bodyPadding : '10 20 0 5',
+	bodyPadding : '10 20 10 5',
 	defaults:{
 		width:'100%',
 		margin:"10 5 0 5",

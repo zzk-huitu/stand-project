@@ -1,6 +1,6 @@
-Ext.define("core.systemset.schoolinfo.controller.MainController", {
+Ext.define("core.baseset.schoolinfo.controller.MainController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.systemset.schoolinfo.maincontroller',
+    alias: 'controller.baseset.schoolinfo.maincontroller',
     mixins: {
         /*
         suppleUtil: "core.util.SuppleUtil",

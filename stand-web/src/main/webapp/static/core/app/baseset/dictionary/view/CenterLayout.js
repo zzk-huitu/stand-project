@@ -1,10 +1,10 @@
-Ext.define("core.systemset.dictionary.view.CenterLayout", {
+Ext.define("core.baseset.dictionary.view.CenterLayout", {
     extend: "Ext.panel.Panel",
-    alias: 'widget.systemset.dictionary.centerlayout',
+    alias: 'widget.baseset.dictionary.centerlayout',
     layout: "border",
     border:false,
     items: [{
-        xtype: "systemset.dictionary.itemgrid",
+        xtype: "baseset.dictionary.itemgrid",
         region: "center"
     }]
 })

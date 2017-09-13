@@ -1,6 +1,6 @@
-Ext.define("core.systemset.dictionary.view.ItemDetailLayout", {
+Ext.define("core.baseset.dictionary.view.ItemDetailLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.systemset.dictionary.itemdetaillayout',
+    alias: 'widget.baseset.dictionary.itemdetaillayout',
     funCode: "dicItem_detail",
     funData: {
         action: comm.get('baseUrl') + "/BaseDic", //请求Action
@@ -9,6 +9,6 @@ Ext.define("core.systemset.dictionary.view.ItemDetailLayout", {
         tableName: "" //表名       
     },
     items: [{
-        xtype: "systemset.dictionary.itemform"
+        xtype: "baseset.dictionary.itemform"
     }]
 })

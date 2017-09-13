@@ -133,7 +133,7 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 			return;
 		} else {
             SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.logicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
