@@ -49,7 +49,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 	 * 设置角色菜单功能权限，并清除相关角色的用户的redis数据，防止用户请求服务时，采用未更新的权限列表。
 	 */
 	@Override
-	public boolean setRoleMenuPermission(String roleId, String perId, String roleMenuPers) {
+	public boolean doSetRoleMenuPermission(String roleId, String perId, String roleMenuPers) {
 		Boolean doResult = false;
 		
 		// 查询此角色菜单中已有的功能权限

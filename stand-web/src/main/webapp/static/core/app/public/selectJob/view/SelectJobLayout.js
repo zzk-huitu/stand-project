@@ -8,7 +8,7 @@ Ext.define("core.public.selectJob.view.SelectJobLayout", {
     layout:'border',
     border:false,
     funData: {
-        action: comm.get("baseUrl") + "/sysuser", //请求Action
+        action: comm.get("baseUrl") + "/SysJob", //请求Action
         pkName: "uuid"
     },
     /*设置最小宽度，并且自动滚动*/

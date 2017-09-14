@@ -73,27 +73,43 @@ Ext.define("core.system.roleright.controller.OtherController", {
                 var title = "确定要对这些菜单进行授权吗？";
                 Ext.Msg.confirm('提示', title, function(btn, text) {
                     if (btn == 'yes') {
-                        //发送ajax请求
-                        var resObj = self.ajax({
-                            url: comm.get('baseUrl') + "/SysRole/addRight",
+
+                        //显示loadMask
+                        var myMask = self.LoadMask(win);
+                        //提交入库
+                        self.asyncAjax({
+                            url: comm.get('baseUrl') + "/SysRole/doAddRight",
                             params: {
                                 ids: ids.join(","),
                                 roleId: roleId
+                            },
+                            //loadMask:true,
+                            //回调代码必须写在里面
+                            success: function(response) {
+                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                 myMask.hide();
+
+                                if (data.success) { 
+                                    var baseGrid = funData.grid;
+                                    var store = baseGrid.getStore();
+                                    var proxy = store.getProxy();
+                                    proxy.extraParams = {
+                                        roleId: roleId
+                                    };
+                                    store.load();
+                                    self.msgbox(data.obj);
+                                    win.close();
+
+                                }else{
+                                    self.Error(data.obj);   
+                                }                            
+                            },
+                            failure: function(response) {           
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                myMask.hide();
                             }
-                        });
-                        if (resObj.success) {
-                            var baseGrid = funData.grid;
-                            var store = baseGrid.getStore();
-                            var proxy = store.getProxy();
-                            proxy.extraParams = {
-                                roleId: roleId
-                            };
-                            store.load();
-                            self.msgbox(resObj.obj);
-                            win.close();
-                        } else {
-                            self.Error(resObj.obj);
-                        }
+                        });    
                     }
                 });
                 return false;
@@ -126,28 +142,44 @@ Ext.define("core.system.roleright.controller.OtherController", {
                 
                 Ext.Msg.confirm('提示', title, function(btn, text) {
                     if (btn == 'yes') {
-                        //发送ajax请求
-                        var resObj = self.ajax({
-                            url: comm.get('baseUrl') + "/SysRole/setRoleMenuPermission",
+                                               
+                        //显示loadMask
+                        var myMask = self.LoadMask(win);
+                        //提交入库
+                        self.asyncAjax({
+                            url: comm.get('baseUrl') + "/SysRole/doSetRoleMenuPermission",
                             params: {
                                 ids: ids.join(","),
                                 roleId: roleId,
                                 perId: perId
+                            },
+                            //loadMask:true,
+                            //回调代码必须写在里面
+                            success: function(response) {
+                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                 myMask.hide();
+
+                                if (data.success) { 
+                                    var baseGrid = funData.grid;
+                                    var store = baseGrid.getStore();
+                                    var proxy = store.getProxy();
+                                    proxy.extraParams = {
+                                        roleId: roleId
+                                    };
+                                    store.load();
+                                    self.msgbox(data.obj);
+                                    win.close();
+
+                                }else{
+                                    self.Error(data.obj);   
+                                }                            
+                            },
+                            failure: function(response) {           
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                myMask.hide();
                             }
-                        });
-                        if (resObj.success) {
-                            var baseGrid = funData.grid;
-                            var store = baseGrid.getStore();
-                            var proxy = store.getProxy();
-                            proxy.extraParams = {
-                                roleId: roleId
-                            };
-                            store.load();
-                            self.msgbox(resObj.obj);
-                            win.close();
-                        } else {
-                            self.Error(resObj.obj);
-                        }
+                        });  
                     }
                 });
                 return false;

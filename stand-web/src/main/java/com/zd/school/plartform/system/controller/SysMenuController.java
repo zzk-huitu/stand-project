@@ -4,20 +4,18 @@ package com.zd.school.plartform.system.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.system.model.SysMenu;
@@ -49,8 +47,6 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
     @Resource
     private SysUserService userSerive;
 
-    @Resource  
-	private RedisTemplate<String, Object> redisTemplate;  	
 
     /**
      * list查询 @Title: list @Description: TODO @param @param entity
@@ -65,7 +61,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
 
         SysUser currentUser = getCurrentSysUser();
         List<SysMenuTree> lists = new ArrayList<SysMenuTree>();
-        if (currentUser.getUserName().equals("administrator"))
+        if (currentUser.getUserName().equals(AdminType.ADMIN_USER_NAME)||getIsAdmin()==1)
             lists = thisService.getTreeList(whereSql, orderSql);
         else {
             whereSql += " and isnull(isHidden,'0')='0'";
@@ -150,41 +146,40 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
         String menuName = entity.getNodeText();
         String menuCode = entity.getMenuCode();
         String parentNode = entity.getParentNode();
-        try{
-	        //此处为放在入库前的一些检查的代码，如唯一校验等
-	        String hql = " o.isDelete='0'";
-	        if (thisService.IsFieldExist("menuCode", menuCode, "-1", hql)) {
-	            writeJSON(response, jsonBuilder.returnFailureJson("'菜单编码不能重复！'"));
-	            return;
-	        }
-	        if (thisService.IsFieldExist("nodeText", menuName, "-1", hql)) {
-	            writeJSON(response, jsonBuilder.returnFailureJson("'菜单名称不能重复！'"));
-	            return;
-	        }
-	        String hql1 = " o.isDelete='0' and o.parentNode='" + parentNode + "' ";
-	        if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql1)) {
-	            writeJSON(response, jsonBuilder.returnFailureJson("'同一级别已有此顺序号！'"));
-	            return;
-	        }
-	        //获取当前操作用户
-	        String userCh = "超级管理员";
-	        SysUser currentUser = getCurrentSysUser();
-	        //        if (currentUser != null)
-	        //            userCh = currentUser.getXm();
-	        //
-	        //        SysMenu saveEntity = new SysMenu();
-	        //        BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
-	        //        //增加时要设置创建人
-	        //        entity.setCreateUser(userCh); //创建人
-	        //        entity.setLeaf(true);
-	        //持久化到数据库
-	        entity = thisService.addMenu(entity, currentUser);
-	
-	        //返回实体到前端界面
-	        writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-        } catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"请求失败，请联系管理员\""));
-		}
+      
+        //此处为放在入库前的一些检查的代码，如唯一校验等
+        String hql = " o.isDelete='0'";
+        if (thisService.IsFieldExist("menuCode", menuCode, "-1", hql)) {
+            writeJSON(response, jsonBuilder.returnFailureJson("\"菜单编码不能重复！\""));
+            return;
+        }
+        if (thisService.IsFieldExist("nodeText", menuName, "-1", hql)) {
+            writeJSON(response, jsonBuilder.returnFailureJson("\"菜单名称不能重复！\""));
+            return;
+        }
+        String hql1 = " o.isDelete='0' and o.parentNode='" + parentNode + "' ";
+        if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql1)) {
+            writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此顺序号！\""));
+            return;
+        }
+        //获取当前操作用户
+        SysUser currentUser = getCurrentSysUser();
+        //        if (currentUser != null)
+        //            userCh = currentUser.getXm();
+        //
+        //        SysMenu saveEntity = new SysMenu();
+        //        BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
+        //        //增加时要设置创建人
+        //        entity.setCreateUser(userCh); //创建人
+        //        entity.setLeaf(true);
+        //持久化到数据库
+        entity = thisService.addMenu(entity, currentUser);
+        
+        if(entity==null)
+        	writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));       
+  
     }
 
     /**
@@ -198,62 +193,33 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
 
         Integer orderIndex = entity.getOrderIndex();
         String menuName = entity.getNodeText();
-        String menuCode = entity.getMenuCode();
-        String parentName = entity.getParentName();
+        String menuCode = entity.getMenuCode();     
         String parentNode = entity.getParentNode();
         String uuid = entity.getUuid();
         //此处为放在入库前的一些检查的代码，如唯一校验等
         String hql = " o.isDelete='0'";
         if (thisService.IsFieldExist("menuCode", menuCode, uuid, hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'菜单编码不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"菜单编码不能重复！\""));
             return;
         }
         if (thisService.IsFieldExist("nodeText", menuName, uuid, hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'菜单名称不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"菜单名称不能重复！\""));
             return;
         }
         String hql1 = " o.isDelete='0' and o.parentNode='" + parentNode + "' ";
         if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), uuid, hql1)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'同一级别已有此顺序号！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此顺序号！\""));
             return;
         }
 
-        //获取当前的操作用户
-        String userCh = "超级管理员";
-        SysUser currentUser = getCurrentSysUser();
-        if (currentUser != null)
-            userCh = currentUser.getXm();
-      
+        //获取当前的操作用户     
+        SysUser currentUser = getCurrentSysUser();      
+        entity=thisService.doUpdateMenu(entity, currentUser.getXm());
         
-        //先拿到已持久化的实体
-        SysMenu perEntity = thisService.get(uuid);
-        boolean isLeaf = perEntity.getLeaf();
-        //将entity中不为空的字段动态加入到perEntity中去。
-        BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-        perEntity.setUpdateTime(new Date()); //设置修改时间
-        perEntity.setUpdateUser(userCh); //设置修改人的中文名
-        perEntity.setLeaf(isLeaf);
-        entity = thisService.merge(perEntity);//执行修改方法
-        entity.setParentName(parentName);
-        entity.setParentNode(parentNode);
-        //更新父节点的是否叶节点的标记
-        SysMenu parentMenu = thisService.get(parentNode);
-        if(parentMenu!=null){
-        	parentMenu.setUpdateTime(new Date()); //设置修改时间
-        	parentMenu.setUpdateUser(userCh); //设置修改人的中文名
-        	parentMenu.setLeaf(false);
-        	thisService.merge(parentMenu);//执行修改方法
-        }
-        
-        //删除有权限的角色的用户的redis数据
-        if(entity.getPerId()!=null){
-	        SysPermission sysPermission= perimissonSevice.get(entity.getPerId());
-	        if(sysPermission!=null)
-	        	userSerive.deleteUserMenuTreeRedis(sysPermission);
-        }
- 	
-        writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+        if(entity==null)
+       	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));                      
 
     }
 
@@ -269,8 +235,8 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
      * @throws @since
      *             JDK 1.8
      */
-    @RequestMapping("/setLockFlag")
-    public void setLockFlag(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping("/doSetLockFlag")
+    public void doSetLockFlag(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
         String lockFlag = request.getParameter("lockFlag");
         if (StringUtils.isEmpty(delIds)) {

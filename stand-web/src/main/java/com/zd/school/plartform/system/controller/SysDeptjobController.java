@@ -74,7 +74,7 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	@RequestMapping("/batchSetDeptJob")
+	@RequestMapping("/doBatchSetDeptJob")
 	public void batchSetDeptJob(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		String deptId = request.getParameter("deptId");
@@ -85,7 +85,7 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 		}
 		// 获取当前的操作用户
 		SysUser currentUser = getCurrentSysUser();
-		Boolean flag = thisService.batchSetDeptJob(deptId, jobId, currentUser);
+		Boolean flag = thisService.doBatchSetDeptJob(deptId, jobId, currentUser);
 		if (flag)
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"添加部门岗位成功\""));
 		else
@@ -136,7 +136,7 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 		
 	}
 
-	@RequestMapping("/setLeaderJob")
+	@RequestMapping("/doSetLeaderJob")
 	public void setLeaderJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String deptJobId = request.getParameter("ids");
 		String deptId = request.getParameter("deptId");
@@ -145,7 +145,7 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			Boolean flag = thisService.setDeptLeaderJob(deptId, deptJobId, currentUser);
+			Boolean flag = thisService.doSetDeptLeaderJob(deptId, deptJobId, currentUser);
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
 			} else {
@@ -178,14 +178,14 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 		writeJSON(response, strData);// 返回数据
 	}
 
-	@RequestMapping("/setSuperJob")
+	@RequestMapping("/doSetSuperJob")
 	public void setSuperJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids = request.getParameter("ids");
 		String setIds = request.getParameter("setIds");
 		String setType = request.getParameter("types");
 		SysUser currentUser = getCurrentSysUser();
 
-		Boolean flag = thisService.setSuperJob(ids, setIds, setType, currentUser);
+		Boolean flag = thisService.doSetSuperJob(ids, setIds, setType, currentUser);
 		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
 		} else {

@@ -86,8 +86,8 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 					var records = baseGrid.getSelectionModel().getSelection();
 					//var records = baseGrid.getView().getChecked();
 					if (records.length == 0) {
-						self.Error("请选择要删除的数据字典");
-						return;
+						self.msgbox("请选择要删除的数据字典");
+						return false;
 					}
 					var ids = new Array();
 					Ext.each(records, function(rec) {
@@ -124,10 +124,6 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 							}
 						}
 					});
-					//执行回调函数
-					if (btn.callback) {
-						btn.callback();
-					}
 					return false;
 				}
 			},
@@ -186,8 +182,8 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 					var pkName = "uuid";
 					var records = baseGrid.getSelectionModel().getSelection();
 					if (records.length == 0) {
-						self.Error("请选择要删除的字典项");
-						return;
+						self.msgbox("请选择要删除的字典项");
+						return false;
 					}
 					var ids = new Array();
 					var dicId = "";

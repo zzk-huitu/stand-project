@@ -18,8 +18,8 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysAppinfo ;
+import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysAppinfoService ;
 
 /**

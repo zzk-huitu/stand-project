@@ -2,6 +2,7 @@ package com.zd.school.plartform.baseset.service.Impl;
 
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.service.BaseServiceImpl;
+import com.zd.core.util.BeanUtils;
 import com.zd.school.plartform.baseset.dao.BaseDicDao;
 import com.zd.school.plartform.baseset.model.BaseDic;
 import com.zd.school.plartform.baseset.model.BaseDicTree;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,4 +70,43 @@ public class BaseDicServiceImpl extends BaseServiceImpl<BaseDic> implements Base
             createChild(child, result, list);
         }
     }
+
+	@Override
+	public BaseDic doAdd(BaseDic entity, String xm) {
+		// TODO Auto-generated method stub
+
+        String parentNode = entity.getParentNode();
+        
+		 //当前节点
+        BaseDic saveEntity = new BaseDic();
+        List<String> excludedProp = new ArrayList<>();
+		excludedProp.add("uuid");
+		try {
+			BeanUtils.copyProperties(saveEntity, entity, excludedProp);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+
+        // 增加时要设置创建人
+		saveEntity.setCreateUser(xm); // 创建人
+		saveEntity.setLeaf(true);
+
+        //BaseDic parEntity = thisService.get(parentNode);
+        if (!parentNode.equals(TreeVeriable.ROOT)) {
+            BaseDic parEntity = this.get(parentNode);
+            parEntity.setLeaf(false);
+            this.merge(parEntity);
+
+            saveEntity.BuildNode(parEntity);
+        } else
+        	saveEntity.BuildNode(null);
+
+        // 持久化到数据库
+        entity = this.merge(saveEntity);
+        
+		return entity;
+	}
+
+
 }

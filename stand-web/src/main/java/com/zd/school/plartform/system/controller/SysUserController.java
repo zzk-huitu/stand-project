@@ -1,19 +1,19 @@
 
 package com.zd.school.plartform.system.controller;
 
-import com.zd.core.constant.AuthorType;
-import com.zd.core.constant.Constant;
-import com.zd.core.constant.TreeVeriable;
-import com.zd.core.controller.core.FrameWorkController;
-import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.DBContextHolder;
-import com.zd.core.util.ModelUtil;
-import com.zd.core.util.StringUtils;
-import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
-import com.zd.school.plartform.system.model.*;
-import com.zd.school.plartform.system.service.SysUserdeptjobService;
-import com.zd.school.plartform.system.service.SysMenuService;
-import com.zd.school.plartform.system.service.SysUserService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
@@ -25,11 +25,24 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
+import com.zd.core.constant.AuthorType;
+import com.zd.core.constant.Constant;
+import com.zd.core.constant.TreeVeriable;
+import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.DBContextHolder;
+import com.zd.core.util.ModelUtil;
+import com.zd.core.util.StringUtils;
+import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
+import com.zd.school.plartform.system.model.CardUserInfoToUP;
+import com.zd.school.plartform.system.model.SysDatapermission;
+import com.zd.school.plartform.system.model.SysMenuTree;
+import com.zd.school.plartform.system.model.SysRole;
+import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.model.SysUserToUP;
+import com.zd.school.plartform.system.service.SysMenuService;
+import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 
 /**
  * 
@@ -286,7 +299,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
-	@RequestMapping(value = { "/deleteUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/doDeleteUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void deleteUserRole(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -298,7 +311,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要删除的数据'"));
 			return;
 		} else {
-			boolean flag = thisService.deleteUserRole(userId, ids, currentUser);
+			boolean flag = thisService.doDeleteUserRole(userId, ids, currentUser);
 			if (flag) {
 				/*删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据*/
 				thisService.deleteUserRoleRedis(currentUser);
@@ -322,7 +335,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
-	@RequestMapping(value = { "/addUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/doAddUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void addUserRole(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -334,7 +347,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要添加的数据'"));
 			return;
 		} else {
-			boolean flag = thisService.addUserRole(userId, ids, currentUser);
+			boolean flag = thisService.doAddUserRole(userId, ids, currentUser);
 			if (flag) {
 				/*删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据*/
 				thisService.deleteUserRoleRedis(currentUser);
@@ -398,7 +411,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
-	// @RequestMapping("/batchSetDept")
+	// @RequestMapping("/doBatchSetDept")
 	// public void batchSetDept(HttpServletRequest request, HttpServletResponse
 	// response) throws IOException {
 	// String delIds = request.getParameter("ids");
@@ -468,7 +481,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping("/addUserToDeptJob")
+	@RequestMapping("/doAddUserToDeptJob")
 	public void addUserToDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String deptJobId = request.getParameter("ids");
 		String userId = request.getParameter("setIds");
@@ -477,7 +490,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			boolean flag = userDeptjobService.addUserToDeptJob(deptJobId, userId, currentUser);
+			boolean flag = userDeptjobService.doAddUserToDeptJob(deptJobId, userId, currentUser);
 			if (flag)
 				writeJSON(response, jsonBuilder.returnSuccessJson("'设置成功'"));
 			else
@@ -492,15 +505,15 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping("/removeUserFromDeptJob")
-	public void removeTeacherFromDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping("/doRmoveUserFromDeptJob")
+	public void doRmoveUserFromDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要解除绑定的部门岗位'"));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			boolean flag = userDeptjobService.removeUserFromDeptJob(delIds, currentUser);
+			boolean flag = userDeptjobService.doRemoveUserFromDeptJob(delIds, currentUser);
 			if (flag)
 				writeJSON(response, jsonBuilder.returnSuccessJson("'解除绑定成功'"));
 			else
@@ -515,8 +528,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping("/setMasterDeptJob")
-	public void setMasterDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping("/doSetMasterDeptJob")
+	public void doSetMasterDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		String userId = request.getParameter("setIds");
 		if (StringUtils.isEmpty(delIds) || StringUtils.isEmpty(userId)) {
@@ -524,7 +537,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			boolean flag = userDeptjobService.setMasterDeptJob(delIds, userId, currentUser);
+			boolean flag = userDeptjobService.doSetMasterDeptJob(delIds, userId, currentUser);
 			if (flag)
 				writeJSON(response, jsonBuilder.returnSuccessJson("'设置主部门成功'"));
 			else

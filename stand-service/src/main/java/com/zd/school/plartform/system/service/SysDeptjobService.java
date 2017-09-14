@@ -59,7 +59,7 @@ public interface SysDeptjobService extends BaseService<BaseDeptjob> {
 	 *            当前操作员
 	 * @return
 	 */
-	public Boolean batchSetDeptJob(String deptId, String jobId, SysUser currentUser);
+	public Boolean doBatchSetDeptJob(String deptId, String jobId, SysUser currentUser);
 
 	/**
 	 * 删除部门的岗位
@@ -99,7 +99,7 @@ public interface SysDeptjobService extends BaseService<BaseDeptjob> {
 	 * @param currentUser
 	 * @return
 	 */
-	public Boolean setDeptLeaderJob(String deptid, String deptJobId, SysUser currentUser);
+	public Boolean doSetDeptLeaderJob(String deptid, String deptJobId, SysUser currentUser);
 
 	/**
 	 * 获取部门岗位的树形结构
@@ -132,6 +132,6 @@ public interface SysDeptjobService extends BaseService<BaseDeptjob> {
 	 *            设置类型，是设置的岗位的还是部门的
 	 * @return
 	 */
-	public Boolean setSuperJob(String ids, String setIds, String setType, SysUser currentUser);
+	public Boolean doSetSuperJob(String ids, String setIds, String setType, SysUser currentUser);
 
 }

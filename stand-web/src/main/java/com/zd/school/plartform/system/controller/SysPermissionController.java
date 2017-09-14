@@ -1,6 +1,18 @@
 
 package com.zd.school.plartform.system.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -11,16 +23,6 @@ import com.zd.school.plartform.system.model.SysDatapermission;
 import com.zd.school.plartform.system.model.SysPermission;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysPerimissonService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 /**
  * 

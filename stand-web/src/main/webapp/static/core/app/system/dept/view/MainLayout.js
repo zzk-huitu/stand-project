@@ -5,9 +5,9 @@ Ext.define("core.system.dept.view.MainLayout", {
 
     requires: [    
         "core.system.dept.controller.MainController",
-        "core.system.dept.view.DeptLayout",
-        "core.system.dept.view.DeptGrid",
-        "core.system.dept.view.DeptForm",
+        "core.system.dept.view.DetailLayout",
+        "core.system.dept.view.MainGrid",
+        "core.system.dept.view.DetailForm",
         "core.system.dept.store.DeptStore",
         "core.system.dept.store.CourseStore"
     ],
@@ -36,7 +36,7 @@ Ext.define("core.system.dept.view.MainLayout", {
     scrollable:true,
 
     items: [{
-        xtype: "system.dept.deptgrid",
+        xtype: "system.dept.maingrid",
         
     }]
 })

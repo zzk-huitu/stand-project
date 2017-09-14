@@ -358,7 +358,7 @@ Ext.define("core.system.dept.controller.OtherController", {
 
                 //发送ajax请求,检查删除的岗位是否是其它部门或岗位的上级岗位
                 self.asyncAjax({
-                    url:  comm.get('baseUrl') + "/SysDeptjob/setLeaderJob",
+                    url:  comm.get('baseUrl') + "/SysDeptjob/doSetLeaderJob",
                     params: {
                         ids: pkValue,
                         deptId: insertObj.deptId
@@ -412,7 +412,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             //选中后点击修改按钮设置
             records = baseGrid.getSelectionModel().getSelection();
             if (records.length < 1) {
-                self.Warning("请选择要设置上级主管的岗位");
+                self.msgbox("请选择要设置上级主管的岗位");
                 return false;
             }
             insertObj = records[0].getData();
@@ -420,7 +420,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         }
 
         if (selCount < 1) {
-            self.Warning("请选择要设置上级主管的岗位");
+            self.msgbox("请选择要设置上级主管的岗位");
             return false;
         }
         var setIds = new Array();
@@ -480,13 +480,13 @@ Ext.define("core.system.dept.controller.OtherController", {
                 records = tree.getSelectionModel().getSelection();
             }
             if (records[0].get("level") < 99) {
-                self.Warning("请选择岗位");
+                self.msgbox("请选择岗位");
                 return false;
             }
             var pkValue = records[0].get("id");
             
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/SysDeptjob/setSuperJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/doSetSuperJob",
                 params: {
                     ids: pkValue,
                     setIds: setIds,
@@ -527,13 +527,13 @@ Ext.define("core.system.dept.controller.OtherController", {
                 records = tree.getSelectionModel().getSelection();
             }
             if (records[0].get("level") < 99) {
-                self.Warning("请选择岗位");
+                self.msgbox("请选择岗位");
                 return false;
             }
             var pkValue = records[0].get("id");
             
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/SysDeptjob/setSuperJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/doSetSuperJob",
                 params: {
                     ids: pkValue,
                     setIds: setIds,
@@ -583,7 +583,7 @@ Ext.define("core.system.dept.controller.OtherController", {
             var loadMask=self.LoadMask(win);    //显示遮罩
 
             self.asyncAjax({
-                url: comm.get('baseUrl') + "/SysDeptjob/batchSetDeptJob",
+                url: comm.get('baseUrl') + "/SysDeptjob/doBatchSetDeptJob",
                 params: {
                     deptId: deptId,
                     ids: ids.join(",")

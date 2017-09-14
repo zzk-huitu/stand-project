@@ -111,7 +111,7 @@ Ext.define("core.system.role.controller.MainController", {
             baseGrid = btn.up("basegrid");
         } else {
             baseGrid = grid;
-            recordData = record.data;
+            recordData = record.getData();
         }
 
 
@@ -151,8 +151,14 @@ Ext.define("core.system.role.controller.MainController", {
                         self.msgbox("请选择一条数据！");
                         return;
                     }
-                    recordData = rescords[0].data;
+                    recordData = rescords[0].getData();
                 }
+
+                if(recordData.issystem==1){
+                    self.msgbox("不允许编辑系统角色！");
+                    return;
+                }
+
                 //获取主键值
                 var pkName = funData.pkName;
                 pkValue= recordData[pkName];
@@ -168,7 +174,7 @@ Ext.define("core.system.role.controller.MainController", {
                         self.msgbox("请选择一条数据！");
                         return;
                     }
-                    recordData = rescords[0].data;
+                    recordData = rescords[0].getData;
                 }
                 //获取主键值
                 var pkName = funData.pkName;

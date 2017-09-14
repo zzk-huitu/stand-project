@@ -16,20 +16,18 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
-import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDeptjob;
 import com.zd.school.plartform.baseset.model.BaseDpetJobTree;
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseOrg;
-import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.dao.SysDeptjobDao;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysDeptjobService;
 import com.zd.school.plartform.system.service.SysJobService;
 import com.zd.school.plartform.system.service.SysOrgService;
-import com.zd.school.plartform.system.service.SysUserdeptjobService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 
 /**
  * 
@@ -107,7 +105,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 	 * @return
 	 */
 	@Override
-	public Boolean batchSetDeptJob(String deptId, String jobId, SysUser currentUser) {
+	public Boolean doBatchSetDeptJob(String deptId, String jobId, SysUser currentUser) {
 		String[] jobIds = jobId.split(",");
 		String[] deptIds = deptId.split(",");
 		try {
@@ -239,7 +237,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 	}
 
 	@Override
-	public Boolean setDeptLeaderJob(String deptId, String deptJobId, SysUser currentUser) {
+	public Boolean doSetDeptLeaderJob(String deptId, String deptJobId, SysUser currentUser) {
 		try {
 			String[] conditionName = { "deptId", "jobType" };
 			Object[] conditionValue = { deptId, 0 };
@@ -338,7 +336,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 	}
 
 	@Override
-	public Boolean setSuperJob(String ids, String setIds, String setType, SysUser currentUser) {
+	public Boolean doSetSuperJob(String ids, String setIds, String setType, SysUser currentUser) {
 		String[] setId = setIds.split(",");
 		BaseDeptjob deptjob = this.get(ids);
 		String deptId = deptjob.getDeptId();

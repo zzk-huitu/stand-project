@@ -23,4 +23,7 @@ import com.zd.school.plartform.baseset.model.BaseDicTree;
 public interface BaseDicService extends BaseService<BaseDic> {
 
     public List<BaseDicTree>getDicTreeList(String whereSql);
+
+	public BaseDic doAdd(BaseDic entity, String xm);
+
 }

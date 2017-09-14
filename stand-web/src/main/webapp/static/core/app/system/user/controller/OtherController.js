@@ -46,36 +46,45 @@ Ext.define("core.system.user.controller.OtherController", {
                     ids.push(pkValue);
                 }
                 if (ids.length > 0) {
-                    var resObj = self.ajax({
-                        url: funData.action + "/addUserRole",
+                     //显示loadMask
+                    var myMask = self.LoadMask(win);
+                    //提交入库
+                    self.asyncAjax({
+                        url: funData.action + "/doAddUserRole",
                         params: {
                             userId: userId,
                             ids: ids.join(",")
+                        },
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            
+                            myMask.hide();
+                            if (data.success) { 
+                                self.msgbox("保存成功!");
+                                var grid = win.funData.grid; //窗体是否有grid参数
+                                if (!Ext.isEmpty(grid)) {
+                                    var store = grid.getStore();
+                                    var proxy = store.getProxy();
+                                    proxy.extraParams = {
+                                        whereSql: win.funData.whereSql,
+                                        orderSql: win.funData.orderSql,
+                                        userId: userId
+                                    };
+                                    store.load(); //刷新父窗体的grid
+                                    win.close();
+                                }
+                            }else{
+                                self.Error(data.obj);   
+                            }
+                        },
+                        failure: function(response) {           
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                            myMask.hide();
                         }
-                    });
-                    if (resObj.success) {
-                        self.msgbox("保存成功!");
-                        var grid = win.funData.grid; //窗体是否有grid参数
-                        if (!Ext.isEmpty(grid)) {
-                            var store = grid.getStore();
-                            var proxy = store.getProxy();
-                            proxy.extraParams = {
-                                whereSql: win.funData.whereSql,
-                                orderSql: win.funData.orderSql,
-                                userId: userId
-                            };
-                            store.load(); //刷新父窗体的grid
-                            win.close();
-                        }
-                    } else {
-                        if (!Ext.isEmpty(resObj.obj))
-                            self.Info(resObj.obj);
-                    }
+                    });                   
                 } else {
-                    self.Warning("没有设定角色");
-                }
-                if (btn.callback) {
-                    btn.callback();
+                    self.msgbox("没有设定角色");
                 }
 
                 return false;
@@ -235,7 +244,7 @@ Ext.define("core.system.user.controller.OtherController", {
                 //选择的角色
                 var selectUserRole = userRoleGrid.getSelectionModel().getSelection();
                 if (selectUserRole.length == 0) {
-                    self.Warning("没有选择要删除的角色，请选择");
+                    self.msgbox("没有选择要删除的角色，请选择");
                     return false;
                 }
                 var store = userRoleGrid.getStore();
@@ -259,7 +268,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     if (btn == 'yes') {
                         //发送ajax请求
                         var resObj = self.ajax({
-                            url: funData.action + "/deleteUserRole",
+                            url: funData.action + "/doDeleteUserRole",
                             params: {
                                 ids: ids.join(","),
                                 userId: selectUserId
@@ -362,7 +371,7 @@ Ext.define("core.system.user.controller.OtherController", {
 
                 var records = deptJobGrid.getSelectionModel().getSelection();
                 if (records.length < 1) {
-                    self.Warning("请选择要解除的部门岗位");
+                    self.msgbox("请选择要解除的部门岗位");
                     return false;
                 }
                 var delJobs = new Array();
@@ -384,7 +393,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     if (btn == 'yes') {
                         //发送ajax请求
                         self.asyncAjax({
-                            url: funData.action+ "/removeUserFromDeptJob",
+                            url: funData.action+ "/doRmoveUserFromDeptJob",
                             params: {
                                 ids: delJobs.join(","),
                             },
@@ -432,7 +441,7 @@ Ext.define("core.system.user.controller.OtherController", {
     
                 var records = deptJobGrid.getSelectionModel().getSelection();
                 if (records.length != 1) {
-                    self.Warning("只能设置一个主部门岗位，请重新选择");
+                    self.msgbox("只能设置一个主部门岗位，请重新选择");
                     return false;
                 }
                 // if (records[0].get("masterDept") == 1) {
@@ -445,7 +454,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     if (btn == 'yes') {
                         //发送ajax请求
                         self.asyncAjax({
-                            url: funData.action+ "/setMasterDeptJob",
+                            url: funData.action+ "/doSetMasterDeptJob",
                             params: {
                                 ids: ids,
                                 setIds: userId
@@ -495,7 +504,7 @@ Ext.define("core.system.user.controller.OtherController", {
                     var records = tree.getChecked();
                     if (records.length == 1) {                       
                         if (records[0].get("level") < 99) {
-                            self.Warning("请选择岗位");
+                            self.msgbox("请选择岗位");
                             return false;
                         }
                     }
@@ -504,12 +513,12 @@ Ext.define("core.system.user.controller.OtherController", {
                             arry.push(rec.get("id"));
                     });
                     if (arry.length == 0) {
-                        self.Warning("请选择岗位");
+                        self.msgbox("请选择岗位");
                         return false;
                     }
                     
                     self.asyncAjax({
-                        url: funData.action + "/addUserToDeptJob",
+                        url: funData.action + "/doAddUserToDeptJob",
                         params: {
                             ids: arry.join(","),
                             setIds: setIds

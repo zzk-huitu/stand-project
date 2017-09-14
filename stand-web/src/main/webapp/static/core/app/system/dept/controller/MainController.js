@@ -46,7 +46,7 @@ Ext.define("core.system.dept.controller.MainController", {
             },
 
             //删除按钮事件
-            "panel[xtype=system.dept.deptgrid] button[ref=gridDelete]": {
+            "panel[xtype=system.dept.maingrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
                     var baseGrid = btn.up("basetreegrid");
                     var funCode = baseGrid.funCode;
@@ -57,7 +57,7 @@ Ext.define("core.system.dept.controller.MainController", {
                     //var records = baseGrid.getSelectionModel().getSelection();
                     var records = baseGrid.getView().getChecked();
                     if (records.length == 0) {
-                        self.Error("请选择要删除的部门");
+                        self.msgbox("请选择要删除的部门");
                         return;
                     }
                     var ids = new Array();
@@ -72,28 +72,44 @@ Ext.define("core.system.dept.controller.MainController", {
                     });
                     var title = "确定要删除所选的部门吗？";
                     if (ids.length == 0) {
-                        self.Warning("所选部门都有子部门或是类别为学校，不能删除");
+                        self.msgbox("所选部门都有子部门或是类别为学校，不能删除");
                         return;
                     }
                     if (ids.length < records.length) {
                         title = "有些部门有子部门，仅删除不含子部门的部门。确定吗？";
                     }
                     Ext.Msg.confirm('警告', title, function(btn, text) {
-                        if (btn == 'yes') {
-                            //发送ajax请求
-                            var resObj = self.ajax({
+                        if (btn == 'yes') {                                                    
+
+                            //显示loadMask
+                            var myMask = self.LoadMask(baseGrid);
+                            //提交入库
+                            self.asyncAjax({
                                 url: funData.action + "/doDelete",
                                 params: {
                                     ids: ids.join(","),
                                     pkName: pkName
+                                },
+                                //loadMask:true,
+                                //回调代码必须写在里面
+                                success: function(response) {
+                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                    if (data.success) { 
+                                        baseGrid.getStore().load();
+                                        self.msgbox(data.obj);
+
+                                    }else{
+                                        self.Error(data.obj);   
+                                    }
+                                    myMask.hide();
+                                },
+                                failure: function(response) {           
+                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                    myMask.hide();
                                 }
-                            });
-                            if (resObj.success) {
-                                baseGrid.getStore().load(0);
-                                self.msgbox(resObj.obj);
-                            } else {
-                                self.Error(resObj.obj);
-                            }
+                            }); 
+
                         }
                     });
                     //执行回调函数
@@ -105,7 +121,7 @@ Ext.define("core.system.dept.controller.MainController", {
             },
 
             //刷新按钮事件
-            "panel[xtype=system.dept.deptgrid] button[ref=gridRefresh]": {
+            "panel[xtype=system.dept.maingrid] button[ref=gridRefresh]": {
                 click: function(btn) {
                     var baseGrid = btn.up("basetreegrid");
                     var funCode = baseGrid.funCode;
@@ -123,24 +139,41 @@ Ext.define("core.system.dept.controller.MainController", {
                 }
             },
             
-            "panel[xtype=system.dept.deptgrid] button[ref=sync]": {
-                beforeclick: function(btn) {
-                	 var resObj = self.ajax({
-                         url: "/usersync" + "/dept"
-                     });
-                     if (resObj.success) {
-                    	 self.msgbox("同步成功!");
-                    	 btn.up("basegrid").getStore().load();
-                     }else{
-                    	 self.msgbox(resObj.obj);
-                     }
-                     return false;
+            "panel[xtype=system.dept.maingrid] button[ref=sync]": {
+                beforeclick: function(btn) {                            
+                    var baseGrid=btn.up("panel[xtype=system.dept.maingrid]");
+                     //显示loadMask
+                    var myMask = self.LoadMask(baseGrid);
+                    //提交入库
+                    self.asyncAjax({
+                        url: "/usersync" + "/dept",
+                        //loadMask:true,
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if (data.success) { 
+                                baseGrid.getStore().load();
+                                self.msgbox("同步成功!");
+
+                            }else{
+                                self.Error(data.obj);   
+                            }
+                            myMask.hide();
+                        },
+                        failure: function(response) {           
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                            myMask.hide();
+                        }
+                    }); 
+
+                    return false;
                 }
             },
             
            
             
-            "panel[xtype=system.dept.deptgrid]": {
+            "panel[xtype=system.dept.maingrid]": {
                 checkchange: function(node, checked, options) {
                     // if (node.data.leaf == false) {
                     //     if (checked) {

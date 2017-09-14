@@ -19,4 +19,10 @@ import com.zd.school.plartform.baseset.model.BaseDicitem ;
  
 public interface BaseDicitemService extends BaseService<BaseDicitem> {
 
+	BaseDicitem doAdd(BaseDicitem entity, String xm);
+
+	BaseDicitem doUpdate(BaseDicitem entity, String xm);
+
+	boolean doDeleteOrRestore(String delIds, String isdelete, String xm);
+
 }
