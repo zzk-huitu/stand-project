@@ -228,34 +228,51 @@ Ext.define("core.system.roleright.controller.MainController", {
 						var pkValue = rec.get("id");
 						ids.push(pkValue);
 					}, this);
+
+					if(ids.length==0){
+						self.msgbox("请选择数据！");
+						return;
+					}
+
 					var title = "确定要取消对这些菜单的授权吗？";
 					Ext.Msg.confirm('警告', title, function(btn, text) {
-						if (btn == 'yes') {
-							//发送ajax请求
-							var resObj = self.ajax({
-								url: comm.get('baseUrl') + "/SysRole/deleteRight",
+						if (btn == 'yes') {		
+
+							//显示loadMask
+							var myMask = self.LoadMask(baseGrid);
+							//提交入库
+							self.asyncAjax({
+					            url: comm.get('baseUrl') + "/SysRole/doDeleteRight",
 								params: {
 									ids: ids.join(","),
 									roleId: roleId
+								},
+								//loadMask:true,
+					            //回调代码必须写在里面
+					            success: function(response) {
+									data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+									if (data.success) {	
+										var store = baseGrid.getStore();
+										var proxy = store.getProxy();
+										proxy.extraParams = {
+											roleId: roleId
+										};
+										store.load();
+										self.msgbox(data.obj);
+
+									}else{
+										self.Error(data.obj);	
+									}
+									myMask.hide();
+								},
+								failure: function(response) {			
+									Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);			
+									myMask.hide();
 								}
-							});
-							if (resObj.success) {
-								var store = baseGrid.getStore();
-								var proxy = store.getProxy();
-								proxy.extraParams = {
-									roleId: roleId
-								};
-								store.load();
-								self.msgbox(resObj.obj);
-							} else {
-								self.Error(resObj.obj);
-							}
+					        });    
 						}
 					});
-					//执行回调函数
-					if (btn.callback) {
-						btn.callback();
-					}
 
 					return false;
 				}

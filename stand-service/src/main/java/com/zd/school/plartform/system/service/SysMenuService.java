@@ -79,7 +79,7 @@ public interface SysMenuService extends BaseService<SysMenu> {
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean cancelRoleRightMenu(String roleId, String cancelMenuId);
+    public Boolean doCancelRoleRightMenu(String roleId, String cancelMenuId);
 
     /**
      * 
@@ -92,7 +92,7 @@ public interface SysMenuService extends BaseService<SysMenu> {
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean addRoleRightMenu(String roleId, String addMenuid);
+    public Boolean doAddRoleRightMenu(String roleId, String addMenuid);
 
     /**
      * 
@@ -108,6 +108,8 @@ public interface SysMenuService extends BaseService<SysMenu> {
     public List<SysMenuChkTree> getUserPermissionToRole(String roleId, String userId);
 
     public SysMenu addMenu(SysMenu menu, SysUser currentUser) throws IllegalAccessException, InvocationTargetException;
+
+	public SysMenu doUpdateMenu(SysMenu entity, String xm);
     
     //public
 }

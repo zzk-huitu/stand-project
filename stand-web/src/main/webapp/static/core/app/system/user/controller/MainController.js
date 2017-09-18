@@ -64,7 +64,7 @@ Ext.define("core.system.user.controller.MainController", {
                     var isRight = funData.isRight;
                     var deptType = funData.deptType; 
                     if (!deptId){
-                        self.Warning("请选择一个部门");
+                        self.msgbox("请选择一个部门");
                         return false;
                     }
                     if (isRight=="1"){
@@ -128,17 +128,33 @@ Ext.define("core.system.user.controller.MainController", {
             
             "panel[xtype=system.user.usergrid] button[ref=sync]": {
                 beforeclick: function(btn) {
-                	 var resObj = self.ajax({
-                         url: "/usersync" + "/list"
-                     });
-                     if (resObj.success) {
-                    	 self.msgbox("同步成功!");
-                    	 btn.up("basegrid").getStore().load();
-                     }else{
-                    	 //self.msgbox("同步成功!");
-                    	 self.msgbox("请先同步部门和岗位数据!");
-                     }
-                     return false;
+                    var baseGrid=btn.up("panel[xtype=system.user.usergrid]");
+                     //显示loadMask
+                    var myMask = self.LoadMask(baseGrid);
+                    //提交入库
+                    self.asyncAjax({
+                        url: "/usersync" + "/list",
+                        //loadMask:true,
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if (data.success) { 
+                                baseGrid.getStore().load();
+                                self.msgbox("同步成功!");
+
+                            }else{
+                               self.Error("请先同步部门和岗位数据!");
+                            }
+                            myMask.hide();
+                        },
+                        failure: function(response) {           
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                            myMask.hide();
+                        }
+                    }); 
+                	
+                    return false;
                 }
             },
 
@@ -253,36 +269,47 @@ Ext.define("core.system.user.controller.MainController", {
                         ids.push(pkValue);
                     }
                     if (ids.length > 0) {
-                        var resObj = self.ajax({
-                            url: funData.action + "/batchSetDept",
+                         //显示loadMask
+                        var myMask = self.LoadMask(win);
+                        //提交入库
+                        self.asyncAjax({
+                            url: funData.action + "/doBatchSetDept",
                             params: {
                                 deptId: deptId,
                                 ids: ids.join(",")
+                            },
+                            //回调代码必须写在里面
+                            success: function(response) {
+                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                myMask.hide();
+                                if (data.success) {                                 
+                                    self.msgbox("保存成功!");
+                                    var grid = win.funData.grid; //窗体是否有grid参数
+                                    if (!Ext.isEmpty(grid)) {
+                                        var store = grid.getStore();
+                                        var proxy = store.getProxy();
+                                        proxy.extraParams = {
+                                            whereSql: win.funData.whereSql,
+                                            orderSql: win.funData.orderSql,
+                                            deptId: deptId
+                                        };
+                                        store.load(); //刷新父窗体的grid
+                                        win.close();
+                                    }
+
+                                }else{
+                                   self.Error(data.obj);
+                                }
+                            },
+                            failure: function(response) {           
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                myMask.hide();
                             }
-                        });
-                        if (resObj.success) {
-                            self.msgbox("保存成功!");
-                            var grid = win.funData.grid; //窗体是否有grid参数
-                            if (!Ext.isEmpty(grid)) {
-                                var store = grid.getStore();
-                                var proxy = store.getProxy();
-                                proxy.extraParams = {
-                                    whereSql: win.funData.whereSql,
-                                    orderSql: win.funData.orderSql,
-                                    deptId: deptId
-                                };
-                                store.load(); //刷新父窗体的grid
-                                win.close();
-                            }
-                        } else {
-                            if (!Ext.isEmpty(resObj.obj))
-                                self.Info(resObj.obj);
-                        }
+                        }); 
+
                     } else {
-                        self.Warning("没有选择用户");
-                    }
-                    if (btn.callback) {
-                        btn.callback();
+                        self.msgbox("没有选择用户");
                     }
 
                     return false;
@@ -309,7 +336,7 @@ Ext.define("core.system.user.controller.MainController", {
                     //选择的用户
                     var selectUser = userGrid.getSelectionModel().getSelection();
                     if (selectUser.length == 0) {
-                        self.Error("请选择要删除的用户");
+                        self.msgbox("请选择要删除的用户");
                         return false;
                     }
 
@@ -322,39 +349,52 @@ Ext.define("core.system.user.controller.MainController", {
                     var title = "确定删除所选择的用户吗？";
                     Ext.Msg.confirm('信息', title, function(btn, text) {
                         if (btn == 'yes') {
-                            //发送ajax请求
-                            var resObj = self.ajax({
+
+                            //显示loadMask
+                            var myMask = self.LoadMask(userGrid);
+                            //提交入库
+                            self.asyncAjax({
                                 url: funData.action + "/doDelete",
                                 params: {
                                     ids: ids.join(","),
                                     deptId:deptId
+                                },
+                                //回调代码必须写在里面
+                                success: function(response) {
+                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                    if (data.success) { 
+                                        var store = userRoleGrid.getStore();
+                                        var proxy = store.getProxy();
+                                        proxy.extraParams = {
+                                            userId: "0"
+                                        };
+                                        store.load();
+
+                                        //刷新用户列表
+                                        var userStore = userGrid.getStore();
+                                        var userPoxy = userStore.getProxy();
+                                        var filterArry = new Array();
+                                        filterArry.push("{'type':'string','comparison':'=','value':'" + deptId + "','field':'deptId'}");
+                                        filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
+                                        userPoxy.extraParams = {
+                                            filter: "[" + filterArry.join(",") + "]",
+                                            deptId:deptId
+                                        };
+                                        userStore.load();
+
+                                        self.msgbox(data.obj);
+
+                                    }else{
+                                        self.Error(data.obj);   
+                                    }
+                                    myMask.hide();
+                                },
+                                failure: function(response) {           
+                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                    myMask.hide();
                                 }
-                            });
-                            if (resObj.success) {
-                                //刷新用户所属角色列表
-                                var store = userRoleGrid.getStore();
-                                var proxy = store.getProxy();
-                                proxy.extraParams = {
-                                    userId: "0"
-                                };
-                                store.load();
-
-                                //刷新用户列表
-                                var userStore = userGrid.getStore();
-                                var userPoxy = userStore.getProxy();
-                                var filterArry = new Array();
-                                filterArry.push("{'type':'string','comparison':'=','value':'" + deptId + "','field':'deptId'}");
-                                filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
-                                userPoxy.extraParams = {
-                                    filter: "[" + filterArry.join(",") + "]",
-                                    deptId:deptId
-                                };
-                                userStore.load();
-
-                                self.msgbox(resObj.obj);
-                            } else {
-                                self.Error(resObj.obj);
-                            }
+                            });                            
                         }
                     });
                     //执行回调函数

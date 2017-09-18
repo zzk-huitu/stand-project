@@ -400,9 +400,9 @@ Ext.override(Ext.window.Window,{
 });
 
 
-//修复菜单，鼠标经过时的卡顿，设置延迟时间为20毫秒，之前为100
+//修复菜单，鼠标经过时的卡顿，设置延迟时间为0毫秒，之前为100
 Ext.override(Ext.menu.Menu,{
-    mouseLeaveDelay:20,
+    mouseLeaveDelay:0,
 });
 
     

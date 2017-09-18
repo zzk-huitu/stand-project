@@ -240,7 +240,7 @@ Ext.define("core.system.menu.controller.MainController", {
 
 		//提交入库
 		self.asyncAjax({
-            url: comm.get('baseUrl') + "/SysMenu/setLockFlag",
+            url: comm.get('baseUrl') + "/SysMenu/doSetLockFlag",
 			params: {
 				ids: ids.join(","),
 				lockFlag:cmd

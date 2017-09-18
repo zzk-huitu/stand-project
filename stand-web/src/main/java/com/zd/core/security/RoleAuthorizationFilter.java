@@ -16,7 +16,11 @@ import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
 
 import com.zd.core.util.ModelUtil;
-
+/**
+ * 废弃
+ * @author Administrator
+ *
+ */
 public class RoleAuthorizationFilter extends AuthorizationFilter {  
 	  
 	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {  

@@ -1,28 +1,25 @@
 
 package com.zd.school.plartform.system.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysJobService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 /**
  * ClassName: BizTJobController Function: TODO ADD FUNCTION. Reason: TODO ADD

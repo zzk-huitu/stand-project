@@ -10,7 +10,7 @@ import com.zd.school.plartform.system.model.SysRoleMenuPermission;
 
 public interface SysRoleMenuPermissionService extends BaseService<SysRoleMenuPermission> {
 
-	boolean setRoleMenuPermission(String roleId, String perId, String roleMenuPers);
+	boolean doSetRoleMenuPermission(String roleId, String perId, String roleMenuPers);
 
 	void removeRoleMenuPermission(String roleId, List<SysPermission> cancelPerimission);
 

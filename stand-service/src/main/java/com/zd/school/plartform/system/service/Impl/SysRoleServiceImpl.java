@@ -5,10 +5,12 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zd.core.constant.StatuVeriable;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.plartform.system.dao.SysRoleDao;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.service.SysRoleService;
+import com.zd.school.plartform.system.service.SysUserService;
 
 /**
  * 
@@ -27,6 +29,23 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements SysR
     public void setBaseTRoleDao(SysRoleDao dao) {
         this.dao = dao;
     }
+    
+    @Resource
+    private SysUserService userSerive;
+
+	@Override
+	public boolean doDelete(String delIds, String isdelete, String xm) {
+		// TODO Auto-generated method stub
+		
+		//先调用删除用户菜单数据的方法
+    	String[] roleIds=delIds.split(",");            
+    	userSerive.deleteUserMenuTreeRedis(roleIds);
+    	
+    	//再设置逻辑删除
+        boolean flag = this.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,xm);
+        
+		return flag;
+	}
 
     //	@Autowired
     //	SysRoleDao sysRoleDao;

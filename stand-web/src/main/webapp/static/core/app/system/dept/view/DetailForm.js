@@ -1,6 +1,6 @@
-Ext.define("core.system.dept.view.DeptForm", {
+Ext.define("core.system.dept.view.DetailForm", {
     extend: "core.base.view.BaseForm",
-    alias: "widget.system.dept.deptform",
+    alias: "widget.system.dept.detailform",
     layout: "form", //从上往下布局
     autoHeight: true,
     frame: false,

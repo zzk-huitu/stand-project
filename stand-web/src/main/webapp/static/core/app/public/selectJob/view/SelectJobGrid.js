@@ -2,7 +2,7 @@ Ext.define("core.public.selectJob.view.SelectJobGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.pubselect.selectjobgrid",
     al:true,
-    dataUrl: comm.get('baseUrl') + "/BaseJob/list",
+    dataUrl: comm.get('baseUrl') + "/SysJob/list",
     model: 'com.zd.school.plartform.baseset.model.BaseJob',
     /**
      * 工具栏操作按E钮

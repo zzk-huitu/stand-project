@@ -76,45 +76,28 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		String dicId = entity.getDicId();
-		String dicName = entity.getDicName();
 
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String hql = " o.dicId='" + dicId + "' and o.isDelete='0'";
 		if (thisService.IsFieldExist("itemName", entity.getItemName(), "-1", hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'同一字典下的字典项名称不能相同！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一字典下的字典项名称不能相同！\""));
 			return;
 		}
 		if (thisService.IsFieldExist("itemCode", entity.getItemCode(), "-1", hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'同一字典下的字典项编码不能相同！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一字典下的字典项编码不能相同！\""));
 			return;
 		}
 		//
-		// 获取当前操作用户
-		String userCh = "超级管理员";
-		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-
-		BaseDicitem perEntity = new BaseDicitem();
-		BeanUtils.copyPropertiesExceptNull(entity, perEntity);
-
-		// 增加时要设置创建人
-		entity.setCreateUser(userCh); // 创建人
-
-		// 持久化到数据库
-		entity = thisService.merge(entity);
-
-		// 重新将字典ID和字典名称返回至前端
-		entity.setDicId(dicId);
-		entity.setDicName(dicName);
-
-		//删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-		BaseDic baseDic = dictionaryService.get(dicId);
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		hashOper.delete("baseDicItem",baseDic.getDicCode());
-		
-		// 返回实体到前端界面
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		// 获取当前操作用户	
+		SysUser currentUser = getCurrentSysUser();		
+		                
+        entity=thisService.doAdd(entity,currentUser.getXm());     
+        
+        if(entity==null)
+        	writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        
 	}
 
 	/**
@@ -126,23 +109,16 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
             SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
-			if (flag) {
-				if(delIds.length()>0){
-					BaseDicitem baseDicItem=thisService.get(delIds.split(",")[0]);
-					if(baseDicItem!=null){
-						//删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-						HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-						hashOper.delete("baseDicItem", baseDicItem.getDicCode());
-					}
-				}
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+			//boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+            boolean flag = thisService.doDeleteOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+			if (flag) {			
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
@@ -156,23 +132,16 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入还原主键'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入还原主键\""));
 			return;
 		} else {
             SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
-			if (flag) {
-				if(delIds.length()>0){
-					BaseDicitem baseDicItem=thisService.get(delIds.split(",")[0]);
-					if(baseDicItem!=null){
-						//删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-						HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-						hashOper.delete("baseDicItem", baseDicItem.getDicCode());
-					}
-				}
-				writeJSON(response, jsonBuilder.returnSuccessJson("'还原成功'"));
+			//boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
+            boolean flag = thisService.doDeleteOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
+            if (flag) {				
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"还原成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'还原失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"还原失败\""));
 			}
 		}
 	}
@@ -187,45 +156,28 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		String dicId = entity.getDicId();
-		String dicName = entity.getDicName();
 
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String hql = " o.dicId='" + dicId + "' and o.isDelete='0'";
 		if (thisService.IsFieldExist("itemName", entity.getItemName(), entity.getUuid(), hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'同一字典下的字典项名称不能相同！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一字典下的字典项名称不能相同！\""));
 			return;
 		}
 		if (thisService.IsFieldExist("itemCode", entity.getItemCode(), entity.getUuid(), hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'同一字典下的字典项编码不能相同！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一字典下的字典项编码不能相同！\""));
 			return;
 		}
 
-		// 获取当前的操作用户
-		String userCh = "超级管理员";
-		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-
-		// 先拿到已持久化的实体
-		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		BaseDicitem perEntity = thisService.get(entity.getUuid());
-
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-		perEntity.setUpdateTime(new Date()); // 设置修改时间
-		perEntity.setUpdateUser(userCh); // 设置修改人的中文名
-		entity = thisService.merge(perEntity);// 执行修改方法
-		// 重新将字典ID和字典名称返回至前端
-		entity.setDicId(dicId);
-		entity.setDicName(dicName);
-
-		//删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		hashOper.delete("baseDicItem", entity.getDicCode());
-				
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
-
+		// 获取当前的操作用户	
+		SysUser currentUser = getCurrentSysUser();		
+			
+        entity=thisService.doUpdate(entity, currentUser.getXm());
+        
+        if(entity==null)
+       	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+               
 	}
 
 	@RequestMapping(value = "/getDicItemByDicCode")

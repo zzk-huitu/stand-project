@@ -20,6 +20,7 @@ import org.apache.shiro.web.util.WebUtils;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.util.ModelUtil;
 import com.zd.school.plartform.system.model.SysRole;
@@ -108,7 +109,7 @@ public class AjaxRequestAuthorizationFilter extends PassThruAuthenticationFilter
 			boolean isAdmin=false;
 			Iterator<SysRole> iterator=sysUser.getSysRoles().iterator();
 			while(iterator.hasNext()){
-				if(iterator.next().getUuid().equals("8a8a8834533a0f8a01533a0f8e220000")){
+				if(iterator.next().getUuid().equals(AdminType.ADMIN_ROLE_ID)){
 					isAdmin=true;
 					break;
 				}

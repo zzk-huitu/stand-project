@@ -1,5 +1,6 @@
 package com.zd.school.plartform.system.controller;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DateUtil;
@@ -150,7 +151,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 
 		session.setAttribute(SESSION_SYS_USER, sysUser);
 		//如果此用户是超级管理员，就不用获取功能权限列表,在过滤器和前端中直接跳过鉴权
-		SysRole adminRole=roleService.get("8a8a8834533a0f8a01533a0f8e220000");	
+		SysRole adminRole=roleService.get(AdminType.ADMIN_ROLE_ID);	
 		if(sysUser.getSysRoles().contains(adminRole)){
 			session.setAttribute(SESSION_SYS_ISADMIN,1);
 		}else{			

@@ -11,7 +11,7 @@ Ext.define("core.baseset.schoolinfo.view.DetailLayout",{
 		// 	 signBeing:new Date()
 		// }
 	},
-
+	
 	minWidth:1000,
     scrollable:true,
 

@@ -1,4 +1,4 @@
-Ext.define("core.system.dept.view.DeptLayout", {
+Ext.define("core.system.dept.view.DetailLayout", {
     extend: "core.base.view.BasePanel",
     alias: 'widget.system.dept.detaillayout',
     funCode: "deptinfo_detail",
@@ -14,6 +14,6 @@ Ext.define("core.system.dept.view.DeptLayout", {
     minWidth:1000,
     scrollable:true,
     items: [{
-        xtype: "system.dept.deptform"
+        xtype: "system.dept.detailform"
     }]
 })

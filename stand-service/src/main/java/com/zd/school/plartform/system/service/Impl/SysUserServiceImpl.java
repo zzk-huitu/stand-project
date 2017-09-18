@@ -135,7 +135,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	}
 
 	@Override
-	public Boolean deleteUserRole(String userId, String delRoleIds, SysUser currentUser) {
+	public Boolean doDeleteUserRole(String userId, String delRoleIds, SysUser currentUser) {
 		Boolean delReurn = false;
 		// 获取当前用户的信息
 		SysUser theUser = this.get(userId);
@@ -156,7 +156,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	}
 
 	@Override
-	public Boolean addUserRole(String userId, String addRoleIds, SysUser currentUser) {
+	public Boolean doAddUserRole(String userId, String addRoleIds, SysUser currentUser) {
 
 		Boolean addResult = false;
 		// 获取当前用户的信息

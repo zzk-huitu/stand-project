@@ -73,7 +73,7 @@ public interface SysUserService extends BaseService<SysUser> {
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean deleteUserRole(String userId, String delRoleIds, SysUser currentUser);
+    public Boolean doDeleteUserRole(String userId, String delRoleIds, SysUser currentUser);
 
     /**
      * 
@@ -90,7 +90,7 @@ public interface SysUserService extends BaseService<SysUser> {
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean addUserRole(String userId, String addRoleIds, SysUser currentUser);
+    public Boolean doAddUserRole(String userId, String addRoleIds, SysUser currentUser);
 
     /**
      * 

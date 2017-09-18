@@ -34,4 +34,10 @@ public abstract class FrameWorkController<E extends BaseEntity> extends BaseCont
                 .getRequest();
         return (SysUser) request.getSession().getAttribute(SESSION_SYS_USER);
     }
+    
+    public Integer getIsAdmin() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
+        return (Integer) request.getSession().getAttribute(SESSION_SYS_ISADMIN);
+    }
 }

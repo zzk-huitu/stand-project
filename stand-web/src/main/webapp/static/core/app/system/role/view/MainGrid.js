@@ -112,6 +112,12 @@ Ext.define("core.system.role.view.MainGrid", {
                 style:'font-size:12px;',                    
                 tooltip: '编辑',      
                 ref: 'gridEdit',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){
+                    if(record.get("issystem")==1)
+                        return 'x-hidden-display';
+                    else
+                        return null;
+                },  
                 handler: function(view, rowIndex, colIndex, item) {                 
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('editClick_Tab', {

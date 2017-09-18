@@ -1,13 +1,26 @@
 
 package com.zd.school.plartform.system.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.ExtDataFilter;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
@@ -17,17 +30,6 @@ import com.zd.school.plartform.system.service.SysMenuService;
 import com.zd.school.plartform.system.service.SysRoleMenuPermissionService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * 
@@ -76,8 +78,9 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         hideDataFilter.setType("string");
         hideDataFilter.setValue("0");
 
-        SysUser currentUser = getCurrentSysUser();
-        if (!currentUser.getUserName().equals("administrator"))
+        //SysUser currentUser = getCurrentSysUser();
+        //if (!currentUser.getUserName().equals(AdminType.ADMIN_ROLE_NAME))
+        if (getIsAdmin()==0)	//若非管理员，就加入这个条件
             listFilters.add(hideDataFilter);
         String newFilter = jsonBuilder.buildObjListToJson(Long.valueOf(listFilters.size()), listFilters, false);
         QueryResult<SysRole> qr = thisService.queryPageResult(super.start(request), super.limit(request),
@@ -105,32 +108,27 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         //此处为放在入库前的一些检查的代码，如唯一校验等
         String hql = " o.isDelete='0'";
         if (thisService.IsFieldExist("roleName", roleName, "-1", hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'角色名称不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"角色名称不能重复！\""));
             return;
         }
         if (thisService.IsFieldExist("roleCode", roleCode, "-1", hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'角色编码不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"角色编码不能重复！\""));
             return;
         }
-        //获取当前操作用户
-        String userCh = "超级管理员";
-        SysUser currentUser = getCurrentSysUser();
-        if (currentUser != null)
-            userCh = currentUser.getXm();
-
-        SysRole saveEntity = new SysRole();
-        BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
-
-        //增加时要设置创建人
-        entity.setCreateUser(userCh); //创建人
+        
+        //设置初始化属性
         entity.setIsHidden("0");
         entity.setIssystem(0);
-
-        //持久化到数据库
-        entity = thisService.merge(entity);
-
-        //返回实体到前端界面
-        writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        
+        // 获取当前操作用户
+        SysUser currentUser = getCurrentSysUser();         
+        entity=thisService.doAddEntity(entity,currentUser.getXm());     
+        
+        if(entity==null)
+        	writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        
     }
 
     /**
@@ -142,20 +140,17 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
         if (StringUtils.isEmpty(delIds)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
         } else {        	
             SysUser currentUser = getCurrentSysUser();
-        	//先调用删除用户菜单数据的方法
-        	String[] roleIds=delIds.split(",");            
-        	userSerive.deleteUserMenuTreeRedis(roleIds);
-        	                     
-        	//再设置逻辑删除
-            boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, currentUser.getXm());
+        	
+        	boolean flag = thisService.doDelete(delIds, StatuVeriable.ISDELETE, currentUser.getXm());         
+        	
             if (flag) {            
-                writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+                writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+                writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
             }
         }
     }
@@ -169,15 +164,15 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
         if (StringUtils.isEmpty(delIds)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入还原主键'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入还原主键\""));
             return;
         } else {
             SysUser currentUser = getCurrentSysUser();
             boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
             if (flag) {
-                writeJSON(response, jsonBuilder.returnSuccessJson("'还原成功'"));
+                writeJSON(response, jsonBuilder.returnSuccessJson("\"还原成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("'还原失败'"));
+                writeJSON(response, jsonBuilder.returnFailureJson("\"还原失败\""));
             }
         }
     }
@@ -196,31 +191,23 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         //入库前检查代码
         String hql = " o.isDelete='0'";
         if (thisService.IsFieldExist("roleName", roleName, roleId, hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'角色名称不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"角色名称不能重复！\""));
             return;
         }
         if (thisService.IsFieldExist("roleCode", roleCode, roleId, hql)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("'角色编码不能重复！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"角色编码不能重复！\""));
             return;
         }
         //获取当前的操作用户
-        String userCh = "超级管理员";
         SysUser currentUser = getCurrentSysUser();
-        if (currentUser != null)
-            userCh = currentUser.getXm();
-
-        //先拿到已持久化的实体
-        SysRole perEntity = thisService.get(entity.getUuid());
-
-        //将entity中不为空的字段动态加入到perEntity中去。
-        BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-        perEntity.setUpdateTime(new Date()); //设置修改时间
-        perEntity.setUpdateUser(userCh); //设置修改人的中文名
-        entity = thisService.merge(perEntity);//执行修改方法
-
-        writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
-
+       
+        entity=thisService.doUpdateEntity(entity, currentUser.getXm(), null);
+        
+        if(entity==null)
+       	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
+        else        
+        	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        
     }
 
     /**
@@ -278,20 +265,20 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * @throws @since
      *             JDK 1.8
      */
-    @RequestMapping("/deleteRight")
+    @RequestMapping("/doDeleteRight")
     public void cancelRoleRightMenu(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");
         String cancelId = request.getParameter("ids");
 
         if (StringUtils.isEmpty(roleId) || StringUtils.isEmpty(cancelId)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入取消权限的数据'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入取消权限的数据\""));
             return;
         } else {
-            boolean flag = menuService.cancelRoleRightMenu(roleId, cancelId);
+            boolean flag = menuService.doCancelRoleRightMenu(roleId, cancelId);
             if (flag) {
-                writeJSON(response, jsonBuilder.returnSuccessJson("'取消权限成功'"));
+                writeJSON(response, jsonBuilder.returnSuccessJson("\"取消权限成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("'取消权限失败'"));
+                writeJSON(response, jsonBuilder.returnFailureJson("\"取消权限失败\""));
             }
         }
     }
@@ -308,39 +295,39 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * @throws @since
      *             JDK 1.8
      */
-    @RequestMapping("/addRight")
+    @RequestMapping("/doAddRight")
     public void addRoleRightMenu(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");
         String addId = request.getParameter("ids");
 
         if (StringUtils.isEmpty(roleId) || StringUtils.isEmpty(addId)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入增加权限的数据'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入增加权限的数据\""));
             return;
         } else {
-            boolean flag = menuService.addRoleRightMenu(roleId, addId);
+            boolean flag = menuService.doAddRoleRightMenu(roleId, addId);
             if (flag) {
-                writeJSON(response, jsonBuilder.returnSuccessJson("'增加权限成功'"));
+                writeJSON(response, jsonBuilder.returnSuccessJson("\"增加权限成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("'增加权限失败'"));
+                writeJSON(response, jsonBuilder.returnFailureJson("\"增加权限失败\""));
             }
         }
     }
     
     /**
      * 
-     * addRoleRightMenu:修改指定角色菜单的功能权限. 
+     * 修改指定角色菜单的功能权限. 
      */
-    @RequestMapping("/setRoleMenuPermission")
-    public void setRoleMenuPermission(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping("/doSetRoleMenuPermission")
+    public void doSetRoleMenuPermission(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");	//角色ID
         String perId = request.getParameter("perId");	//角色菜单权限ID
         String roleMenuPers = request.getParameter("ids");	//菜单功能权限IDS
 
         if (StringUtils.isEmpty(roleId) || StringUtils.isEmpty(perId)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入增加权限的数据'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入增加权限的数据\""));
             return;
         } else {
-            boolean flag = roleMenuPermissionService.setRoleMenuPermission(roleId, perId,roleMenuPers);
+            boolean flag = roleMenuPermissionService.doSetRoleMenuPermission(roleId, perId,roleMenuPers);
             if (flag) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"设置功能权限成功！\""));
             } else {

@@ -14,5 +14,7 @@ import com.zd.school.plartform.system.model.SysRole;
  */
 
 public interface SysRoleService extends BaseService<SysRole> {
+
+	boolean doDelete(String delIds, String isdelete, String xm);
     //public List<SysRole> doQueryForIn(String hql, Integer start, Integer limit,Object[] objs);
 }

@@ -25,7 +25,7 @@ Ext.define('core.Application', {
 
         //启动动态加载机制
         Ext.Loader.setConfig({
-            enabled: true,
+            enabled: true,          //若设置为false，则各个文件之间需要进行require才能加载；否则会自动去加载
             paths: {
                 baseUx: comm.get('baseUrl') + "/static/core/app/ux/base",
                 factory: comm.get('baseUrl') + "/static/core/app/util/factory",
@@ -47,7 +47,7 @@ Ext.define('core.Application', {
             "Ext.ux.UEditor",
             "Ext.ux.form.MultiSelect",
             "Ext.ux.form.ItemSelector",
-            "Ext.ux.grid.Actiontextcolumn"        
+            "Ext.ux.grid.Actiontextcolumn",        
         ]);
         // TODO - Launch the application
     },
