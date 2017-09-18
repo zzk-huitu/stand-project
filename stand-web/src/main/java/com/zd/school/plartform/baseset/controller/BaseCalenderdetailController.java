@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.jw.eduresources.model.JwCalender;
 import com.zd.school.jw.eduresources.model.JwCalenderdetail ;
 import com.zd.school.plartform.baseset.service.BaseCalenderdetailService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -50,7 +53,7 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute JwCalenderdetail entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String strData = ""; // 返回给js的数据
+		/*String strData = ""; // 返回给js的数据
 		// hql语句
 		StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + " where 1=1 and isDelete=0 ");
 		// 总记录数
@@ -58,23 +61,22 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 				"select count(*) from " + entity.getClass().getSimpleName() + " where  1=1 and isDelete=0 ");
 		
 		String whereSql = request.getParameter("whereSql");// 查询条件
-//		String whereSql = entity.getWhereSql();// 查询条件
+		String parentSql = request.getParameter("parentSql");// 条件
+		String querySql = request.getParameter("querySql");// 查询条件
+		String orderSql = request.getParameter("orderSql");// 排序
+		
+		whereSql=whereSql==null?"":whereSql;
+		parentSql=parentSql==null?"":parentSql;
+		querySql=querySql==null?"":querySql;
+		orderSql=orderSql==null?"":orderSql;
+		
 		if(whereSql.equals("")){
 			writeJSON(response, "[]");// 返回数据
 			return;
 		}
 		
-		
-		String parentSql = request.getParameter("parentSql");// 条件
-		String querySql = request.getParameter("querySql");// 查询条件
-		String orderSql = request.getParameter("orderSql");// 排序
 		int limit = Integer.parseInt(request.getParameter("limit"));// 每页记录数
-		
-//		String parentSql = entity.getParentSql();// 条件
-//		String querySql = entity.getQuerySql();// 查询条件
-//		String orderSql = entity.getOrderSql();// 排序
 		int start = super.start(request); // 起始记录数
-//		int limit = entity.getLimit();// 每页记录数
 		hql.append(whereSql);
 		hql.append(parentSql);
 		hql.append(querySql);
@@ -86,6 +88,15 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
 		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
+*/	
+		String strData = ""; // 返回给js的数据
+
+		QueryResult<JwCalenderdetail> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	
 	}
 
 	/**
@@ -96,33 +107,22 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	@RequestMapping("/doadd")
+	@RequestMapping("/doAdd")
 	public void doAdd(JwCalenderdetail entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 
 		// 获取当前操作用户
-		String userCh = "超级管理员";
+		
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
 
-		JwCalenderdetail saveEntity = new JwCalenderdetail();
-	    BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
-		// 生成默认的orderindex
-		// 如果界面有了排序号的输入，则不需要取默认的了
-		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
-		entity.setOrderIndex(orderIndex);// 排序
-
-		// 增加时要设置创建人
-		entity.setCreateUser(userCh); // 创建人
-
-		// 持久化到数据库
-		entity = thisService.merge(entity);
-
-		// 返回实体到前端界面
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
+        if (ModelUtil.isNotNull(entity))
+            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        else
+            writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));  
+	
 	}
 
 	/**
@@ -130,31 +130,18 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/dodelete")
+	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (delIds == null) {
 			writeJSON(response, jsonBuilder.returnFailureJson("'未选择需删除的信息'"));
 			return;
 		}
-		/*
-		 * if (StringUtils.isEmpty(delIds)) { writeJSON(response,
-		 * jsonBuilder.returnSuccessJson("'没有传入删除主键'")); return; } else {
-		 * boolean flag = thisService.logicDelOrRestore(delIds,
-		 * StatuVeriable.ISDELETE); if (flag) { writeJSON(response,
-		 * jsonBuilder.returnSuccessJson("'删除成功'")); } else {
-		 * writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'")); }
-		 * 
-		 * }
-		 */
+	
 		try {
-			String doIds = "'" + delIds.replace(",", "','") + "'";
-
-			String hql = "DELETE FROM JwCalenderdetail j  WHERE j.uuid IN (" + doIds + ")";
-
-			int flag = thisService.doExecuteCountByHql(hql);
-
-			if (flag > 0) {
+			
+			boolean flag =thisService.doDeleteEntity(delIds);
+			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
@@ -169,7 +156,7 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/dorestore")
+	@RequestMapping("/doRestore")
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
@@ -191,30 +178,22 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	 * JwTCanderdetail @param @param request @param @param
 	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
 	 */
-	@RequestMapping("/doupdate")
+	@RequestMapping("/doUpdate")
 	public void doUpdates(JwCalenderdetail entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 入库前检查代码
 
 		// 获取当前的操作用户
-		String userCh = "超级管理员";
+		
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-
-		// 先拿到已持久化的实体
-		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		JwCalenderdetail perEntity = thisService.get(entity.getUuid());
-
-		// 将entity中不为空的字段动态加入到perEntity中去。s
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-		perEntity.setUpdateTime(new Date()); // 设置修改时间
-		perEntity.setUpdateUser(userCh); // 设置修改人的中文名
-		entity = thisService.merge(perEntity);// 执行修改方法
-
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+	
+		entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
+		
 
 	}
 }

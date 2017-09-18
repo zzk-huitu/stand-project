@@ -192,6 +192,9 @@ Ext.define("core.base.controller.GridController", {
         var funData=moduleInfo.funData;
         var tabInfo = self.getTabInfo(moduleInfo.funCode,funData.pkName,funData.tabConfig,null,null,cmd,record);
 
+        if(tabInfo==null)
+            return;
+
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabPanel=moduleInfo.tabPanel;
         var tabItem=tabPanel.getComponent(tabInfo.tabItemId);

@@ -1,6 +1,7 @@
 Ext.define("core.util.DetailTabUtil", {
 	mixins: {
-		formUtil: "core.util.FormUtil"
+		formUtil: "core.util.FormUtil",
+        messageUtil:"core.util.MessageUtil",
 	},
 
 	//获取组件信息
@@ -50,8 +51,8 @@ Ext.define("core.util.DetailTabUtil", {
                 if (btn) {	//点击按钮的方式
                     var rescords = baseGrid.getSelectionModel().getSelection();
                     if (rescords.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return;
+                        this.msgbox("请选择一条数据！");
+                        return null;
                     }
                     recordData = rescords[0].getData();
                 }else{	//点击操作列的方式
@@ -75,8 +76,8 @@ Ext.define("core.util.DetailTabUtil", {
                 if (btn) {//点击按钮的方式
                     var rescords = baseGrid.getSelectionModel().getSelection();
                     if (rescords.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return;
+                        this.msgbox("请选择一条数据！");
+                        return null;
                     }
                     recordData = rescords[0].getData();
                 }else{	//点击操作列的方式
