@@ -1,9 +1,7 @@
 Ext.define("core.baseset.campus.view.DetailForm", {
     extend: "core.base.view.BaseForm",
     alias: "widget.baseset.campus.detailform",
-    layout: "form",
     autoHeight: true,
-    frame: false,
     fieldDefaults: { // 统一设置表单字段默认属性
         labelSeparator: '：', // 分隔符
         msgTarget: 'qtip',
