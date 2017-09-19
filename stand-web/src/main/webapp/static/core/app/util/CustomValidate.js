@@ -160,3 +160,49 @@ Ext.apply(Ext.form.VTypes, {
 
 	endDateText: '结束时间不能小于开始时间'
 });
+
+// 时分秒比较验证
+Ext.apply(Ext.form.VTypes, {
+	startTime: function(val, field) {
+		if (field.compareField) {
+			var dateField= field.findParentByType('form').getForm().findField(field.compareField);
+			var compareDate= dateField.value;
+
+            if(!Ext.isEmpty(compareDate)){            
+                var beginDate = new Date(field.value);
+                var endDate = new Date(compareDate);
+                if (beginDate <= endDate) {
+                    dateField.clearInvalid();
+                    return true;
+                } else {
+					return false;
+				}           
+            }	
+		}
+		return true;
+	},
+	startTimeText: '开始时间不能大于结束时间'
+});
+Ext.apply(Ext.form.VTypes, {
+	endTime: function(val, field) {
+		if (field.compareField) {
+			var dateField= field.findParentByType('form').getForm().findField(field.compareField);
+			var compareDate= dateField.value;
+
+            if(!Ext.isEmpty(compareDate)){           
+                var beginDate = new Date(compareDate);
+                var endDate = new Date(field.value);
+              
+                if (beginDate <= endDate) {
+                    dateField.clearInvalid();
+                    return true;
+                } else {
+					return false;
+				}           
+            }
+			
+		}
+		return true;
+	},
+	endTimeText: '结束时间不能小于开始时间'
+});

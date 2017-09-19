@@ -3,6 +3,7 @@ package com.zd.school.plartform.baseset.service;
 import com.zd.core.service.BaseService;
 import com.zd.school.jw.eduresources.model.JwCalender ;
 import com.zd.school.jw.eduresources.model.JwTGrade;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -30,4 +31,7 @@ public interface BaseCalenderService extends BaseService<JwCalender> {
 	public JwCalender findJwTcanderByClaiId(JwTGrade  jtg);
 	
 	public int updateStatu(String uuid);
+	public JwCalender  doUpdateEntity(JwCalender entity, SysUser currentUser);
+	public JwCalender  doAddEntity(JwCalender entity, SysUser currentUser);
+	public Boolean  doDeleteEntity(String delIds);
 }

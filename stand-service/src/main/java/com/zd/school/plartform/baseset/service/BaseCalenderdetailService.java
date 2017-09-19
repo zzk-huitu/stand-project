@@ -5,6 +5,7 @@ import java.util.List;
 import com.zd.core.service.BaseService;
 import com.zd.school.jw.eduresources.model.JwCalender;
 import com.zd.school.jw.eduresources.model.JwCalenderdetail ;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -29,5 +30,18 @@ public interface BaseCalenderdetailService extends BaseService<JwCalenderdetail>
      * @author huangzc
      */
 	public List<JwCalenderdetail> queryJwTCanderdetailByJwTCander(JwCalender jtc);
+	/**
+	 * 根据传入的实体对象更新数据库中相应的数据
+	 * 
+	 * @param entity
+	 *            传入的要更新的实体对象
+	 * @param currentUser
+	 *            当前操作用户
+	 * @return
+	 */
+	public JwCalenderdetail doUpdateEntity(JwCalenderdetail entity, SysUser currentUser);
+	
+	public JwCalenderdetail doAddEntity(JwCalenderdetail entity, SysUser currentUser);
+	public Boolean doDeleteEntity(String delIds);
 
 }

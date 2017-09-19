@@ -1,0 +1,619 @@
+Ext.define("core.baseset.calendar.controller.MainController", {
+    extend: "Ext.app.ViewController",
+    alias: 'controller.baseset.calendar.maincontroller',
+    mixins: {
+        suppleUtil: "core.util.SuppleUtil",
+        messageUtil: "core.util.MessageUtil",
+        formUtil: "core.util.FormUtil",
+        gridActionUtil: "core.util.GridActionUtil",
+        dateUtil: 'core.util.DateUtil'
+        
+    },
+      
+    init: function () {
+        var self = this;
+            //事件注册
+        this.control({
+
+            //增加作息时间目录事件
+            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridAdd]": {
+                beforeclick: function(btn) {                
+                    self.doCalendarDetail_Win(btn, "add");
+                    return false;
+                }
+            },
+            //编辑作息时间目录事件
+            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridEdit]": {
+                beforeclick: function(btn) {
+                    self.doCalendarDetail_Win(btn, "edit");
+                    return false;
+                }
+            },
+            //启用作息时间事件
+            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridUse]": {
+                beforeclick: function(btn) {
+                    self.doCalenderUse(btn);
+                    return false;
+                }
+            },
+             //删除作息时间事件
+            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridDel]": {
+                beforeclick: function(btn) {
+                    self.doDeleteCaleRecords(btn);
+                    return false;
+               }
+            },
+
+
+           /**
+             * 操作列的操作事件
+             */
+            /*"basegrid[xtype=baseset.calendar.maingrid] actioncolumn": {
+                deleteClick:function(data){
+                  // self.doDeleteRecords(btn,data.view,data.record) 
+                          
+                },        
+
+                //弹出tab页的方式
+                editClick_Tab: function(data) {
+                   self.doItemDetail_Tab(null, "eidt",data.view,data.record);           
+                },
+                //弹出tab页的方式
+                detailClick_Tab: function(data) {
+                    this.doItemDetail_Tab(null,"detail",data.view,data.record);
+                },
+            },*/
+
+            //添加作息时间详细信息事件
+            "basegrid[xtype=baseset.calendar.maingrid] button[ref=gridAdd_Tab]": {
+                beforeclick: function(btn) {
+                    self.doItemDetail_Tab(btn, "add");                
+                    return false;
+                }
+            },
+            /** 作息时间详细信息修改事件响应 */
+            "basegrid[xtype=baseset.calendar.maingrid] button[ref=gridEdit_Tab]": {
+                beforeclick: function(btn) {
+                    self.doItemDetail_Tab(btn, "edit");
+                    return false;
+
+                }
+            },
+
+            /** 作息时间详细信息删除事件响应 */
+            "basegrid[xtype=baseset.calendar.maingrid] button[ref=gridDelete]": {
+                beforeclick: function(btn) {
+                   self.doDeleteRecords(btn);
+                   return false;
+                }
+            },
+           
+
+              // 作息时间目录表格节点击事件
+            "panel[xtype=baseset.calendar.calendargrid]": {
+                beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                    var basePanel = grid.up("basepanel");
+                    var funData = basePanel.funData;
+                    funData = Ext.apply(funData, {
+                        canderId: record.get("uuid"),
+                        canderName: record.get("canderName"),
+                        activityState: record.get("activityState"),
+                        campusName: record.get("campusName")
+                    });
+                    //加载作息时间项信息
+                    var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
+                    var btn1 = mainGrid.down("button[ref=gridEdit_Tab]");
+                    var btn2 = mainGrid.down("button[ref=gridDelete]");
+                    btn1.setDisabled(true);
+                    btn2.setDisabled(true);
+
+                    var store = mainGrid.getStore();
+                    var proxy = store.getProxy();
+                 
+                   proxy.extraParams.filter='[{"type":"string","value":"'+record.get("uuid")+'","field":"canderId","comparison":""}]';
+                    store.load();
+
+                    return false;
+                }
+
+            },
+      
+
+            // 作息时间详细信息事件表格节点击事件
+            "panel[xtype=baseset.calendar.maingrid]": {
+                beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                    var basePanel = grid.up("basepanel");
+                    var funData = basePanel.funData;
+                    var activityState = funData.activityState;
+                    var campusName = funData.campusName;
+                    var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
+                    var records = mainGrid.getSelectionModel().getSelection();
+                    var btn1 = mainGrid.down("button[ref=gridEdit_Tab]");
+                    var btn2 = mainGrid.down("button[ref=gridDelete]");
+
+                    if (records.length == 1 && activityState != 1) {
+                        if(btn1)
+                            btn1.setDisabled(false);
+                        if(btn2)
+                            btn2.setDisabled(false);
+                    } else {
+                        if(btn1)
+                            btn1.setDisabled(true);
+                        if(btn2)
+                            btn2.setDisabled(true);
+                    }
+
+                    return false;
+                }
+            },
+
+            "combobox[name=isafgernoon]": {
+                change: function(combo, newValue, oldValue, eOpts) {
+
+                    var objDetForm = combo.up("baseform[xtype=baseset.calendar.mainform]");
+                    var beginTime = objDetForm.down("timefield[name=beginTime]");
+                    var endTime = objDetForm.down("timefield[name=endTime]");
+                    if (newValue == 0) {
+                        beginTime.setMinValue('06:00');
+                        beginTime.setMaxValue('14:00');
+                        endTime.setMinValue('06:00');
+                        endTime.setMaxValue('14:00');
+                    } else if (newValue == 1) {
+                        beginTime.setMinValue('13:00');
+                        beginTime.setMaxValue('19:00');
+                        endTime.setMinValue('13:00');
+                        endTime.setMaxValue('19:00');
+                    } else if (newValue == 2) {
+                        beginTime.setMinValue('18:00');
+                        beginTime.setMaxValue('23:00');
+                        endTime.setMinValue('18:00');
+                        endTime.setMaxValue('23:00');
+                    }
+
+                }
+            },
+
+         
+
+             
+      });
+    },
+
+
+    //作息时间详细信息增加、修改和详细的处理
+    doItemDetail_Tab: function(btn, cmd,grid,record) {
+        var self = this;
+
+        //得到组件
+        var baseGrid = grid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+        }
+
+        var basePanel = baseGrid.up("basepanel");
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
+    
+        //得到配置信息
+        var funData = basePanel.funData;                //主界面的配置信息  
+        var canderId = funData.canderId;
+        var canderName = funData.canderName;
+        var activityState = funData.activityState;
+        var campusName = funData.campusName;
+        var pkName=funData.pkName;
+  
+        var funCode = basePanel.funCode;          //主界面的funCode
+        var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
+        
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';  
+
+        //获取Tab相关数据,根据cmd的类型，来获取不同的数据
+        var tabConfig=funData.tabConfig;
+        var tabTitle = ""; 
+        var tabItemId ="";
+        var pkValue= null;
+        var operType="";
+        var recordData=null;
+        switch (cmd) {
+            case "add":
+                tabTitle = tabConfig.addTitle; 
+                tabItemId = funCode + "_gridAdd";    //命名规则：funCode+'_ref名称',确保不重复
+                pkValue = null;
+                operType="add";
+                break;
+            case "edit":
+                if (btn) {  //点击按钮的方式
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    if (records.length != 1) {
+                        self.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = records[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                }          
+                //获取名称
+                var titleName = recordData[tabConfig.titleField]; 
+                if(titleName)
+                    tabTitle = titleName+"-"+tabConfig.editTitle;
+                else
+                    tabTitle = tabConfig.editTitle;
+
+                //获取主键值
+                pkValue= recordData[pkName];
+                tabItemId=funCode+"_gridEdit"; 
+                operType="edit";
+                break;
+            case "detail":
+
+                if (btn) {//点击按钮的方式
+                    var rescords = baseGrid.getSelectionModel().getSelection();
+                    if (rescords.length != 1) {
+                        this.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = rescords[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                }
+                
+                //获取名称
+                var titleName = recordData[tabConfig.titleField];
+                if(titleName)
+                    tabTitle = titleName+"-"+tabConfig.detailTitle;
+                else
+                    tabTitle = tabConfig.detailTitle;
+
+                //获取主键值
+                pkValue= recordData[pkName];
+                tabItemId=funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
+                operType="detail";
+                break;
+        }
+
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem=tabPanel.getComponent(tabItemId);
+        if(!tabItem){
+
+            //创建tabItem
+            var tabItem = Ext.create({
+                xtype:'container',
+                title: tabTitle,
+                //iconCls: 'x-fa fa-clipboard',
+                scrollable :true, 
+                itemId:tabItemId,            
+                layout:'fit', 
+                itemPKV:pkValue,      //保存主键值
+            });
+            tabPanel.add(tabItem); 
+
+            //延迟放入到tab中
+            setTimeout(function(){
+
+                //创建tab内部组件                     
+                var insertObj =  Ext.apply(new Object(),funData.defaultObj);
+                var popFunData = Ext.apply(funData, {   //将一些必要的信息，统一存放于此，提高给处理提交代码使用。
+                    grid: baseGrid
+                });
+                if(recordData!=null){
+                    insertObj=recordData;
+                }
+
+                var item=Ext.widget("baseformtab",{
+                    operType:operType,                            
+                    controller:otherController,         //指定重写事件的控制器
+                    funCode:funCode,                    //指定mainLayout的funcode
+                    detCode:detCode,                    //指定detailLayout的funcode
+                    tabItemId:tabItemId,                //指定tab页的itemId
+                    insertObj:insertObj,                    //保存一些需要默认值，提供给提交事件中使用
+                    funData:popFunData,                     //保存funData数据，提供给提交事件中使用
+                    items:[{
+                        xtype:detLayout
+                    }]
+                }); 
+              
+                tabItem.add(item);  
+                
+                insertObj.beginTime = Ext.util.Format.date(insertObj.beginTime, 'H:i');
+                insertObj.endTime = Ext.util.Format.date(insertObj.endTime, 'H:i');
+                insertObj.canderName = canderName;
+                insertObj.campusName = campusName;
+                insertObj.canderId = canderId;
+
+                //处理打开界面之后，显示的初始数据
+                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                var formDeptObj = objDetForm.getForm();              
+                self.setFormValue(formDeptObj, insertObj);
+                               
+                if(cmd=="detail"){
+                    formDeptObj.setItemsReadOnly(true);
+                }
+
+            },30);
+                           
+        }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
+            self.msgbox("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab(tabItem);   
+    },
+
+
+    //作息时间目录增加、修改和详细的处理
+   doCalendarDetail_Win : function(btn, cmd, grid, record) {
+        var self=this;
+        //得到组件
+        var basegrid=grid;
+        if(!basegrid) {
+            baseGrid = btn.up("basegrid");
+        }
+        var basePanel = baseGrid.up("basepanel");
+
+        //得到配置信息
+        var funData = basePanel.funData;
+        var detCode = "calendar_detail";
+        var detLayout = "baseset.calendar.calendardetaillayout";
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';    
+        
+        //设置window的参数
+        var width = 450;
+        var height = 250;
+        var iconCls= 'x-fa fa-plus-circle';
+        var winTitle = "增加作息时间目录";
+        var recordData=null;
+        var operType="add";
+        switch (cmd) {
+           /* case "add":
+                winTitle = "增加作息时间目录";
+                iconCls = "x-fa fa-plus-circle";
+                operType="add";
+                break;*/
+            case "edit":
+                winTitle = "修改作息时间目录";
+                operType="edit";
+                iconCls = "x-fa fa-pencil-square";
+              
+                if (btn) {  //点击按钮的方式
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    if (records.length != 1) {
+                        self.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = records[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                } 
+
+                var state =recordData["activityState"];
+                if (state === 1) {
+                    self.msgbox("所选作息时间已生效启用，不能再修改！");
+                    return;
+                }
+               
+                recordData = Ext.apply(recordData, {
+                    activityTime: Ext.util.Format.date(Ext.valueFrom(recordData["activityTime"], null), 'Y-m-d')
+                });
+                break;
+            case "detail":
+                winTitle = "作息时间目录详情";
+                iconCls = "x-fa fa-file-text";
+                operType="detail";
+
+                if (btn) {//点击按钮的方式
+                    var rescords = baseGrid.getSelectionModel().getSelection();
+                    if (rescords.length != 1) {
+                        this.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = rescords[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                }
+               
+                break;
+        }
+
+        //处理默认值
+        var insertObj = funData.defaultObj;
+        if(recordData!=null){
+            insertObj=recordData;
+        }
+        //保持一些相关数据，在提交时使用
+        var popFunData = Ext.apply(funData, {
+            grid: baseGrid
+        });
+                  
+                
+        var win = Ext.create('core.base.view.BaseFormWin', {
+            iconCls:iconCls,
+            title: winTitle,
+            operType: operType,
+            width: width,
+            height: height,
+            controller: otherController,
+            funData: popFunData,
+            funCode: detCode,
+            insertObj: insertObj,        
+            items: [{
+                xtype: detLayout
+            }]
+        }).show(); 
+       
+
+        var detPanel = win.down("basepanel[funCode=" + detCode + "]");
+        var objDetForm = detPanel.down("baseform[funCode=" + detCode + "]");
+        var formDeptObj = objDetForm.getForm();
+
+        self.setFormValue(formDeptObj, insertObj);
+
+        if(cmd=="detail")
+             formDeptObj.setItemsReadOnly(true);
+    },
+     doDeleteRecords:function(btn,grid, record){
+        var self=this;
+        //得到组件
+        var basegrid=grid;
+        if(!basegrid) {
+            baseGrid = btn.up("basegrid");
+        }
+        var basePanel = baseGrid.up("basepanel");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        var canderId = funData.canderId;
+        var activityState = funData.activityState;
+        if (Ext.isEmpty(canderId)) {
+            self.msgbox("请选择作息时间!");
+            return;
+        }
+        if (activityState == "1") {
+            if (Ext.isEmpty(canderId)) {
+                self.msgbox("不能删除已生效的作息时间的节次信息!");
+                return;
+            }
+        }
+        //得到选中数据
+        var records = baseGrid.getSelectionModel().getSelection();
+        if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+                if (btn == 'yes') {
+                    var loading = self.LoadMask(baseGrid);
+
+                    var ids = new Array();
+                    Ext.each(records, function (rec) {
+                        var pkValue = rec.get(pkName);
+                        ids.push(pkValue);
+                    });
+
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete", 
+                        params: {
+                            ids: ids.join(","),
+                            pkName: pkName
+                        },                       
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if(data.success){
+                                baseGrid.getStore().remove(records); //不刷新的方式
+                                self.msgbox(data.obj);                               
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
+    },
+
+     doDeleteCaleRecords:function(btn){
+        var self=this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+        var basePanel = baseGrid.up("basepanel");
+        //得到选中数据
+        var records = baseGrid.getSelectionModel().getSelection();
+        var ids = new Array();
+
+        for(index in records){
+           var rec=records[index];
+           ids.push(rec.get("uuid"));
+
+          if (rec.get("activityState") == 1) {
+              self.msgbox("不能删除已生效的作息时间!");
+              return false;
+          }
+        }
+    
+
+            if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+                if (btn == 'yes') {
+                    var loading = self.LoadMask(baseGrid);
+                    self.asyncAjax({
+                        url: comm.get('baseUrl') + "/BaseCalender/doDelete", 
+                        params: {
+                            ids: ids.join(","),
+                           
+                        },                       
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if(data.success){
+                              basePanel.down("basegrid[xtype=baseset.calendar.maingrid]").getStore().load();
+                                   // grid.getStore().load();
+                             baseGrid.getStore().remove(records); //不刷新的方式
+                             self.msgbox(data.obj);                               
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }   
+
+    },
+    doCalenderUse:function(btn) {
+               var self=this;
+               //得到组件
+               var basegrid = btn.up("basegrid");
+               var basepanel = basegrid.up('basepanel');
+               var records = basegrid.getSelectionModel().getSelection();
+               if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm("提示", "启用此作息时间则会使其他作息时间失效，你确定要启用吗？", function (btn, text) {
+                if (btn == 'yes') {
+                    var loading = self.LoadMask(basegrid);
+                    self.asyncAjax({
+                        url: comm.get('baseUrl') + "/BaseCalender/doUpdateState", 
+                        params: {
+                         uuid: records[0].get("uuid")
+                     },                      
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if(data.success){
+                               basegrid.getStore().load();
+                               self.msgbox(data.obj);                               
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择一条需要生效的日历!");
+        }
+
+    }
+
+});

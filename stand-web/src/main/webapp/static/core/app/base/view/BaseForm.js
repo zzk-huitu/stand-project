@@ -11,14 +11,16 @@ Ext.define("core.base.view.BaseForm",{
 	defaults:{
 		width:'100%',
 		margin:"10 5 0 5",
-		xtype : 'textfield',
-		labelAlign : 'right',
+		//labelAlign : 'right',
 		//columnWidth : 0.5,
-		msgTarget: 'qtip',
+		//msgTarget: 'qtip',
 	},
 	fieldDefaults: { // 统一设置表单字段默认属性
+		xtype : 'textfield',
         labelSeparator: '：', // 分隔符
-        labelWidth:100
+        labelWidth:100,
+        labelAlign : 'right',
+        msgTarget: 'qtip',
     },
 
 	buttonAlign :'center',

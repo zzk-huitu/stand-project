@@ -36,7 +36,7 @@ Ext.define("core.util.SuppleUtil", {
 	},
 	/*
 	异步ajax
-		var resObj = self.asyncAjax({
+		self.asyncAjax({
             url: funData.action + "/signup",
             params: {
                 actId: '016A2C1A-8775-43B2-BCF1-7D251DDBCB9D',

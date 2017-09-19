@@ -317,6 +317,9 @@ Ext.define("core.base.controller.ButtonController", {
         var funData=moduleInfo.funData;
         var tabInfo = self.getTabInfo(moduleInfo.funCode,funData.pkName,funData.tabConfig,baseGrid,btn,cmd);
 
+        if(tabInfo==null)
+            return;
+        
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabPanel=moduleInfo.tabPanel;
         var tabItem=tabPanel.getComponent(tabInfo.tabItemId);
@@ -459,8 +462,7 @@ Ext.define("core.base.controller.ButtonController", {
                                 // }
 
                                 baseGrid.getStore().remove(records); //不刷新的方式
-                                self.msgbox(data.obj);
-                                Ext.Msg.hide();
+                                self.msgbox(data.obj);                               
                             }else {
                                 self.Error(data.obj);
                             }           

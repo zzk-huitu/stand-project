@@ -460,7 +460,7 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 			});
 		}
 		win.show();
-		var detailPanel = win.down("basepanel[funCode=" + detCode + "]");
+		var detailPanel = win.down("basepanel[funCode=" + detCode + "]");//DIC_MAIN
 		var objDetForm = detailPanel.down("baseform[funCode=" + detCode + "]");
 		var formDeptObj = objDetForm.getForm();
 		//表单赋值
