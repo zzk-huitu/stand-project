@@ -36,13 +36,14 @@ Ext.define('core.main.view.menu.MainMenuIcon', {
     
     initComponent : function() {  
         var me =this;
+
+        //加入读取任务数值的数据
         var iconStore=Ext.create('Ext.data.Store', {
             fields: [
                 'id','text', 'iconCls', 'leaf','children','menuCode','menuType','bigIcon','smallIcon','taskNumber'
             ],
         });
-
-        //读取任务数值
+        
         Ext.Ajax.request({
             url: comm.get('baseUrl')+'/sysuser/getUserMenuTask',
             method: "POST",
@@ -64,12 +65,12 @@ Ext.define('core.main.view.menu.MainMenuIcon', {
                         }
                     }                
                 }
-                iconStore.loadData(me.datas);
+                iconStore.loadData(me.datas);   //显示菜单
                 me.store=iconStore;
             },
 
             failure: function(response, opts) {
-                iconStore.loadData(me.datas);
+                iconStore.loadData(me.datas);   //显示菜单
                 me.store=iconStore;
             }
         });            

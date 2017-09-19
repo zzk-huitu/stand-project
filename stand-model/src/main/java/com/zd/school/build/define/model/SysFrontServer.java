@@ -11,7 +11,7 @@ import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
 
 /**
- * 综合前置管理
+ * 综合前置服务器
  * 
  * @author hucy
  *

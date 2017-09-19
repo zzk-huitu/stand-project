@@ -139,19 +139,19 @@ Ext.define('core.main.view.Main', {
         //此代码用于在【我的桌面】放入图标按钮，现在隐藏
         var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
         
-        /*
-        var menus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
-        var datas=[];
+        //2017-9-19 暂时显示所有图标
+        var systemMenus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
+        var menus=[];
         //组装第二层子菜单
-        for (var i in menus) {  
+        for (var i in systemMenus) {  
 
-            var childs = menus[i].children;  
+            var childs = systemMenus[i].children;  
        
-            datas.push.apply(datas,childs);
+            menus.push.apply(menus,childs);
            
-        } */
-
-        var menus = viweport.getViewModel().get('myDeskMenu'); 
+        }
+        //2017-9-19 暂时关闭自定义桌面
+        //var menus = viweport.getViewModel().get('myDeskMenu'); （自定义桌面：暂未用到）
         
         this.items=[{
             title: '我的桌面',

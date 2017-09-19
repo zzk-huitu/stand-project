@@ -56,44 +56,44 @@ Ext.define('core.main.view.Viewport', {
                     }else{
                         me.getViewModel().set('systemMenu' , result);
 
-                        /*以下方法，用来判断，用户是否拥有默认的桌面菜单权限，有则显示*/
-                        function searchChild(childObj,code){
-                            for(var i=0;i<childObj.length;i++){
-                                var currentObj=childObj[i];
-                                if(code==currentObj.menuCode){
-                                    return true;
-                                }
+                        //以下方法，用来判断，用户是否拥有默认的桌面菜单权限，有则显示（自定义桌面：暂未用到）
+                        // function searchChild(childObj,code){
+                        //     for(var i=0;i<childObj.length;i++){
+                        //         var currentObj=childObj[i];
+                        //         if(code==currentObj.menuCode){
+                        //             return true;
+                        //         }
 
-                                if(currentObj.children.length>0){
-                                    return searchChild(currentObj.children);                                
-                                }
-                            }
-                            return false;
-                        }
+                        //         if(currentObj.children.length>0){
+                        //             return searchChild(currentObj.children);                                
+                        //         }
+                        //     }
+                        //     return false;
+                        // }
                         //根据有权限的菜单，来判断这几个菜单，应该显示哪些
-                        var myDeskMenu=me.getViewModel().get('myDeskMenu');
-                        var currentMenu=[];                    
-                        for(var i=0;i<myDeskMenu.length;i++){
-                            var code=myDeskMenu[i].menuCode;
+                        // var myDeskMenu=me.getViewModel().get('myDeskMenu');
+                        // var currentMenu=[];                    
+                        // for(var i=0;i<myDeskMenu.length;i++){
+                        //     var code=myDeskMenu[i].menuCode;
 
-                            for(var j=0;j<result.length;j++){
-                                var currentResult=result[j];
-                                if(code==currentResult.menuCode){
-                                    currentMenu.push(myDeskMenu[i]);
-                                    break;
-                                }
+                        //     for(var j=0;j<result.length;j++){
+                        //         var currentResult=result[j];
+                        //         if(code==currentResult.menuCode){
+                        //             currentMenu.push(myDeskMenu[i]);
+                        //             break;
+                        //         }
                                 
-                                if(currentResult.children.length>0){
-                                    //递归查询子菜单
-                                    var isExist=searchChild(currentResult.children,code);
-                                    if(isExist==true){                                    
-                                        currentMenu.push(myDeskMenu[i]);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        me.getViewModel().set('myDeskMenu',currentMenu);
+                        //         if(currentResult.children.length>0){
+                        //             //递归查询子菜单
+                        //             var isExist=searchChild(currentResult.children,code);
+                        //             if(isExist==true){                                    
+                        //                 currentMenu.push(myDeskMenu[i]);
+                        //                 break;
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        // me.getViewModel().set('myDeskMenu',currentMenu);
                     }
                 }catch(err){
                     //如果出现错误，则表明返回的不是json数据，所以，回到登录界面
