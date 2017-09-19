@@ -19,7 +19,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.SysFrontServer;
-import com.zd.school.plartform.basedevice.service.SysFrontServerService;
+import com.zd.school.plartform.basedevice.service.BaseFrontServerService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
@@ -32,7 +32,7 @@ import com.zd.school.plartform.system.model.SysUser;
 @RequestMapping("/BaseFrontServer")
 public class BaseFrontServerController extends FrameWorkController<SysFrontServer> implements Constant {
 	@Resource
-	SysFrontServerService thisService; // service层接口
+	BaseFrontServerService thisService; // service层接口
 
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity

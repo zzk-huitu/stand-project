@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zd.core.dao.BaseDaoImpl;
 import com.zd.school.build.define.model.SysFrontServer;
-import com.zd.school.plartform.basedevice.dao.SysFrontServerDao;
+import com.zd.school.plartform.basedevice.dao.BaseFrontServerDao;
 
 
 /**
@@ -15,8 +15,8 @@ import com.zd.school.plartform.basedevice.dao.SysFrontServerDao;
  *
  */
 @Repository
-public class SysFrontServerDaoImpl extends BaseDaoImpl<SysFrontServer> implements SysFrontServerDao {
-    public SysFrontServerDaoImpl() {
+public class BaseFrontServerDaoImpl extends BaseDaoImpl<SysFrontServer> implements BaseFrontServerDao {
+    public BaseFrontServerDaoImpl() {
         super(SysFrontServer.class);
         // TODO Auto-generated constructor stub
     }

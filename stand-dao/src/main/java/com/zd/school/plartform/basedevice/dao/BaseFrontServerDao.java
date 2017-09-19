@@ -12,6 +12,6 @@ import com.zd.school.build.define.model.SysFrontServer;
  * @author hucy
  *
  */
-public interface SysFrontServerDao extends BaseDao<SysFrontServer> {
+public interface BaseFrontServerDao extends BaseDao<SysFrontServer> {
 
 }

@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.build.define.model.SysFrontServer;
-import com.zd.school.plartform.basedevice.dao.SysFrontServerDao;
-import com.zd.school.plartform.basedevice.service.SysFrontServerService;
+import com.zd.school.plartform.basedevice.dao.BaseFrontServerDao;
+import com.zd.school.plartform.basedevice.service.BaseFrontServerService;
 
 /**
  * 综合前置管理
@@ -18,10 +18,10 @@ import com.zd.school.plartform.basedevice.service.SysFrontServerService;
  */
 @Service
 @Transactional
-public class SysFrontServerServiceImpl extends BaseServiceImpl<SysFrontServer> implements SysFrontServerService{
+public class BaseFrontServerServiceImpl extends BaseServiceImpl<SysFrontServer> implements BaseFrontServerService{
 
     @Resource
-    public void setSysFrontServerDao(SysFrontServerDao dao) {
+    public void setSysFrontServerDao(BaseFrontServerDao dao) {
         this.dao = dao;
     }
 

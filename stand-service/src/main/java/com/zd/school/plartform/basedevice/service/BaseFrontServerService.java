@@ -11,6 +11,6 @@ import com.zd.school.build.define.model.SysFrontServer;
  * @author hucy
  *
  */
-public interface SysFrontServerService extends BaseService<SysFrontServer> {
+public interface BaseFrontServerService extends BaseService<SysFrontServer> {
 
 }
