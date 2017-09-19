@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
+
 /**
  * @param <E>
  * @ClassName: BaseDao
@@ -14,7 +16,9 @@ import java.util.Map;
  * @date: 2016年3月9日 下午1:06:16
  */
 public interface BaseDao<E> {
-
+	
+	public Session getSession();
+	
     /**
      * 持久化对象实体
      *
@@ -536,4 +540,6 @@ public interface BaseDao<E> {
 
     public <T> QueryResult<T> doQueryCountToHql(Integer start, Integer limit, String sort, String filter, String hql,
                                                 String groupBy, String orderBy, String where);
+
+
 }

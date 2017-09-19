@@ -228,24 +228,16 @@ Ext.define("core.system.dept.view.DetailForm", {
             hidden: true
         },{
             columnWidth: 0.5,
-            // beforeLabelTextTpl: '',
-            // xtype: "textfield",
-            // fieldLabel: "副负责人",
-            // name: "viceLeader",
-            // allowBlank: true,
-            // emptyText: '副负责人',
-            // blankText: ''
-            xtype: "basefuncfield",
-            //funcController: "core.systemset.jobinfo.controller.jobinfoController", //该属性现在不需要了
-            funcPanel: "systemset.jobinfo.mainlayout", //该功能显示的主视图
-            refController:'system.dept.otherController',             //指定弹出的window引用的控制器，方便方法重写。 若不需要重写，则不配置此项
+            xtype: "basefuncfield",         
+            funcPanel: "system.jobinfo.mainlayout", //该功能显示的主视图
+            //refController:'system.dept.othercontroller',             //指定弹出的window引用的控制器，方便方法重写。 若不需要重写，则不配置此项
+            formPanel: "system.dept.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
             funcTitle: "主岗位选择", //查询窗口的标题
             configInfo: {
-
                 fieldInfo: "mainLeader~mainLeaderName,uuid~jobName",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by jobCode ",
-                muiltSelect: true //是否多选
+                muiltSelect: false //是否多选
             },
             fieldLabel: '主负责岗位',
             name: "mainLeaderName",
@@ -261,14 +253,15 @@ Ext.define("core.system.dept.view.DetailForm", {
             // blankText: ''
             xtype: "basefuncfield",
             //funcController: "core.systemset.jobinfo.controller.jobinfoController", //该属性现在不需要了
-            funcPanel: "systemset.jobinfo.mainlayout", //该功能显示的主视图
-            refController:'system.dept.otherController',            //指定弹出的window引用的控制器，方便方法重写。 若不需要重写，则不配置此项
+            funcPanel: "system.jobinfo.mainlayout", //该功能显示的主视图
+            //refController:'system.dept.otherController',            //指定弹出的window引用的控制器，方便方法重写。 若不需要重写，则不配置此项
+            formPanel: "system.dept.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
             funcTitle: "副岗位选择", //查询窗口的标题
             configInfo: {
                 fieldInfo: "viceLeader~viceLeaderName,uuid~jobName",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by jobCode ",
-                muiltSelect: true //是否多选
+                muiltSelect: false //是否多选
             },
             fieldLabel: '副负责岗位',
             name: "viceLeaderName",

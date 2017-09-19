@@ -80,7 +80,7 @@
 					</webAppConfig>
 					<!-- 配置的停止jetty服务 -->
 					<stopKey>shutdown</stopKey>
-					<stopPort>9993</stopPort>
+					<stopPort>9995</stopPort>
 				</configuration>
 			</plugin>
 		</plugins>

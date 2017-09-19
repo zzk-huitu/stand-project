@@ -32,9 +32,9 @@
         <!-- 是否使用注释 -->
         <property name="use_sql_comments">false</property>
         <!-- 一次读的数据库记录数 -->
-        <property name="jdbc.fetch_size">30</property>
+        <property name="jdbc.fetch_size">50</property>
         <!-- 设定对数据库进行批量删除 -->
-        <property name="jdbc.batch_size">30</property>
+        <property name="jdbc.batch_size">50</property>
 
         <property name="cache.use_second_level_cache">false</property>
         <property name="cache.use_query_cache">false</property>

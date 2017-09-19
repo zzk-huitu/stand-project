@@ -12,6 +12,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
@@ -37,6 +38,11 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	 */
 	protected BaseDao<E> dao;
 
+	@Override
+	public Session getSession() {
+		return this.dao.getSession();
+	}
+	
 	/**
 	 * 持久化对象实体.
 	 *

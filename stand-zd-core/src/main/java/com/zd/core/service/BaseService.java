@@ -6,8 +6,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public interface BaseService<E> {
+import org.hibernate.Session;
 
+public interface BaseService<E> {
+	
+
+	public Session getSession();
+	
     /**
      * 持久化对象实体
      *
@@ -491,5 +496,6 @@ public interface BaseService<E> {
      * @return 返回持久化对象
      */
     public E doUpdateEntity(E entity,String operator,List<String> excludedProp);
+
     
 }

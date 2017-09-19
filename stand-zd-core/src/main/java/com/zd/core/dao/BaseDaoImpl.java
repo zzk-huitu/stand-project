@@ -35,7 +35,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-
+   
     public Session getSession() {
         return this.sessionFactory.getCurrentSession();
     }
