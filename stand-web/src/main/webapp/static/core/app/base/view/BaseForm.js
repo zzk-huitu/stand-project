@@ -11,6 +11,7 @@ Ext.define("core.base.view.BaseForm",{
 	defaults:{
 		width:'100%',
 		margin:"10 5 0 5",
+		xtype: "textfield",
 		//labelAlign : 'right',
 		//columnWidth : 0.5,
 		//msgTarget: 'qtip',
