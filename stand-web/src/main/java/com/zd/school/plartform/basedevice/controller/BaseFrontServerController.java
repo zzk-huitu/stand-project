@@ -29,8 +29,8 @@ import com.zd.school.plartform.system.model.SysUser;
  *
  */
 @Controller
-@RequestMapping("/SysFrontServer")
-public class SysFrontServerController extends FrameWorkController<SysFrontServer> implements Constant {
+@RequestMapping("/BaseFrontServer")
+public class BaseFrontServerController extends FrameWorkController<SysFrontServer> implements Constant {
 	@Resource
 	SysFrontServerService thisService; // service层接口
 
