@@ -17,13 +17,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
+import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.core.util.TLVUtils;
+import com.zd.school.build.define.model.SysFrontServer;
 import com.zd.school.control.device.model.PtGateway;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.control.device.model.TLVModel;
+import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.plartform.basedevice.service.BaseGatewayService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -53,21 +57,12 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	public void list(@ModelAttribute PtGateway entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		// hql语句
-		StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + "");
-		// 总记录数
-		StringBuffer countHql = new StringBuffer("select count(*) from " + entity.getClass().getSimpleName() + "");
-		String whereSql = entity.getWhereSql();// 查询条件
-		String querySql = entity.getQuerySql();// 查询条件
-		hql.append(whereSql);
-		hql.append(querySql);
-		countHql.append(whereSql);
-		countHql.append(querySql);
-		hql.append(" order by gatewayName");
-		List<PtGateway> lists = thisService.doQuery(hql.toString(), super.start(request), entity.getLimit());// 执行查询方法
-		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
-		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
+		QueryResult<PtGateway> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
+		
 	}
 
 	/**
@@ -101,9 +96,9 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
@@ -117,15 +112,15 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入还原主键'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入还原主键\""));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'还原成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"还原成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'还原失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"还原失败\""));
 			}
 		}
 	}
@@ -155,7 +150,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			ptGateway.setUpdateTime(new Date());
 			thisService.merge(ptGateway);
 		}
-		writeJSON(response, jsonBuilder.returnSuccessJson("'成功'"));
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"成功\""));
 	}
 	
 	/**
@@ -171,22 +166,32 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	public void doUpdates(PtGateway entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
-		String userCh = "超级管理员";
+		
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		// 先拿到已持久化的实体
-		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		PtGateway perEntity = thisService.get(entity.getUuid());
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-		perEntity.setUpdateUser(userCh);
+		   
+        entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+        if (ModelUtil.isNotNull(entity))
+            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        else
+            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
+      
+    }
+	
+	@RequestMapping("/doAdd")
+    public void doAdd(PtGateway entity, HttpServletRequest request, HttpServletResponse response)
+            throws IOException, IllegalAccessException, InvocationTargetException {
 
-		entity = thisService.merge(perEntity);// 执行修改方法
+   
+        // 获取当前操作用户
+        SysUser currentUser = getCurrentSysUser();
+      
+        entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
+        if (ModelUtil.isNotNull(entity))
+            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+        else
+            writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));      
+}
 
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
-
-	}
 	
 	/**
 	 * 批量设置高级参数
