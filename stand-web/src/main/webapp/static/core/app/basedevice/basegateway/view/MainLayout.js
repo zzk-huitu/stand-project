@@ -38,7 +38,7 @@ Ext.define("core.basedevice.basegateway.view.MainLayout", {
 	items: [{
 		xtype: "basedevice.basegateway.ptgatewaytree",
 		region: "west",
-		margin:'0 5 0 0',
+		//margin:'0 5 0 0',
 		split:true,
 		//collapsible:true,
 		width: comm.get("clientWidth") * 0.2
