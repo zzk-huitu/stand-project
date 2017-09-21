@@ -15,10 +15,12 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.*;
+
 
 public class BaseDaoImpl<E> implements BaseDao<E> {
     // private final Logger logger = Logger.getLogger(entityClass);
@@ -48,6 +50,13 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
     public BaseDaoImpl(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
+//    public BaseDaoImpl() {  //直接new BaseDaoImpl<CLASS>()的方式。
+//        // 获取当前new的对象的泛型的父类类型  
+//        ParameterizedType pt = (ParameterizedType) this.getClass()  
+//                .getGenericSuperclass();  
+//        // 获取第一个类型参数的真实类型            
+//        this.clazz = (Class<E>) pt.getActualTypeArguments()[0];  
+//    }  
 
     /**
      * 持久化对象实体
@@ -718,7 +727,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
 
         }
     }
-
+    
     /**
      * 根据SQL查询对象集合
      *

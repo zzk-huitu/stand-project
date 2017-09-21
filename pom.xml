@@ -142,10 +142,11 @@
 			<version>1.0.20</version>
 		</dependency>
 		<!-- sql server 数据库驱动 -->
+		<!-- https://mvnrepository.com/artifact/com.hynnet/sqljdbc-chs -->
 		<dependency>
-			<groupId>com.hynnet</groupId>
-			<artifactId>sqljdbc4-chs</artifactId>
-			<version>4.0.2206.100</version>
+		    <groupId>com.hynnet</groupId>
+		    <artifactId>sqljdbc-chs</artifactId>
+		    <version>4.0.2206.100</version>
 		</dependency>
 		<!-- json 转换工具依赖包 -->
 		<dependency>
@@ -337,12 +338,27 @@
 			</exclusions>
 		</dependency>
 		
+		<!-- 不清楚用途，暂无发现影响
 		<dependency>
 		    <groupId>aopalliance</groupId>
 		    <artifactId>aopalliance</artifactId>
 		    <version>1.0</version>
 		</dependency>
+		 -->
 		
+		<!-- atomikos分布式事务需要的包 -->
+		<dependency>
+		    <groupId>com.atomikos</groupId>
+		    <artifactId>transactions-jdbc</artifactId>
+		    <version>4.0.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.atomikos</groupId>
+		    <artifactId>transactions-jta</artifactId>
+		    <version>4.0.4</version>
+		</dependency>
+				
+				
 			
 	</dependencies>
 	<modules>

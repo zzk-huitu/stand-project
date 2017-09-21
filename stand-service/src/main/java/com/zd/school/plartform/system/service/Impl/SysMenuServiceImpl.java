@@ -555,21 +555,23 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements SysM
 			menuLeaf = "GENERAL";
 		// String parentName = menu.getp
 		SysMenu saveEntity = new SysMenu();
-		BeanUtils.copyPropertiesExceptNull(menu, saveEntity);
-		menu.setCreateUser(currentUser.getXm()); // 创建人
-		menu.setLeaf(true);
-		menu.setIssystem(1);
-		menu.setIsHidden("1");
-		menu.setMenuLeaf(menuLeaf);
+		List<String> excludedProp = new ArrayList<>();
+		excludedProp.add("uuid");
+		BeanUtils.copyProperties(saveEntity, menu, excludedProp);		
+		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
+		saveEntity.setLeaf(true);
+		saveEntity.setIssystem(1);
+		saveEntity.setIsHidden("1");
+		saveEntity.setMenuLeaf(menuLeaf);
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			SysMenu parEntity = this.get(parentNode);
 			parEntity.setLeaf(false);
 			this.merge(parEntity);
-			menu.BuildNode(parEntity);
+			saveEntity.BuildNode(parEntity);
 		} else
-			menu.BuildNode(null);
+			saveEntity.BuildNode(null);
 
-		menu = this.merge(menu);
+		menu = this.merge(saveEntity);
 		menu.setParentName(parentName);
 		menu.setParentNode(parentNode);
 

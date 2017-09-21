@@ -3,6 +3,7 @@ package com.zd.school.plartform.system.controller;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
 import com.zd.school.plartform.system.model.SysRole;
@@ -69,7 +70,6 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	@RequestMapping("/login")
 	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
-
 		SysUser sysUser = sysUserService.getByProerties("userName", sysUserModel.getUserName());
 		// if (sysUser == null || "1".equals(sysUser.getState())) { //
 		// 用户名有误或已被禁用

@@ -18,7 +18,7 @@ Ext.define("core.system.jobinfo.view.MainLayout", {
     detLayout: "system.jobinfo.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'system.jobinfo.othercontroller',
-    layout:'border',
+    layout:'fit',
     border:false,
     funData: {
         action: comm.get('baseUrl') + "/SysJob", //请求Action 
@@ -35,7 +35,6 @@ Ext.define("core.system.jobinfo.view.MainLayout", {
     minWidth:1000,
     scrollable:true,
     items: [{
-        xtype: "system.jobinfo.maingrid",
-        region: "center"
+        xtype: "system.jobinfo.maingrid"
     }]
 })

@@ -23,6 +23,7 @@ import com.zd.core.constant.Constant;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.SortListUtil;
 import com.zd.core.util.StringUtils;
@@ -130,7 +131,19 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		 */
 		// 持久化到数据库
 		entity = this.merge(perEntity);
-
+		
+//		//切换数据源
+//		DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
+//		
+//		String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,cardid,CardTypeID,EmployeeStatusID,PositionId) "
+//				+ "values('" + entity.getUuid() + "','1','"
+//				+ currentUser.getXm() + "'," + "'" + currentUser.getJobId() + "','','','"
+//				+ currentUser.getXbm() + "','" + currentUser.getSfzjh() + "',0,1,24,19)";
+//		
+//		int row=this.doExecuteCountBySql(sqlInsert.toString());
+//		
+//		DBContextHolder.clearDBType();
+					
 		return entity;
 	}
 
