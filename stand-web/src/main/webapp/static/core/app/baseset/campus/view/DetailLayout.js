@@ -17,7 +17,7 @@ Ext.define("core.baseset.campus.view.DetailLayout", {
     /*关联此视图控制器*/
 	controller: 'baseset.campus.detailcontroller',
 
-	layout:'fit',
+	//layout:'fit',
 	items: [{
 		xtype: "baseset.campus.detailform"
 	}]

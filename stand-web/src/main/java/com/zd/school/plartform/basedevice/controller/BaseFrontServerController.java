@@ -1,6 +1,5 @@
 package com.zd.school.plartform.basedevice.controller;
 
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,6 +16,7 @@ import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.SysFrontServer;
 import com.zd.school.plartform.basedevice.service.BaseFrontServerService;
@@ -61,28 +61,14 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 	public void doAdd(SysFrontServer entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
-		// 此处为放在入库前的一些检查的代码，如唯一校验等
-
-		// 获取当前操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
-		SysFrontServer perEntity = new SysFrontServer();
-		perEntity.setCreateUser(userCh);
-		perEntity.setOrderIndex(orderIndex);
-		// perEntity.setPriceValue(entity.getPriceValue());
-		// perEntity.setPriceStatus(entity.getPriceStatus());
-		BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 
-		// 持久化到数据库
-		entity = thisService.merge(entity);
+		entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));
 
-		// 返回实体到前端界面
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
 
 	/**
@@ -98,7 +84,7 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-	        boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());	           	
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, currentUser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
@@ -120,7 +106,7 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-	        boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,currentUser.getXm());	
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE, currentUser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("'还原成功'"));
 			} else {
@@ -141,22 +127,13 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 		// 入库前检查代码
 
 		// 获取当前的操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
 
-		// 先拿到已持久化的实体
-		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		SysFrontServer perEntity = thisService.get(entity.getUuid());
-		perEntity.setUpdateUser(userCh);
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-		entity = thisService.merge(perEntity);// 执行修改方法
-
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
-
+		entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 	}
 
 }

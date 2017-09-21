@@ -52,7 +52,7 @@ Ext.define("core.baseset.campus.view.MainLayout", {
     minWidth:1000,
     scrollable:true,
 
-    layout:'fit',
+   // layout:'fit',
     items: [{
         xtype: "baseset.campus.maingrid"
     }]
