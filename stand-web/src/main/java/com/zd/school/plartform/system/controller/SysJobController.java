@@ -35,7 +35,8 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	
     @Resource
     SysJobService thisService; // service层接口
-
+    
+    
     /**
      * list查询 @Title: list @Description: TODO @param @param entity
      * 实体类 @param @param request @param @param response @param @throws
@@ -153,7 +154,7 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
         // 获取当前的操作用户
         SysUser currentUser = getCurrentSysUser();  
 
-        entity=thisService.doUpdateEntity(entity, currentUser.getXm(), null);
+        entity=thisService.doUpdateEntity(entity, currentUser.getXm(), null);        
         
         if(entity==null)
        	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));

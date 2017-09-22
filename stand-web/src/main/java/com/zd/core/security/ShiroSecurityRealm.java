@@ -14,15 +14,15 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
 
-import com.zd.school.plartform.system.dao.SysUserDao;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysUserService;
 
 @Component
 public class ShiroSecurityRealm extends AuthorizingRealm {
 
     @Resource
-    private SysUserDao sysUserDao;
+	private SysUserService sysUserService;;
 
     @SuppressWarnings("deprecation")
     public ShiroSecurityRealm() {
@@ -35,7 +35,7 @@ public class ShiroSecurityRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken)
             throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        SysUser user = sysUserDao.getByProerties("userName", token.getUsername());
+        SysUser user = sysUserService.getByProerties("userName", token.getUsername());
         if (user != null) {
             return new SimpleAuthenticationInfo(user.getUuid(), user.getUserPwd(), getName());
         } else {
@@ -49,7 +49,7 @@ public class ShiroSecurityRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         Long userId = (Long) principals.fromRealm(getName()).iterator().next();
-        SysUser user = sysUserDao.get(userId);
+        SysUser user = sysUserService.get(userId);
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
             for (SysRole role : user.getSysRoles()) {

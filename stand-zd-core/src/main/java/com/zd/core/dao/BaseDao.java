@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  * @param <E>
@@ -16,6 +17,8 @@ import org.hibernate.Session;
  * @date: 2016年3月9日 下午1:06:16
  */
 public interface BaseDao<E> {
+	
+	public SessionFactory getSessionFactory();
 	
 	public Session getSession();
 	

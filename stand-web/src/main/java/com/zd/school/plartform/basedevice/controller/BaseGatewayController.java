@@ -57,14 +57,14 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 		StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + "");
 		// 总记录数
 		StringBuffer countHql = new StringBuffer("select count(*) from " + entity.getClass().getSimpleName() + "");
-		String whereSql = entity.getWhereSql();// 查询条件
-		String querySql = entity.getQuerySql();// 查询条件
-		hql.append(whereSql);
-		hql.append(querySql);
-		countHql.append(whereSql);
-		countHql.append(querySql);
+//		String whereSql = entity.getWhereSql();// 查询条件
+//		String querySql = entity.getQuerySql();// 查询条件
+//		hql.append(whereSql);
+//		hql.append(querySql);
+//		countHql.append(whereSql);
+//		countHql.append(querySql);
 		hql.append(" order by gatewayName");
-		List<PtGateway> lists = thisService.doQuery(hql.toString(), super.start(request), entity.getLimit());// 执行查询方法
+		List<PtGateway> lists = thisService.queryByHql(hql.toString(), super.start(request), 10);// 执行查询方法
 		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
 		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
