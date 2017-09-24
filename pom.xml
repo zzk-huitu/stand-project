@@ -145,7 +145,7 @@
 		<!-- https://mvnrepository.com/artifact/com.hynnet/sqljdbc-chs -->
 		<dependency>
 		    <groupId>com.hynnet</groupId>
-		    <artifactId>sqljdbc-chs</artifactId>
+		    <artifactId>sqljdbc4-chs</artifactId>
 		    <version>4.0.2206.100</version>
 		</dependency>
 		<!-- json 转换工具依赖包 -->

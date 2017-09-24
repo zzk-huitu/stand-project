@@ -140,13 +140,20 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
         if (StringUtils.isEmpty(delIds)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除主键\""));
             return;
         } else {        	
+        	//判断这些角色是否正在被其他用户使用
+        	String hql = "select u from SysUser as u inner join fetch u.sysRoles as r where r.uuid='" + delIds
+    				+ "' and r.isDelete=0 and u.isDelete=0 ";
+    		int count = userSerive.queryByHql(hql).size();
+    		if(count>0){
+    			writeJSON(response, jsonBuilder.returnFailureJson("\"此角色正在被其他用户使用，不允许删除！\""));
+    			return;
+    		}
+        	
             SysUser currentUser = getCurrentSysUser();
-        	
         	boolean flag = thisService.doDelete(delIds, StatuVeriable.ISDELETE, currentUser.getXm());         
-        	
             if (flag) {            
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
             } else {
@@ -164,7 +171,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
         if (StringUtils.isEmpty(delIds)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入还原主键\""));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入还原主键\""));
             return;
         } else {
             SysUser currentUser = getCurrentSysUser();

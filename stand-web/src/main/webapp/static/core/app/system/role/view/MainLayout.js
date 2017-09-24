@@ -12,7 +12,7 @@ Ext.define("core.system.role.view.MainLayout", {
    
     controller:'system.role.maincontroller',
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-    //otherController:'role.otherController',
+    otherController:'system.role.othercontroller',
 
 
     funCode: "role_main",
