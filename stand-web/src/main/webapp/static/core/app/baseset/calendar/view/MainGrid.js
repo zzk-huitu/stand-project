@@ -5,10 +5,18 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
 	model:factory.ModelFactory.getModelByName("com.zd.school.jw.eduresources.model.JwCalenderdetail","checked").modelName,
     al:false,
     menuCode:"SCHOOLCALENDAR", //new：此表格与权限相关的菜单编码
-	title:'作息时间详细信息',
+	//title:'作息时间详细信息',
     panelTopBar:{
         xtype:'toolbar',
         items: [{
+            xtype: 'tbtext',
+            html: '作息时间详细信息',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',{
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
@@ -30,6 +38,7 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
             iconCls: 'x-fa fa-minus-circle'
         }],
     }, 
+    panelButtomBar:{},
    //排序字段及模式定义
     defSort: [{
         property: 'isafgernoon',

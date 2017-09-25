@@ -7,10 +7,18 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
    
    // menuCode:"SCHOOLCALENDAR", //new：此表格与权限相关的菜单编码
 
-    title: "作息时间目录",
+    //title: "作息时间目录",
     panelTopBar:{
         xtype:'toolbar',
         items: [{
+            xtype: 'tbtext',
+            html: '作息时间目录',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',{
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd',
@@ -37,7 +45,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
             ref: 'gridUse'
         }],
     }, 
-   
+    panelButtomBar:{},
   //排序字段及模式定义
     defSort: [{
         property: 'activityState',
