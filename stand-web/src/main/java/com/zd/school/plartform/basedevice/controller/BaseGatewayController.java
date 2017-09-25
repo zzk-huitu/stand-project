@@ -251,7 +251,57 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 	
 	
+	@RequestMapping("/baseAndHighParam")
+	public void baseAndHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String userCh = "超级管理员";
+		SysUser currentUser = getCurrentSysUser();
+		if (currentUser != null)
+			userCh = currentUser.getXm();
+		PtGateway perEntity = thisService.get(tlvs.getUuid());
+		
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		perEntity.setUpdateUser(userCh);
+		perEntity.setUpdateTime(new Date());
+		byte[] result =null;
+		result=TLVUtils.encode(tlvs.getTlvs());
+		//保存基础参数
+		perEntity.setBaseParam(result);
+        //thisService.merge(perEntity);// 执行修改方法
+		
+		//保存高级参数
+		perEntity.setAdvParam(result);
+		thisService.merge(perEntity);// 执行修改方法
+		writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数设置成功。'"));
+
+	}
+
 	
+	@RequestMapping("/baseParam_read")
+	public void baseParam_read(TLVModel tlvs, HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		PtGateway perEntity = thisService.get(tlvs.getUuid());
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		String strData ="";
+		if(perEntity.getBaseParam()!=null){
+			TLVUtils.decode(perEntity.getBaseParam(), tlvs.getTlvs());
+			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
+		}
+		writeJSON(response, strData);// 返回数据
+	}
+	
+	@RequestMapping("/highParam_read")
+	public void highParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		PtGateway perEntity = thisService.get(tlvs.getUuid());
+		String strData ="";
+		if(perEntity.getAdvParam()!=null){
+			TLVUtils.decode(perEntity.getAdvParam(), tlvs.getTlvs());
+			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
+		}
+		writeJSON(response, strData);// 返回数据
+	}
+
 	@RequestMapping("/baseParam")
 	public void baseParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -272,28 +322,6 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 
 	}
 	
-	@RequestMapping("/baseParam_read")
-	public void baseParam_read(TLVModel tlvs, HttpServletRequest request, 
-			HttpServletResponse response) throws IOException{
-		PtGateway perEntity = thisService.get(tlvs.getUuid());
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		String strData ="";
-		if(perEntity.getBaseParam()!=null){
-			TLVUtils.decode(perEntity.getBaseParam(), tlvs.getTlvs());
-			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
-		}
-		writeJSON(response, strData);// 返回数据
-	}
-	/**
-	 * 设置单个高级参数
-	 * 
-	 * @param entity
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
 	@RequestMapping("/highParam")
 	public void highParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -311,18 +339,6 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 		writeJSON(response, jsonBuilder.returnSuccessJson("'高级参数设置成功。'"));
 
 	}
-	@RequestMapping("/highParam_read")
-	public void highParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, IllegalAccessException, InvocationTargetException {
-		PtGateway perEntity = thisService.get(tlvs.getUuid());
-		String strData ="";
-		if(perEntity.getAdvParam()!=null){
-			TLVUtils.decode(perEntity.getAdvParam(), tlvs.getTlvs());
-			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
-		}
-		writeJSON(response, strData);// 返回数据
-	}
-	
 	@RequestMapping("/batchGatewayParam")
 	public void batchGatewayParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

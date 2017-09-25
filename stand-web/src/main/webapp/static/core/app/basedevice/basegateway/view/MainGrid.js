@@ -161,29 +161,16 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             width: 200,
             fixed: true,
             items: [{
-                text:'高级参数',  
+                text:'网关参数',  
                 style:'font-size:12px;', 
-                tooltip: '高级参数',
-                ref: 'buttonHigh',
+                tooltip: '网关参数',
+                ref: 'buttonBaseAndHigh',
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('', {
+                    this.fireEvent('baseAndHighClick_Tab', {
                         view: view.grid,
                         record: rec
                     });
-                }
-            }, {
-                text:'基础参数',  
-                style:'font-size:12px;', 
-                tooltip: '基础参数',
-                ref: 'buttonBase',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('', {
-                        view: view.grid,
-                        record: rec
-           
-                 });
                 }
             }, {
                 text:'网络参数',  
@@ -192,7 +179,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 ref: 'buttonNetWork',
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('', {
+                    this.fireEvent('netWorkClick_Tab', {
                         view: view.grid,
                         record: rec
                     });
