@@ -266,7 +266,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 		byte[] result =null;
 		result=TLVUtils.encode(tlvs.getTlvs());
 		//保存基础参数
-		perEntity.setBaseParam(result);
+		//perEntity.setBaseParam(result);
         //thisService.merge(perEntity);// 执行修改方法
 		
 		//保存高级参数
