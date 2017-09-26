@@ -57,10 +57,12 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	public void list(@ModelAttribute PtGateway entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+
 		QueryResult<PtGateway> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), super.filter(request), true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+
 		writeJSON(response, strData);// 返回数据
 		
 	}

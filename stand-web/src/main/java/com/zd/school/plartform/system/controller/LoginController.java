@@ -1,17 +1,16 @@
 package com.zd.school.plartform.system.controller;
 
-import com.zd.core.constant.AdminType;
-import com.zd.core.constant.Constant;
-import com.zd.core.controller.core.FrameWorkController;
-import com.zd.core.util.DBContextHolder;
-import com.zd.core.util.DateUtil;
-import com.zd.core.util.ModelUtil;
-import com.zd.school.plartform.system.model.SysRole;
-import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.plartform.system.model.SysUserLoginLog;
-import com.zd.school.plartform.system.service.SysRoleService;
-import com.zd.school.plartform.system.service.SysUserLoginLogService;
-import com.zd.school.plartform.system.service.SysUserService;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -28,15 +27,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.zd.core.constant.AdminType;
+import com.zd.core.constant.Constant;
+import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.util.DateUtil;
+import com.zd.core.util.ModelUtil;
+import com.zd.school.plartform.system.model.SysRole;
+import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.model.SysUserLoginLog;
+import com.zd.school.plartform.system.service.SysRoleService;
+import com.zd.school.plartform.system.service.SysUserLoginLogService;
+import com.zd.school.plartform.system.service.SysUserService;
 
 @Controller
 @RequestMapping("/login")
@@ -59,7 +60,6 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	private RedisTemplate<String, Object> redisTemplate;
 	
 	
-	
 	//测试jedis
 //	@Resource  
 //	private RedisTemplate<String, Object> redisTemplate;  	  
@@ -68,7 +68,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	
 	    
 	@RequestMapping("/login")
-	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {		      
 		Map<String, Object> result = new HashMap<String, Object>();
 		SysUser sysUser = sysUserService.getByProerties("userName", sysUserModel.getUserName());
 		// if (sysUser == null || "1".equals(sysUser.getState())) { //

@@ -9,15 +9,17 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
-	<!-- 配置自动检测  -->
+	<!-- 配置自动检测 -->
 	<!-- Enable annotation util configuration -->
 	<context:annotation-config />
 	<!-- Scan packages for Spring annotations,排除扫描controller的容器 -->
 	<context:component-scan base-package="com.zd">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 	</context:component-scan>
-		
+
 	<!-- 配置数据源,这里采用的是阿里巴巴的 durid -->
 	<!-- 引入 sql server 属性配置文件 -->
 	<bean id="propertyConfigure"
@@ -29,6 +31,9 @@
 			</list>
 		</property>
 	</bean>
+
+
+	<!-- 数据源 -->
 	<bean id="dataSourceQ1" class="com.alibaba.druid.pool.DruidDataSource"
 		destroy-method="close">
 		<!-- sql server 数据库连接配置 -->
@@ -40,7 +45,7 @@
 		<!-- 配置初始化大小、最小、最大 -->
 		<property name="initialSize" value="1" />
 		<property name="minIdle" value="1" />
-		<property name="maxActive" value="20" />
+		<property name="maxActive" value="100" />
 		<!-- 配置获取连接等待超时的时间 -->
 		<property name="maxWait" value="60000" />
 		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
@@ -53,11 +58,13 @@
 			value="20" />
 		<!-- 配置监控统计拦截的filters -->
 		<property name="filters" value="stat,log4j" />
-		
-		<property name="validationQuery"><value>SELECT 'x'</value></property>
-		
-	</bean>	
-	
+
+		<property name="validationQuery">
+			<value>SELECT 'x'</value>
+		</property>
+
+	</bean>
+
 	<bean id="dataSourceUP6" class="com.alibaba.druid.pool.DruidDataSource"
 		destroy-method="close">
 		<!-- sql server 数据库连接配置 -->
@@ -69,7 +76,7 @@
 		<!-- 配置初始化大小、最小、最大 -->
 		<property name="initialSize" value="1" />
 		<property name="minIdle" value="1" />
-		<property name="maxActive" value="20" />
+		<property name="maxActive" value="100" />
 		<!-- 配置获取连接等待超时的时间 -->
 		<property name="maxWait" value="60000" />
 		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
@@ -82,22 +89,24 @@
 			value="20" />
 		<!-- 配置监控统计拦截的filters -->
 		<property name="filters" value="stat,log4j" />
-		
-		<property name="validationQuery"><value>SELECT 'x'</value></property>
-		
+
+		<property name="validationQuery">
+			<value>SELECT 'x'</value>
+		</property>
+
 	</bean>
 
- 	<bean id="dynamicDataSource" class="com.zd.core.util.DynamicDataSource" >  
-	    <!-- 通过key-value的形式来关联数据源 -->  
-	    <property name="targetDataSources">  
-	        <map>  
-	            <entry value-ref="dataSourceQ1" key="dataSourceQ1"></entry>
-	            <entry value-ref="dataSourceUP6" key="dataSourceUP6"></entry>
-	        </map>  
-	    </property>  
-	    <property name="defaultTargetDataSource" ref="dataSourceQ1" />
-	</bean>  
-	
+	<bean id="dynamicDataSource" class="com.zd.core.util.DynamicDataSource">
+		<!-- 通过key-value的形式来关联数据源 -->
+		<property name="targetDataSources">
+			<map>
+				<entry value-ref="dataSourceQ1" key="dataSourceQ1"></entry>
+				<entry value-ref="dataSourceUP6" key="dataSourceUP6"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSourceQ1" />
+	</bean>
+
 	<!-- 配置SessionFactory，由spring提供 -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -108,51 +117,51 @@
 		<!-- 扫描的数据包 -->
 		<property name="packagesToScan" value="com.zd"></property>
 	</bean>
- 
+
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
-	</bean> 
-	 
+	</bean>
+
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	
+
 	<!-- 定义 Autowired 自动注入 bean -->
 	<bean
 		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
-    
-    
-    <!-- kaptcha 验证码配置 -->
-    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">  
-        <property name="config">  
-            <bean class="com.google.code.kaptcha.util.Config">  
-                <constructor-arg>  
-                    <props>  
-                        <prop key="kaptcha.border">no</prop>  
-                        <prop key="kaptcha.border.color">105,179,90</prop>  
-                        <prop key="kaptcha.textproducer.font.color">red</prop>  
-                        <prop key="kaptcha.image.width">120</prop>  
-                        <prop key="kaptcha.textproducer.font.size">38</prop>  
-                        <prop key="kaptcha.image.height">40</prop>  
-                        <prop key="kaptcha.session.key">code</prop>  
-                        <prop key="kaptcha.textproducer.char.length">4</prop>  
-                        <prop key="kaptcha.textproducer.font.names">宋体,楷体,微软雅黑</prop>  
-                        <prop key="kaptcha.textproducer.char.string">ABCDEFGHJKLMNPQRSTUVWXYZ2345679</prop>
-                        <prop key="kaptcha.noise.impl">com.google.code.kaptcha.impl.NoNoise</prop>  
-                    </props>  
-                </constructor-arg>  
-            </bean>  
-        </property>  
-    </bean>
-    
-    <aop:aspectj-autoproxy proxy-target-class="true"/> 
-   
-    
-    <!--加入redis-->
-  	<import resource="redis-config.xml"/>
-  	
-  	 <!--加入quartz-->
-  	<import resource="quartz-config.xml"/>
-  	
-  	
+
+
+	<!-- kaptcha 验证码配置 -->
+	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+		<property name="config">
+			<bean class="com.google.code.kaptcha.util.Config">
+				<constructor-arg>
+					<props>
+						<prop key="kaptcha.border">no</prop>
+						<prop key="kaptcha.border.color">105,179,90</prop>
+						<prop key="kaptcha.textproducer.font.color">red</prop>
+						<prop key="kaptcha.image.width">120</prop>
+						<prop key="kaptcha.textproducer.font.size">38</prop>
+						<prop key="kaptcha.image.height">40</prop>
+						<prop key="kaptcha.session.key">code</prop>
+						<prop key="kaptcha.textproducer.char.length">4</prop>
+						<prop key="kaptcha.textproducer.font.names">宋体,楷体,微软雅黑</prop>
+						<prop key="kaptcha.textproducer.char.string">ABCDEFGHJKLMNPQRSTUVWXYZ2345679</prop>
+						<prop key="kaptcha.noise.impl">com.google.code.kaptcha.impl.NoNoise</prop>
+					</props>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+
+	<!--加入redis -->
+	<import resource="redis-config.xml" />
+
+	<!--加入quartz -->
+	<import resource="quartz-config.xml" />
+
+
 </beans>

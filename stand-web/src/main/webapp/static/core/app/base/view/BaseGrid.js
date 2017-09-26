@@ -12,7 +12,7 @@ Ext.define("core.base.view.BaseGrid", {
     multiSelect: true,
     selModel: {
         type: "checkboxmodel",   
-        headerWidth:50,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        headerWidth:40,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
         //mode:'single',  //multi,simple,single；默认为多选multi
         //checkOnly:false,    //如果值为true，则只用点击checkbox列才能选中此条记录
         //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择

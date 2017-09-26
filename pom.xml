@@ -143,9 +143,9 @@
 		</dependency>
 		<!-- sql server 数据库驱动 -->
 		<dependency>
-			<groupId>com.hynnet</groupId>
-			<artifactId>sqljdbc4-chs</artifactId>
-			<version>4.0.2206.100</version>
+		    <groupId>com.hynnet</groupId>
+		    <artifactId>sqljdbc4-chs</artifactId>
+		    <version>4.0.2206.100</version>
 		</dependency>
 		<!-- json 转换工具依赖包 -->
 		<dependency>
@@ -345,7 +345,7 @@
 		</dependency>
 		 -->
 		
-		<!-- atomikos分布式事务需要的包 -->
+		<!-- atomikos分布式事务需要的包 
 		<dependency>
 		    <groupId>com.atomikos</groupId>
 		    <artifactId>transactions-jdbc</artifactId>
@@ -356,7 +356,7 @@
 		    <artifactId>transactions-jta</artifactId>
 		    <version>4.0.4</version>
 		</dependency>
-				
+		-->		
 				
 			
 	</dependencies>

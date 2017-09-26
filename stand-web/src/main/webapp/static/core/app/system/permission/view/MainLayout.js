@@ -42,6 +42,7 @@ Ext.define("core.system.permission.view.MainLayout", {
             width: 300,
             //height:300,
             split: true,
+            collapsible:true,    
             // style: {
             //     border: '1px solid #ddd'
             // },
