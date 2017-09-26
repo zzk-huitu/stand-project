@@ -108,7 +108,13 @@ Ext.define("core.system.user.view.UserGrid", {
 			text: "主键",
 			dataIndex: "uuid",
 			hidden: true
-		}, {
+		},{
+            xtype: "rownumberer",
+            flex:0,
+            width: 50,
+            text: '序号',
+            align: 'center'
+        }, {
 			text: "用户名",
 			dataIndex: "userName",
 			width:150,
@@ -165,7 +171,7 @@ Ext.define("core.system.user.view.UserGrid", {
         },{
             xtype:'actiontextcolumn',
             text: "操作",
-            width:220,
+            width:200,
             fixed:true,
             items: [{
                 text:'部门岗位',
@@ -218,7 +224,7 @@ Ext.define("core.system.user.view.UserGrid", {
                         record: rec
                     });
                 }
-            } ,{
+            }/*暂不开放此功能,{
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
@@ -240,7 +246,7 @@ Ext.define("core.system.user.view.UserGrid", {
                         record: rec
                     });
                 }
-            }]
+            }*/]
         }]
 	}
 });

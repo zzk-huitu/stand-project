@@ -192,9 +192,9 @@ public class StringUtils {
                 // ExtSortModel extSortModel=listSorts.get(i);
                 String direction = extSortModel.getDirection();
                 String property = extSortModel.getProperty();
-                if ("DESC".equals(direction)) {
+                if ("DESC".equalsIgnoreCase(direction)) {
                     sbHql.append(" o." + property + " DESC,");
-                } else if ("ASC".equals(direction)) {
+                } else if ("ASC".equalsIgnoreCase(direction)) {
                     sbHql.append(" o." + property + " ASC,");
                 }
             }

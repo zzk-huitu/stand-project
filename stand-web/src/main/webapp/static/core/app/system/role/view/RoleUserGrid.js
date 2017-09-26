@@ -5,7 +5,7 @@ Ext.define("core.system.role.view.RoleUserGrid", {
 	al:false,
 //	dataUrl: comm.get('baseUrl') + "/sysuser/list",
 	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysUser", "checked").modelName,
-    selModel:null,	
+    //selModel:null,	
 	noPagging: true,
 	extParams: {
 		whereSql: "",
@@ -46,14 +46,14 @@ Ext.define("core.system.role.view.RoleUserGrid", {
 
 	columns: {        
         defaults:{
-            flex:1,    	//【若使用了 selType: "checkboxmodel"；则不要在这设定此属性了，否则多选框的宽度也会变大 】
+            //flex:1,    	//【若使用了 selType: "checkboxmodel"；则不要在这设定此属性了，否则多选框的宽度也会变大 】
             align:'center',
             titleAlign:"center"
         },
         items:[{
             xtype: "rownumberer",
             flex:0,
-            width: 60,
+            width: 50,
             text: '序号',
             align: 'center'
         },{
@@ -62,19 +62,33 @@ Ext.define("core.system.role.view.RoleUserGrid", {
 			hidden: true 
 		}, {
 			text: "编号",
-			dataIndex: "userNumb"
+			dataIndex: "userNumb",
+            width:150
 		}, {
 			text: "用户名",
-			dataIndex: "userName"
+			dataIndex: "userName",
+            width:150
 		},{
 			text: "姓名",
-			dataIndex: "xm"
+			dataIndex: "xm",
+            width:150
 		}, {
 			text: "性别",
 			dataIndex: "xbm",
 			columnType: "basecombobox",
-			ddCode: "XBM"
-		}/*, {
+			ddCode: "XBM",
+            width:60
+		},{
+            minWidth:150,
+            flex:1,
+            text: "部门",
+            dataIndex: "deptName"
+        }, {
+            text: "岗位",
+            dataIndex: "jobName",
+            minWidth:150,
+            flex:1,
+        }/*, {
 			text: "岗位",
 			dataIndex: "jobName"
 		}*/]

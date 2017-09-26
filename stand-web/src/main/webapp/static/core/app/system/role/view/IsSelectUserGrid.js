@@ -30,11 +30,11 @@ Ext.define("ccore.system.role.view.IsSelectUserGrid", {
         text: "用户名",
         dataIndex: "userName"
     }, {
-        width: 70,
+        width: 80,
         text: "姓名",
         dataIndex: "xm"
     }, {
-        width: 50,
+        width: 60,
         text: "性别",
         dataIndex: "xbm",
         renderer:function(value){
@@ -46,14 +46,15 @@ Ext.define("ccore.system.role.view.IsSelectUserGrid", {
                 return "";
         }
     }, {
-        width: 150,
+        minWidth: 120,
+        flex:1,
         text: "部门",
         dataIndex: "deptName"
     }, {
-        width: 110,
+        width: 100,
         text: "岗位",
         dataIndex: "jobName"
-    }, {
+    }/*, {
         text: "编制",
         dataIndex: "zxxbzlb",
         ddCode: "ZXXBZLB",
@@ -61,7 +62,7 @@ Ext.define("ccore.system.role.view.IsSelectUserGrid", {
         minWidth: 100,
         flex: 1,
         align: 'left'
-    }],
+    }*/],
     viewConfig: {
         plugins: {
             ptype: 'gridviewdragdrop',

@@ -843,5 +843,34 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		hashOper.delete("userMenuTree", currentUser.getUuid());
 	}
 
+	@Override
+	public QueryResult<SysUser> getUserNotInRoleId(String roleId, int start, int limit, String sort, String filter) {
+		String hql = "from SysUser as o where o.isDelete=0  and state='0' "; //只列出状态正常的用户
+        if(StringUtils.isNotEmpty(roleId)){
+            String hql1=  " from SysUser as u inner join fetch u.sysRoles as k where k.uuid='" + roleId
+                    + "' and k.isDelete=0 and u.isDelete=0 ";
+            List<SysUser> tempList = this.queryByHql(hql1);
+            if(tempList.size()>0){
+                StringBuilder sb = new StringBuilder();
+                for (SysUser sysUser : tempList) {
+                    sb.append(sysUser.getUuid());
+                    sb.append(",");
+                }
+                sb = sb.deleteCharAt(sb.length()-1);
+                String str = sb.toString().replace(",", "','");
+                hql += " and o.uuid not in ('" + str + "')";
+            }
+        }
+        if(StringUtils.isNotEmpty(filter)){
+            hql += filter;
+        }
+        if(StringUtils.isNotEmpty(sort)){
+            hql += " order by ";
+            hql+= sort;
+        }
+        QueryResult<SysUser> qr = this.queryResult(hql, start, limit);
+        return qr;
+	}
+
 
 }
