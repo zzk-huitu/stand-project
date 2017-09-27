@@ -168,35 +168,19 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			return;
 		}
 
-		// 获取当前的操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		//
-		// 先拿到已持久化的实体
-		BaseOrg perEntity = thisService.get(uuid);
-		Boolean isLeaf = perEntity.getLeaf();
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-
-		perEntity.setUpdateTime(new Date()); // 设置修改时间
-		perEntity.setUpdateUser(userCh); // 设置修改人的中文名
-		perEntity.setLeaf(isLeaf);
-
-		entity = thisService.merge(perEntity);// 执行修改方法
-
-		entity.setParentName(parentName);
-		entity.setParentNode(parentNode);
-
-		// 更新父节点的是否叶节点的标记
-		BaseOrg parentOrg = thisService.get(parentNode);
-		parentOrg.setUpdateTime(new Date()); // 设置修改时间
-		parentOrg.setUpdateUser(userCh); // 设置修改人的中文名
-		parentOrg.setLeaf(false);
-		thisService.merge(parentOrg);// 执行修改方法
-
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+		
+		entity = thisService.doUpdate(entity, currentUser.getXm());		
+		
+		
+		if (entity == null){
+			writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
+		}else{
+			//重新设定显示的数据
+			entity.setParentName(parentName);
+			entity.setParentNode(parentNode);
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		}	
 	}
 	
 	/*

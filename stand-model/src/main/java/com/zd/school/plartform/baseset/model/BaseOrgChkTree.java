@@ -12,7 +12,7 @@ package com.zd.school.plartform.baseset.model;
 import java.util.List;
 
 import com.zd.core.annotation.FieldInfo;
-import com.zd.core.model.extjs.ExtTreeNodeChk;
+import com.zd.core.model.extjs.ExtTreeNode;
 
 /**
  * ClassName:BaseOrgChkTree Function: TODO ADD FUNCTION. Reason: TODO ADD
@@ -23,7 +23,7 @@ import com.zd.core.model.extjs.ExtTreeNodeChk;
  * @since JDK 1.8
  * @see
  */
-public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
+public class BaseOrgChkTree extends ExtTreeNode<BaseOrgChkTree> {
     @FieldInfo(name = "部门编码")
     private String code;
 
@@ -35,29 +35,9 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
         this.code = code;
     }
 
-    @FieldInfo(name = "主负责岗位")
-    private String mainLeader;
+    
 
-    public String getMainLeader() {
-        return mainLeader;
-    }
-
-    public void setMainLeader(String mainLeader) {
-        this.mainLeader = mainLeader;
-    }
-
-    @FieldInfo(name = "副负责岗位")
-    private String viceLeader;
-
-    public String getViceLeader() {
-        return viceLeader;
-    }
-
-    public void setViceLeader(String viceLeader) {
-        this.viceLeader = viceLeader;
-    }
-
-    @FieldInfo(name = "外线电话")
+	@FieldInfo(name = "外线电话")
     private String outPhone;
 
     public String getOutPhone() {
@@ -166,17 +146,29 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
     public void setMainLeaderName(String mainLeaderName) {
         this.mainLeaderName = mainLeaderName;
     }
+    
+    @FieldInfo(name = "上级主管岗位")
+    private String superJob;
+         
+    public String getSuperJob() {
+		return superJob;
+	}
 
-    @FieldInfo(name = "副负责岗位名称")
-    private String viceLeaderName;
+	public void setSuperJob(String superJob) {
+		this.superJob = superJob;
+	}
 
-    public String getViceLeaderName() {
-        return viceLeaderName;
-    }
 
-    public void setViceLeaderName(String viceLeaderName) {
-        this.viceLeaderName = viceLeaderName;
-    }
+	@FieldInfo(name = "上级主管岗位名称")
+    private String superjobName;
+  
+    public String getSuperjobName() {
+		return superjobName;
+	}
+
+	public void setSuperjobName(String superjobName) {
+		this.superjobName = superjobName;
+	}
 
     @FieldInfo(name = "是否有权限")
     private String isRight;
@@ -197,15 +189,13 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
     }
 
     public BaseOrgChkTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,
-            List<BaseOrgChkTree> children, String mainLeader, String viceLeader, String outPhone, String inPhone,
+            List<BaseOrgChkTree> children, String outPhone, String inPhone,
             String fax, Integer isSystem, String remark, String code, String parent, Integer orderIndex,
-            String deptType, String parentType, String mainLeaderName, String viceLeaderName, String isRight,
-            Boolean checked) {
-
-        super(id, text, iconCls, leaf, level, treeid, children, checked);
-        // TODO Auto-generated constructor stub
-        this.mainLeader = mainLeader;
-        this.viceLeader = viceLeader;
+            String deptType, String parentType, String mainLeaderName,String superJob, String superjobName, String isRight) {
+  
+        super(id, text, iconCls, leaf, level, treeid,parent,orderIndex,children);
+        // TODO Auto-generated constructor stub    
+    
         this.outPhone = outPhone;
         this.inPhone = inPhone;
         this.fax = fax;
@@ -217,7 +207,8 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
         this.deptType = deptType;
         this.parentType = parentType;
         this.mainLeaderName = mainLeaderName;
-        this.viceLeaderName = viceLeaderName;
+        this.superJob = superJob;
+        this.superjobName = superjobName;
         this.isRight = isRight;
     }
 }

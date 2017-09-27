@@ -30,25 +30,23 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
     }, {
     	xtype: "container",
         layout: "column", // 从左往右的布局
-        items: [{
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        items: [ {
+            columnWidth: 0.5,
+            beforeLabelTextTpl: comm.get('required'),
+            xtype: "textfield",
+            fieldLabel: "学校名称",
+            name: "schoolName",
+            allowBlank: false,
+            emptyText: '学校名称',
+            blankText: "学校名称不能为空",
+            
+        },{
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "学校代码",
         	name: "schoolCode",
-        	allowBlank: false,
         	emptyText: '学校代码',
         	blankText: "学校代码不能为空",
-        	
-        }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
-        	xtype: "textfield",
-        	fieldLabel: "学校名称",
-        	name: "schoolName",
-        	allowBlank: false,
-        	emptyText: '学校名称',
-        	blankText: "学校名称不能为空",
         	
         }]
     }, {
@@ -58,16 +56,13 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "textfield",
         	fieldLabel: "学校英文名",
         	name: "schoolEng",
-        	allowBlank: true,
         	emptyText: '学校英文名',
         	blankText: "学校英文名不能为空",
         	columnWidth: 0.5
-        }, {
-        	beforeLabelTextTpl: comm.get('required'),
+        }, {        	
         	xtype: "textfield",
         	fieldLabel: "学校地址",
         	name: "schoolAddr",
-        	allowBlank: false,
         	emptyText: '学校地址',
         	blankText: "学校地址不能为空",
         	columnWidth: 0.5
@@ -75,27 +70,23 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
     }, {
     	xtype: "container",
         layout: "column", // 从左往右的布局
-        items: [{
-        	beforeLabelTextTpl: comm.get('required'),
+        items: [{        
         	xtype: "datetimefield",
         	dateType: 'date',
         	fieldLabel: "建校年月",		
         	anchor: '100%',
         	name: "foundYear",
         	maxValue: new Date(),
-        	allowBlank: false,
         	emptyText: '建校年月',
         	blankText: "建校年月不能为空",
         	columnWidth: 0.5
-        }, {
-        	beforeLabelTextTpl: comm.get('required'),
+        }, {        	
         	xtype: "datetimefield",
         	dateType: 'date',
         	anchor: '100%',
         	fieldLabel: '校庆日',
         	name: 'anniversaryDay',
         	maxValue: new Date(),
-        	allowBlank: false,
         	emptyText: '校庆日',
         	blankText: "校庆日不能为空",
         	columnWidth: 0.5
@@ -104,22 +95,18 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
     	xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "邮政编码",
         	name: "zipCode",
-        	allowBlank: false,
         	emptyText: '邮政编码',
         	blankText: "邮政编码不能为空"
         }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "basecombobox",
         	fieldLabel: "行政区划",
         	name: "administration",
         	ddCode: "XZQHM",
-        	allowBlank: false,
         	emptyText: '行政区划',
         	blankText: "行政区划不能为空"
         }]
@@ -127,22 +114,18 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
     	xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "basecombobox",
         	fieldLabel: "办学类型",
         	name: "officeType",
         	ddCode: "BXLX",
-        	allowBlank: false,
         	emptyText: '办学类型',
         	blankText: "办学类型不能为空"
         }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "学校主管部门",
         	name: "chargeDept",
-        	allowBlank: false,
         	emptyText: '学校主管部门',
         	blankText: "学校主管部门不能为空"
         }]
@@ -150,21 +133,17 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
     	xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "联系电话",
         	name: "telephone",
-        	allowBlank: false,
         	emptyText: '联系电话,格式如:0920-29392929',
         	blankText: "联系电话不能为空"
         }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "传真电话",
         	name: "faxNum",
-        	allowBlank: false,
         	emptyText: '传真电话,格式如:0920-29392929',
         	blankText: "传真电话不能为空"
         }]
@@ -177,12 +156,10 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "法定代表人工号",
         	name: "legalPerson"
         }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "法人证书号",
         	name: "legalCertificate",
-        	allowBlank: false,
         	emptyText: '法人证书号',
         	blankText: "法人证书号不能为空"
         }]
@@ -195,12 +172,10 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "校长工号",
         	name: "schoolmasterId"
         }, {
-        	columnWidth: 0.5,
-        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.5,        	
         	xtype: "textfield",
         	fieldLabel: "校长姓名",
         	name: "schoolmasterName",
-        	allowBlank: false,
         	emptyText: '校长姓名',
         	blankText: "校长姓名不能为空"
         }]
@@ -216,8 +191,7 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	columnWidth: 0.5,
         	xtype: "textfield",
         	fieldLabel: "组织机构码",
-        	name: "orgCode",
-        	allowBlank: true,
+        	name: "orgCode",        	
         	emptyText: '组织机构码',
         	blankText: "组织机构码不能为空"
         }]
@@ -229,7 +203,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "textfield",
         	fieldLabel: "电子邮箱",
         	name: "email",
-        	allowBlank: true,
         	emptyText: '电子邮箱',
         	blankText: "电子邮箱不能为空",
         	vtype:"email",
@@ -239,7 +212,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "textfield",
         	fieldLabel: "主页地址",
         	name: "homepage",
-        	allowBlank: true,
         	emptyText: '主页地址,格式如:http://wwww.abc.com',
         	blankText: "主页地址不能为空",
         	vtype:"url",
@@ -253,7 +225,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "textfield",
         	fieldLabel: "历史沿革",
         	name: "historyEvolution",
-        	allowBlank: true,
         	emptyText: '历史沿革',
         	blankText: "历史沿革不能为空"
         }, {
@@ -262,7 +233,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "学校办别",
         	name: "schoolType",
         	ddCode: "DWBB",
-        	allowBlank: true,
         	emptyText: '学校办别',
         	blankText: "学校办别不能为空"
         }]
@@ -274,7 +244,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "textfield",
         	fieldLabel: "所属主管单位",
         	name: "chargeUnit",
-        	allowBlank: true,
         	emptyText: '所属主管单位',
         	blankText: "所属主管单位不能为空"
         }, {
@@ -283,7 +252,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "所在地城乡类型",
         	name: "urbanRuralType",
         	ddCode: "SZDCXLX",
-        	allowBlank: true,
         	emptyText: '所在地城乡类型',
         	blankText: "所在地城乡类型不能为空"
         }]
@@ -296,7 +264,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "所在地经济属性码",
         	name: "economicCode",
         	ddCode: "SZDQJJSX",
-        	allowBlank: true,
         	emptyText: '所在地经济属性码',
         	blankText: "所在地经济属性码不能为空"
         }, {
@@ -317,7 +284,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	fieldLabel: "学制",
         	name: "primaryLength",
         	ddCode: "XZ",
-        	allowBlank: true,
         	emptyText: '学制',
         	blankText: "学制不能为空"
         }, {
@@ -325,7 +291,6 @@ Ext.define("core.baseset.schoolinfo.view.DetailForm", {
         	xtype: "numberfield",
         	fieldLabel: "入学年龄",
         	name: "primaryStartAge",
-        	allowBlank: true,
         	emptyText: '入学年龄',
         	blankText: "入学年龄不能为空"
         }]

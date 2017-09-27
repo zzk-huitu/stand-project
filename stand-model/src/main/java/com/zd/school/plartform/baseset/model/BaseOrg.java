@@ -16,7 +16,7 @@ import com.zd.core.model.TreeNodeEntity;
  * 
  * ClassName: BaseOrg Function: TODO ADD FUNCTION. Reason: TODO ADD REASON(可选).
  * Description: BASE_T_ORG实体类. date: 2016-07-26
- *
+ * 备用字段5：存放校区的UUID值（之前的设计是，校区、部门、区域同一个UUID值，实际上使用实体入库时，uuid自动生成了，导致不一致）
  * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8
@@ -64,17 +64,17 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         return issystem;
     }
 
-	@FieldInfo(name = "主负责岗位")
-	@Column(name = "MAIN_LEADER", length = 64, nullable = true)
-	private String mainLeader;
-
-	public void setMainLeader(String mainLeader) {
-		this.mainLeader = mainLeader;
-	}
-
-	public String getMainLeader() {
-		return mainLeader;
-	}
+//	@FieldInfo(name = "主负责岗位")
+//	@Column(name = "MAIN_LEADER", length = 64, nullable = true)
+//	private String mainLeader;
+//
+//	public void setMainLeader(String mainLeader) {
+//		this.mainLeader = mainLeader;
+//	}
+//
+//	public String getMainLeader() {
+//		return mainLeader;
+//	}
 
     @FieldInfo(name = "外线电话")
     @Column(name = "OUT_PHONE", length = 64, nullable = true)
@@ -100,17 +100,17 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         return remark;
     }
     
-    @FieldInfo(name = "副负责岗位")
-	@Column(name = "VICE_LEADER", length = 64, nullable = true)
-	private String viceLeader;
-
-	public void setViceLeader(String viceLeader) {
-		this.viceLeader = viceLeader;
-	}
-
-	public String getViceLeader() {
-		return viceLeader;
-	}
+//    @FieldInfo(name = "副负责岗位")
+//	@Column(name = "VICE_LEADER", length = 64, nullable = true)
+//	private String viceLeader;
+//
+//	public void setViceLeader(String viceLeader) {
+//		this.viceLeader = viceLeader;
+//	}
+//
+//	public String getViceLeader() {
+//		return viceLeader;
+//	}
 
     @FieldInfo(name = "部门类型 01-学校 02-校区 03-部门  04-年级  05-班级　06-学科")
     @Column(name = "DEPT_TYPE", length = 36, nullable = true)
@@ -174,12 +174,13 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
 
     @FieldInfo(name = "部门全称")
     @Column(name = "ALL_DEPTNAME", length = 500, nullable = true)
+    //@Formula("(SELECT isnull(a.ALL_DEPTNAME+'/','')+NODE_TEXT FROM BASE_T_ORG a WHERE a.DEPT_ID=PARENT_NODE)")
     private String allDeptName;
 
     public String getAllDeptName() {
         return allDeptName;
     }
-
+    
     public void setAllDeptName(String allDeptName) {
         this.allDeptName = allDeptName;
     }
@@ -204,7 +205,7 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
      * @FieldInfo(name = "") private String field1;
      */
     @FieldInfo(name = "上级部门名称")
-    @Formula("(SELECT isnull(a.NODE_TEXT,'ROOT') FROM BASE_T_ORG a WHERE a.DEPT_ID=parent_node)")
+    @Formula("(SELECT isnull(a.NODE_TEXT,'ROOT') FROM BASE_T_ORG a WHERE a.DEPT_ID=PARENT_NODE)")
     private String parentName;
 
     public String getParentName() {
@@ -229,7 +230,7 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
 
 
 	@FieldInfo(name = "主负责岗位名称")
-	@Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=MAIN_LEADER)")
+	@Formula("(SELECT a.JOB_NAME FROM BASE_T_DEPTJOB a WHERE a.JOB_TYPE=0 and a.DEPT_ID=DEPT_ID)")
 	private String mainLeaderName;
 
 	public String getMainLeaderName() {
@@ -238,18 +239,6 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
 
 	public void setMainLeaderName(String mainLeaderName) {
 		this.mainLeaderName = mainLeaderName;
-	}
-
-	@FieldInfo(name = "副负责岗位名称")
-	@Formula("(SELECT a.JOB_NAME FROM BASE_T_JOB a WHERE a.JOB_ID=VICE_LEADER)")
-	private String viceLeaderName;
-
-	public String getViceLeaderName() {
-		return viceLeaderName;
-	}
-
-	public void setViceLeaderName(String viceLeaderName) {
-		this.viceLeaderName = viceLeaderName;
-	}
+	}	
 
 }

@@ -51,7 +51,7 @@ public class ExtTreeNode<T> {
 	private Integer orderIndex;
 
 	/** 是否选中 */
-	private Boolean checked;
+	//private Boolean checked;
 
 	public String getId() {
 		return id;
@@ -125,13 +125,13 @@ public class ExtTreeNode<T> {
 		this.orderIndex = orderIndex;
 	}
 
-	public Boolean getChecked() {
-		return checked;
-	}
-
-	public void setChecked(Boolean checked) {
-		this.checked = checked;
-	}
+//	public Boolean getChecked() {
+//		return checked;
+//	}
+//
+//	public void setChecked(Boolean checked) {
+//		this.checked = checked;
+//	}
 
 	public ExtTreeNode() {
 		super();

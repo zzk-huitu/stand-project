@@ -170,10 +170,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			isRight = "0";
 			// }
 			BaseOrgTree child = new BaseOrgTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(), org.getNodeLevel(),
-					org.getTreeIds(),org.getParentNode(),org.getOrderIndex(), new ArrayList<BaseOrgTree>(), org.getMainLeader(), org.getViceLeader(),
+					org.getTreeIds(),org.getParentNode(),org.getOrderIndex(), new ArrayList<BaseOrgTree>(),
 					org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(), org.getRemark(),
 					org.getNodeCode(), org.getDeptType(), org.getParentType(),
-					org.getMainLeaderName(), org.getViceLeaderName(), isRight);
+					org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), isRight);
 
 			if (org.getParentNode().equals(TreeVeriable.ROOT)) {
 				result.add(child);
@@ -242,11 +242,16 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 
 		BaseOrg saveEntity = new BaseOrg();
-		BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
+		//List<String> excludedProp = new ArrayList<>();
+		//excludedProp.add("uuid");
+		BeanUtils.copyProperties(saveEntity, entity);	
+		
 		entity.setCreateUser(currentUser.getXm()); // 创建人
 		entity.setLeaf(true);
 		entity.setIssystem(1);
 		entity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
+		this.persist(entity);		//先持久化，再修改下面的代码【由于修改了uuid的生成方式】
+		
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			BaseOrg parEntity = this.get(parentNode);
 			parEntity.setLeaf(false);
@@ -438,10 +443,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		// Boolean checked)
 		for (BaseOrg org : childs) {
 			BaseOrgChkTree child = new BaseOrgChkTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(),
-					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getMainLeader(),
-					org.getViceLeader(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
+					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
 					org.getRemark(), org.getNodeCode(), org.getParentNode(), org.getOrderIndex(), org.getDeptType(),
-					org.getParentType(), org.getMainLeaderName(), org.getViceLeaderName(), "0", false);
+					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0");
 
 			if (org.getParentNode().equals(TreeVeriable.ROOT)) {
 				result.add(child);
@@ -565,4 +569,90 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 
 		return row;
 	}
+
+	@Override
+	public BaseOrg doUpdate(BaseOrg entity, String xm) {
+		String parentNode = entity.getParentNode();	
+		String nodeText = entity.getNodeText();
+		String uuid = entity.getUuid();
+		
+		// 先拿到已持久化的实体
+		BaseOrg perEntity = this.get(uuid);
+		Boolean isLeaf = perEntity.getLeaf();
+		String oldDeptName = perEntity.getNodeText();
+		
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		try {
+			BeanUtils.copyPropertiesExceptNull(perEntity, entity);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		perEntity.setUpdateTime(new Date()); // 设置修改时间
+		perEntity.setUpdateUser(xm); // 设置修改人的中文名
+		perEntity.setLeaf(isLeaf);
+
+
+		// 更新父节点的是否叶节点的标记
+		BaseOrg parentOrg = this.get(parentNode);
+		if(parentOrg!=null){
+			parentOrg.setUpdateTime(new Date()); // 设置修改时间
+			parentOrg.setUpdateUser(xm); // 设置修改人的中文名
+			parentOrg.setLeaf(false);
+			this.merge(parentOrg);// 执行修改方法
+			
+			perEntity.BuildNode(parentOrg);
+			perEntity.setAllDeptName(parentOrg.getAllDeptName()+"/"+nodeText);
+		}
+		
+		entity = this.merge(perEntity);// 执行修改方法
+		
+		if(!oldDeptName.equals(nodeText)){
+			//再更新其他地方的名称		
+			this.setDeptName(nodeText,uuid);
+			if(parentOrg!=null&&!parentNode.equals("ROOT"))
+				this.setChildAllDeptName(entity,parentOrg.getAllDeptName());
+			else
+				this.setChildAllDeptName(entity,"ROOT");
+		}
+		return entity;
+	}
+
+	@Override
+	public Integer getDeptJobCount(String uuid) {
+		String hql = " select count(*) from BaseDeptjob where isDelete=0 and (deptId='" + uuid + "' or parentdeptId='"+uuid+"')";
+		Integer childCount = this.getQueryCountByHql(hql);
+		// TODO Auto-generated method stub
+		return childCount;
+	}
+	
+	@Override
+	public void setDeptName(String deptName,String uuid){	
+		String updateHql1="update BaseOrg a set a.superdeptName='"+deptName+"' where a.superDept='"+uuid+"'";
+		String updateHql2="update BaseDeptjob a set a.deptName='"+deptName+"' where a.deptId='"+uuid+"'";
+		String updateHql3="update BaseDeptjob a set a.parentdeptName='"+deptName +"' where a.parentdeptId='"+uuid+"'";
+		this.doExecuteCountByHql(updateHql1);
+		this.doExecuteCountByHql(updateHql2);
+		this.doExecuteCountByHql(updateHql3);	
+	}
+	@Override
+	public void setChildAllDeptName(BaseOrg dept,String parentAllDeptName){	
+		//1.设置当前类的全部门名
+		String currentAllName=parentAllDeptName+"/"+dept.getNodeText();
+		dept.setAllDeptName(currentAllName);	
+		this.merge(dept);
+		
+		//2.设置相应的部门岗位的部门全名
+		String updateHql="update BaseDeptjob a set a.allDeptName='"+currentAllName +"' where a.deptId='"+dept.getUuid()+"'";
+		this.doExecuteCountByHql(updateHql);	
+		
+		//3.递归遍历设置子部门的全部门名
+		List<BaseOrg> childDepts = this.queryByProerties(new String[]{"isDelete","parentNode"}, new Object[]{0,dept.getUuid()});
+		for(int i=0;i<childDepts.size();i++){
+			this.setChildAllDeptName(childDepts.get(i),currentAllName);
+		}
+		
+	}
+		
 }

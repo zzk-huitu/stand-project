@@ -332,6 +332,10 @@ Ext.define("core.system.user.controller.OtherController", {
                     title: title,
                     funcPanel: funcPanel, //为了方便在控制器中捕获此窗口的确定事件
                     multiSelect: configInfo.multiSelect,
+                    selModel: {
+                        selType: "checkboxmodel",
+                        headerWidth: 30,    //设置这个值为40。 但columns中的defaults中设置宽度，会影响他
+                    },
                     haveButton: true,
                     isEmpty: true,
                     setIds: userId,
@@ -486,7 +490,7 @@ Ext.define("core.system.user.controller.OtherController", {
         },
 
         /**
-         * 教师设定岗位确定事件，只获取岗位
+         * 用户设定岗位确定事件，只获取岗位
          * @type {[type]}
          */
         "mtsswinview[funcPanel=user.userdeptjob] button[ref=ssOkBtn]": {
@@ -501,7 +505,8 @@ Ext.define("core.system.user.controller.OtherController", {
                 //树形查询处理
                 if (win.queryType == "mttreeview") {                    
                     var tree = win.down("mttreeview");
-                    var records = tree.getChecked();
+                    //var records = tree.getChecked();
+                    var records = tree.getSelectionModel().getSelection();
                     if (records.length == 1) {                       
                         if (records[0].get("level") < 99) {
                             self.msgbox("请选择岗位");

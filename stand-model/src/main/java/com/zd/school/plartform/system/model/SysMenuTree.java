@@ -9,10 +9,10 @@
 
 package com.zd.school.plartform.system.model;
 
-import com.zd.core.annotation.FieldInfo;
-import com.zd.core.model.extjs.ExtTreeNodeNotChk;
-
 import java.util.List;
+
+import com.zd.core.annotation.FieldInfo;
+import com.zd.core.model.extjs.ExtTreeNode;
 
 /**
  * ClassName:SysMenuTree Function: TODO ADD FUNCTION. Reason: TODO ADD REASON.
@@ -23,7 +23,7 @@ import java.util.List;
  * @since JDK 1.8
  * @see
  */
-public class SysMenuTree extends ExtTreeNodeNotChk<SysMenuTree> {
+public class SysMenuTree extends ExtTreeNode<SysMenuTree> {
     @FieldInfo(name = "菜单编码")
     private String menuCode;
 

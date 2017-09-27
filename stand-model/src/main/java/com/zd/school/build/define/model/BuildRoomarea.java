@@ -17,7 +17,7 @@ import com.zd.core.model.TreeNodeEntity;
  * 
  * ClassName: BuildRoomarea Function: TODO ADD FUNCTION. Reason: TODO ADD
  * REASON(可选). Description: 教室区域实体类. date: 2016-08-23
- *
+ * 备用字段5：存放校区的UUID值（之前的设计是，校区、部门、区域同一个UUID值，实际上使用实体入库时，uuid自动生成了，导致不一致
  * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8

@@ -31,7 +31,7 @@ import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseEntity {
-
+		
 	@Id
 	@FieldInfo(name = "UUID", type = "ID")
     @GeneratedValue(generator = "uuid")

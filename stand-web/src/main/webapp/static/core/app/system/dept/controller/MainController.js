@@ -54,8 +54,8 @@ Ext.define("core.system.dept.controller.MainController", {
                     //得到配置信息
                     var funData = basePanel.funData;
                     var pkName = funData.pkName;
-                    //var records = baseGrid.getSelectionModel().getSelection();
-                    var records = baseGrid.getView().getChecked();
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    //var records = baseGrid.getView().getChecked();
                     if (records.length == 0) {
                         self.msgbox("请选择要删除的部门");
                         return;
@@ -468,13 +468,11 @@ Ext.define("core.system.dept.controller.MainController", {
         var basePanel = btn.up("basepanel[xtype=system.dept.mainlayout]");
         var funData = basePanel.funData;
      
-        var records = baseGrid.getChecked();
-        if (records.length <= 0) {
-            // records = tree.getSelectionModel().getSelection();
-            // if (records.length <= 0) {
-                self.Warning("请选择要设置主管岗位的部门");
-                return false;
-            //}
+        //var records = baseGrid.getChecked();
+        var records = baseGrid.getSelectionModel().getSelection();
+        if (records.length <= 0) {            
+            self.msgbox("请选择要设置主管岗位的部门");
+            return false;            
         }
         var setIds = new Array();
         Ext.each(records, function(rec) {
@@ -503,7 +501,7 @@ Ext.define("core.system.dept.controller.MainController", {
             isEmpty: true,
             setIds: setIds.join(","),
             funData: funData,
-            //grid: baseGrid,
+            grid: baseGrid,
             config: {
                 url: configInfo.url,
                 params: {
