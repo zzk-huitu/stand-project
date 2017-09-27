@@ -490,7 +490,7 @@ Ext.define("core.system.dept.controller.MainController", {
             multiSelect: false,
             whereSql: "",
             orderSql: " ",
-            url: comm.get('baseUrl') + "/BaseDeptjob/getDeptJobTree",
+            url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
         }
 
         self.selTreeWin({

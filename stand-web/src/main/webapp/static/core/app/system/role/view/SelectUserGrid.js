@@ -4,7 +4,7 @@ Ext.define("core.system.role.view.SelectUserGrid", {
     al:false,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/sysuser/getUserNotInRoleId", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/SysUser/getUserNotInRoleId", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     /**
      * 工具栏操作按E钮
@@ -39,7 +39,7 @@ Ext.define("core.system.role.view.SelectUserGrid", {
                 fieldInfo: "deptName~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
-                url:comm.get('baseUrl') + "/BaseOrg/chktreelist"
+                url:comm.get('baseUrl') + "/SysOrg/chkTreeList"
             }
         },{
             xtype: 'button',
@@ -104,24 +104,25 @@ Ext.define("core.system.role.view.SelectUserGrid", {
             text: "用户名",
             dataIndex: "userName"
         },{
-            width:70,
+            width:80,
             text: "姓名",
             dataIndex: "xm"
         }, {
-            width:50,
+            width:60,
             text: "性别",
             dataIndex: "xbm",
             columnType: "basecombobox",
             ddCode: "XBM"
         }, {
-            width:150,
+            minWidth:120,
+            flex:1,
             text: "部门",
             dataIndex: "deptName"
         }, {
-            width:110,
+            width:100,
             text: "岗位",
             dataIndex: "jobName"
-        }, {
+        }/*, {
             text: "编制",
             dataIndex: "zxxbzlb",
             ddCode: "ZXXBZLB",
@@ -129,7 +130,7 @@ Ext.define("core.system.role.view.SelectUserGrid", {
             minWidth:100,
             flex:1,
             align:'left'
-        }]
+        }*/]
     },
     emptyText: '<span style="width:100%;text-align:center;display: block;">暂无数据</span>'
 });

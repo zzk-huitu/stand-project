@@ -30,6 +30,61 @@ Ext.define("core.system.user.controller.MainController", {
                     this.doDetail_Tab(null, data.cmd, baseGrid, record);
                  
                     return false;
+                },
+                /*暂不开放此功能*/
+                deleteClick:function(data){
+                    var userGrid = data.view;
+                    var mainLayout = userGrid.up("panel[xtype=system.user.mainlayout]");
+                    var funData = mainLayout.funData;
+                    var deptId = funData.deptId;
+                    //用户所属角色的grid
+                    var userRoleGrid = mainLayout.down("panel[xtype=system.user.userrolegrid]");
+                    //选择的用户
+                    var selectUser = data.record;
+
+                    //拼装所选择的用户
+                    var ids = new Array();
+                    Ext.each(selectUser, function(rec) {
+                        var pkValue = rec.get("uuid");
+                        ids.push(pkValue);
+                    });
+                    var title = "确定删除所选择的用户吗？";
+                    Ext.Msg.confirm('信息', title, function(btn, text) {
+                        if (btn == 'yes') {
+
+                            //显示loadMask
+                            var myMask = self.LoadMask(userGrid);
+                            //提交入库
+                            self.asyncAjax({
+                                url: funData.action + "/doDelete",
+                                params: {
+                                    ids: ids.join(","),
+                                    deptId:deptId
+                                },
+                                //回调代码必须写在里面
+                                success: function(response) {
+                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                    if (data.success) {
+                                        //刷新用户列表
+                                        var userStore = userGrid.getStore();
+                                        userStore.load();
+
+                                        self.msgbox(data.obj);
+
+                                    }else{
+                                        self.Error(data.obj);   
+                                    }
+                                    myMask.hide();
+                                },
+                                failure: function(response) {           
+                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                                    myMask.hide();
+                                }
+                            });                            
+                        }
+                    });
+                    return false;
                 }
             },
 
@@ -397,10 +452,7 @@ Ext.define("core.system.user.controller.MainController", {
                             });                            
                         }
                     });
-                    //执行回调函数
-                    if (btn.callback) {
-                        btn.callback();
-                    }
+                    
                     return false;
                 }
             },

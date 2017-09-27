@@ -23,9 +23,8 @@ Ext.define("core.system.role.view.MainGrid", {
         },{
             xtype: 'button',
             text: '角色用户',
-            ref: 'gridDetail_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
+            ref: 'gridJobUser_Tab',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分   
             iconCls: 'x-fa fa-user'
         },{
             xtype: 'button',
@@ -126,6 +125,18 @@ Ext.define("core.system.role.view.MainGrid", {
                     });                    
                 },
                                
+            },{
+                text:'详情',
+                style:'font-size:12px;',
+                tooltip: '详情',
+                ref: 'gridDetail',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view:view.grid,
+                        record: rec
+                    });
+                }
             },{               
                 text:'角色用户',
                 style:'font-size:12px;',
@@ -134,7 +145,7 @@ Ext.define("core.system.role.view.MainGrid", {
                 //hidden:true,            
                 handler: function(view, rowIndex, colIndex, item) {             
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('detailClick_Tab', {
+                    this.fireEvent('jobUserClick_Tab', {
                         view:view.grid,
                         record: rec
                     });

@@ -20,7 +20,7 @@ Ext.define("core.system.roleright.view.RoleGrid", {
         xtype: 'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '系统角色',
+            html: '角色列表',
             style: {
                 fontSize: '16px',
                 color: '#C44444',

@@ -22,59 +22,7 @@ Ext.define("core.system.role.controller.OtherController", {
          */
         "basegrid[xtype=system.role.roleusergrid] button[ref=gridAddUser]": {
             beforeclick: function (btn) {
-                var self = this;
-                //得到组件
-                var baseGrid = btn.up("basegrid");
-                var funCode = baseGrid.funCode;
-                var basePanel = baseGrid.up("basepanel[funCode=" +funCode + "]");
-                var basetab = btn.up('baseformtab');
-                var tabFunData = basetab.funData;
-                //得到配置信息
-                var funData = basePanel.funData;
-                var detCode = "selectuser_detail"; //这个值换为其他，防止多个window误入other控制器中的同一个事件
-                var detLayout = "system.role.selectuserlayout";
-                var defaultObj = funData.defaultObj;
-                //关键：window的视图控制器
-                var otherController = basePanel.otherController;
-                if (!otherController)
-                    otherController = '';
-                //处理特殊默认值
-                var insertObj = self.getDefaultValue(defaultObj);
-                //填入选择的班级的值
-                insertObj = Ext.apply(insertObj, {
-                    roleId: tabFunData.roleId,
-                    roleName: tabFunData.roleName
-
-                });
-                var popFunData = Ext.apply(funData, {
-                    grid: baseGrid,
-                    roleId: tabFunData.roleId,
-                    roleName: tabFunData.roleName
-                });
-                var width = 1200;
-                var height = 600;
-                var win = Ext.create('core.base.view.BaseFormWin', {
-                    iconCls: 'x-fa fa-plus-circle',
-                    operType: 'add',
-                    width: width,
-                    height: height,
-                    controller: otherController, //指定视图控制器，从而能够使指定的控制器的事件生效
-                    funData: popFunData,
-                    funCode: detCode,
-                    insertObj: insertObj,
-                    items: [{
-                        xtype: detLayout,
-                        funCode: detCode //这里将funcode修改为刚刚的detcode值
-                    }]
-                });
-                win.show();
-                var selectGrid = win.down("basegrid[xtype=system.role.selectusergrid]");
-                var selectStore = selectGrid.getStore();
-                var selectProxy = selectStore.getProxy();
-                selectProxy.extraParams = {
-                    roleId:tabFunData.roleId
-                };
-                selectStore.loadPage(1);
+                this.openSelectUserDetail(btn);            
                 return false;
             }
         },
@@ -105,7 +53,7 @@ Ext.define("core.system.role.controller.OtherController", {
                 var isSelectStore = isSelectGrid.getStore();
                 var storeCount = isSelectStore.getCount();
                 if (storeCount == 0) {
-                    self.Warning("没有要设置的用户，请重新选择");
+                    self.msgbox("没有要设置的用户，请重新选择");
                     return false;
                 }
                 var userIds = new Array();
@@ -116,21 +64,34 @@ Ext.define("core.system.role.controller.OtherController", {
                 Ext.Msg.confirm('提示', title, function (btnOper, text) {
                     if (btnOper == 'yes') {
                         //发送ajax请求
-                        var resObj = self.ajax({
+                        var loading = self.LoadMask(win);
+                        self.asyncAjax({
                             url: funData.action + "/doAddRoleUser",
                             params: {
                                 ids: roleId,
                                 userId: userIds.join(",")
+                            },            
+                            //回调代码必须写在里面
+                            success: function (response) {
+                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                
+                                if (data.success) {
+                                    var store = baseGrid.getStore();
+                                    store.load();
+                                    self.msgbox(data.obj);
+                                    loading.hide();
+                                    win.close();
+                                } else {
+                                    self.Error(data.obj); 
+                                    loading.hide();                                
+                                }
+                            },
+                            failure: function(response) {                   
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                loading.hide();
                             }
                         });
-                        if (resObj.success) {
-                            var store = baseGrid.getStore();
-                            store.load();
-                            self.msgbox(resObj.obj);
-                            win.close();
-                        } else {
-                            self.Error(resObj.obj);
-                        }
                     }
                 });
                 return false;
@@ -160,6 +121,60 @@ Ext.define("core.system.role.controller.OtherController", {
                 return false;
             }
         }
+    },
+    /**
+        打开选择用户的窗口
+    */
+    openSelectUserDetail:function(btn){
+        var self = this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" +funCode + "]");
+        var basetab = btn.up('baseformtab');
+        var tabFunData = basetab.funData;
+        //得到配置信息
+        var funData = basePanel.funData;
+        var detCode = "selectuser_detail"; 
+        var detLayout = "system.role.selectuserlayout";
+        var defaultObj = funData.defaultObj;
+        //关键：window的视图控制器
+        var otherController = 'system.role.othercontroller';
+        //处理特殊默认值
+        var insertObj = self.getDefaultValue(defaultObj);
+        //填入选择的角色的值
+        insertObj = Ext.apply(insertObj, {
+            roleId: tabFunData.roleId,
+            roleName: tabFunData.roleName
+        });
+        var popFunData = Ext.apply(funData, {
+            grid: baseGrid,
+            roleId: tabFunData.roleId,
+            roleName: tabFunData.roleName
+        });
+        var width = 1200;
+        var height = 600;
+        var win = Ext.create('core.base.view.BaseFormWin', {
+            iconCls: 'x-fa fa-plus-circle',
+            operType: 'add',
+            width: width,
+            height: height,
+            controller: otherController, //指定视图控制器，从而能够使指定的控制器的事件生效
+            funData: popFunData,
+            funCode: detCode,
+            insertObj: insertObj,
+            items: [{
+                xtype: detLayout
+            }]
+        });
+        win.show();
+        var selectGrid = win.down("basegrid[xtype=system.role.selectusergrid]");
+        var selectStore = selectGrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        selectProxy.extraParams = {
+            roleId:tabFunData.roleId
+        };
+        selectStore.loadPage(1);
     },
 
     /**
@@ -227,7 +242,7 @@ Ext.define("core.system.role.controller.OtherController", {
                 ids.push(pkValue);
             });
             if (ids.length == 0) {
-                self.Error("没有选择要删除的角色用户！");
+                self.msgbox("没有选择要删除的角色用户！");
                 return false;
             }
         } else {
@@ -241,23 +256,34 @@ Ext.define("core.system.role.controller.OtherController", {
         var basetab = btn.up('baseformtab');
         var tabFunData = basetab.funData;
 
-        Ext.Msg.confirm('警告', title, function (btnOper, text) {
+        Ext.Msg.confirm('温馨提示', title, function (btnOper, text) {
             if (btnOper == 'yes') {
                 //发送ajax请求
-                var resObj = self.ajax({
+                var loading = self.LoadMask(baseGrid);
+                self.asyncAjax({
                     url: funData.action + "/doDeleteRoleUser",
                     params: {
                         ids: tabFunData.roleId,
                         userId: ids.join(",")
+                    },            
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                
+                        if (data.success) {
+                            var store = baseGrid.getStore();
+                            store.load();
+                            self.msgbox(data.obj);                            
+                        } else {
+                            self.Error(data.obj);                                    
+                        }
+                        loading.hide();
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
                     }
                 });
-                if (resObj.success) {
-                    var store = baseGrid.getStore();
-                    store.load();
-                    self.msgbox(resObj.obj);
-                } else {
-                    self.Error(resObj.obj);
-                }
             }
         });
     }

@@ -6,4 +6,7 @@ public class AdminType {
 	 
 	 public final static String ADMIN_ROLE_ID = "8a8a8834533a0f8a01533a0f8e220000";
 	 public final static String ADMIN_ROLE_NAME = "ROLE_ADMIN";
+	 
+	 public final static String ADMIN_ORG_ID = "2851655E-3390-4B80-B00C-52C7CA62CB39";
+	 
 }

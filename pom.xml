@@ -142,7 +142,6 @@
 			<version>1.0.20</version>
 		</dependency>
 		<!-- sql server 数据库驱动 -->
-		<!-- https://mvnrepository.com/artifact/com.hynnet/sqljdbc-chs -->
 		<dependency>
 		    <groupId>com.hynnet</groupId>
 		    <artifactId>sqljdbc4-chs</artifactId>

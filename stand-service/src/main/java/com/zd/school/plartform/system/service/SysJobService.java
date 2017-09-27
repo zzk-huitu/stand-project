@@ -20,4 +20,6 @@ import com.zd.school.plartform.system.model.SysUser;
  
 public interface SysJobService extends BaseService<BaseJob> {
 
+	BaseJob doUpdate(BaseJob entity, String xm);
+
 }

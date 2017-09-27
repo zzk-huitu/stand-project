@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.AuthorType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
@@ -65,10 +66,10 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	@Resource
 	SysUserdeptjobService userDeptjobService;
-	
-	@Resource  
-	private RedisTemplate<String, Object> redisTemplate;  
-	
+
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
+
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
@@ -81,35 +82,35 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String strData = ""; // 返回给js的数据
 		String deptId = request.getParameter("deptId");
 
-		deptId = deptId == null ? "2851655E-3390-4B80-B00C-52C7CA62CB39" : deptId;
+		deptId = deptId == null ? AdminType.ADMIN_ORG_ID : deptId;
 
 		// 若为学校部门，则查询出所有的用户
-		if (deptId.equals("2851655E-3390-4B80-B00C-52C7CA62CB39")) {
-			
+		if (deptId.equals(AdminType.ADMIN_ORG_ID)) {
+
 			QueryResult<SysUser> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 					super.sort(request), super.filter(request), true);
 			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
-		
+
 		} else {
-			List<BaseUserdeptjob> udj = userDeptjobService.queryByProerties("deptId", deptId);
-			
+			List<BaseUserdeptjob> udj = userDeptjobService.queryByProerties(new String[]{"deptId","isDelete"}, new Object[]{deptId,0});
+
 			String userIds = "";
 			for (int i = 0; i < udj.size(); i++) {
 				userIds += "'" + udj.get(i).getUserId() + "',";
 			}
 
-			if (userIds.trim().length() > 0){	//若又在用户，就去查询
-				
+			if (userIds.trim().length() > 0) { // 若有用户，就去查询
+
 				userIds = StringUtils.trimLast(userIds);
-				
+
 				SysUser currentUser = getCurrentSysUser();
 				QueryResult<SysUser> qr = thisService.getDeptUser(super.start(request), super.limit(request),
 						super.sort(request), super.filter(request), true, userIds, currentUser);
 				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
-			
-			}else{
+
+			} else {
 				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
-			}			
+			}
 		}
 
 		writeJSON(response, strData);// 返回数据
@@ -151,14 +152,14 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String orgId = request.getParameter("deptId");
 		SysUser currentUser = getCurrentSysUser();
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除主键\""));
 			return;
 		} else {
 			boolean flag = thisService.doDeleteUser(delIds, orgId, currentUser);
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
@@ -194,30 +195,30 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		Session session = subject.getSession();
 		SysUser currentUser = (SysUser) session.getAttribute(SESSION_SYS_USER);
 		String strData = null;
-		
-		//设置value序列化方式为json		
-        HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+
+		// 设置value序列化方式为json
+		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 		Object userMenuTree = hashOper.get("userMenuTree", currentUser.getUuid());
-		
-		if(userMenuTree==null){		//若存在，则不需要设置
+
+		if (userMenuTree == null) { // 若存在，则不需要设置
 			String node = request.getParameter("node");
 			String excludes = request.getParameter("excludes");
-		
+
 			if (StringUtils.isEmpty(node) || TreeVeriable.ROOT.equalsIgnoreCase(node)) {
 				node = TreeVeriable.ROOT;
 			}
-			
-			List<SysMenuTree> lists = sysMenuService.getPermTree(node, currentUser.getUuid(), AuthorType.USER, true, false);
-			strData = jsonBuilder.buildList(lists, excludes);	
-			
-			hashOper.put("userMenuTree", currentUser.getUuid(),strData);
-			
-		}else{
-			strData=(String) userMenuTree;
-		}	
-		
-      
-    	//取出json字符串    			       
+
+			List<SysMenuTree> lists = sysMenuService.getPermTree(node, currentUser.getUuid(), AuthorType.USER, true,
+					false);
+			strData = jsonBuilder.buildList(lists, excludes);
+
+			hashOper.put("userMenuTree", currentUser.getUuid(), strData);
+
+		} else {
+			strData = (String) userMenuTree;
+		}
+
+		// 取出json字符串
 		writeJSON(response, strData);
 	}
 
@@ -271,16 +272,16 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		Integer count = 0;
 		Set<SysRole> userRole = new HashSet<SysRole>();
 		if (ModelUtil.isNotNull(sysUser)) {
-			
-			//排除isdelet为1的角色(在获取菜单列表的方法中，排除删除的角色)
-			Iterator<SysRole> sysRoles=sysUser.getSysRoles().iterator();
-			while(sysRoles.hasNext()){
-				SysRole currentRole=sysRoles.next();
-				if(currentRole.getIsDelete()!=null&&currentRole.getIsDelete()!=1){
+
+			// 排除isdelet为1的角色(在获取菜单列表的方法中，排除删除的角色)
+			Iterator<SysRole> sysRoles = sysUser.getSysRoles().iterator();
+			while (sysRoles.hasNext()) {
+				SysRole currentRole = sysRoles.next();
+				if (currentRole.getIsDelete() != null && currentRole.getIsDelete() != 1) {
 					userRole.add(currentRole);
 				}
 			}
-			
+
 			count = userRole.size();
 		}
 		String strData = jsonBuilder.buildObjListToJson(new Long(count), userRole, true);
@@ -299,7 +300,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
-	@RequestMapping(value = { "/doDeleteUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/doDeleteUserRole" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void deleteUserRole(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -313,9 +315,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		} else {
 			boolean flag = thisService.doDeleteUserRole(userId, ids, currentUser);
 			if (flag) {
-				/*删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据*/
+				/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
 				thisService.deleteUserRoleRedis(currentUser);
-				
+
 				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
@@ -349,9 +351,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		} else {
 			boolean flag = thisService.doAddUserRole(userId, ids, currentUser);
 			if (flag) {
-				/*删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据*/
+				/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
 				thisService.deleteUserRoleRedis(currentUser);
-				
+
 				writeJSON(response, jsonBuilder.returnSuccessJson("'添加成功'"));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("'添加失败'"));
@@ -456,24 +458,24 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		strData = jsonBuilder.buildObjListToJson((long) userList.size(), userList, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	
-	
-	@RequestMapping(value = { "/userDeptJobList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+
+	@RequestMapping(value = { "/userDeptJobList" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void getUserDeptJobList(@ModelAttribute SysDatapermission entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		
+
 		String userId = request.getParameter("userId");
-		
-		String propName[]={"isDelete","userId"};
-		Object propValue[]={0,userId};
+
+		String propName[] = { "isDelete", "userId" };
+		Object propValue[] = { 0, userId };
 		List<BaseUserdeptjob> list = userDeptjobService.queryByProerties(propName, propValue);
-	
-		strData = jsonBuilder.buildObjListToJson((long) list.size(),list, true);// 处理数据
+
+		strData = jsonBuilder.buildObjListToJson((long) list.size(), list, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	
+
 	/**
 	 * 将指定的用户绑定到指定的部门岗位上
 	 * 
@@ -497,7 +499,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				writeJSON(response, jsonBuilder.returnSuccessJson("'设置失败'"));
 		}
 	}
-	
+
 	/**
 	 * 删除用户所在的部门岗位，只是逻辑删除
 	 * 
@@ -520,7 +522,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				writeJSON(response, jsonBuilder.returnSuccessJson("'解除绑定失败'"));
 		}
 	}
-	
+
 	/**
 	 * 调整指定用户的主部门岗位
 	 * 
@@ -544,7 +546,6 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				writeJSON(response, jsonBuilder.returnSuccessJson("'设置主部门失败'"));
 		}
 	}
-	
 
 	/*
 	 * 单条数据调用同步UP的方式 用于修改单条人员数据的时候进行同步（貌似目前暂时未使用到）
@@ -692,5 +693,23 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		}
 
 		writeAppJSON(response, returnJson.toString());
+	}
+
+	@RequestMapping(value = { "/getUserNotInRoleId" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void getUserNotInRoleId(String roleId, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		
+		int start = super.start(request); // 起始记录数
+		int limit = super.limit(request);// 每页记录数
+		String sort = StringUtils.convertSortToSql(super.sort(request));
+		String filter = StringUtils.convertFilterToSql(super.filter(request));
+	
+		QueryResult<SysUser> qr = thisService.getUserNotInRoleId(roleId, start, limit, sort, filter);
+		strData = jsonBuilder.buildObjListToJson(new Long(qr.getTotalCount()), qr.getResultList(), true);// 处理数据
+		
+		writeJSON(response, strData);// 返回数据
 	}
 }

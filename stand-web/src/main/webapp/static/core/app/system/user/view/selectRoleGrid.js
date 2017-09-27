@@ -15,7 +15,7 @@ Ext.define("core.system.user.view.selectRoleGrid", {
                 color: '#C44444',
                 fontWeight:800
             }
-        }/*,'->',{
+        },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -29,7 +29,7 @@ Ext.define("core.system.user.view.selectRoleGrid", {
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型
             ref: 'gridFastSearchBtn',   
             iconCls: 'x-fa fa-search',  
-        }*/],
+        }],
     },
     panelButtomBar:null,
     viewConfig: {
@@ -53,7 +53,7 @@ Ext.define("core.system.user.view.selectRoleGrid", {
     }],
     extParams: {
         whereSql: "",
-        filter: "[{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}]"
+        //filter: '[{"type":"numeric","comparison":"=","value":0,"field":"isDelete"}]'
     },
     model: 'com.zd.school.plartform.system.model.SysRole',
     columns:  { 

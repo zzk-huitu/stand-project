@@ -48,19 +48,27 @@ Ext.define("core.system.user.view.UserDeptJobGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
+            xtype: "rownumberer",
+            flex:0,
+            width: 50,
+            text: '序号',
+            align: 'center'
+        },{
             text: "部门名称",
             dataIndex: "allDeptName",
             flex:1,
-            minWidth:200,
+            minWidth:400,
             renderer: function(value, metaData,record) {          
-               if(!value)
-                    return record.get('deptName');;           
+                if(!value)
+                    return record.get('deptName'); 
+                else
+                    return value;          
               
             } 
         }, {
             text: "岗位名称",
             dataIndex: "jobName",
-            width:200
+            width:300
         },{
             text: "岗位级别",
             dataIndex: "jobLevel",

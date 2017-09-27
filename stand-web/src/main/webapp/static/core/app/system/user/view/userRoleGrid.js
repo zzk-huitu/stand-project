@@ -42,6 +42,12 @@ Ext.define("core.system.user.view.userRoleGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
+            xtype: "rownumberer",
+            flex:0,
+            width: 50,
+            text: '序号',
+            align: 'center'
+        },{
             text: "角色名称",
             dataIndex: "roleName",
             flex:1,

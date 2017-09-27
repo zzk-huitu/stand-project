@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -238,25 +239,35 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         String userId = request.getParameter("userId");
         int start = super.start(request); // 起始记录数
         int limit = super.limit(request);// 每页记录数
-
+        String sort = StringUtils.convertSortToSql(super.sort(request));
+        String filter = StringUtils.convertFilterToSql(super.filter(request));
+        
         Set<SysRole> userRole = userSerive.get(userId).getSysRoles();
         // hql语句
-        StringBuffer hql = new StringBuffer("from SysRole e where isDelete=0 ");
-        // 总记录数
-        StringBuffer countHql = new StringBuffer("select count(*) from SysRole e where isDelete=0 ");
-        List<SysRole> lists = new ArrayList<SysRole>();
-        Integer count = 0;
+        StringBuffer hql = new StringBuffer("from SysRole o where o.isDelete=0 ");           
         if (userRole.size() > 0) {
-            hql.append("and e not in(:roles)");
-            countHql.append("and e not in(:roles)");
-            lists = thisService.queryByHql(hql.toString(), start, limit, "roles", userRole.toArray());// 执行查询方法
-            count = thisService.getQueryCountByHql(countHql.toString(), "roles", userRole.toArray());// 查询总记录数
-        } else {
-            lists = thisService.queryByHql(hql.toString(), start, limit);// 执行查询方法
-            count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
+        	StringBuilder sb = new StringBuilder();
+            for (SysRole r : userRole) {
+                sb.append(r.getUuid());
+                sb.append(",");
+            }
+            sb = sb.deleteCharAt(sb.length()-1);
+            String str = sb.toString().replace(",", "','");
+            hql.append(" and o.uuid not in('" + str + "')");
         }
-
-        strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
+    
+        //countHql.append("and e not in(:roles)");            
+        if(StringUtils.isNotEmpty(filter)){
+            hql.append(filter);
+        }
+        if(StringUtils.isNotEmpty(sort)){
+            hql.append(" order by ");
+            hql.append( sort);
+        }
+        
+        QueryResult<SysRole> qr = thisService.queryResult(hql.toString(), start, limit);
+                  
+        strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
         writeJSON(response, strData);// 返回数据        
     }
 
@@ -355,5 +366,55 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         if (ModelUtil.isNotNull(qr))
         	strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
         writeJSON(response, strData);// 返回数据
+    }
+    
+    
+    /**
+     * 删除指定角色的用户
+     * @param ids 要删除用户的角色
+     * @param userId 删除的用户Id,多个Id用英文逗号隔开
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/doDeleteRoleUser")
+    public void doDeleteRoleUser(String ids, String userId,HttpServletRequest request, HttpServletResponse response) throws IOException{
+        if(StringUtils.isEmpty(ids) || StringUtils.isEmpty(userId)){
+            writeJSON(response,jsonBuilder.returnFailureJson("\"没有传入相关的参数:角色标识或删除的用户标识\""));
+            return;
+        }
+        /*如果删除的是超级管理员角色的数据，就判断是否存在超级管理员账户*/
+        if(ids.contains(AdminType.ADMIN_ROLE_ID)&&userId.contains(AdminType.ADMIN_USER_ID)){
+        	writeJSON(response,jsonBuilder.returnFailureJson("\"不允许删除超级管理员角色的administrator账户！\""));
+            return;
+        }
+        Boolean flag = thisService.doDeleteRoleUser(ids,userId);
+        if(flag)
+            writeJSON(response,jsonBuilder.returnSuccessJson("\"角色用户删除成功\""));
+        else
+            writeJSON(response,jsonBuilder.returnFailureJson("\"角色用户删除失败，详情请见错误日志\""));
+        
+    }
+
+    /**
+     * 给指定的角色添加用户
+     * @param ids 要添加用户的角色Id
+     * @param userId 添加的用户Id,多个Id用英文逗号隔开
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/doAddRoleUser")
+    public void doAddRoleUser(String ids, String userId,HttpServletRequest request, HttpServletResponse response) throws IOException{
+        if(StringUtils.isEmpty(ids) || StringUtils.isEmpty(userId)){
+            writeJSON(response,jsonBuilder.returnFailureJson("\"没有传入相关的参数:角色标识或s要添加的用户标识\""));
+            return;
+        }
+        Boolean flag = thisService.doAddRoleUser(ids,userId);
+        if(flag)
+            writeJSON(response,jsonBuilder.returnSuccessJson("\"角色用户添加成功\""));
+        else
+            writeJSON(response,jsonBuilder.returnFailureJson("\"角色用户添加失败，详情请见错误日志\""));
+       
     }
 }
