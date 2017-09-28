@@ -64,7 +64,8 @@ public class BaseSchoolServiceImpl extends BaseServiceImpl<BaseSchool> implement
 			this.doExecuteCountByHql(updateHql1);
 			this.doExecuteCountByHql(updateHql2);
 			
-			sysOrgService.setDeptName(entity.getSchoolName(), entity.getUuid());		
+			sysOrgService.setDeptName(entity.getSchoolName(), entity.getUuid());	
+			
 			BaseOrg deptOrg = sysOrgService.get(entity.getUuid());
 			BaseOrg parentOrg = sysOrgService.get(deptOrg.getParentNode());
 			if(parentOrg!=null&&!deptOrg.getParentNode().equals("ROOT"))

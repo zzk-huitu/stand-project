@@ -242,15 +242,15 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 
 		BaseOrg saveEntity = new BaseOrg();
-		//List<String> excludedProp = new ArrayList<>();
-		//excludedProp.add("uuid");
-		BeanUtils.copyProperties(saveEntity, entity);	
+		List<String> excludedProp = new ArrayList<>();
+		excludedProp.add("uuid");
+		BeanUtils.copyProperties(saveEntity, entity,excludedProp);	
 		
-		entity.setCreateUser(currentUser.getXm()); // 创建人
-		entity.setLeaf(true);
-		entity.setIssystem(1);
-		entity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
-		this.persist(entity);		//先持久化，再修改下面的代码【由于修改了uuid的生成方式】
+		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
+		saveEntity.setLeaf(true);
+		saveEntity.setIssystem(1);
+		saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
+		
 		
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			BaseOrg parEntity = this.get(parentNode);
@@ -262,11 +262,8 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			entity.BuildNode(null);
 
 		// 持久化到数据库
-		entity = this.merge(entity);
-		entity.setParentName(parentName);
-		entity.setParentNode(parentNode);
-		entity.setParentType(parentType);
-
+		entity = this.merge(saveEntity);
+		
 		// 插入年级数据或班级数据
 		String orgId = entity.getUuid();
 		switch (deptType) {
@@ -639,7 +636,12 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	@Override
 	public void setChildAllDeptName(BaseOrg dept,String parentAllDeptName){	
 		//1.设置当前类的全部门名
-		String currentAllName=parentAllDeptName+"/"+dept.getNodeText();
+		String currentAllName="";
+		if(!"ROOT".equals(parentAllDeptName))
+			currentAllName=parentAllDeptName+"/"+dept.getNodeText();
+		else
+			currentAllName=dept.getNodeText();
+		
 		dept.setAllDeptName(currentAllName);	
 		this.merge(dept);
 		

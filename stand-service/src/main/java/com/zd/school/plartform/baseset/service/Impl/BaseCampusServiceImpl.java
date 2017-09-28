@@ -59,11 +59,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		BeanUtils.copyProperties(saveEntity, entity, excludedProp);
 
 		saveEntity.setCreateUser(currentUser.getXm());
-		this.persist(saveEntity);
+		this.merge(saveEntity);
 		
 		// 增加到建筑物的区域
-		BuildRoomarea roomarea = new BuildRoomarea();	
-		roomarea.setExtField05(saveEntity.getUuid());	//保存校区ID
+		BuildRoomarea roomarea = new BuildRoomarea(saveEntity.getUuid());			
 		roomarea.setNodeText(entity.getCampusName());
 		roomarea.setCreateTime(new Date());
 		roomarea.setCreateUser(currentUser.getXm());
@@ -72,11 +71,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		roomarea.setLeaf(true);
 		roomarea.setNodeLevel(2);
 		roomarea.setTreeIds(currentUser.getSchoolId() + "," + saveEntity.getUuid());
-		areaService.persist(roomarea);
+		areaService.merge(roomarea);
 
 		// 增加到部门的第二级
-		BaseOrg orgSave = new BaseOrg();
-		orgSave.setExtField05(saveEntity.getUuid());	//保存校区ID
+		BaseOrg orgSave = new BaseOrg(saveEntity.getUuid());
 		orgSave.setNodeText(entity.getCampusName()); // 部门名称
 		orgSave.setOrderIndex(entity.getOrderIndex());
 		orgSave.setParentNode(entity.getSchoolId()); // 上级节点
@@ -90,7 +88,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		orgService.merge(parEntity);
 		
 		orgSave.BuildNode(parEntity);
-		orgService.persist(orgSave);
+		orgService.merge(orgSave);
 
 		return entity;
 	}
@@ -112,7 +110,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		
 		if(!oldCampusName.equals(entity.getCampusName())){			
 			// 更新建筑物区域中对应的名称
-			BuildRoomarea roomarea = areaService.getByProerties(new String[]{"isDelete","extField05"} ,new Object[]{0,entity.getUuid()});
+			BuildRoomarea roomarea = areaService.getByProerties(new String[]{"isDelete","uuid"} ,new Object[]{0,entity.getUuid()});
 			if (roomarea != null) {
 				roomarea.setNodeText(entity.getCampusName());
 				roomarea.setUpdateTime(new Date());
@@ -121,7 +119,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 			}
 	
 			// 更新部门名称
-			BaseOrg orgSave = orgService.getByProerties(new String[]{"isDelete","extField05"} ,new Object[]{0,entity.getUuid()});
+			BaseOrg orgSave = orgService.getByProerties(new String[]{"isDelete","uuid"} ,new Object[]{0,entity.getUuid()});
 			if(orgSave!=null){
 				orgSave.setNodeText(entity.getCampusName());
 				orgSave.setOrderIndex(entity.getOrderIndex());
@@ -159,7 +157,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		StringBuffer areaSb = new StringBuffer();
 		for (String uuid : ids) {
 			// 检查当前校区是否配置了下属的部门
-			BaseOrg orgSave = orgService.getByProerties(new String[]{"isDelete","extField05"} ,new Object[]{0,uuid});		
+			BaseOrg orgSave = orgService.getByProerties(new String[]{"isDelete","uuid"} ,new Object[]{0,uuid});		
 			if(orgSave!=null){
 				childOrg = orgService.getChildCount(orgSave.getUuid());		
 				//检查是否此部门分配了岗位，或是其他部门岗位的上级部门岗位
@@ -167,7 +165,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 			}
 			
 			// 检查当前校区是否配置了下属的建筑物区域
-			BuildRoomarea roomarea = areaService.getByProerties(new String[]{"isDelete","extField05"} ,new Object[]{0,uuid});		
+			BuildRoomarea roomarea = areaService.getByProerties(new String[]{"isDelete","uuid"} ,new Object[]{0,uuid});		
 			if(roomarea!=null)
 				childArea = areaService.getChildCount(roomarea.getUuid());
 

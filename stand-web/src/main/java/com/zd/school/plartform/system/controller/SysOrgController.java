@@ -91,6 +91,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		String parentNode = entity.getParentNode();
 		String parentName = entity.getParentName();
+		String parentType = entity.getParentType();
 		String nodeText = entity.getNodeText();
 		Integer orderIndex = entity.getOrderIndex();
 
@@ -105,7 +106,13 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			return;
 		}
 		SysUser sysuser = getCurrentSysUser();
+		
 		entity = thisService.addOrg(entity, sysuser);
+		
+		entity.setParentName(parentName);
+		entity.setParentNode(parentNode);
+		entity.setParentType(parentType);
+
 		// 返回的是实体前端界面
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
