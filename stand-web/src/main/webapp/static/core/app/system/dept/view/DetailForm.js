@@ -213,7 +213,7 @@ Ext.define("core.system.dept.view.DetailForm", {
             emptyText: '外线电话',
             blankText: ""
         }]
-    }, {
+    },/* {
         xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
@@ -226,7 +226,8 @@ Ext.define("core.system.dept.view.DetailForm", {
             fieldLabel: "副负责岗位ID",
             name: "viceLeader",
             hidden: true
-        },{
+        },
+        {
             columnWidth: 0.5,
             xtype: "basefuncfield",         
             funcPanel: "system.jobinfo.mainlayout", //该功能显示的主视图
@@ -267,11 +268,11 @@ Ext.define("core.system.dept.view.DetailForm", {
             name: "viceLeaderName",
             allowBlank: true,
         }]
-    }, {
+    },*/ {
         xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-            columnWidth: 01,
+            columnWidth: 1,
             beforeLabelTextTpl: "",
             xtype: "textarea",
             fieldLabel: "备注",

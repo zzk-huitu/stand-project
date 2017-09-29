@@ -32,7 +32,8 @@ public class BaseCampus extends BaseEntity implements Serializable {
     @Column(name = "SCHOOL_ID", length = 36, nullable = true)
     private String schoolId;
 
-    public void setSchoolId(String schoolId) {
+
+	public void setSchoolId(String schoolId) {
         this.schoolId = schoolId;
     }
 
@@ -140,6 +141,20 @@ public class BaseCampus extends BaseEntity implements Serializable {
 
     public void setSchoolName(String schoolName) {
         this.schoolName = schoolName;
+    }
+    
+    
+    public BaseCampus() {
+
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    public BaseCampus(String uuid) {
+
+        super(uuid);
+        // TODO Auto-generated constructor stub
+
     }
 
 }

@@ -162,4 +162,13 @@ public interface SysOrgService extends BaseService<BaseOrg> {
     public Map<String, BaseOrg> getOrgChildMaps(String OrgId, boolean isSelf);
 
 	public int syncDeptInfoToUP(BaseOrgToUP baseOrgToUP, String smallDeptId);
+
+	public BaseOrg doUpdate(BaseOrg entity, String xm);
+
+	public Integer getDeptJobCount(String uuid);
+
+	public void setDeptName(String deptName, String uuid);
+
+	public void setChildAllDeptName(BaseOrg dept, String parentAllDeptName);
+	
 }

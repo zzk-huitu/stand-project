@@ -1,6 +1,6 @@
-Ext.define("core.baseset.campus.view.DetailLayout", {
+Ext.define("core.baseset.roomdefine.view.DetailLayout", {
 	extend: "core.base.view.BasePanel",
-	alias: 'widget.baseset.campus.detaillayout',
+	alias: 'widget.baseset.roomdefine.detaillayout',
 	funCode: "campus_detail",
 	funData: {
 		action: comm.get('baseUrl') + "/BaseCampus", //请求Action	

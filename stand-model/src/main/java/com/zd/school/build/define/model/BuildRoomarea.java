@@ -17,7 +17,7 @@ import com.zd.core.model.TreeNodeEntity;
  * 
  * ClassName: BuildRoomarea Function: TODO ADD FUNCTION. Reason: TODO ADD
  * REASON(可选). Description: 教室区域实体类. date: 2016-08-23
- *
+ * 
  * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8

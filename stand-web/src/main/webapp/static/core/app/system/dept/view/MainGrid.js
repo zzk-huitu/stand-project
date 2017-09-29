@@ -4,7 +4,7 @@ Ext.define("core.system.dept.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/SysOrg/chkTreeList",
     model: "com.zd.school.plartform.baseset.model.BaseOrgChkTree",
     al: true,
-    selModel: null,    
+    //selModel: null,    
     extParams: {
         whereSql: " and isDelete='0' ",
         orderSql: " order by parentNode,orderIndex asc"
@@ -52,13 +52,13 @@ Ext.define("core.system.dept.view.MainGrid", {
         iconCls: 'x-fa fa-refresh'
     },{
         xtype: 'button',
-        text: '部门岗位设置',
+        text: '设置部门岗位',
         ref: 'gridSetJob',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-pencil-square'
     },{
         xtype: 'button',
-        text: '设置上级主管',
+        text: '设置部门上级主管',
         ref: 'gridSetMainJob',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-pencil-square'
@@ -66,7 +66,7 @@ Ext.define("core.system.dept.view.MainGrid", {
     
     columns:  {        
         defaults:{
-            flex:1,
+            //flex:1,
             align:'center',
             titleAlign:"center"
         },
@@ -77,11 +77,11 @@ Ext.define("core.system.dept.view.MainGrid", {
             //flex:false,
             align:'left',
             width: 300
-        }, {
+        },/* {
             header: '排序号',
             width:80,
             dataIndex: 'orderIndex'
-        }, {
+        }, */{
             header: '部门类型',
             width:100,
             dataIndex: 'deptType',
@@ -90,16 +90,24 @@ Ext.define("core.system.dept.view.MainGrid", {
 
         }, {
             header: '主负责岗位',
-            dataIndex: 'mainLeaderName'
+            dataIndex: 'mainLeaderName',
+            flex:1,
         }, {
             header: '上级主管岗位',
-            dataIndex: 'viceLeaderName'
+            dataIndex: 'superjobName',
+            flex:1,
         }, {
             header: '内线电话',
-            dataIndex: 'outPhone'
+            dataIndex: 'outPhone',
+            flex:1,
         }, {
             header: '外线电话',
-            dataIndex: 'inPhone'
+            dataIndex: 'inPhone',
+            flex:1,
+        }, {
+            header: '备注',
+            dataIndex: 'remark',
+            flex:1,
         }]
     }
 });

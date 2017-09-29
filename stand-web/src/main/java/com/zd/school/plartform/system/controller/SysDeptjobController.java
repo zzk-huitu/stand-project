@@ -110,6 +110,15 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
+			// 判断这些部门岗位是否正在被其他用户使用
+			String hql = "select count(a.uuid) from BaseUserdeptjob as a where a.deptjobId in ('" + delIds.replace(",", "','")
+					+ "') and a.isDelete=0";
+			int count = thisService.getQueryCountByHql(hql);
+			if (count > 0) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"部门岗位正在被其他用户使用，不允许删除！\""));
+				return;
+			}
+			
 			SysUser currentUser = getCurrentSysUser();			
 			Boolean flag = thisService.delDeptJob(delIds, currentUser);
 			if (flag) {

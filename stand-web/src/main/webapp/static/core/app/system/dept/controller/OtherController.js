@@ -548,6 +548,7 @@ Ext.define("core.system.dept.controller.OtherController", {
 
                     if (data.success) {
                         self.msgbox("保存成功!");
+                        deptJobGrid.getStore().load();
                         win.close();
                     } else
                         self.Error(data.obj);
