@@ -48,7 +48,7 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 
 	@Override
 	public BuildDormDefine doUpdateEntity(BuildDormDefine entity, SysUser currentUser) throws Exception {
-
+		BuildRoominfo roomInfo = null;
 		// 先拿到已持久化的实体
 		BuildDormDefine perEntity = this.getByRoomId(entity.getUuid());
 		// 获取当前的操作用户
@@ -61,7 +61,14 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 			perEntity.setDormAdmin(entity.getTteacId()); // 设置教师id
 		perEntity.setUpdateTime(new Date()); // 设置修改时间
 		perEntity.setUpdateUser(userCh); // 设置修改人的中文名
-		entity = this.dao.merge(perEntity);// 执行修改方法
+		entity = this.merge(perEntity);// 执行修改方法
+		
+		roomInfo=thisService.get(entity.getUuid());
+		roomInfo.setRoomName(entity.getRoomName());
+		roomInfo.setUpdateTime(new Date());
+		roomInfo.setUpdateUser(userCh);
+		// 执行更新方法
+		thisService.merge(roomInfo);
 		return entity;
 	}
 
@@ -109,4 +116,5 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 
 	}
 
+	
 }

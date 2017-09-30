@@ -17,8 +17,7 @@ import com.zd.school.plartform.system.model.SysUser;
 
 public interface BaseDormDefineService extends BaseService<BuildDormDefine> {
 	public BuildDormDefine getByRoomId(String roomId);
-
-	public void addDormRoom(BuildRoominfo entity, BuildDormDefine dormRoom,String id, String userCh) throws Exception;
+    public void addDormRoom(BuildRoominfo entity, BuildDormDefine dormRoom,String id, String userCh) throws Exception;
 	public void delDormRoom(BuildRoominfo roomInfo,String delIds, String xm)throws Exception;
 	public BuildDormDefine doUpdateEntity(BuildDormDefine entity, SysUser currentUser) throws Exception;
 }

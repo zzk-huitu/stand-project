@@ -38,28 +38,30 @@ Ext.define("core.baseset.roomdefine.controller.OtherController", {
         var pkField = formObj.findField(pkName);    //获取主键表单文本对象
         var params = self.getFormValue(formObj);    //获取表单的值
         var sign=formObj.sign;
-        if(sign=="add"){
-       /*处理提交的参数*/
-        var roomgrid = objForm.down("basegrid[xtype=baseset.roomdefine.roomgrid]");
-        var selectObject = roomgrid.getSelectionModel().getSelection();
-       
 
+        var roomgrid = objForm.down("basegrid[xtype=baseset.roomdefine.roomgrid]");
         var roomName = objForm.down("textfield[name=roomName]").getValue();//房间标志
+        if (roomName == null || roomName == '') {
+            self.msgbox("房间名称不能为空。");
+            return;
+        }
+       if(sign=="add"){
+       /*处理提交的参数*/
+        
+        var selectObject = roomgrid.getSelectionModel().getSelection();
+        // var roomName = objForm.down("textfield[name=roomName]").getValue();//房间标志
         var roomType = objForm.down("combobox[name=roomType]").getValue();//房间类型
         var areaId = basetab.areaId;
-        if (roomName == null || roomName == '') {
-            self.msgbox("房间标识不能为空。");
+       
+        if (selectObject.length <= 0) {
+            self.msgbox("需选择房间才能继续操作!");
             return;
         }
         if (roomName != null && roomName != '') {
             if (selectObject.length > 1) {
-                self.msgbox("一个房间只能配备一个标识!");
+                self.msgbox("一个房间只能配备一个名称!");
                 return;
             }
-        }
-        if (selectObject.length <= 0) {
-            self.msgbox("需选择房间才能继续操作!");
-            return;
         }
         var uuid = selectObject[0].get("uuid");
         params.uuid = uuid; 
@@ -67,10 +69,8 @@ Ext.define("core.baseset.roomdefine.controller.OtherController", {
         params.roomName = roomName;
         params.roomType = roomType;
         }
-       
-        
 
-                 //判断当前是保存还是修改操作
+             //判断当前是保存还是修改操作
         var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
 
         //验证表单是否通过
@@ -103,9 +103,8 @@ Ext.define("core.baseset.roomdefine.controller.OtherController", {
                         var tabItem = tabPanel.getComponent(basetab.tabItemId);
                         if(sign=="edit"){
                            tabPanel.remove(tabItem);
-                           objForm.down("textfield[name=roomName]").setValue("");//房间标志
-                           //objForm.down("combobox[name=roomType]").getValue();//房间类型
-                        }  
+                          } 
+                         objForm.down("textfield[name=roomName]").setValue("");//房间标志 
                       } else {
                         self.Error(data.obj);
                         loading.hide();

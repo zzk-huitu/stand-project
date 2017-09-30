@@ -12,50 +12,53 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
         var self = this
         this.control({
                 //区域列表刷新按钮事件
-            "basetreegrid[xtype=baseset.roomdefine.roomdefinetree] button[ref=gridRefresh]": {
-                click: function (btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var store = baseGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        whereSql: " and isDelete='0' ",
-                        orderSql: "",
-                        excludes:"checked"
-                    };
+                "basetreegrid[xtype=baseset.roomdefine.roomdefinetree] button[ref=gridRefresh]": {
+                    click: function (btn) {
+                        var baseGrid = btn.up("basetreegrid");
+                        var store = baseGrid.getStore();
+                        var proxy = store.getProxy();
+                        proxy.extraParams = {
+                            whereSql: " and isDelete='0' ",
+                            orderSql: "",
+                            excludes:"checked"
+                        };
                     store.load(); //刷新父窗体的grid
                     return false;
                 }
             },
                //
-            "basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridAdd_Tab]": {
+               "basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     self.openRoomDefine_Tab(btn,"add");
                     return false;
                 }
             },
-           
+
              /**
              * 操作列的操作事件
              */
-            "basegrid[xtype=baseset.roomdefine.maingrid] actioncolumn": {
-              
+             "basegrid[xtype=baseset.roomdefine.maingrid] actioncolumn": {
+
                 //弹出tab页的方式
                 editClick_Tab: function(data) {
                     self.openRoomDefine_Tab(null,"edit",data.view,data.record);        
                 },
+                 detailClick_Tab: function(data) {
+                    self.openRoomDefine_Tab(null,"detail",data.view,data.record);        
+                },
             },
 
         });
-    },
+},
 
-    openRoomDefine_Tab: function(btn,cmd,grid,record){
-        var self = this;
+openRoomDefine_Tab: function(btn,cmd,grid,record){
+    var self = this;
          //得到组件
-        var baseGrid = grid;
-        if(!baseGrid){
+         var baseGrid = grid;
+         if(!baseGrid){
             baseGrid=btn.up("basegrid");
         };
-         
+
         var basePanel = baseGrid.up("basepanel");
         var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
 
@@ -75,11 +78,11 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
             return;
         };*/
 
-    
+
         //得到配置信息
         var funData = basePanel.funData;                //主界面的配置信息  
         var pkName=funData.pkName;
-  
+
         var funCode = basePanel.funCode;          //主界面的funCode
         var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
         var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
@@ -97,22 +100,41 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
         var recordData=null;
         switch (cmd) {
             case "edit":
-                if (btn) {  //点击按钮的方式
-                    var records = baseGrid.getSelectionModel().getSelection();
-                    if (records.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return;
-                    }
-                    recordData = records[0].getData();
-                }else{  //点击操作列的方式
-                    recordData=record.getData();
-                } 
-                if (recordData.isMixed ==1 || recordData.roomStatus == 1) {
-                    self.msgbox("混班宿舍和已分配的宿舍都不允许修改!");
-                    return;
-                } 
+                //点击操作列的方式
+                recordData=record.getData();
+                 //通过recordData.uuid 获取宿舍对象
+                var data;
+                self.asyncAjax({
+                    url: funData.action + "/doDormEntity",
+                    params: {
+                        roomId: recordData.uuid,
+                    },                       
+                    success: function(response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if(data.success){
 
-                //获取名称
+                            if (data.obj.isMixed ==1 || data.obj.roomStatus == 1) {
+                                self.msgbox("混班宿舍和已分配的宿舍都不允许修改!");
+                                return;
+                            } 
+                            recordData = Ext.apply(recordData,{
+                                dormType: data.obj.dormType,
+                                dormBedCount: data.obj.dormBedCount,
+                                dormChestCount: data.obj.dormChestCount,
+                                dormPhone: data.obj.dormPhone,
+                                dormFax: data.obj.dormFax,
+                            });
+                        }else {
+                            self.Error(data.obj);
+                        }           
+                        
+                    },
+                failure: function(response) {                   
+                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                    loading.hide();
+                }
+            });     
+               //获取名称
                 var titleName = recordData[tabConfig.titleField]; 
                 if(titleName)
                     tabTitle = titleName+"-"+tabConfig.editTitle;
@@ -134,11 +156,15 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     tabTitle = tabConfig.detailTitle;
 
                 //获取主键值
-                pkValue= recordData[pkName];
-                tabItemId=funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
-                operType="detail";
+                pkValue = recordData[pkName];
+                tabItemId =funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
+                detLayout = "baseset.roomdefine.detailhtml";
+                operType ="detail";
+                console.log(detLayout);
+
                 break;
-        }
+
+            }
 
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
@@ -182,7 +208,8 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     }],
                     listeners: {
                         beforerender: function() {
-                            //隐藏按钮
+                            if(operType!="detail"){
+                                 //隐藏按钮
                             var basepanel = item.down("basepanel[xtype=baseset.roomdefine.detaillayout]");
                             var baseform = basepanel.down("baseform");
                             var formObj = baseform.getForm(); 
@@ -203,7 +230,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                                 publiContainer.setVisible(false);
 
                             }
-                              
+
 
                             var roomgrid=baseform.down("basegrid[xtype=baseset.roomdefine.roomgrid]");
                             var filter = "[{'type':'string','comparison':'=','value':'" + areaId + "','field':'areaId'}";
@@ -211,23 +238,37 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                             var proxy = roomgrid.getStore().getProxy();
                             proxy.extraParams.filter = filter;
 
+                            }
+                           
+
                         }
                     }
                 }); 
-              
-                tabItem.add(item);  
 
-                /*//处理打开界面之后，显示的初始数据
-                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
-                var formDeptObj = objDetForm.getForm();             
-                self.setFormValue(formDeptObj, insertObj);*/
-                               
+               tabItem.add(item);  
+
                 if(cmd=="detail"){
-                    formDeptObj.setItemsReadOnly(true);
+                    var dormBaseContainer = tabItem.down("container[ref=dormBaseInfo]");
+                    dormBaseContainer.setData(insertObj);
+                    self.asyncAjax({
+                        url: comm.get("baseUrl") + "/BaseRoomdefine/doDormEntity",
+                        params: {
+                            page: 1,
+                            start: 0,
+                            limit: 0,
+                            roomId: insertObj.uuid 
+                        },
+                        success: function (response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            var dormDetailContainer = tabItem.down("container[ref=dormDetailInfo]");
+                            dormDetailContainer.setData(data);
+                            console.log(data);
+                        }
+                    });
                 }
 
             },30);
-                           
+
         }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
             self.msgbox("您当前已经打开了一个编辑窗口了！");
             return;
@@ -236,6 +277,6 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
         tabPanel.setActiveTab(tabItem);
 
     },
-     
+
     
 });

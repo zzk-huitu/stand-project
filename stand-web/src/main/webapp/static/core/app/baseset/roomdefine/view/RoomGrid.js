@@ -19,50 +19,86 @@ Ext.define("core.baseset.roomdefine.view.RoomGrid", {
         }],
     }, 
     panelButtomBar:null,
-    columns:{
-         defaults:{
+    columns:  {        
+        defaults:{
             titleAlign:"center"
         },
-        items:[{
+        items: [{
             text: "主键",
-            dataIndex: "uuid",
+            dataIndex: "roomId",
             hidden: true
         }, {
-            flex: 1,
-            minWidth: 100,
-            text: "房间名称",
-            dataIndex: "roomName",
+            text: "房间编号",
+            dataIndex: "roomCode",
+            flex:1,        
+            minWidth:100,
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:200,
+            text: "房间名称",
+            dataIndex: "roomName",
+            flex:1,
+            minWidth:100,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
+            width:100,
             ddCode: "FJLX" //字典代码
         }, {
-            width:200,
             text: "门牌号1",
             dataIndex: "extField01",
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:200,
+            text: "门牌号2",
+            dataIndex: "extField02",
+            width:80,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            text: "门牌号3",
+            dataIndex: "extField03",
+            width:80,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            text: "门牌号4",
+            dataIndex: "extField04",
+            width:80,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            text: "门牌号5",
+            dataIndex: "extField05",
+            width:80,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
             text: "网络状态",
             dataIndex: "roomNet",
+            width:80,
             renderer: function(value) {
                 switch (value) {
                     case '0':
-                        return '<font color=red>有</font>';
+                        return '<font color=green>有</font>';
                         break;
                     default:
-                        return '<font color=blue>无</font>';
+                        return '<font color=red>无</font>';
                         break;
                 }
             }
         }]
-      }
-  
-});
+    }
+    
+  });

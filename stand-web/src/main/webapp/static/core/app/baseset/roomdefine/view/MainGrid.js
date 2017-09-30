@@ -6,7 +6,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
 
     menuCode:"BASEROOMDEFINE", //new：此表格与权限相关的菜单编码
     extParams: {
-        filter: '[{"type":"string","comparison":"=","value":"ROOT","field":"areaId"},{"type":"string","comparison":"!=","value":"0","field":"roomType"}]'
+        filter: '[{"type":"string","comparison":"!=","value":"0","field":"roomType"}]'
     },
    al:false,
     panelTopBar:{
@@ -168,7 +168,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
                 }, 
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('', {
+                    this.fireEvent('detailClick_Tab', {
                         view: view.grid,
                         record: rec
                     });

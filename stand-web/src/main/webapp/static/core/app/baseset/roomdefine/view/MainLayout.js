@@ -27,7 +27,7 @@ Ext.define("core.baseset.roomdefine.view.MainLayout", {
             titleField:'roomName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
             addTitle:'房间列表',
             editTitle:'编辑宿舍',
-            detailTitle:'房间详情'
+            detailTitle:'宿舍详情'
         }
 	},
 

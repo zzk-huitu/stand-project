@@ -61,9 +61,14 @@ public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> impl
     }
 
 	@Override
-	public Boolean getCount(String roomName) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer getCount(String roomName) {
+		Integer conut=0;
+		String hql=" select count(*) from BuildRoominfo where 1=1 ";
+		if(roomName!=null){
+		hql+=" and roomName = '"+roomName+"'";	
+		}
+		conut=this.getQueryCountByHql(hql);
+		return conut;
 	}
     
 }

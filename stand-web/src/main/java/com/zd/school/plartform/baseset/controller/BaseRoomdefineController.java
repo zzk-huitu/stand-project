@@ -53,8 +53,13 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 		if (currentUser != null)
 			userCh = currentUser.getXm();
 		id = entity.getUuid();
-		String roomName=entity.getRoomName();
-		
+		// 在add前判断房间名称是否唯一
+		String roomName = entity.getRoomName();
+		Integer conuts = thisService.getCount(roomName);
+		if (conuts > 0) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"一个房间只能配备一个名称。\""));
+			return;
+		}
 		roomType = entity.getRoomType();
 		if (id != null) {
 			if (roomType.equals("1")) {// 宿舍
@@ -63,20 +68,20 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 					++count;
 				}
 				if (count == 0) {
-					String dormType = request.getParameter("dormType");//宿舍类型
-					String dormBedCount =request.getParameter("dormBedCount");//床位数
-					String dormChestCount = request.getParameter("dormChestCount");//柜子数
-					String dormPhone = request.getParameter("dormPhone");//电话
-					String dormFax = request.getParameter("dormFax");//传真
-					
-					dormRoom=new BuildDormDefine();
-				    dormRoom.setDormType(dormType);
-				    dormRoom.setDormBedCount(Integer.valueOf(dormBedCount));
-				    dormRoom.setDormChestCount(Integer.valueOf(dormChestCount));
-				    dormRoom.setDormPhone(dormPhone);
-				    dormRoom.setDormFax(dormFax);
-				    
-					dormRoomService.addDormRoom(entity,dormRoom, id, userCh);
+					String dormType = request.getParameter("dormType");// 宿舍类型
+					String dormBedCount = request.getParameter("dormBedCount");// 床位数
+					String dormChestCount = request.getParameter("dormChestCount");// 柜子数
+					String dormPhone = request.getParameter("dormPhone");// 电话
+					String dormFax = request.getParameter("dormFax");// 传真
+
+					dormRoom = new BuildDormDefine();
+					dormRoom.setDormType(dormType);
+					dormRoom.setDormBedCount(Integer.valueOf(dormBedCount));
+					dormRoom.setDormChestCount(Integer.valueOf(dormChestCount));
+					dormRoom.setDormPhone(dormPhone);
+					dormRoom.setDormFax(dormFax);
+
+					dormRoomService.addDormRoom(entity, dormRoom, id, userCh);
 					++fs;
 				}
 				count = 0;
@@ -169,11 +174,6 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 
 	}
 
-	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * BuildOffice @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 */
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BuildDormDefine entity, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IOException, IllegalAccessException, InvocationTargetException {
@@ -186,5 +186,18 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 
+	}
+
+	@RequestMapping("/doDormEntity")
+	public void doDormEntity(String roomId, HttpServletRequest request, HttpServletResponse response)
+			throws Exception, IOException, IllegalAccessException, InvocationTargetException {
+		BuildDormDefine entity = null;
+		if (!roomId.isEmpty()) {
+			entity = dormRoomService.getByRoomId(roomId);
+		}
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"获取宿舍对象失败,详情见错误日志\""));
 	}
 }
