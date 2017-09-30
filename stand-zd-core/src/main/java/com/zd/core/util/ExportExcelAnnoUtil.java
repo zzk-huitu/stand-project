@@ -74,28 +74,6 @@ public class ExportExcelAnnoUtil implements Closeable {
 	}
 	
 	/*
-	 * 获取数据字典信息
-	 */
-	public static Map<Integer, String> getCodeMap(Class<?> clazz){
-		
-		//声明返回值变量
-		Map<Integer, String> codeMap = new HashMap<>();
-		
-		//获取类中声明的变量
-		Field[] fields = clazz.getDeclaredFields();
-		
-		 for(Field field :fields){
-			 if(field.isAnnotationPresent(ExportExcelAnnotation.class)){
-				 ExportExcelAnnotation exportExcelAnnotation = (ExportExcelAnnotation) field.getAnnotation(ExportExcelAnnotation.class);
-				 codeMap.put(exportExcelAnnotation.order(), exportExcelAnnotation.code());
-			 }
-		
-		 }
-		 return  codeMap;
-	}
-	
-	
-	/*
 	 * 导出列表
 	 * @param Map<Integer, String> headMap 表头信息 存储<字段先后顺序,列名>
 	 * @param Map<Integer, Integer> widthMap 列宽信息 存储<字段先后顺序,列宽>
