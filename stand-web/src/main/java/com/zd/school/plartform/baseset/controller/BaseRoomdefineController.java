@@ -57,7 +57,7 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 		String roomName = entity.getRoomName();
 		Integer conuts = thisService.getCount(roomName);
 		if (conuts > 0) {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"一个房间只能配备一个名称。\""));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"该房间名称已存在,不能重复。\""));
 			return;
 		}
 		roomType = entity.getRoomType();
