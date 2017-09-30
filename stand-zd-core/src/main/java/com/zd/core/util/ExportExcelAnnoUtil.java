@@ -28,9 +28,6 @@ public class ExportExcelAnnoUtil implements Closeable {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ExportExcelAnnoUtil.class);
 	
-	@Resource
-	private static BaseService<BaseEntity> baseService;
-	
 	/*
 	 * 获取表头信息
 	 */
@@ -46,7 +43,7 @@ public class ExportExcelAnnoUtil implements Closeable {
 		for(Field field :fields){
 			 if(field.isAnnotationPresent(ExportExcelAnnotation.class)){
 				 ExportExcelAnnotation exportExcelAnnotation = (ExportExcelAnnotation) field.getAnnotation(ExportExcelAnnotation.class);
-				 headMap.put(exportExcelAnnotation.columnWidth(), exportExcelAnnotation.columnName());
+				 headMap.put(exportExcelAnnotation.order(), exportExcelAnnotation.columnName());
 			 }
 		
 		}
@@ -68,7 +65,7 @@ public class ExportExcelAnnoUtil implements Closeable {
 		 for(Field field :fields){
 			 if(field.isAnnotationPresent(ExportExcelAnnotation.class)){
 				 ExportExcelAnnotation exportExcelAnnotation = (ExportExcelAnnotation) field.getAnnotation(ExportExcelAnnotation.class);
-				 widthMap.put(exportExcelAnnotation.columnWidth(), exportExcelAnnotation.columnWidth());
+				 widthMap.put(exportExcelAnnotation.order(), exportExcelAnnotation.columnWidth());
 			 }
 		
 		 }
@@ -77,24 +74,38 @@ public class ExportExcelAnnoUtil implements Closeable {
 	}
 	
 	/*
-	 * 获取列表数据信息
+	 * 获取数据字典信息
 	 */
-	public static List<?> getEntitys(Class<?> clazz){
+	public static Map<Integer, String> getCodeMap(Class<?> clazz){
 		
-		List<?>  entityList = baseService.queryByHql("from " + clazz.getSimpleName());
+		//声明返回值变量
+		Map<Integer, String> codeMap = new HashMap<>();
 		
-		return entityList;
+		//获取类中声明的变量
+		Field[] fields = clazz.getDeclaredFields();
+		
+		 for(Field field :fields){
+			 if(field.isAnnotationPresent(ExportExcelAnnotation.class)){
+				 ExportExcelAnnotation exportExcelAnnotation = (ExportExcelAnnotation) field.getAnnotation(ExportExcelAnnotation.class);
+				 codeMap.put(exportExcelAnnotation.order(), exportExcelAnnotation.code());
+			 }
+		
+		 }
+		 return  codeMap;
 	}
+	
 	
 	/*
 	 * 导出列表
 	 * @param Map<Integer, String> headMap 表头信息 存储<字段先后顺序,列名>
 	 * @param Map<Integer, Integer> widthMap 列宽信息 存储<字段先后顺序,列宽>
+	 * @param Map<Integer, String> codeMap 表头信息 存储<字段先后顺序,字典编码>
 	 * @param list 数据列表
      * @param <T>  泛型
      * @return 写入结果
 	 */
-	public static <T> boolean ExportExcel(HttpServletResponse response,String fileName ,Map<Integer, String> headMap,Map<Integer, Integer> widthMap,List<T> list) throws IOException {
+	public static <T> boolean exportExcel(HttpServletResponse response,String fileName ,Map<Integer, String> headMap ,
+			Map<Integer, Integer> widthMap ,List<T> list) throws IOException {
 		
 		HSSFWorkbook workbook = new HSSFWorkbook();
 	    boolean result = false;
@@ -146,8 +157,7 @@ public class ExportExcelAnnoUtil implements Closeable {
                         if (data.getKey().equals(s[j])) {
                             Field field = data.getValue();
                             field.setAccessible(true);
-                            cell.setCellValue(
-                            field.get(list.get(i)) != null ? field.get(list.get(i)).toString() : "");
+                            cell.setCellValue(field.get(list.get(i)) != null ? field.get(list.get(i)).toString() : "");
                             break;
                         }
                     }

@@ -24,4 +24,9 @@ public @interface ExportExcelAnnotation {
 	 */
 	public int order() default 0;
 	
+	/*
+	 * 字段顺序
+	 */
+	public String code() default "";
+	
 }
