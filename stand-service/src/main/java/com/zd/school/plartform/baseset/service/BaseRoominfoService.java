@@ -20,4 +20,6 @@ import com.zd.school.plartform.system.model.SysUser;
  
 public interface BaseRoominfoService extends BaseService<BuildRoominfo> {
 	public Boolean batchAddRoom(BuildRoominfo roominfo, SysUser currentUser);
+	public Boolean getCount(String roomName);
+	
 }

@@ -2,6 +2,8 @@ package com.zd.school.plartform.baseset.service;
 
 import com.zd.core.service.BaseService;
 import com.zd.school.build.define.model.BuildClassRoomDefine;
+import com.zd.school.build.define.model.BuildDormDefine;
+import com.zd.school.build.define.model.BuildRoominfo;
 
 
 /**
@@ -18,5 +20,7 @@ import com.zd.school.build.define.model.BuildClassRoomDefine;
  */
  
 public interface BaseClassRoomDefineService extends BaseService<BuildClassRoomDefine> {
-
+	public BuildClassRoomDefine getByRoomId(String roomId);
+	public void addClassRoom(BuildRoominfo entity, String id, String userCh) throws Exception;
+	public void delClassRoom(BuildRoominfo roomInfo,String delId, String xm)throws Exception;
 }

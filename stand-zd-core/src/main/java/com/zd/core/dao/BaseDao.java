@@ -434,14 +434,6 @@ public interface BaseDao<E> {
     /**
      * 执行HQL语句，获取实体类
      * @param hql SQL语句
-     * @param <T>
-     * @return
-     */
-    public <T> T getEntityByHql(String hql);
-
-    /**
-     * 执行HQL语句，获取实体类
-     * @param hql SQL语句
      * @param args 参数列表
      * @param <T>
      * @return

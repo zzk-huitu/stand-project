@@ -1348,17 +1348,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
         return res;
     }
 
-    /**
-     * 执行HQL语句，获取实体类
-     *
-     * @param hql SQL语句
-     * @return
-     */
-    @Override
-    public <T> T getEntityByHql(String hql) {
-        return this.getEntityByHql(hql, null);
-    }
-
+    
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getEntityByHql(String hql, Object... args) {
