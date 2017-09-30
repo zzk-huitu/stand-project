@@ -63,27 +63,28 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		
 		// 增加到建筑物的区域
 		BuildRoomarea roomarea = new BuildRoomarea(saveEntity.getUuid());			
-		roomarea.setNodeText(entity.getCampusName());
+		roomarea.setNodeText(saveEntity.getCampusName());
+		roomarea.setOrderIndex(saveEntity.getOrderIndex());
 		roomarea.setCreateTime(new Date());
 		roomarea.setCreateUser(currentUser.getXm());
 		roomarea.setAreaType("02");
-		roomarea.setParentNode(currentUser.getSchoolId());
+		roomarea.setParentNode(saveEntity.getSchoolId());
 		roomarea.setLeaf(true);
 		roomarea.setNodeLevel(2);
-		roomarea.setTreeIds(currentUser.getSchoolId() + "," + saveEntity.getUuid());
+		roomarea.setTreeIds(saveEntity.getSchoolId() + "," + saveEntity.getUuid());
 		areaService.merge(roomarea);
 
 		// 增加到部门的第二级
 		BaseOrg orgSave = new BaseOrg(saveEntity.getUuid());
-		orgSave.setNodeText(entity.getCampusName()); // 部门名称
-		orgSave.setOrderIndex(entity.getOrderIndex());
-		orgSave.setParentNode(entity.getSchoolId()); // 上级节点
+		orgSave.setNodeText(saveEntity.getCampusName()); // 部门名称
+		orgSave.setOrderIndex(saveEntity.getOrderIndex());
+		orgSave.setParentNode(saveEntity.getSchoolId()); // 上级节点
 		orgSave.setCreateUser(currentUser.getXm()); // 创建人
 		orgSave.setDeptType("02"); // 默认类型为校区
 		orgSave.setLeaf(true);
 		orgSave.setIssystem(1);
 
-		BaseOrg parEntity = orgService.get(entity.getSchoolId());
+		BaseOrg parEntity = orgService.get(saveEntity.getSchoolId());
 		parEntity.setLeaf(false);
 		orgService.merge(parEntity);
 		

@@ -256,10 +256,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			BaseOrg parEntity = this.get(parentNode);
 			parEntity.setLeaf(false);
 			this.merge(parEntity);
-			entity.BuildNode(parEntity);		
-			entity.setAllDeptName(parEntity.getAllDeptName() + "/" + nodeText);			
+			saveEntity.BuildNode(parEntity);		
+			saveEntity.setAllDeptName(parEntity.getAllDeptName() + "/" + nodeText);			
 		} else
-			entity.BuildNode(null);
+			saveEntity.BuildNode(null);
 
 		// 持久化到数据库
 		entity = this.merge(saveEntity);

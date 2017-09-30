@@ -80,15 +80,24 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除主键\""));
 			return;
 		} else {
+			// 判断删除的数量是否大于等于总数
+			int delLen=delIds.split(",").length;
+			String hql = "select count(a.uuid) from SysFrontServer as a where a.isDelete=0";
+			int count = thisService.getQueryCountByHql(hql);
+			if (delLen >= count) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"必须保留一个前置服务器！\""));
+				return;
+			}
+						
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, currentUser.getXm());
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}

@@ -51,9 +51,18 @@ Ext.define("core.baseset.room.view.MainGrid", {
             dataIndex: "roomId",
             hidden: true
         }, {
+            text: "房间编号",
+            dataIndex: "roomCode",
+            flex:1,        
+            minWidth:100,
+            field: {
+                xtype: "textfield"
+            }
+        }, {
             text: "房间名称",
             dataIndex: "roomName",
             flex:1,
+            minWidth:100,
             field: {
                 xtype: "textfield"
             }
@@ -61,47 +70,47 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
-            flex:1,
+            width:100,
             ddCode: "FJLX" //字典代码
         }, {
             text: "门牌号1",
             dataIndex: "extField01",
-            flex:1,
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "门牌号2",
             dataIndex: "extField02",
-            flex:1,
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "门牌号3",
             dataIndex: "extField03",
-            flex:1,
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "门牌号4",
             dataIndex: "extField04",
-            flex:1,
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "门牌号5",
             dataIndex: "extField05",
-            flex:1,
+            width:80,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "网络状态",
             dataIndex: "roomNet",
-            flex:1,
+            width:80,
             renderer: function(value) {
                 switch (value) {
                     case '0':
