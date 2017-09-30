@@ -105,6 +105,15 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
             writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
         } else {
+        	// 判断这些楼层是否存在房间
+			String hql = "select count(a.uuid) from BuildRoominfo as a where a.areaId in ('" + delIds.replace(",", "','")
+					+ "') and a.isDelete=0";
+			int count = thisService.getQueryCountByHql(hql);
+			if (count > 0) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"此区域中存在房间数据，不允许删除！\""));
+				return;
+			}
+        				
         	SysUser currentUser = getCurrentSysUser();
             boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
             if (flag) {

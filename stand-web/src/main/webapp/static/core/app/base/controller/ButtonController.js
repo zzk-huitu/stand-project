@@ -453,15 +453,15 @@ Ext.define("core.base.controller.ButtonController", {
                             var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
                             if(data.success){
-                                // var store=baseGrid.getStore();
-                                // //如果当前页的数据量和删除的数据量一致，则翻到上一页
-                                // if(store.getData().length==rescords.length&&store.currentPage>1){    
-                                //     store.loadPage(store.currentPage-1);
-                                // }else{
-                                //     store.load();
-                                // }
-
-                                baseGrid.getStore().remove(records); //不刷新的方式
+                                var store=baseGrid.getStore();
+                                //如果当前页的数据量和删除的数据量一致，则翻到上一页
+                                if(store.getData().length==records.length&&store.currentPage>1){    
+                                    store.loadPage(store.currentPage-1);
+                                }else{
+                                    //store.load();
+                                    baseGrid.getStore().remove(records); //不刷新的方式
+                                }
+                            
                                 self.msgbox(data.obj);                               
                             }else {
                                 self.Error(data.obj);

@@ -34,19 +34,24 @@ public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> impl
         this.dao = dao;
     }
 
-    public Boolean batchAddRoom(BuildRoominfo roominfo, SysUser currentUser) {
-        String benginChar = roominfo.getRoomName();
+    public Boolean doBatchAddRoom(BuildRoominfo roominfo, SysUser currentUser) {
+        String benginChar = roominfo.getRoomCode();
         Integer roomCount = roominfo.getRoomCount();
         String areaId = roominfo.getAreaId();
-        String roomType = roominfo.getRoomType();
+        String roomType = "0";	//默认为 未定义房间
         String createUser = currentUser.getXm();
         BuildRoominfo saveRoom = null;
-        String roomName = "";       
+        String roomName = "";   
+        int orderIndex=1;
         for (int i = 1; i <= roomCount; i++) {
+        	if(i==0)
+            	orderIndex = this.getDefaultOrderIndex(saveRoom);
+        	
             roomName = benginChar + StringUtils.addString(String.valueOf(i), "0", 2, "L");
             saveRoom = new BuildRoominfo();
             saveRoom.setRoomName(roomName);
-            saveRoom.setOrderIndex(i);
+            saveRoom.setRoomCode(roomName);                      
+            saveRoom.setOrderIndex(orderIndex++);
             saveRoom.setExtField01(roomName);
             saveRoom.setAreaId(areaId);
             saveRoom.setRoomType(roomType);

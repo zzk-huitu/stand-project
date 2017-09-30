@@ -1,10 +1,22 @@
 package com.zd.school.plartform.baseset.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.BuildRoominfo;
@@ -12,18 +24,6 @@ import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 
@@ -54,8 +54,28 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute BuildRoominfo entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String filter = request.getParameter("filter");
 		String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String areaId = request.getParameter("areaId");
+		String areaType = request.getParameter("areaType");
+		//若为类型不为楼层，则去查询此区域下的所有楼层
+		if(!"04".equals(areaType)){
+			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.treeIds like '%"+areaId+"%'";
+			List<String> lists=thisService.queryEntityByHql(hql);
+			StringBuffer sb=new StringBuffer();
+			for(int i=0;i<lists.size();i++){
+				sb.append(lists.get(i)+",");
+			}
+			if(sb.length()>0){
+				if(filter.length()>0){
+					filter = filter.substring(0, filter.length()-1);
+					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}"+"]";
+				}else{
+					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}]";
+				}
+			}
+		}
+		
 		QueryResult<BuildRoominfo> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 
@@ -73,12 +93,12 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 	public void doAdd(BuildRoominfo entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		String areaId = entity.getAreaId();
-		String roomName = entity.getRoomName();
-		String rommType = entity.getRoomType();
+		String roomCode = entity.getRoomCode();
+		//String rommType = entity.getRoomType();
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String hql = " o.isDelete='0' and o.areaId='" + areaId + "' ";
-		if (thisService.IsFieldExist("roomName", roomName, "-1", hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"同一区域已有此房间！\""));
+		if (thisService.IsFieldExist("roomCode", roomCode, "-1", hql)) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一区域已有此编号的房间！\""));
 			return;
 		}
 
@@ -86,8 +106,8 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 
 		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
 		entity.setOrderIndex(orderIndex);
-		entity.setRoomType(rommType);
-
+		entity.setRoomType("0");		//强制为 未定义类型
+		entity.setRoomName(roomCode);	//默认使用编号的命名
 		entity = thisService.doAddEntity(entity, currentUser.getXm());
 
 		if (entity == null)
@@ -112,7 +132,7 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		SysUser currentUser = getCurrentSysUser();
 	
-		Boolean bResult = thisService.batchAddRoom(entity, currentUser);
+		Boolean bResult = thisService.doBatchAddRoom(entity, currentUser);
 		if (bResult) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"批量添加房间成功\""));
 		} else
