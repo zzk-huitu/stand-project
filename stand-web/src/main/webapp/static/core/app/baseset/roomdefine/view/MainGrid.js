@@ -1,13 +1,14 @@
-Ext.define("core..baseset.roomdefine.view.MainGrid", {
+Ext.define("core.baseset.roomdefine.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.baseset.roomdefine.maingrid",
-   /* dataUrl: comm.get('baseUrl') + "/BuildClassRoomDefine/list",
-    model: "com.zd.school.build.define.model.BuildClassRoomDefine",*/
+    dataUrl: comm.get('baseUrl') + "/BaseRoominfo/list",
+    model: "com.zd.school.build.define.model.BuildRoominfo",
+
     menuCode:"BASEROOMDEFINE", //new：此表格与权限相关的菜单编码
     extParams: {
-        filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'areaId'}]"
+        filter: '[{"type":"string","comparison":"=","value":"ROOT","field":"areaId"},{"type":"string","comparison":"!=","value":"0","field":"roomType"}]'
     },
-
+   al:false,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -20,97 +21,159 @@ Ext.define("core..baseset.roomdefine.view.MainGrid", {
             }
         },'->',{
             xtype: 'button',
-            text: '添加',
+            text: '设置房间',
             ref: 'gridAdd_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '编辑',
-            ref: 'gridEdit_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
-        },{
-            xtype: 'button',
-            text: '详细',
-            ref: 'gridDetail_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
-        },{
-            xtype: 'button',
-            text: '删除',
+            text: '解除设置',
             ref: 'gridDelete',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
-            iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+            iconCls: 'x-fa fa-plus-circle'
+        },{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
-            xtype:'textfield',
-            name:'campusName',
+            name: "roomType", //字段名
+            xtype: "combobox",
+            store:{
+                type:'baseset.roomdefine.roomtypestore'
+            },
+            displayField: 'roomDefineType',
+            valueField: 'code',
+            value: "",
+            emptyText: '请选择房间类型',
+            blankText: '请选择一个房间类型',
+            editable: false,
+            mode: 'local',
             funCode: 'girdFastSearchText',
-            emptyText: '请输入校区名称'
+        },{
+            xtype:'textfield',
+            name:'roomName',
+            funCode: 'girdFastSearchText',
+            emptyText: '请输入房间标志'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
-            funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
+            funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型  
             iconCls: 'x-fa fa-search',  
-        },' ',{
-            xtype: 'button',
-            text: '高级搜索',
-            ref: 'gridHignSearch',
-            iconCls: 'x-fa fa-sliders'
-        }],
+        }]
     }, 
+   panelButtomBar:{},
    
-    tbar: [{
-        xtype: 'button',
-        text: '设置教室',
-        ref: 'gridAdds',
-        iconCls: 'table_add'
-    }, {
-        xtype: 'button',
-        text: '解除设置',
-        ref: 'gridDelete',
-        iconCls: 'table_remove'
-    }],
-    columns: [{
-        xtype: "rownumberer",
-        width: 35,
-        text: '序号',
-        align: 'center'
-    }, {
-        text: "房间主键",
-        dataIndex: "roomId",
-        hidden: true
-    }, {
-        text: "主键",
-        dataIndex: "uuid",
-        hidden: true
-    }, {
-        text: "教室名称",
-        dataIndex: "roomName"
-    }, {
-        text: "所属楼层",
-        dataIndex: "areaName",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        text: "所属楼栋",
-        dataIndex: "upAreaName",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        text: "教室标识",
-        dataIndex: "className",
-        field: {
-            xtype: "textfield"
-        }
-    }]
- 
+   columns:  {        
+        defaults:{
+            titleAlign:"center"
+        },
+        items:[{
+            xtype: "rownumberer",
+            width: 50,
+            text: '序号',
+            align: 'center'
+        }, {
+            text: "房间主键",
+            dataIndex: "roomId",
+            hidden: true
+        }, {
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
+        }, {
+            flex: 1,
+            minWidth: 100,
+            text: "房间名称",
+            dataIndex: "roomName"
+        },{
+            text: "房间类型", //字段中文名
+            dataIndex: "roomType", //字段名
+            columnType: "basecombobox", //列类型
+            width: 100,
+            ddCode: "FJLX" //字典代码
+        },{
+            width: 100,
+            text: "所属楼层",
+            dataIndex: "areaName",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width: 100,
+            text: "所属楼栋",
+            dataIndex: "upAreaName",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width: 100,
+            text: "房间标识",
+            dataIndex: "roomName",
+            field: {
+                xtype: "textfield"
+            }
+        },{
+            xtype: 'actiontextcolumn',
+            text: "操作",
+            align: 'center',
+            width: 200,
+            fixed: true,
+            items: [{
+                text:'编辑宿舍',  
+                style:'font-size:12px;', 
+                tooltip: '编辑宿舍',
+                ref: 'gridEdit',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){   
+                    if(record.get("roomType")!="1"){                    
+                        return 'x-hidden-display';                    
+                    }
+                    return null; 
+                }, 
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('editClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }, {
+                text:'解除设置',  
+                style:'font-size:12px;', 
+                tooltip: '解除设置',
+                ref: 'gridDelete',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASEROOMDEFINE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },  
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('deleteClick', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }, {
+                text:'详情',  
+                style:'font-size:12px;', 
+                tooltip: '详情',
+                ref: 'gridDetail',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(record.get("roomType")!="1"){                    
+                        return 'x-hidden-display';                    
+                    }
+                    return null; 
+                }, 
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }]
+        }]
+    }
 });
