@@ -61,13 +61,12 @@ Ext.define("core.baseset.room.controller.OtherController", {
         var pkName = funData.pkName;
         var pkField = formObj.findField(pkName);
         var params = self.getFormValue(formObj);
-        var orderIndex = 1;
-        if (formObj.findField("orderIndex")) {
-            orderIndex = formObj.findField("orderIndex").getValue() + 1;
-        }
+        // var orderIndex = 1;  没什么意义
+        // if (formObj.findField("orderIndex")) {
+        //     orderIndex = formObj.findField("orderIndex").getValue() + 1;
+        // }
 
-        //把checkbox的值转换为数字 ；    暂时测试时设置，
-        params.roomType=params.roomType+"";
+        //params.roomType=params.roomType+"";   后台强制设定为【未定义】
 
         //判断当前是保存还是修改操作
         var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
@@ -145,10 +144,10 @@ Ext.define("core.baseset.room.controller.OtherController", {
         var pkName = funData.pkName;
         var pkField = formObj.findField(pkName);
         var params = self.getFormValue(formObj);
-        var orderIndex = 1;
-        if (formObj.findField("orderIndex")) {
-            orderIndex = formObj.findField("orderIndex").getValue() + 1;
-        }
+        // var orderIndex = 1;
+        // if (formObj.findField("orderIndex")) {
+        //     orderIndex = formObj.findField("orderIndex").getValue() + 1;
+        // }
 
         //把checkbox的值转换为数字 ；    暂时测试时设置，
         //判断当前是保存还是修改操作

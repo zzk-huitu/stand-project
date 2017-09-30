@@ -19,4 +19,6 @@ import com.zd.school.plartform.baseset.model.BaseSchool ;
  
 public interface BaseSchoolService extends BaseService<BaseSchool> {
 
+	BaseSchool doUpdate(BaseSchool entity, String xm);
+
 }

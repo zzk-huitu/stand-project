@@ -4,11 +4,15 @@ package com.zd.school.plartform.baseset.controller;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.EntityUtil;
+import com.zd.core.util.ExportExcelAnnoUtil;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.excel.FastExcel;
 import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.oa.terminal.model.OaRoomTerm;
+import com.zd.school.plartform.baseset.model.BaseDicitem;
+import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.baseset.service.BaseInfotermService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -21,7 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: OaInfotermController Function: ADD FUNCTION. Reason: ADD
@@ -40,6 +47,9 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 
     @Resource
     private BaseRoominfoService roomService;
+    
+    @Resource
+	BaseDicitemService dicitemService;
 
     /**
      * @param entity   实体类
@@ -180,7 +190,7 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
       
     }
 
-    @RequestMapping("/exportExcel")
+ /*  @RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().setAttribute("exportTerinfoIsEnd", "0");
         request.getSession().removeAttribute("exportTerinfoIsState");
@@ -203,7 +213,26 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
             request.getSession().setAttribute("exportTerinfoIsState", "0");
         }
     }
-
+*/
+    @RequestMapping("/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.getSession().setAttribute("exportTerinfoIsEnd", "0");
+        request.getSession().removeAttribute("exportTerinfoIsState");
+        try {
+        Class<?> clazz = EntityUtil.getClassByName("com.zd.school.oa.terminal.model.OaInfoterm");//根据实体类名获取类
+        List<OaInfoterm> list  =  thisService.queryByHql("from " + clazz.getSimpleName()
+        					+" where isDelete=0 and isUse=1  order by termCode");//获取数据
+        Map<Integer, String> headMap =ExportExcelAnnoUtil.getHeadMap(clazz);//获取表头信息MAP<排序，列名>
+        Map<Integer, Integer> widthMap = ExportExcelAnnoUtil.getWidthMap(clazz);//获取表头列宽MAP<排序，列宽>
+        ExportExcelAnnoUtil.exportExcel(response, "信息终端数据", headMap, widthMap, list);
+        request.getSession().setAttribute("exportTerinfoIsEnd", "1");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("exportTerinfoIsEnd", "0");
+            request.getSession().setAttribute("exportTerinfoIsState", "0");
+        }
+    } 
+    
     @RequestMapping("/checkExportEnd")
     public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

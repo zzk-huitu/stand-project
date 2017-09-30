@@ -38,7 +38,7 @@ public class SysJobServiceImpl extends BaseServiceImpl<BaseJob> implements SysJo
 	public BaseJob doUpdate(BaseJob entity, String xm) {
 		// TODO Auto-generated method stub		
 		BaseJob saveEntity = this.get(entity.getUuid());
-		
+		String oldJobName=saveEntity.getJobName();
 		try {
 			BeanUtils.copyPropertiesExceptNull(saveEntity, entity);
 		} catch (IllegalAccessException | InvocationTargetException e) {
@@ -50,11 +50,14 @@ public class SysJobServiceImpl extends BaseServiceImpl<BaseJob> implements SysJo
 		saveEntity.setUpdateUser( xm);
 		entity = this.merge(saveEntity);// 执行修改方法
 		
-		//在更新部门岗位表的岗位名称数据
-		String updateHql1="update BaseDeptjob a set a.jobName='"+entity.getJobName()+"' where a.jobId='"+entity.getUuid()+"'";
-		String updateHql2="update BaseDeptjob a set a.parentjobName='"+entity.getJobName()+"' where a.parentjobId='"+entity.getUuid()+"'";
-		this.doExecuteCountByHql(updateHql1);
-		this.doExecuteCountByHql(updateHql2);
+		if(!oldJobName.equals(entity.getJobName())){
+			//在更新部门岗位表的岗位名称数据
+			String updateHql1="update BaseDeptjob a set a.jobName='"+entity.getJobName()+"' where a.jobId='"+entity.getUuid()+"'";
+			String updateHql2="update BaseDeptjob a set a.parentjobName='"+entity.getJobName()+"' where a.parentjobId='"+entity.getUuid()+"'";
+			this.doExecuteCountByHql(updateHql1);
+			this.doExecuteCountByHql(updateHql2);
+		}
+		
 		return entity;
 		
 	}

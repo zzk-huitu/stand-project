@@ -120,13 +120,13 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
         if (StringUtils.isEmpty(delIds)) {
             writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
-        } else {
+        } else {        	
             boolean flag = thisService.doDelete(delIds, currentUser);
             //flag = areaService.logicDelOrRestore(delIds, StatuVeriable.ISDELETE);
             if (flag) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("\"校区关联有部门或建筑物区域,不能删除\""));
+                writeJSON(response, jsonBuilder.returnFailureJson("\"校区关联了部门或建筑物区域,不能删除\""));
             }
         }
     }

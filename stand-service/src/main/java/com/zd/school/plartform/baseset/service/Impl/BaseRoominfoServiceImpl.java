@@ -27,45 +27,43 @@ import com.zd.school.plartform.system.model.SysUser;
 public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> implements BaseRoominfoService {
 	private static Logger logger = Logger.getLogger(BaseRoominfoServiceImpl.class);
 
-	@Resource
-	public void setBuildRoominfoDao(BaseRoominfoDao dao) {
-		this.dao = dao;
-	}
+    @Resource
+    public void setBuildRoominfoDao(BaseRoominfoDao dao) {
+        this.dao = dao;
+    }
 
-	@Resource
-	private BaseRoominfoService thisService; // service层接口
+    public Boolean doBatchAddRoom(BuildRoominfo roominfo, SysUser currentUser) {
+        String benginChar = roominfo.getRoomCode();
+        Integer roomCount = roominfo.getRoomCount();
+        String areaId = roominfo.getAreaId();
+        String roomType = "0";	//默认为 未定义房间
+        String createUser = currentUser.getXm();
+        BuildRoominfo saveRoom = null;
+        String roomName = "";   
+        int orderIndex=1;
+        for (int i = 1; i <= roomCount; i++) {
+        	if(i==0)
+            	orderIndex = this.getDefaultOrderIndex(saveRoom);
+        	
+            roomName = benginChar + StringUtils.addString(String.valueOf(i), "0", 2, "L");
+            saveRoom = new BuildRoominfo();
+            saveRoom.setRoomName(roomName);
+            saveRoom.setRoomCode(roomName);                      
+            saveRoom.setOrderIndex(orderIndex++);
+            saveRoom.setExtField01(roomName);
+            saveRoom.setAreaId(areaId);
+            saveRoom.setRoomType(roomType);
+            saveRoom.setCreateUser(createUser);
 
-	public Boolean batchAddRoom(BuildRoominfo roominfo, SysUser currentUser) {
-		String benginChar = roominfo.getRoomName();
-		Integer roomCount = roominfo.getRoomCount();
-		String areaId = roominfo.getAreaId();
-		String roomType = roominfo.getRoomType();
-		String createUser = currentUser.getXm();
-		BuildRoominfo saveRoom = null;
-		String roomName = "";
-		for (int i = 1; i <= roomCount; i++) {
-			roomName = benginChar + StringUtils.addString(String.valueOf(i), "0", 2, "L");
-			saveRoom = new BuildRoominfo();
-			saveRoom.setRoomName(roomName);
-			saveRoom.setOrderIndex(i);
-			saveRoom.setExtField01(roomName);
-			saveRoom.setAreaId(areaId);
-			saveRoom.setRoomType(roomType);
-			saveRoom.setCreateUser(createUser);
-
-			this.merge(saveRoom);
-		}
-		return true;
-	}
+            this.merge(saveRoom);
+        }
+        return true;       
+    }
 
 	@Override
 	public Boolean getCount(String roomName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
-
-
-
+    
 }

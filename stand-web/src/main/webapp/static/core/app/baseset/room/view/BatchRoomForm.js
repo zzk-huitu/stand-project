@@ -31,8 +31,9 @@ Ext.define("core.baseset.room.view.BatchRoomForm", {
         beforeLabelTextTpl: comm.get('required'),
         xtype: "textfield",
         fieldLabel: "房号前辍",
-        name: "roomName",
+        name: "roomCode",
         allowBlank: false,
+        emptyText: '请输入一个还未被使用的放号前缀',
         // regex: /^[A-Z].*\d$/,
         // regexText: '只能以大写字母开头数字结尾'
     }, {
@@ -44,13 +45,13 @@ Ext.define("core.baseset.room.view.BatchRoomForm", {
         name: "roomCount",
         allowBlank: false,
         blankText: "房间数不能为空"
-    }, {
+    }/*, {
         beforeLabelTextTpl: comm.get('required'),
         fieldLabel: "房间类型", //字段中文名
         name: "roomType", //字段名
         xtype: "basecombobox", //列类型
         ddCode: "FJLX" //字典代码
-    },{
+    }*/,{
         beforeLabelTextTpl: comm.get('required'),
         xtype: "combobox",
         store: combostore,

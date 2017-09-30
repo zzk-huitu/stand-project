@@ -24,7 +24,7 @@ import java.util.List;
  * @since JDK 1.8
  * @see
  */
-public class BaseDicTree extends ExtTreeNodeNotChk<BaseDicTree> {
+public class BaseDicTree extends ExtTreeNode<BaseDicTree> {
 
     @FieldInfo(name = "字典编码")
     private String dicCode;

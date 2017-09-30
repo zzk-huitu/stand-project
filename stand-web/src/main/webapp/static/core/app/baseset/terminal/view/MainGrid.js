@@ -14,13 +14,13 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
-        },/*{暂未实现
+        },{
             xtype: 'button',
             text: '导出Excel',
             ref: 'exportExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-minus-circle'
-        },*/'->',{
+        },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{

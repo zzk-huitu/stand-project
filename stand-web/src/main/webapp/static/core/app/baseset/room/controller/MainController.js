@@ -25,7 +25,12 @@ Ext.define("core.baseset.room.controller.MainController", {
             "panel[xtype=baseset.room.areagrid]": {
                 itemclick: function (tree, record, item, index, e, eOpts) {
                     var mainLayout = tree.up("panel[xtype=baseset.room.mainlayout]");
-                    var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'areaId'}]"
+                    var areaType = record.get("areaType");
+                    var areaId = record.get("id");
+                    var filter = "";
+                    if(areaType=="04")
+                        filter = '[{"type":"string","comparison":"=","value":"' + areaId + '","field":"areaId"}]';
+                    
                     var funData = mainLayout.funData;
                     mainLayout.funData = Ext.apply(funData, {
                         areaId: record.get("id"),
@@ -37,7 +42,10 @@ Ext.define("core.baseset.room.controller.MainController", {
                     var roomGrid = mainLayout.down("panel[xtype=baseset.room.maingrid]");
                     var store = roomGrid.getStore();
                     var proxy = store.getProxy();
+
                     proxy.extraParams.filter = filter;
+                    proxy.extraParams.areaId= areaId;
+                    proxy.extraParams.areaType= areaType;
                     store.loadPage(1); // 给form赋值
                     // return false;
                 }
@@ -307,33 +315,32 @@ Ext.define("core.baseset.room.controller.MainController", {
         tabPanel.setActiveTab( tabItem);        
     },
     
-    dobatch_Tab:function(btn, cmd, grid, record) {
+    dobatch_Tab:function(btn, cmd) {
         var self = this;
-        var baseGrid;
+        var baseGrid = btn.up("basegrid");
         var recordData;
 
-        //根据点击的地方是按钮或者操作列，处理一些基本数据
-        if (btn) {
-        	baseGrid = btn.up("basegrid");
-        	var tree = baseGrid.up("panel[xtype=baseset.room.mainlayout]").down("panel[xtype=baseset.room.areagrid]");
-            var selectObject = tree.getSelectionModel().getSelection()[0];
-            var areaId = "";
-            var level = "";
-            var areaName = ""
-        } else {
-            baseGrid = grid;
-            recordData = record.data;
+    	var tree = baseGrid.up("panel[xtype=baseset.room.mainlayout]").down("panel[xtype=baseset.room.areagrid]");
+        var selectRecord = tree.getSelectionModel().getSelection();
+        if(selectRecord.length!=1){
+            self.msgbox("请选择楼层!");
+            return false;
         }
+        var selectObject = selectRecord[0];
+        var areaId = "";
+        var areaType = "";
+        var areaName = ""
+       
         if (selectObject == null) {
-            self.Warning("请选择楼层!");
+            self.msgbox("请选择楼层!");
             return false;
         } else {
             areaId = selectObject.get("id");
-            level = selectObject.get("level");
+            areaType = selectObject.get("areaType");
             areaName = selectObject.get("text");
         }
-        if (level != 3) {
-            self.Warning("只能选择楼层添加!");
+        if (areaType != "04") {
+            self.msgbox("只能选择楼层!");
             return false;
         }
         //得到组件
@@ -351,14 +358,7 @@ Ext.define("core.baseset.room.controller.MainController", {
         var otherController = basePanel.otherController;
         if (!otherController)
             otherController = '';
-        
-        var areaId = funData.areaId;
-        var areaType = funData.areaType;
-        var areaName = funData.areaName;
-        if (areaType != "04") {
-            self.Warning("请选择楼层!");
-            return false;
-        }
+      
         //处理特殊默认值
         var insertObj = self.getDefaultValue(defaultObj);
         insertObj = Ext.apply(insertObj, {
@@ -370,48 +370,13 @@ Ext.define("core.baseset.room.controller.MainController", {
             filter: "[{'type':'string','comparison':'=','value':'" + areaId + "','field':'areaId'}]"
         });
 
-        //本方法只提供班级详情页使用
+      
         var tabTitle = funData.tabConfig.batchaddTitle;
         //设置tab页的itemId
         var tabItemId=funCode+"_gridbatchAdd";     //命名规则：funCode+'_ref名称',确保不重复
         var pkValue= null;
         var operType = cmd;    // 只显示关闭按钮
-        switch (cmd) {
-            case "edit":
-                if (btn) {
-                    var rescords = baseGrid.getSelectionModel().getSelection();
-                    if (rescords.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return;
-                    }
-                    recordData = rescords[0].data;
-                }
-                //获取主键值
-                var pkName = funData.pkName;
-                pkValue= recordData[pkName];
-
-                insertObj = recordData;
-                tabTitle = funData.tabConfig.editTitle;
-                tabItemId=funCode+"_gridEdit"; 
-                break;
-            case "detail":                
-                if (btn) {
-                    var rescords = baseGrid.getSelectionModel().getSelection();
-                    if (rescords.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return;
-                    }
-                    recordData = rescords[0].data;
-                }
-                //获取主键值
-                var pkName = funData.pkName;
-                pkValue= recordData[pkName];
-                insertObj = recordData;
-                tabTitle =  funData.tabConfig.batchaddTitle;
-                tabItemId=funCode+"_gridDetail"+pkValue; 
-                break;
-        }
-
+      
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
         if(!tabItem){
@@ -454,10 +419,6 @@ Ext.define("core.baseset.room.controller.MainController", {
                 var objDetForm = item.down("baseform[funCode=" + detCode + "]");
                 var formDeptObj = objDetForm.getForm();
                 self.setFormValue(formDeptObj, insertObj);
-
-                if(cmd=="detail"){
-                    self.setFuncReadOnly(funData, objDetForm, true);
-                }
 
             },30);
                            

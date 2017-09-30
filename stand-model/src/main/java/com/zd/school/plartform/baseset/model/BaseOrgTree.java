@@ -35,28 +35,7 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
     public void setCode(String code) {
         this.code = code;
     }
-
-    @FieldInfo(name = "主负责岗位")
-    private String mainLeader;
-
-    public String getMainLeader() {
-        return mainLeader;
-    }
-
-    public void setMainLeader(String mainLeader) {
-        this.mainLeader = mainLeader;
-    }
-
-    @FieldInfo(name = "副负责岗位")
-    private String viceLeader;
-
-    public String getViceLeader() {
-        return viceLeader;
-    }
-
-    public void setViceLeader(String viceLeader) {
-        this.viceLeader = viceLeader;
-    }
+ 
 
     @FieldInfo(name = "外线电话")
     private String outPhone;
@@ -167,17 +146,30 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
     public void setMainLeaderName(String mainLeaderName) {
         this.mainLeaderName = mainLeaderName;
     }
+    
+    @FieldInfo(name = "上级主管岗位")
+    private String superJob;
+         
+    public String getSuperJob() {
+		return superJob;
+	}
 
-    @FieldInfo(name = "副负责岗位名称")
-    private String viceLeaderName;
+	public void setSuperJob(String superJob) {
+		this.superJob = superJob;
+	}
 
-    public String getViceLeaderName() {
-        return viceLeaderName;
-    }
 
-    public void setViceLeaderName(String viceLeaderName) {
-        this.viceLeaderName = viceLeaderName;
-    }
+	@FieldInfo(name = "上级主管岗位名称")
+    private String superjobName;
+  
+    public String getSuperjobName() {
+		return superjobName;
+	}
+
+	public void setSuperjobName(String superjobName) {
+		this.superjobName = superjobName;
+	}
+	
 
     @FieldInfo(name = "是否有权限")
     private String isRight;
@@ -198,12 +190,11 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
     }
 
     public BaseOrgTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,String parent,Integer orderIndex,
-            List<BaseOrgTree> children, String mainLeader, String viceLeader, String outPhone, String inPhone,
+            List<BaseOrgTree> children, String outPhone, String inPhone,
             String fax, Integer isSystem, String remark, String code,
-            String deptType, String parentType, String mainLeaderName, String viceLeaderName, String isRight) {
+            String deptType, String parentType, String mainLeaderName,String superJob, String superjobName, String isRight) {
         super(id, text, iconCls, leaf, level, treeid,parent,orderIndex, children);
-        this.mainLeader = mainLeader;
-        this.viceLeader = viceLeader;
+      
         this.outPhone = outPhone;
         this.inPhone = inPhone;
         this.fax = fax;
@@ -213,7 +204,8 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
         this.deptType = deptType;
         this.parentType = parentType;
         this.mainLeaderName = mainLeaderName;
-        this.viceLeaderName = viceLeaderName;
+        this.superJob = superJob;
+        this.superjobName = superjobName;
         this.isRight = isRight;
     }
 

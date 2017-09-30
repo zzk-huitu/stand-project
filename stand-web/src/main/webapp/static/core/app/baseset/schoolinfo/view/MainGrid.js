@@ -10,27 +10,27 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
 
     panelTopBar:{
         xtype:'toolbar',
-        items: [{
+        items: [/*{
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
-        },{
+        },*/{
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
-        }, {
+        },/* {
             xtype: 'button',
             text: '删除',
             ref: 'gridDelete',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },*/'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         }, {
@@ -73,17 +73,17 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             text: '序号',
             align: 'center'
         }, {
-            text: "学校代码",
-            dataIndex: "schoolCode",
-            flex: 1,
-            minWidth: 100
-        }, {
-            width: 100,
+             minWidth: 100,
+             flex: 1,
             text: "学校名称",
             dataIndex: "schoolName"
            
+        },{
+            text: "学校代码",
+            dataIndex: "schoolCode",        
+            width: 100
         }, {
-            width: 100,
+            width: 200,
             text: "学校英文名",
             dataIndex: "schoolEng"
          
@@ -117,7 +117,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 100,
             fixed: true,
             items: [{
                 text:'编辑',  
@@ -143,7 +143,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
                         record: rec
                     });
                 }
-            }, {
+            }/*, {
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
@@ -166,7 +166,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
            
                  });
                 }
-            }]
+            }*/]
         }]
     }    
 });

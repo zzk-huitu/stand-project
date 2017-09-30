@@ -16,6 +16,7 @@ Ext.define("core.system.user.view.DeptTree", {
     },
 
     columnLines:false,
+    multiSelect: false,
     selModel: null,
     lines:true,
     useArrows: false,

@@ -13,6 +13,7 @@ import org.hibernate.CacheMode;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.plartform.system.dao.SysOperateLogDao;
@@ -42,8 +43,8 @@ public class SysOperateLogServiceImpl extends BaseServiceImpl<SysOperateLog> imp
 			SysOperateLog s=null;
 			for(int i=0;i<lists.size();i++){
 				s=lists.get(i);
-				s.setUuid(UUID.randomUUID().toString());
-				s.setVersion(0);
+				//s.setUuid(UUID.randomUUID().toString());
+				//s.setVersion(0);
 				this.persist(s);
 				
 				if ((i+1)%50 == 0) {	//每50条数据，入一次库
@@ -56,6 +57,8 @@ public class SysOperateLogServiceImpl extends BaseServiceImpl<SysOperateLog> imp
 			
 			//当发生异常时，就中断执行了，把数据重新存入redis中
 			redisTemplate.opsForList().leftPushAll("SysOperateLog", lists);		
+			
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		}
 	}
     

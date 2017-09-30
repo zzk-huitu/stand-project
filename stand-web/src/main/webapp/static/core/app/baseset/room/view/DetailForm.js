@@ -36,24 +36,18 @@ Ext.define("core.baseset.room.view.DetailForm", {
     }, {
         beforeLabelTextTpl: comm.get('required'),
         xtype: "textfield",
-        fieldLabel: "房间名称",
-        name: "roomName",
+        fieldLabel: "房间编号",
+        name: "roomCode",
         allowBlank: false,
-        emptyText: '房间名称',
-        blankText: "房间名称不能为空"
-    }, {
-        beforeLabelTextTpl: comm.get('required'),
-        fieldLabel: "房间类型", //字段中文名
-        name: "roomType", //字段名
-        xtype: "basecombobox", //列类型
-        ddCode: "FJLX" //字典代码
+        emptyText: '请输入房间编号',
+        blankText: "房间编号不能为空"
     },{
         beforeLabelTextTpl: comm.get('required'),
         xtype: "textfield",
         fieldLabel: "门牌号1",
         name: "extField01",
         allowBlank: false,
-        emptyText: '门牌号1',
+        emptyText: '请输入门牌号1',
         blankText: "门牌号1不能为空"
     }, {
         xtype: "textfield",
@@ -72,10 +66,6 @@ Ext.define("core.baseset.room.view.DetailForm", {
         fieldLabel: "门牌号5",
         name: "extField05"
     }, {
-        xtype: "textarea",
-        fieldLabel: "房间描述",
-        name: "roomDesc"
-    }, {
         xtype: "combobox",
         store: combostore,
         fieldLabel: "网络状态",
@@ -88,5 +78,9 @@ Ext.define("core.baseset.room.view.DetailForm", {
         blankText: '请选择网络状态',
         editable: false,
         mode: 'local'
+    }, {
+        xtype: "textarea",
+        fieldLabel: "房间描述",
+        name: "roomDesc"
     }]
 });

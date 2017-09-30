@@ -18,6 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * ClassName:BaseEntity Function: TODO ADD FUNCTION. Reason: TODO ADD REASON.
@@ -31,11 +32,11 @@ import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseEntity {
-
+		
 	@Id
 	@FieldInfo(name = "UUID", type = "ID")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
+    //@GeneratedValue(generator = "uuid")
+    //@GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "UUID", length = 36, nullable = false)
 	private String uuid;
 
@@ -200,6 +201,7 @@ public abstract class BaseEntity {
 
     public BaseEntity() {
 		super();
+		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public BaseEntity(String uuid) {

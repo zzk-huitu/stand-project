@@ -51,7 +51,7 @@ public class SysOperateLog extends BaseEntity implements Serializable{
     
 
     @FieldInfo(name = "参数")
-    @Column(name = "METHOD_PARAMS", length = 1000, nullable = true)
+    @Column(name = "METHOD_PARAMS", columnDefinition = "varchar(MAX)", nullable = true)
     private String methodParams;
     
     @FieldInfo(name = "返回结果")
