@@ -3,9 +3,9 @@ Ext.define("core.baseset.roomdefine.controller.DetailController", {
     alias: 'controller.baseset.roomdefine.detailcontroller',
     mixins: {},
     init: function () {
-        /*执行一些初始化的代码*/
+    	
+         control:({
+    }) 
     },
-    /** 该视图内的组件事件注册 */
-    control: {
-    }
+   
 });

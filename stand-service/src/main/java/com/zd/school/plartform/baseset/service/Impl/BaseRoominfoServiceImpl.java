@@ -8,27 +8,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.StringUtils;
-import com.zd.school.build.define.model.BuildRoominfo ;
+import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.dao.BaseRoominfoDao;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
  * 
- * ClassName: BuildRoominfoServiceImpl
- * Function: TODO ADD FUNCTION. 
- * Reason: TODO ADD REASON(可选). 
- * Description: 教室信息实体Service接口实现类.
- * date: 2016-08-23
+ * ClassName: BuildRoominfoServiceImpl Function: TODO ADD FUNCTION. Reason: TODO
+ * ADD REASON(可选). Description: 教室信息实体Service接口实现类. date: 2016-08-23
  *
- * @author  luoyibo 创建文件
+ * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8
  */
 @Service
 @Transactional
-public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> implements BaseRoominfoService{
+public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> implements BaseRoominfoService {
 	private static Logger logger = Logger.getLogger(BaseRoominfoServiceImpl.class);
+
     @Resource
     public void setBuildRoominfoDao(BaseRoominfoDao dao) {
         this.dao = dao;
@@ -61,4 +59,16 @@ public class BaseRoominfoServiceImpl extends BaseServiceImpl<BuildRoominfo> impl
         }
         return true;       
     }
+
+	@Override
+	public Integer getCount(String roomName) {
+		Integer conut=0;
+		String hql=" select count(*) from BuildRoominfo where 1=1 ";
+		if(roomName!=null){
+		hql+=" and roomName = '"+roomName+"'";	
+		}
+		conut=this.getQueryCountByHql(hql);
+		return conut;
+	}
+    
 }

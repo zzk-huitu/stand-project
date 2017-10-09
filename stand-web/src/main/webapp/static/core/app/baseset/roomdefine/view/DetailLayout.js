@@ -1,36 +1,22 @@
 Ext.define("core.baseset.roomdefine.view.DetailLayout", {
 	extend: "core.base.view.BasePanel",
 	alias: 'widget.baseset.roomdefine.detaillayout',
-	funCode: "campus_detail",
+	funCode: "roomdefine_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/BaseCampus", //请求Action	
+		action: comm.get('baseUrl') + "/BaseRoomdefine", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
-			// schoolId: comm.get("schoolId"),
-			// schoolName: comm.get("schoolName"),
 		}
 	},
+	
+	/*关联此视图控制器*/
+	controller: 'baseset.roomdefine.detailcontroller',
+
 	 /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
     scrollable:true,
-
-    /*关联此视图控制器*/
-	controller: 'baseset.campus.detailcontroller',
-
-	//layout:'fit',
-	items: [{
-		xtype: 'panel',
-		region: 'north',
-		frame: true,
-		items: [{
-			ref:'bsName',
-			xtype: "textfield",
-			fieldLabel: "房间标识",
-		}]
-	}, {
-		xtype: "publicroom.RoomGrid",
-		region: "center"
-	}]
-
+    items: [{
+        xtype: "baseset.roomdefine.detailform"
+    }]
 
 })

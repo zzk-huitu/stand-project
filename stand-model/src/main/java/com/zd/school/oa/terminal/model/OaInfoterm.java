@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.zd.core.annotation.ExportExcelAnnotation;
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
 import com.zd.school.excel.annotation.MapperCell;
@@ -27,6 +28,7 @@ import com.zd.school.excel.annotation.MapperCell;
 public class OaInfoterm extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@ExportExcelAnnotation(columnName="终端号",columnWidth=15,order = 1)
 	@MapperCell(cellName = "终端号", order = 1)
 	@FieldInfo(name = "终端号")
 	@Column(name = "TERM_CODE", length = 6, nullable = false)
@@ -39,7 +41,7 @@ public class OaInfoterm extends BaseEntity implements Serializable {
 	public String getTermCode() {
 		return termCode;
 	}
-
+	
 	@FieldInfo(name = "终端类型，数据字典INFOTERTYPE")
 	@Column(name = "TERM_TYPE", length = 16, nullable = false)
 	private String termType;
@@ -88,6 +90,7 @@ public class OaInfoterm extends BaseEntity implements Serializable {
 		return roomId;
 	}
 
+	@ExportExcelAnnotation(columnName="使用房间名称",columnWidth=25,order =3)
 	@MapperCell(cellName = "使用房间名称", order = 2)
 	@FieldInfo(name = "使用房间名称")
 	@Column(name = "ROOM_NAME", length = 64, nullable = true)
@@ -101,6 +104,7 @@ public class OaInfoterm extends BaseEntity implements Serializable {
 		return roomName;
 	}
 
+	@ExportExcelAnnotation(columnName="使用房间门牌号",columnWidth=20,order = 2)
 	@MapperCell(cellName = "使用房间门牌号", order = 3)
 	@FieldInfo(name = "使用房间名称门牌号")
 	@Column(name = "HOUSE_NUMB", length = 64, nullable = true)

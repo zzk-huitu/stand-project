@@ -17,17 +17,17 @@ Ext.define("core.baseset.roomdefine.view.MainLayout", {
     otherController:'baseset.roomdefine.othercontroller',
  
 	funData: {
-		action: comm.get('baseUrl') + "/", //请求Action
+		action: comm.get('baseUrl') + "/BaseRoomdefine", //请求Action
 		pkName: "uuid",
 		defaultObj: {
            
         },
        // whereSql:" where isDelete=0",
 	    tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
-            titleField:'gatewayName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-            addTitle:'房间定义',
-            editTitle:'编辑房间',
-            detailTitle:'房间详情'
+            titleField:'roomName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
+            addTitle:'房间列表',
+            editTitle:'编辑宿舍',
+            detailTitle:'宿舍详情'
         }
 	},
 
@@ -41,7 +41,7 @@ Ext.define("core.baseset.roomdefine.view.MainLayout", {
 		split:true,
 		width: comm.get("clientWidth") * 0.18
 	}, {
-		xtype: "baseset.roomdefine.miangrid",
+		xtype: "baseset.roomdefine.maingrid",
 		region: "center",
 		
 	}]

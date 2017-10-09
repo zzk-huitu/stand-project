@@ -10,7 +10,7 @@ Ext.define("core.baseset.room.controller.MainController", {
     },
     
     init: function () {
-        var self = this
+        var self = this;
         // 事件注册
         this.control({
         	
