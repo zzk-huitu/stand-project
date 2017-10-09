@@ -47,6 +47,39 @@ public class PtGateway extends BaseEntity implements Serializable {
 	@Column(name = "GATEWAYIP", length = 100, nullable = true)
 	private String gatewayIP;
 
+	@FieldInfo(name = "设备掩码")
+    @Column(name = "GATEWAY_MASK",length = 36,nullable = true)
+    private String gatewayMask;
+
+    public String getGatewayMask() {
+        return gatewayMask;
+    }
+
+    public void setGatewayMask(String gatewayMask) {
+        this.gatewayMask = gatewayMask;
+    }
+    @FieldInfo(name = "设备MAC")
+    @Column(name = "GATEWAY_MAC",length = 36,nullable = true)
+    private String gatewayMac;
+
+    public String getGatewayMac() {
+        return gatewayMac;
+    }
+
+    public void setGatewayMac(String gatewayMac) {
+        this.gatewayMac = gatewayMac;
+    }
+    @FieldInfo(name = "接入网关")
+    @Column(name = "NETGATEWAY_IP")
+    private String netgatewayIp;
+
+    public String getNetgatewayIp() {
+        return netgatewayIp;
+    }
+	public void setNetgatewayIp(String netgatewayIp) {
+		this.netgatewayIp = netgatewayIp;
+	}
+	
 	@FieldInfo(name = "网关状态(0是启用 1是禁用)")
 	@Column(name = "GATEWAYSTATUS")
 	private Integer gatewayStatus;

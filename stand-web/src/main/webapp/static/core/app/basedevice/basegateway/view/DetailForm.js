@@ -30,7 +30,7 @@ Ext.define("core.basedevice.basegateway.view.DetailForm", {
         layout: "column", // 从左往右的布局
         items: [{
             columnWidth:0.5,
-            xtype: "textfield",
+            xtype: 'numberfield',
             fieldLabel: "机号",
             name: "gatewayNo",
            // readOnly: true

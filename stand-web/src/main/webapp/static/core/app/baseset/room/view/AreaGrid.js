@@ -45,30 +45,35 @@ Ext.define("core.baseset.room.view.AreaGrid", {
         defaults:{
             titleAlign:"center"
         },
-    items: [{
-        text: "区域名称",
-        dataIndex: "text",
-        xtype: 'treecolumn',
-        //width: 250
-        flex:2
-    }, {
-        text: "区域类型",
-        dataIndex: "areaType",
-        columnType: "basecombobox", //列类型
-        ddCode: "BUILDAREATYPE", //字典代码        
-        flex:1
-    }, {
-        text: "顺序号",
-        dataIndex: "orderIndex",
-        flex:1,
-    },{
-        text: "区域说明",
-        dataIndex: "areaDesc",   
-        flex:2
-    }, {
-        text: "主键",
-        dataIndex: 'id',
-        hidden: true
-    }]
+        items: [{
+            text: "区域名称",
+            dataIndex: "text",
+            xtype: 'treecolumn',
+            //width: 250
+            flex:1
+        }, {
+            text: "区域类型",
+            dataIndex: "areaType",
+            columnType: "basecombobox", //列类型
+            ddCode: "BUILDAREATYPE", //字典代码        
+            width:80,
+        }, {
+            text: "顺序号",
+            dataIndex: "orderIndex",
+            width:60,
+        },{
+            text: "区域说明",
+            dataIndex: "areaDesc",   
+            width:100,
+            renderer: function(value,metaData) {  
+                var title=" 区域说明 ";
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';  
+                return value;  
+            }  
+        }, {
+            text: "主键",
+            dataIndex: 'id',
+            hidden: true
+        }]
     }
 })

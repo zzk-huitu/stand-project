@@ -206,3 +206,33 @@ Ext.apply(Ext.form.VTypes, {
 	},
 	endTimeText: '结束时间不能小于开始时间'
 });
+
+
+//IP地址验证
+Ext.apply(Ext.form.VTypes, {
+	ipCode: function(val, field) {
+		var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		try {
+			if (reg.test(val))
+				return true;
+			return false;
+		} catch (e) {
+			return false;
+		}
+	},
+	ipCodeText:'IP格式为：xxx.xxx.xxx.xxx',
+});
+//MAC地址验证
+Ext.apply(Ext.form.VTypes, {
+	macCode: function(val, field) {
+		var reg = /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/;
+		try {
+			if (reg.test(val))
+				return true;
+			return false;
+		} catch (e) {
+			return false;
+		}
+	},
+	macCodeText:'MAC地址格式为：FF-FF-FF-FF-FF-FF',
+});

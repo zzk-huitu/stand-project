@@ -52,7 +52,7 @@ Ext.define("core.baseset.room.view.MainLayout", {
         // style:{
         //     border: '1px solid #ddd'
         // },
-        width: 500
+        width: 450
     }, {
         xtype: "baseset.room.maingrid",
         // style:{

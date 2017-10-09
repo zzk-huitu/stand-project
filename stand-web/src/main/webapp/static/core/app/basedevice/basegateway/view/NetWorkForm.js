@@ -9,100 +9,169 @@ Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
     extend: "core.base.view.BaseForm",
     alias: "widget.basedevice.basegateway.networkform",
     items: [{
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth:0.5,
-            fieldLabel: '本机IP',
-            xtype: 'textfield',
-            name: 'tlvs[0].valStr',
-            allowBlank: false,
-            regex: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/,
-            regexText: 'IP格式为：xxx.xxx.xxx.xxx'
+        xtype: "fieldset",
+        layout:'form',
+        title: '网关参数',
+        style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:400,
+            border: '#097db5 1px solid'
+        },
+        defaults:{
+            width:'100%',
+            margin:"10 5 0 5",
+            xtype: "textfield",
+            //labelAlign : 'right',
+            //columnWidth : 0.5,
+            //msgTarget: 'qtip',
+        },
+        items:[{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                beforeLabelTextTpl: comm.get("required"),
+                allowBlank: false,
+                columnWidth:0.6,
+                fieldLabel: '网关IP',
+                xtype: 'textfield',
+                name: 'tlvs[0].valStr',
+                vtype:'ipCode'
+            }, {
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（网关IP格式为：xxx.xxx.xxx.xxx）</font>",
+            }]
         }, {
-            columnWidth:0.5,
-            fieldLabel: '网关',
-            xtype: 'textfield',
-            name: 'tlvs[1].valStr',
-            allowBlank: false,
-            regex: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/,
-            regexText: 'IP格式为：xxx.xxx.xxx.xxx'
-        }]
-    }, {   
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth:0.5,
-            fieldLabel: '服务器IP',
-            xtype: 'textfield',
-            name: 'tlvs[3].valStr',
-            allowBlank: false,
-            regex: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/,
-            regexText: '服务器IP格式为：xxx.xxx.xxx.xxx'
-        }, {
-            columnWidth:0.5,
-            fieldLabel: 'SSID',
-            xtype: 'textfield',
-            disabled: true
-        }]
-    }, {
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth:0.5,
-            fieldLabel: 'MAC',
-            xtype: 'textfield',
-            name: 'tlvs[6].valStr',
-            regex: /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/,
-            regexText: '服务器IP格式为：FF-FF-FF-FF-FF-FF'
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                beforeLabelTextTpl: comm.get("required"),
+                allowBlank: false,
+                columnWidth:0.6,
+                fieldLabel: 'MAC',
+                xtype: 'textfield',
+                name: 'tlvs[6].valStr',
+                vtype:'macCode'           
+            },, {
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（MAC格式为：FF-FF-FF-FF-FF-FF，第一组必须为偶数）</font>",
+            }]
         },{
-            columnWidth:0.5,
-            xtype: "combobox",
-            store: combostore,
-            fieldLabel: "DHCP",
-            displayField: 'dhcp',
-            valueField: 'id',
-            name: "tlvs[5].valInt",
-            value: 1,
-            triggerAction: 'all',
-            emptyText: '请选择...',
-            blankText: '请选择',
-            editable: false,
-            mode: 'local'
-        }]
-    }, {
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth:0.5,
-            fieldLabel: '掩码',
-            xtype: 'textfield',
-            name: 'tlvs[2].valStr',
-            allowBlank: false,
-            regex: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/,
-            regexText: '掩码格式为：xxx.xxx.xxx.xxx'
-        }, { 
-            columnWidth:0.5,
-            fieldLabel: '服务器Port',
-            xtype: 'numberfield',
-            name: 'tlvs[4].valInt',
-            value: 1,
-            minValue: 1,
-            maxValue: 65335,
-        }]
-    }, {
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth:0.5,
-            fieldLabel: 'SSID密码',
-            xtype: 'textfield',
-            disabled: true
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                beforeLabelTextTpl: comm.get("required"),
+                allowBlank: false,
+                columnWidth:0.6,
+                fieldLabel: '掩码',
+                xtype: 'textfield',
+                name: 'tlvs[2].valStr',
+                vtype:'ipCode'
+            }, {
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（掩码IP格式为：xxx.xxx.xxx.xxx）</font>",
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [ {
+                beforeLabelTextTpl: comm.get("required"),
+                allowBlank: false,
+                columnWidth:0.6,
+                fieldLabel: '接入网关',
+                xtype: 'textfield',
+                name: 'tlvs[1].valStr',
+                vtype:'ipCode'
+            }, {
+                columnWidth: 0.4,
+                xtype: "label",
+                html:"  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（网关IP格式为：xxx.xxx.xxx.xxx）</font>",
+            }]
+        }]        
+    },{
+        xtype: "fieldset",
+        layout:'form',
+        title: '服务器参数',
+        style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:400,
+            border: '#097db5 1px solid'
+        },
+        defaults:{
+            width:'100%',
+            margin:"10 5 0 5",
+            xtype: "textfield",
+            //labelAlign : 'right',
+            //columnWidth : 0.5,
+            //msgTarget: 'qtip',
+        },
+        items:[{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                columnWidth: 0.6,
+                beforeLabelTextTpl: comm.get("required"),
+                xtype: "combobox",
+                store: combostore,
+                fieldLabel: "DHCP",
+                displayField: 'dhcp',
+                valueField: 'id',
+                name: "tlvs[5].valInt",
+                value: 1,
+                triggerAction: 'all',
+                emptyText: '请选择...',
+                blankText: '请选择',
+                editable: false,
+                mode: 'local'
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                columnWidth: 0.6,
+                beforeLabelTextTpl: comm.get("required"),            
+                allowBlank: false,
+                fieldLabel: '服务器IP',
+                xtype: 'textfield',
+                name: 'tlvs[3].valStr',
+                vtype:'ipCode'        
+            },{
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（服务器IP格式为：xxx.xxx.xxx.xxx）</font>"
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{ 
+                columnWidth:0.6,
+                beforeLabelTextTpl: comm.get("required"),
+                allowBlank: false,
+                fieldLabel: '服务器Port',
+                xtype: 'numberfield',
+                name: 'tlvs[4].valInt',
+                value: 1,
+                minValue: 1,
+                maxValue: 65335,
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                columnWidth: 0.6,        
+                fieldLabel: 'SSID密码',
+                xtype: 'textfield',
+                readOnly: true
+            }]
         }]
     }],
 
 
-   
+
     formData: {
         "tlvs[0].len": 4, //设备IP地址  HostIP  0x3002  4
         "tlvs[0].type": 6,

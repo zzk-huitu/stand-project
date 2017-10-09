@@ -22,11 +22,16 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             }
         },'->',{
             xtype: 'button',
+            text: '批量设置前置',
+            ref: 'gridSetFront',
+            iconCls: 'x-fa fa-cogs'
+        },/*{
+            xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
-        }, {
+        }, */{
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
@@ -45,12 +50,8 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
     panelButtomBar:{},
    //排序字段及模式定义
     defSort: [{
-        property: 'createTime',
-        direction: 'DESC'
-    },
-    {
-        property: 'gatewayName',
-        direction: 'DESC'
+        property: "gatewayNo", //字段名
+        direction: "ASC" //升降序
     }],
  
     columns:  {        
@@ -58,112 +59,113 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             titleAlign:"center"
         },
        items: [{
-        xtype: "rownumberer",
-        width: 50,
-        text: '序号',
-        align: 'center'
-    }, {
-        text: "主键",
-        dataIndex: "uuid",
-        hidden: true
-    },{
-        text: "前置主键",
-        dataIndex: "frontserverId",
-        hidden: true
-    }, {
-        text: "机号",
-        dataIndex: "gatewayNo",
-        field: {
-            xtype: "textfield"
-        },
-        width: 100,
-    }, {
-        text: "网关名称",
-        dataIndex: "gatewayName",
-        field: {
-            xtype: "textfield"
-        },
-        width: 100,
-    }, {
-        width: 100,
-        text: "前置名称",
-        dataIndex: "frontServerName",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        width: 100,
-        text: "序列号",
-        dataIndex: "gatewaySN",
-        field: {
-            xtype: "textfield"
-        }
-    }, {flex: 1,
-        minWidth:150,
-        text: "网关IP",
-        dataIndex: "gatewayIP",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        width: 100,
-        text: "网关状态",
-        dataIndex: "gatewayStatus",
-        renderer: function(value) {
-            switch (value) {
-                case 0:
-                    return '<font color=green>启用</font>';
-                    break;
-                case 1:
-                    return '<font color=red>禁用</font>';
-                    break;
+            xtype: "rownumberer",
+            width: 50,
+            text: '序号',
+            align: 'center'
+        }, {
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
+        },{
+            text: "前置主键",
+            dataIndex: "frontserverId",
+            hidden: true
+        }, {
+            text: "机号",
+            dataIndex: "gatewayNo",
+            field: {
+                xtype: "textfield"
+            },
+            width: 100,
+        }, {
+            text: "网关名称",
+            dataIndex: "gatewayName",
+            field: {
+                xtype: "textfield"
+            },
+            width: 100,
+        }, {
+            width: 100,
+            text: "前置名称",
+            dataIndex: "frontServerName",
+            field: {
+                xtype: "textfield"
             }
-        }
-    }, {
-        width: 100,
-        text: "前置IP",
-        dataIndex: "frontServerIP",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        width: 100,
-        text: "前置端口",
-        dataIndex: "frontServerPort",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
-        width: 100,
-        text: "是否启用",
-        dataIndex: "frontServerStatus",
-        renderer: function(value) {
-            switch (value) {
-                case 0:
-                    return '<font color=green>启用</font>';
-                    break;
-                case 1:
-                    return '<font color=red>禁用</font>';
-                    break;
+        }, {
+            width: 100,
+            text: "序列号",
+            dataIndex: "gatewaySN",
+            field: {
+                xtype: "textfield"
             }
-        }
-    }, {
-        width: 100,
-        text: "备注",
-        dataIndex: "notes",
-        field: {
-            xtype: "textfield"
-        }
-    }, {
+        }, {
+            flex: 1,
+            minWidth:150,
+            text: "网关IP",
+            dataIndex: "gatewayIP",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width: 100,
+            text: "网关状态",
+            dataIndex: "gatewayStatus",
+            renderer: function(value) {
+                switch (value) {
+                    case 0:
+                        return '<font color=green>启用</font>';
+                        break;
+                    case 1:
+                        return '<font color=red>禁用</font>';
+                        break;
+                }
+            }
+        }, {
+            width: 100,
+            text: "前置IP",
+            dataIndex: "frontServerIP",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width: 100,
+            text: "前置端口",
+            dataIndex: "frontServerPort",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width: 100,
+            text: "是否启用",
+            dataIndex: "frontServerStatus",
+            renderer: function(value) {
+                switch (value) {
+                    case 0:
+                        return '<font color=green>启用</font>';
+                        break;
+                    case 1:
+                        return '<font color=red>禁用</font>';
+                        break;
+                }
+            }
+        }, {
+            width: 100,
+            text: "备注",
+            dataIndex: "notes",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
             width: 200,
             fixed: true,
             items: [{
-                text:'网关参数',  
+                text:'设备参数',  
                 style:'font-size:12px;', 
-                tooltip: '网关参数',
+                tooltip: '设备参数',
                 ref: 'buttonBaseAndHigh',
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);

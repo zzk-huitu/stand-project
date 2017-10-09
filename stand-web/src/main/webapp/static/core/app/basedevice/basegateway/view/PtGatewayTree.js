@@ -3,10 +3,7 @@ Ext.define("core.basedevice.basegateway.view.PtGatewayTree", {
     alias: "widget.basedevice.basegateway.ptgatewaytree",
     dataUrl: comm.get('baseUrl') + "/BaseGateway/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
-    selModel: {
-        selType: "checkboxmodel",
-        mode: "single"
-    },
+    selModel: null,
 
     //title: "区域信息",
     tbar:{

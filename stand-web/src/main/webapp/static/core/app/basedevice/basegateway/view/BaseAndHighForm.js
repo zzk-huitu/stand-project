@@ -1,28 +1,29 @@
 Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
     extend: "core.base.view.BaseForm",
     alias: "widget.basedevice.basegateway.baseandhighform",
-
-    fieldDefaults: { // 统一设置表单字段默认属性
-        labelSeparator: "：", // 分隔符
-        msgTarget: "qtip",
-        labelWidth: 100,
-        labelAlign : 'right',
-        margin:"10 5 0 5",
-    },   
-  
     items :[{
-       xtype: "fieldset",
-       title: '基础参数',
-       style: {
-                fontSize: '16px',
-                color: '#C44444',
-                fontWeight:400
-            },
-       items: [{
+        xtype: "fieldset",
+        title: '基础参数',
+        layout:'form',
+        style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:400,
+            border: '#097db5 1px solid'
+        },
+        defaults:{
+            width:'100%',
+            margin:"10 5 0 5",
+            xtype: "textfield",
+            //labelAlign : 'right',
+            //columnWidth : 0.5,
+            //msgTarget: 'qtip',
+        },
+        items: [{
             xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
-                columnWidth: 0.5,
+                columnWidth: 0.6,
                 name: 'tlvs[1].valInt',
                 fieldLabel: '心跳间隔：',
                 xtype: 'numberfield',
@@ -31,15 +32,15 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                 minValue: 1,
                 allowDecimals: false
             }, {
-                columnWidth: 0.5,
+                columnWidth: 0.4,
                 xtype: "label",
-                html: "&nbsp&nbsp&nbsp秒 <font color=red,size=10>(取值范围1-300)</font>",
+                html: "&nbsp;秒 <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>(取值范围1-300)</font>",
             }]
         }, {
             xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
-                columnWidth: 0.5,
+                columnWidth: 0.6,
                 fieldLabel: '通讯超时：',
                 name: 'tlvs[0].valInt',
                 xtype: 'numberfield',
@@ -48,24 +49,31 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                 minValue: 5000,
                 allowDecimals: false
             }, {
-                columnWidth: 0.5,
+                columnWidth: 0.4,
                 xtype: "label",
-                html: "&nbsp&nbsp&nbsp毫秒 <font color=red,size=12>(取值范围5000-60000)</font>",
+                html: "&nbsp;毫秒 <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>(取值范围5000-60000)</font>",
             }]
         }],
    },  {
        xtype: "fieldset",
        title: '高级参数',
+       layout:'form',
        style: {
-                fontSize: '16px',
-                color: '#C44444',
-                fontWeight:400
-            },
-       items :[{
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:400,
+            border: '#097db5 1px solid'
+        },
+        defaults:{
+            width:'100%',
+            margin:"10 5 0 5",
+            xtype: "textfield"
+        },
+        items :[{
             xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
-                columnWidth: 0.5,
+                columnWidth: 0.6,
                 xtype: 'timefield',
                 name: 'time1',
                 format: 'H:i',
@@ -77,8 +85,16 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                  allowBlank: false,
                 anchor: '100%',
                 invalidText: "时间格式不正确，例如：00:00"
-            },{ 
-                columnWidth: 0.5,
+            },{
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>设备自动重启的时间1（每天到时间点就重启，0代表不重启）</font>",
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{ 
+                columnWidth: 0.6,
                 xtype: 'timefield',
                 name: 'time2',
                 format: 'H:i',
@@ -90,12 +106,17 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                 anchor: '100%',
                 allowBlank: false,
                 invalidText: "时间格式不正确，例如：00:00"
+            },{
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>设备自动重启的时间2</font>",
             }]
-        },{
+        },
+        {
             xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
-                columnWidth: 0.5,
+                columnWidth: 0.6,
                 xtype: 'timefield',
                 name: 'time3',
                 format: 'H:i',
@@ -108,7 +129,16 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                 allowBlank: false,
                 invalidText: "时间格式不正确，例如：00:00"
             },{
-                columnWidth: 0.5,
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>设备自动重启的时间3</font>",
+            }]
+        },
+        {
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                columnWidth: 0.6,
                 xtype: 'timefield',
                 name: 'time4',
                 format: 'H:i',
@@ -120,8 +150,79 @@ Ext.define("core.basedevice.basegateway.view.BaseAndHighForm", {
                 anchor: '100%',
                 allowBlank: false,
                 invalidText: "时间格式不正确，例如：00:00"
+            },{
+                columnWidth: 0.4,
+                xtype: "label",
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>设备自动重启的时间4</font>",
             }]
-       }]
+        }]
+    }, {
+       xtype: "fieldset",
+       title: '批量设置其他网关',
+       layout:'form',
+       style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:400,
+            border: '#097db5 1px solid'
+        },
+        defaults:{
+            width:'100%',
+            margin:"10 5 0 5",
+            xtype: "textfield"
+        },
+        items:[{
+            xtype: 'radiogroup',
+            ref:'gatewayRadio',
+            fieldLabel: '批量设置',
+            columns: 5,
+            vertical: true,
+            items: [            
+                { boxLabel: '不批量设置', name: 'gatewayRadio', inputValue: 0,checked: true  },
+                { boxLabel: '指定网关', name: 'gatewayRadio', inputValue: 1},
+                { boxLabel: '当前服务器的所有网关', name: 'gatewayRadio', inputValue: 2},
+            ],
+            listeners:{
+                change:function( filed, newValue, oldValue, eOpts ){
+                    var form=filed.up("form");                      
+                    var formBase=form.getForm();
+                    var gatewayField = formBase.findField("gatewayNames");
+                    
+                    if(newValue.gatewayRadio==1){                                    
+                        gatewayField.show();                                   
+                    }else {
+                        gatewayField.hide();                                              
+                    }
+                    //console.log(newValue);
+                }
+            }
+            
+        },{
+            fieldLabel: "指定网关",
+            name: "gatewayIds",
+            xtype: "textfield",
+            hidden: true
+        }, {
+            hidden:true,
+            xtype: "basefuncfield",         
+            funcPanel: "public.selectGateway.selectgatewaylayout", //该功能显示的主视图
+            funcGrid:'public.selectGateway.isselectgatewaygrid',    //指定多选时，获取数据的表格别名
+            //refController:'system.dept.othercontroller',             //指定弹出的window引用的控制器，方便方法重写。 若不需要重写，则不配置此项
+            formPanel: "system.dept.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
+            funcTitle: "网关选择", //查询窗口的标题
+            configInfo: {
+                width:1250,
+                height:600,
+                fieldInfo: "gatewayIds~gatewayNames,uuid~gatewayName",
+                whereSql: " and isDelete='0' ",
+                //orderSql: " order by jobCode ",
+                muiltSelect: true //是否多选
+            },
+            fieldLabel: '选择网关',
+            name: "gatewayNames",
+            allowBlank: true,
+            emptyText: "选择需要设置的网关",
+        }]
     }],
        
     baseFormData: {
