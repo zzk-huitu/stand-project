@@ -91,7 +91,7 @@ Ext.define("core.basedevice.basegateway.controller.OtherController", {
                 Ext.apply(params, highData);
                 params.gatewayRadio=objForm.down("radiogroup[ref=gatewayRadio]").getChecked()[0].inputValue;
                 
-	            url= comm.get('baseUrl') + "/BaseGateway/baseAndHighParam";//基础和高级sava合并一个方法
+	            url= comm.get('baseUrl') + "/BaseGateway/doBaseAndHighParam";//基础和高级sava合并一个方法
 	            break;
          }
         

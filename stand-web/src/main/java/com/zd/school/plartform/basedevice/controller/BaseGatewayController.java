@@ -245,7 +245,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 	
 	
-	@RequestMapping("/baseAndHighParam")
+	@RequestMapping("/doBaseAndHighParam")
 	public void baseAndHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		

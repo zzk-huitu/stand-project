@@ -34,7 +34,7 @@ Ext.define("core.base.controller.MainController",{
 	
 
 	requires:[
-		"core.base.view.CenterView", 
+		"core.base.view.CenterView",
 		"core.base.view.WestView",
 		"core.base.view.MainView",
 		"core.base.view.BaseGrid",

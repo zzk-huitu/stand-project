@@ -56,20 +56,37 @@ Ext.define("core.system.user.view.UserForm", {
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
             xtype: "basecombobox",
+            fieldLabel: "身份",
+            name: "category",
+            ddCode: "CATEGORY",
+            allowBlank: false,
+            blankText: "身份不能为空",
+            value:"1"
+        },{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            xtype: "basecombobox",
             fieldLabel: "性别",
             name: "xbm",
             ddCode: "XBM",
             allowBlank: false,
             blankText: "性别不能为空"
-        }, {
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
+        }]
+    }, {
+        xtype: 'container',
+        layout: "column", // 从左往右的布局
+        items: [  {
+            columnWidth: .5,            
+            xtype: "basecombobox",
+            fieldLabel: "政治面貌",
+            name: "zzmmm",
+            ddCode: "ZZMMM"
+        },{
+            columnWidth: .5,            
             xtype: "basecombobox",
             fieldLabel: "编制",
             name: "zxxbzlb",
-            ddCode: "ZXXBZLB",
-            allowBlank: false,
-            blankText: ""
+            ddCode: "ZXXBZLB"
         }]
     }, /*{
         xtype: 'container',
@@ -123,15 +140,12 @@ Ext.define("core.system.user.view.UserForm", {
     },*/ {
         xtype: 'container',
         layout: "column", // 从左往右的布局
-        items: [{
+        items: [, {
             columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            xtype: "basecombobox",
-            fieldLabel: "账号状态",
-            name: "state",
-            ddCode: "ACCOUNTSTATE",
-            allowBlank: false,
-            blankText: ""
+            xtype: "datetimefield",
+            dateType:'date',
+            fieldLabel: "出生日期",
+            name: "csrq"
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: "",
@@ -139,8 +153,7 @@ Ext.define("core.system.user.view.UserForm", {
             name: "mobile",
             xtype: 'textfield',
             allowBlank: true,
-            emptyText: '请输入移动电话',
-            blankText: "移动电话不能为空"
+            vtype:'phoneCode'
         }]
     }, {
         xtype: 'container',
@@ -151,16 +164,31 @@ Ext.define("core.system.user.view.UserForm", {
             fieldLabel: '身份证件号',
             name: "sfzjh",
             xtype: 'textfield',
-            allowBlank: true,
-            emptyText: '请输入身份证件号',
+            allowBlank: true,         
+            vtype:'idCode'
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: "",
             fieldLabel: '电子邮箱',
             name: "dzxx",
             xtype: 'textfield',
-            allowBlank: true,
-            emptyText: '请输入电子邮箱'
+            allowBlank: true,           
+            vtype:'email'
+        }]
+    }, {
+        xtype: 'container',
+        layout: "column", // 从左往右的布局
+        items: [{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            xtype: "basecombobox",
+            fieldLabel: "账号状态",
+            name: "state",
+            ddCode: "ACCOUNTSTATE",
+            allowBlank: false,
+            blankText: ""
         }]
     }]
+
+
 });
