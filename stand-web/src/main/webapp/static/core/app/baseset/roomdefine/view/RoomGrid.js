@@ -6,6 +6,11 @@ Ext.define("core.baseset.roomdefine.view.RoomGrid", {
     extParams: {
         filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'areaId'},{'type':'string','comparison':'=','value':'0','field':'roomType'}]",
     },
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:40,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        mode:'single',  //multi,simple,single；默认为多选multi
+    },
     panelTopBar:{
         xtype:'toolbar',
         items: [{

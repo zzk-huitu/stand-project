@@ -5,8 +5,9 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
         labelSeparator: '：', // 分隔符
         msgTarget: 'qtip',
         labelAlign: "right",
-        labelWidth: 120,     //label 的寬度
+        labelWidth: 100,     //label 的寬度
     },
+
     sign:"add",
     items: [{
         xtype: "textfield",
@@ -14,6 +15,7 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
         hidden: true
     }, {
         xtype: "container",
+        width:'80%',
         layout: "column", // 从左往右的布局
         items: [{
             columnWidth: 0.5,
@@ -56,6 +58,7 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
         }]
     }, {
         ref:'dormContainer',
+        width:'80%',
         hidden:true,
         xtype: "container",
         layout: "column", // 从左往右的布局
@@ -80,6 +83,7 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
         }]
     }, {
         ref:'dormContainer',
+        width:'80%',
         hidden:true,
         xtype: "container",
         layout: "column", // 从左往右的布局
@@ -115,6 +119,7 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
         }]
       }, {
          ref:'dormContainer',
+         width:'80%',
          hidden:true,
          xtype: "container",
          layout: "column", // 从左往右的布局

@@ -28,7 +28,8 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             xtype: 'button',
             text: '解除设置',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-plus-circle',
+            msg:'是否要解除此房间？'
         },{
             xtype: 'tbtext', 
             html:'快速搜索：'
@@ -83,6 +84,10 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             text: "房间名称",
             dataIndex: "roomName"
         },{
+            width: 100,
+            text: "房间编号",
+            dataIndex: "roomCode",           
+        },{
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
@@ -98,14 +103,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
         }, {
             width: 100,
             text: "所属楼栋",
-            dataIndex: "upAreaName",
-            field: {
-                xtype: "textfield"
-            }
-        }, {
-            width: 100,
-            text: "房间标识",
-            dataIndex: "roomName",
+            dataIndex: "areaUpName",
             field: {
                 xtype: "textfield"
             }
@@ -152,7 +150,8 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {
                         view: view.grid,
-                        record: rec
+                        record: rec,
+                        msg:'是否要解除此房间？'
                     });
                 }
             }, {

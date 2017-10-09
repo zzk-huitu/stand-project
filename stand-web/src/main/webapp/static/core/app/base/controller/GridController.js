@@ -165,7 +165,7 @@ Ext.define("core.base.controller.GridController", {
                     this.openDetail_Win_Column(data.view,data.record,"detail");                
                 },              
                 deleteClick:function(data){
-                    this.doDeleteRecords_Column(data.view,data.record);
+                    this.doDeleteRecords_Column(data.view,data.record,data.msg);
                 },
 
                 //弹出tab页的方式
@@ -283,7 +283,7 @@ Ext.define("core.base.controller.GridController", {
         if(cmd=="detail")
             self.setFuncReadOnly(funData, objDetForm, true);
     },
-    doDeleteRecords_Column:function(grid,record){
+    doDeleteRecords_Column:function(grid,record,msg){
         var self=this;
         //得到组件
         var baseGrid = grid;
@@ -294,8 +294,11 @@ Ext.define("core.base.controller.GridController", {
         //得到配置信息
         var funData = basePanel.funData;
         var pkName = funData.pkName;
-    
-        Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+        
+        if(!msg)
+            msg='是否删除数据?';
+
+        Ext.Msg.confirm('提示', msg , function (btn, text) {
             if (btn == 'yes') {            
 
                 var loading = new Ext.LoadMask(baseGrid, {

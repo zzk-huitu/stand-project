@@ -24,7 +24,8 @@ Ext.define("core.basedevice.basegateway.view.PtGatewayBatchForm", {
         displayField: 'frontServerName',
         valueField: 'uuid',
         allowBlank: false,
-        blankText: "综合前置不能为空"
+        blankText: "综合前置不能为空",
+        editable:false
     }],
     buttonAlign: 'center',
     buttons: [{

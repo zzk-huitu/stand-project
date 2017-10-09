@@ -427,8 +427,12 @@ Ext.define("core.base.controller.ButtonController", {
         //得到选中数据
         var records = baseGrid.getSelectionModel().getSelection();
         if (records.length > 0) {
+            var msg='是否删除数据?';
+            if(btn.msg)
+                msg=btn.msg;
+            
             //封装ids数组
-            Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+            Ext.Msg.confirm('提示', msg, function (btn, text) {
                 if (btn == 'yes') {
                     
                     var loading = new Ext.LoadMask(baseGrid, {
