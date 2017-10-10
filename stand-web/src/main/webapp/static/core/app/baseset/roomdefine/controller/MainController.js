@@ -11,23 +11,55 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
     init: function () {
         var self = this
         this.control({
-                //区域列表刷新按钮事件
-                "basetreegrid[xtype=baseset.roomdefine.roomdefinetree] button[ref=gridRefresh]": {
-                    click: function (btn) {
-                        var baseGrid = btn.up("basetreegrid");
-                        var store = baseGrid.getStore();
-                        var proxy = store.getProxy();
-                        proxy.extraParams = {
-                            whereSql: " and isDelete='0' ",
-                            orderSql: "",
-                            excludes:"checked"
-                        };
+            "basetreegrid[xtype=baseset.roomdefine.roomdefinetree]":{
+                itemclick: function (tree, record, item, index, e, eOpts) {
+                    var mainLayout = tree.up("panel[xtype=baseset.roomdefine.mainlayout]");
+                    var areaType = record.get("areaType");
+                    var areaId = record.get("id");
+                    var filter = [];
+                    filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});
+
+                    if(areaType=="04")
+                        filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
+                    
+                    var funData = mainLayout.funData;
+                    mainLayout.funData = Ext.apply(funData, {
+                        areaId: record.get("id"),
+                        areaType: record.get("areaType"),
+                        areaName: record.get("text"),
+                        filter: JSON.stringify(filter),
+                    });
+                    // 加载对应的房间信息
+                    var roomGrid = mainLayout.down("panel[xtype=baseset.roomdefine.maingrid]");
+                    var store = roomGrid.getStore();
+                    var proxy = store.getProxy();
+
+                    proxy.extraParams.filter = JSON.stringify(filter);
+                    proxy.extraParams.areaId= areaId;
+                    proxy.extraParams.areaType= areaType;
+                    store.loadPage(1); // 给form赋值
+                    // return false;
+                }
+            },
+            
+
+            //区域列表刷新按钮事件
+            "basetreegrid[xtype=baseset.roomdefine.roomdefinetree] button[ref=gridRefresh]": {
+                click: function (btn) {
+                    var baseGrid = btn.up("basetreegrid");
+                    var store = baseGrid.getStore();
+                    var proxy = store.getProxy();
+                    proxy.extraParams = {
+                        whereSql: " and isDelete='0' ",
+                        orderSql: "",
+                        excludes:"checked"
+                    };
                     store.load(); //刷新父窗体的grid
                     return false;
                 }
             },
                //
-               "basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridAdd_Tab]": {
+           "basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     self.openRoomDefine_Tab(btn,"add");
                     return false;
@@ -78,7 +110,6 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
             return;
         };
 
-
         //得到配置信息
         var funData = basePanel.funData;                //主界面的配置信息  
         var pkName=funData.pkName;
@@ -94,11 +125,38 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
         //获取Tab相关数据,根据cmd的类型，来获取不同的数据
         var tabConfig=funData.tabConfig;
         var tabTitle = tabConfig.addTitle; 
-        var tabItemId =funCode + "_gridAdd";
+        var tabItemId = funCode + "_gridAdd";
         var pkValue= null;
         var operType="add";
         var recordData=null;
         switch (cmd) {
+            case "add":
+                var basetreegrid = basePanel.down("basetreegrid[xtype=baseset.roomdefine.roomdefinetree]");
+                var selectObject = basetreegrid.getSelectionModel().getSelection()[0];
+                var areaId = "";
+                var areaType = "";
+                var areaName = "";
+                if (selectObject == null) {
+                    self.msgbox("请选择楼层!");
+                    return;
+                } else {
+                    areaId = selectObject.get("id");
+                    areaType = selectObject.get("areaType");
+                    areaName = selectObject.get("text");
+                }
+                if(areaType!="04"){
+                    self.msgbox("只能选择楼层添加!");
+                    return;
+                }
+
+                tabTitle = areaName+"-"+tabConfig.addTitle; 
+
+                /* if (level != 4) {
+                    self.msgbox("只能选择楼层添加!");
+                    return;
+                };*/
+
+                break;
             case "edit":
                 //点击操作列的方式
                 recordData=record.getData();

@@ -131,7 +131,14 @@ Ext.define("core.system.user.view.UserGrid", {
 			ddCode: "XBM",
 			width:80,
             align:'left'
-		}, {
+		},{
+            text: "身份",
+            dataIndex: "category",
+            columnType: "basecombobox",
+            ddCode: "CATEGORY",
+            width:80,
+            align:'left'
+        }, {
 			text: "编制",
 			dataIndex: "zxxbzlb",
 			ddCode: "ZXXBZLB",

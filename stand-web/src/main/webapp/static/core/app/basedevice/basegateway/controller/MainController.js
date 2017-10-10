@@ -23,7 +23,7 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                 }
             },
 
-                /**
+            /**
              * 操作列的操作事件
              */
             "basegrid[xtype=basedevice.basegateway.miangrid] actioncolumn": {
@@ -38,6 +38,11 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                 },
             },
 
+            "basegrid[xtype=basedevice.basegateway.miangrid] button[ref=gridSetFront]": {
+                beforeclick:function(btn){
+                    this.open_Win(btn);
+                }            
+            },
 
          });
     },
@@ -48,6 +53,7 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
         var baseGrid = grid;
         var recordData=record.getData();
         var uuid =recordData.uuid;
+        var gatewayName =recordData.gatewayName;
         var basePanel = baseGrid.up("basepanel");
         var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
         var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
@@ -56,8 +62,8 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
 
         //得到配置信息
         var funCode = basePanel.funCode;          //主界面的funCode
-        var detCode = "";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
-        var detLayout = "";            //打开的tab页的布局视图
+        var detCode = "basegateway_detail";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = "basedevice.basegateway.detaillayout";            //打开的tab页的布局视图
         
        
 
@@ -66,22 +72,22 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
         var tabTitle = ""; 
         var tabItemId ="";
         var operType="";
-    
+        var xItemType="";
         switch (cmd) {
 
             case "baseAndHigh":
-                tabTitle = "网关参数"; 
+                tabTitle = gatewayName+"-设备参数"; 
                 tabItemId = funCode + "_gridBaseAndHigh";    //命名规则：funCode+'_ref名称',确保不重复
                 operType="add";
                 detCode="baseandhighform";
-                detLayout="basedevice.basegateway.baseandhighform";
+                xItemType="basedevice.basegateway.baseandhighform";
                 break;
             case "netWork":
-                tabTitle = "网络参数";
+                tabTitle = gatewayName+"-网络参数";
                 tabItemId=funCode+"_gridNetWork"; 
                 operType="add";
                 detCode="networkform";
-                detLayout="basedevice.basegateway.networkform";
+                xItemType="basedevice.basegateway.networkform";
                 break;
          }
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
@@ -111,42 +117,58 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                     recordData:recordData,                    //保存一些需要默认值，提供给提交事件中使用
                     baseGrid:baseGrid,                     //保存funData数据，提供给提交事件中使用
                     items:[{
-                        xtype:detLayout
+                        xtype:detLayout,
+                        items:[{
+                            xtype:xItemType
+                        }]
                     }]
                 }); 
               
                 tabItem.add(item);  
               
                 //处理打开界面之后，显示的初始数据
-                var objForm = item.down("baseform[xtype=" +detLayout+ "]");
-                var formObj = objForm.getForm(); 
-                var baseAndHighObj="";
-                if(objForm.formData){
-                    var params =  objForm.formData;
-                    params.uuid=uuid;  
-                    var resObj = self.ajax({
-                         url: comm.get('baseUrl') + "/BaseGateway/gatewayParam_read",
-                         params: params
-                      }); 
-                    var valInt = null;
-                    var valStr = null;
-                    var controlVal = null;
-                    if (resObj.length > 0) {
-                        for (var i = 0; i < resObj.length; i++) {
-                            valInt = "tlvs[" + i + "].valInt";
-                            valStr = "tlvs[" + i + "].valStr";
-                            controlVal = formObj.findField(valInt);
-                            if (controlVal != null) {
-                                controlVal.setValue(resObj[i].valInt);
-                            } else {
-                                controlVal = formObj.findField(valStr);
-                                controlVal.setValue(resObj[i].valStr);
-                            }
-                        };
-                    };   
+                var objForm = item.down("baseform");
+                var formObj = objForm.getForm();                
+                if(cmd=="netWork"){       //网络参数设置                           
+                    var frontServerIP  = recordData.frontServerIP;
+                    var gatewayIP = recordData.gatewayIP;
+                    var netGatewayIp = recordData.netgatewayIp;
+                    var frontServerPort = recordData.frontServerPort;
+                    var gatewayMask =recordData.gatewayMask;
+                    var gatewayMac = recordData.gatewayMac;
+                    var gatewayStatus = recordData.gatewayStatus;
+                    formObj.findField("tlvs[0].valStr").setValue(gatewayIP);
+                    formObj.findField("tlvs[1].valStr").setValue(netGatewayIp);
+                    formObj.findField("tlvs[2].valStr").setValue(gatewayMask);
+                    formObj.findField("tlvs[3].valStr").setValue(frontServerIP);
+                    formObj.findField("tlvs[4].valInt").setValue(frontServerPort);
+                    formObj.findField("tlvs[5].valInt").setValue(gatewayStatus);
+                    formObj.findField("tlvs[6].valStr").setValue(gatewayMac);
+                    // var params =  objForm.formData;
+                    // params.uuid=uuid;  
+                    // var resObj = self.ajax({
+                    //      url: comm.get('baseUrl') + "/BaseGateway/gatewayParam_read",
+                    //      params: params
+                    //   }); 
+                    // var valInt = null;
+                    // var valStr = null;
+                    // var controlVal = null;
+                    // if (resObj.length > 0) {
+                    //     for (var i = 0; i < resObj.length; i++) {
+                    //         valInt = "tlvs[" + i + "].valInt";
+                    //         valStr = "tlvs[" + i + "].valStr";
+                    //         controlVal = formObj.findField(valInt);
+                    //         if (controlVal != null) {
+                    //             controlVal.setValue(resObj[i].valInt);
+                    //         } else {
+                    //             controlVal = formObj.findField(valStr);
+                    //             controlVal.setValue(resObj[i].valStr);
+                    //         }
+                    //     };
+                    // };   
 
                    // self.setFormValue(formObj, resObj);
-                }else if(objForm.baseFormData&&objForm.highFormData){
+                }else if(cmd=="baseAndHigh"){   //设备参数设置
                     //基础参数
                     var baseParams =  objForm.baseFormData;
                     baseParams.uuid = uuid;
@@ -203,4 +225,26 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);   
     },
+    open_Win:function(btn){
+        var self=this;
+        var baseGrid = btn.up('basegrid');
+        if (baseGrid.getSelectionModel().getSelection().length <= 0) {
+            self.msgbox("请选择列表中要批量操作的数据!");
+            return false;
+        }
+        var win = Ext.create('Ext.Window', {
+            title: "批量设置前置",
+            baseGrid: baseGrid,
+            iconCls: 'x-fa fa-cogs',
+            resizable: false,
+            modal: true,
+            width: 400,
+            //height: 400,
+            controller: 'basedevice.basegateway.othercontroller',
+            items: [{
+                xtype: "basedevice.basegateway.ptgatewaybatchform"
+            }]
+        }).show();
+        return false;
+    }
 });

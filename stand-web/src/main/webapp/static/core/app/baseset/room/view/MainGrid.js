@@ -7,37 +7,57 @@ Ext.define("core.baseset.room.view.MainGrid", {
     extParams: {
         whereSql: " and isDelete='0' ",
         orderSql: " order by roomName ",
-        filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'areaId'}]"
+        filter: '[{"type":"string","comparison":"=","value":"","field":"roomName"}]'
     },
     defSort: [{
         property: 'createTime',
         direction: 'DESC'
     }],
     title: "区域房间",
-    tbar: [{
-        xtype: 'button',
-        text: '添加房间',
-        ref: 'gridAdd_Tab',
-        iconCls: 'x-fa fa-plus-circle'
-    },{
-        xtype: 'button',
-        text: '批量添加房间',
-        ref: 'roomAdd_Tab',
-        iconCls: 'x-fa fa-plus-circle'
-    }, {
-        xtype: 'button',
-        text: '编辑房间',
-        ref: 'gridEdit_Tab',
-        iconCls: 'x-fa fa-pencil-square',
-        disabled: true
-    }, {
-        xtype: 'button',
-        text: '删除房间',
-        ref: 'gridDelete',
-        iconCls: 'x-fa fa-minus-circle'
-    }],
-
-	panelTopBar:false,
+  
+    panelTopBar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'button',
+            text: '添加房间',
+            ref: 'gridAdd_Tab',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-plus-circle'
+        },{
+            xtype: 'button',
+            text: '批量添加房间',
+            ref: 'roomAdd_Tab',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-plus-circle'
+        }, {
+            xtype: 'button',
+            text: '编辑房间',
+            ref: 'gridEdit_Tab',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-pencil-square',
+            disabled: true
+        },{
+            xtype: 'button',
+            text: '删除',
+            ref: 'gridDelete',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            disabled:true,
+            iconCls: 'x-fa fa-minus-circle'
+        },'->',{
+            xtype: 'tbtext', 
+            html:'快速搜索：'
+        },{
+            xtype:'textfield',
+            name:'roomName',
+            funCode: 'girdFastSearchText',
+            emptyText: '全局搜索房间名称'
+        },{
+            xtype: 'button',            
+            ref: 'gridFastSearchBtn',  
+            funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
+            iconCls: 'x-fa fa-search',  
+        }],
+    },
 	panelButtomBar:false,
     
     columns:  {        
@@ -54,7 +74,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间编号",
             dataIndex: "roomCode",
             flex:1,        
-            minWidth:100,
+            minWidth:80,
             field: {
                 xtype: "textfield"
             }
@@ -62,7 +82,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间名称",
             dataIndex: "roomName",
             flex:1,
-            minWidth:100,
+            minWidth:80,
             field: {
                 xtype: "textfield"
             }
@@ -70,8 +90,12 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
-            width:100,
+            width:80,
             ddCode: "FJLX" //字典代码
+        }, {
+            text: "所属楼层",
+            dataIndex: "areaName",
+            width:80
         }, {
             text: "门牌号1",
             dataIndex: "extField01",

@@ -39,7 +39,7 @@ Ext.define("core.baseset.room.view.DetailForm", {
         fieldLabel: "房间编号",
         name: "roomCode",
         allowBlank: false,
-        emptyText: '请输入房间编号',
+        emptyText: '请输入房间编号（建议格式：楼栋号­-楼层号 +2位房间序号）',
         blankText: "房间编号不能为空"
     },{
         beforeLabelTextTpl: comm.get('required'),

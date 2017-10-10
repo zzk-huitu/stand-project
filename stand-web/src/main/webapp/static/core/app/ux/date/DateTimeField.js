@@ -451,7 +451,7 @@ Ext.define('Ext.ux.DateTimeField', {
     },
 
     valueToRaw: function(value) {
-        return this.formatDate(this.parseDate(value));
+        return this.formatDate(this.parseDate(value));    
     },
 
     /**
@@ -507,6 +507,8 @@ Ext.define('Ext.ux.DateTimeField', {
 
     getValue : function(){
         var me = this;
+        if(me.value=="Invalid Date")
+            return null;
         var value = Ext.isEmpty(me.value) ? '' : Ext.Date.format(me.value,this.submitFormat || this.format);
         return value;
     },
@@ -546,6 +548,8 @@ Ext.define('Ext.ux.DateTimeField', {
 
     // private
     formatDate: function(date){
+        if(date=="Invalid Date")
+            return null;
         return Ext.isDate(date) ? Ext.Date.dateFormat(date, this.format) : date;
     },
 

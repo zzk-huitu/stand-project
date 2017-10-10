@@ -36,4 +36,5 @@ public interface CommTreeService extends BaseService<BaseEntity> {
     public List<CommTree> getCommTree(String treeView, String whereSql);
 
     public List<UpGradeRule> getUpGradeRuleList();
+
 }

@@ -139,20 +139,12 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	@RequestMapping("/doUpdateBatch")
 	public void doupdateBatch(PtGateway entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		String uuid[] =entity.getUuid().split(",");
-		String userCh = "超级管理员";
+		
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		PtGateway ptGateway=null;
-		for (int i = 0; i < uuid.length; i++) {
-			ptGateway=thisService.get(uuid[i]);
-			ptGateway.setFrontserverId(entity.getFrontserverId());
-			ptGateway.setUpdateUser(userCh);
-			ptGateway.setUpdateTime(new Date());
-			thisService.merge(ptGateway);
-		}
-		writeJSON(response, jsonBuilder.returnSuccessJson("\"成功\""));
+		
+		thisService.doUpdateBatchFront(entity,currentUser.getXm());
+		
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"处理成功\""));
 	}
 	
 	/**
@@ -253,28 +245,24 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 	
 	
-	@RequestMapping("/baseAndHighParam")
+	@RequestMapping("/doBaseAndHighParam")
 	public void baseAndHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		String userCh = "超级管理员";
+		
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		PtGateway perEntity = thisService.get(tlvs.getUuid());
+	
+		//1.判断，是否批量设置(0-不批量，1-选择批量，2-所有网关)
+		String gatewayRadio=request.getParameter("gatewayRadio");
+		if("1".equals(gatewayRadio)){
+			String gatewayIds=request.getParameter("gatewayIds");
+			thisService.doUpdateBaseHighParamToIds(tlvs, gatewayIds , currentUser.getXm());
+		}else if("2".equals(gatewayRadio)){
+			thisService.doUpdateBaseHighParamToAll(tlvs, currentUser.getXm());
+		}else{	//默认为0，只设置当前自己
+			thisService.doUpdateBaseHighParam(tlvs, currentUser.getXm());
+		}
 		
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		perEntity.setUpdateUser(userCh);
-		perEntity.setUpdateTime(new Date());
-		byte[] result =null;
-		result=TLVUtils.encode(tlvs.getTlvs());
-		//保存基础参数
-		//perEntity.setBaseParam(result);
-        //thisService.merge(perEntity);// 执行修改方法
-		
-		//保存高级参数
-		perEntity.setAdvParam(result);
-		thisService.merge(perEntity);// 执行修改方法
-		writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数设置成功。'"));
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
 
 	}
 
@@ -341,6 +329,8 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 		writeJSON(response, jsonBuilder.returnSuccessJson("'高级参数设置成功。'"));
 
 	}
+	/*已弃用*/
+	@Deprecated
 	@RequestMapping("/batchGatewayParam")
 	public void batchGatewayParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -359,23 +349,26 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数批量设置成功。'"));
 	}
 	
-	@RequestMapping("/gatewayParam")
+	@RequestMapping("/doGatewayParam")
 	public void gatewayParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		byte[] result = null;
-		PtGateway perEntity = thisService.get(tlvs.getUuid());
-		result=TLVUtils.encode(tlvs.getTlvs());
-		perEntity.setNetParam(result);
-		SysUser currentUser = getCurrentSysUser();
-		String userCh = "超级管理员";
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		perEntity.setUpdateUser(userCh);
-		perEntity.setUpdateTime(new Date());
-		thisService.merge(perEntity);// 执行修改方法
-		writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数设置成功。'"));
-
+		
+		SysUser currentUser = getCurrentSysUser();				
+		thisService.doSetGatewayParam(request,tlvs, currentUser.getXm());	
+		
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"网关参数设置成功！\""));
+		
 	}
+	/**
+	 * 获取转换后的网关参数
+	 * 现在暂时不使用了，因为在实体中保存一份未转换的数据
+	 * @param tlvs
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@RequestMapping("/gatewayParam_read")
 	public void gatewayParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

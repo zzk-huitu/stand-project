@@ -49,7 +49,6 @@ Ext.define("core.baseset.roomdefine.view.RoomDefineTree", {
             hidden:true
         }]
   },
-  listeners: {
 
     itemclick: function(view, record, item, index, e) {
             var basepanel = view.up("basepanel[xtype=baseset.roomdefine.mainlayout]");
@@ -60,8 +59,6 @@ Ext.define("core.baseset.roomdefine.view.RoomDefineTree", {
             var areaId = record.get("id");
             var funData = basepanel.funData;
             basepanel.funData = Ext.apply(funData, {
-               /* claiId: record.get("id"),
-               claiLevel: record.get("level"),*/
                areaId: record.get("id"),
                areaType: record.get("areaType"),
                areaName: record.get("text"),
@@ -72,12 +69,12 @@ Ext.define("core.baseset.roomdefine.view.RoomDefineTree", {
             var store = basegrid.getStore();
             var proxy = store.getProxy();
             
-                    proxy.extraParams.areaId= areaId;
-                    proxy.extraParams.areaType= areaType;
-                    
+            proxy.extraParams.areaId= areaId;
+            proxy.extraParams.areaType= areaType;
+            
             proxy.extraParams.filter = filter;
             store.loadPage(1); // 给form赋值
             //return false;
         }
     }
-})
+
