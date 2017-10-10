@@ -94,22 +94,6 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
         var basePanel = baseGrid.up("basepanel");
         var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
 
-        var basetreegrid = basePanel.down("basetreegrid[xtype=baseset.roomdefine.roomdefinetree]");
-        var selectObject = basetreegrid.getSelectionModel().getSelection()[0];
-        var areaId = "";
-        var areaType = "";
-        if (selectObject == null) {
-            self.msgbox("请选择楼层!");
-            return;
-        } else {
-            areaId = selectObject.get("id");
-            areaType = selectObject.get("areaType");
-        }
-        if (areaType != "04") {
-            self.msgbox("只能选择楼层添加!");
-            return;
-        };
-
         //得到配置信息
         var funData = basePanel.funData;                //主界面的配置信息  
         var pkName=funData.pkName;
@@ -150,12 +134,6 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
                 }
 
                 tabTitle = areaName+"-"+tabConfig.addTitle; 
-
-                /* if (level != 4) {
-                    self.msgbox("只能选择楼层添加!");
-                    return;
-                };*/
-
                 break;
             case "edit":
                 //点击操作列的方式
