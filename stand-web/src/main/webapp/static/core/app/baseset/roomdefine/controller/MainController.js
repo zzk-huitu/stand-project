@@ -38,7 +38,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     proxy.extraParams.areaId= areaId;
                     proxy.extraParams.areaType= areaType;
                     store.loadPage(1); // 给form赋值
-                    // return false;
+                    return false;
                 }
             },
             
