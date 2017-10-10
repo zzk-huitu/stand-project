@@ -65,18 +65,18 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
         var basetreegrid = basePanel.down("basetreegrid[xtype=baseset.roomdefine.roomdefinetree]");
         var selectObject = basetreegrid.getSelectionModel().getSelection()[0];
         var areaId = "";
-        var level = "";
+        var areaType = "";
         if (selectObject == null) {
             self.msgbox("请选择楼层!");
             return;
         } else {
             areaId = selectObject.get("id");
-            level = selectObject.get("level");
+            areaType = selectObject.get("areaType");
         }
-       /* if (level != 4) {
+        if (areaType != "04") {
             self.msgbox("只能选择楼层添加!");
             return;
-        };*/
+        };
 
 
         //得到配置信息
