@@ -8,7 +8,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
     extParams: {
         filter: '[{"type":"string","comparison":"!=","value":"0","field":"roomType"}]'
     },
-   al:false,
+    al:false,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
