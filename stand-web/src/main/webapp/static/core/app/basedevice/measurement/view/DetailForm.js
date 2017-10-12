@@ -15,8 +15,8 @@ Ext.define("core.basedevice.measurement.view.DetailForm", {
     },{
         beforeLabelTextTpl: comm.get('required'),
         xtype: "numberfield",
-        allowDecimals: true,
-        fieldLabel: "费率",
+        allowDecimals: false,
+        fieldLabel: "计量数",
         name: "measure",
         allowBlank: false,
         blankText: "计量数（脉冲数/升）"

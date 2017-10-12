@@ -1,7 +1,7 @@
 Ext.define("core.basedevice.measurement.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.measurement.maingrid",
-    dataUrl: comm.get('baseUrl') + "/PtSkMeter/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtSkMeter/list",
     model: "com.zd.school.control.device.model.PtSkMeter",
     panelTopBar:{
         xtype:'toolbar',
@@ -65,16 +65,10 @@ Ext.define("core.basedevice.measurement.view.MainGrid", {
             text: "计量数（脉冲数/升）",
             dataIndex: "measure",
             width: 350,
-            field: {
-                xtype: "textfield"
-            }
         }, {
             text: "备注",
             dataIndex: "notes",
             flex:1,
-            field: {
-                xtype: "textfield"
-            }
         },{
             xtype: 'actiontextcolumn',
             text: "操作",

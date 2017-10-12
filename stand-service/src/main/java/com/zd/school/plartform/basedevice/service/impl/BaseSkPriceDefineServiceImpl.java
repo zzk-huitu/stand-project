@@ -37,12 +37,14 @@ public class BaseSkPriceDefineServiceImpl extends BaseServiceImpl<SkPriceDefine>
 	public SkPriceDefine doAddEntity(SkPriceDefine entity, SysUser currentUser) {
 		try {
 			Integer orderIndex = this.getDefaultOrderIndex(entity);
+			double priceValue = entity.getPriceValue();
 			SkPriceDefine perEntity = new SkPriceDefine();
 			perEntity.setCreateUser(currentUser.getXm());
 			perEntity.setOrderIndex(orderIndex);
-			BeanUtils.copyPropertiesExceptNull(perEntity, entity);
+			BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 			// 持久化到数据库
 			entity = this.merge(entity);
+			entity.setPriceValue(priceValue);
 			return entity;
 		} catch (IllegalAccessException e) {
 			logger.error(e.getMessage());

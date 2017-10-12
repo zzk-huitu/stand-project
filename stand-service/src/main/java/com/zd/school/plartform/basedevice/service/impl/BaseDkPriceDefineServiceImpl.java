@@ -38,12 +38,14 @@ private static Logger logger = Logger.getLogger(BaseDkPriceDefineServiceImpl.cla
 	public DkPriceDefine doAddEntity(DkPriceDefine entity, SysUser currentUser) {
 		try {
 			Integer orderIndex = this.getDefaultOrderIndex(entity);
+			double priceValue = entity.getPriceValue();
 			DkPriceDefine perEntity = new DkPriceDefine();
 			perEntity.setCreateUser(currentUser.getXm());
 			perEntity.setOrderIndex(orderIndex);
-			BeanUtils.copyPropertiesExceptNull(perEntity, entity);
+			BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 			// 持久化到数据库
 			entity = this.merge(entity);
+			entity.setPriceValue(priceValue);
 			return entity;
 		} catch (IllegalAccessException e) {
 			logger.error(e.getMessage());

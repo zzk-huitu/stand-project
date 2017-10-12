@@ -3,7 +3,7 @@ Ext.define("core.basedevice.measurement.view.DetailLayout",{
 	alias : 'widget.basedevice.measurement.detaillayout',
 	funCode:"measurement_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/PtSkMeter", //请求Action
+		action: comm.get('baseUrl') + "/BasePtSkMeter", //请求Action
 		pkName: "uuid",
 		defaultObj: {
 		}
