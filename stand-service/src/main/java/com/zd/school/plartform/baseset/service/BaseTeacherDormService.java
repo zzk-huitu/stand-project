@@ -22,5 +22,5 @@ public interface BaseTeacherDormService extends BaseService<DormTeacherDorm> {
 	
 	public QueryResult<DormTeacherDorm> list(Integer start, Integer limit, String sort, String filter, String whereSql,String orderSql,
             SysUser currentUser); 
-
+	public Boolean doOut(String ids,SysUser currentUser);
 }
