@@ -46,14 +46,5 @@ Ext.define("core.basedevice.irdevice.view.TreeForm", {
             emptyText: '名称',
             blankText: "名称不能为空"
         }]
-    }, {
-        xtype: "container",
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth: 1,
-            xtype: "textarea",
-            fieldLabel: "备注",
-            name: "notes",
-        }]
     }]
 });

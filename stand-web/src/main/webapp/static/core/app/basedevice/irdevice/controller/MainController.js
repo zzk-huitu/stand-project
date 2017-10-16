@@ -66,9 +66,21 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             }
         },
     	
+       
+        //红外设备列表操作列事件
+        "basegrid  actioncolumn": {
+            //操作列编辑
+            editClick_Tab: function (data) {
+                this.doirdevice_Tab(null, "edit", data.view, data.record);
+                return false;
+            },
+        }
         
     },
     
+    /*
+     * 设备列表增加编辑事件（MainGrid）
+     */
     doirdevice_Tab:function(btn,cmd,grid,record){
         var self = this;
         var baseGrid;
@@ -87,6 +99,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");
         var tabPanel=baseGrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
         
+        //获取左侧品牌
         var treeGrid = basePanel.down("panel[xtype=basedevice.irdevice.irbrandtreegrid]");
         var rows = treeGrid.getSelectionModel().getSelection();
         if (rows.length <= 0) {
@@ -144,6 +157,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 var pkName = funData.pkName;
                 pkValue= recordData[pkName];
 
+                //处理编辑事件表单返回页面的值
                 insertObj = recordData;
                 insertObj = Ext.apply(insertObj, {
                     parentNode: id,
@@ -340,14 +354,14 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         self.setFormValue(formDeptObj, insertObj);
     },
     
-    
+    //品牌列表删除事件
     doDelete: function (btn, cmd) {
     	var self = this;
         var mainlayout = btn.up('panel[xtype=basedevice.irdevice.mainlayout]');
         var baseGrid = btn.up("basetreegrid");
         var funCode = baseGrid.funCode;
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-        var grid = basePanel.down('panel[xtype=basedevice.irdevice.maingird]');
+        var grid = basePanel.down('panel[xtype=basedevice.irdevice.maingrid]');
         //得到配置信息
         var funData = basePanel.funData;
         var pkName = funData.pkName;
@@ -370,13 +384,13 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 ids.push(pkValue);
             }
         });
-        var title = "确定要删除所选的区域吗？";
+        var title = "确定要删除所选的品牌类型吗？";
         if (ids.length == 0) {
-            self.Warning("所选区域都有子项，不能删除");
+            self.Warning("所选品牌类型都有子项，不能删除");
             return;
         }
         if (ids.length < records.length) {
-            title = "有些区域有子项，仅删除不含子项的数据。确定吗？";
+            title = "有些品牌类型有子项，仅删除不含品牌类型的数据。确定吗？";
         }
         Ext.Msg.confirm('警告', title, function(btn, text) {
             if (btn == 'yes') {
@@ -401,6 +415,6 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             btn.callback();
         }
         return false;
-    
     }
+    
 });
