@@ -1,28 +1,20 @@
-Ext.define("core.basedevice.irdevice.view.MainGrid", {
+Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.basedevice.irdevice.maingrid",
-    dataUrl: comm.get('baseUrl') + "/BasePtIrDeviceBrand/list",
-    model: "com.zd.school.control.device.model.PtIrDeviceBrand",
+    alias: "widget.basedevice.ptirroomdevice.maingrid",
+    dataUrl: comm.get('baseUrl') + "/PtIrRoomDevice/list",
+    model: "com.zd.school.control.device.model.PtIrRoomDevice",
     al: false,
     extParams: {
         whereSql: " and isDelete='0' ",
     },
-    title: "型号列表",
+    title: "数据列表",
     panelTopBar:{
         xtype:'toolbar',
         items: [{
             xtype: 'button',
-            text: '添加',
-            ref: 'gridAdd_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            text: '绑定品牌型号',
+            ref: 'gridBinDing',
             iconCls: 'x-fa fa-plus-circle'
-        },{
-            xtype: 'button',
-            text: '编辑',
-            ref: 'gridEdit_Tab',
-            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
             text: '删除',
@@ -67,12 +59,12 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         },{
-            text: "型号",
-            dataIndex: "productModel",
+            text: "房间名称",
+            dataIndex: "roomName",
             width: 150,
         }, {
-            text: "品牌",
-            dataIndex: "brandname",
+            text: "型号名称",
+            dataIndex: "deviceTypeCode",
             width: 150,
         }, {
             text: "备注",
@@ -85,18 +77,6 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
             width: 160,
             fixed: true,
             items: [{
-                text:'编辑',  
-                style:'font-size:12px;', 
-                tooltip: '编辑',
-                ref: 'gridEdit',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('editClick_Tab', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            },  {
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
