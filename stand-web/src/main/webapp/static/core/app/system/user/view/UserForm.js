@@ -56,23 +56,42 @@ Ext.define("core.system.user.view.UserForm", {
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
             xtype: "basecombobox",
+            fieldLabel: "性别",
+            name: "xbm",
+            ddCode: "XBM",
+            allowBlank: false,
+            blankText: "性别不能为空"
+        },{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            xtype: "basecombobox",
             fieldLabel: "身份",
             name: "category",
             ddCode: "CATEGORY",
             allowBlank: false,
             blankText: "身份不能为空",
             value:"1"
-        },{
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            xtype: "basecombobox",
-            fieldLabel: "性别",
-            name: "xbm",
-            ddCode: "XBM",
-            allowBlank: false,
-            blankText: "性别不能为空"
         }]
     }, {
+        xtype: 'container',
+        layout: "column", // 从左往右的布局
+        items: [ {
+            columnWidth: .5,
+            beforeLabelTextTpl: "",
+            fieldLabel: '工号/学号',
+            name: "userNumb",
+            xtype: 'textfield',
+            allowBlank: true
+        },{
+            columnWidth: .5,
+            beforeLabelTextTpl: "",
+            fieldLabel: '身份证件号',
+            name: "sfzjh",
+            xtype: 'textfield',
+            allowBlank: true,         
+            vtype:'idCode'
+        }]
+    },{
         xtype: 'container',
         layout: "column", // 从左往右的布局
         items: [  {
@@ -140,7 +159,7 @@ Ext.define("core.system.user.view.UserForm", {
     },*/ {
         xtype: 'container',
         layout: "column", // 从左往右的布局
-        items: [, {
+        items: [ {
             columnWidth: .5,
             xtype: "datetimefield",
             dateType:'date',
@@ -161,24 +180,12 @@ Ext.define("core.system.user.view.UserForm", {
         items: [{
             columnWidth: .5,
             beforeLabelTextTpl: "",
-            fieldLabel: '身份证件号',
-            name: "sfzjh",
-            xtype: 'textfield',
-            allowBlank: true,         
-            vtype:'idCode'
-        }, {
-            columnWidth: .5,
-            beforeLabelTextTpl: "",
             fieldLabel: '电子邮箱',
             name: "dzxx",
             xtype: 'textfield',
             allowBlank: true,           
             vtype:'email'
-        }]
-    }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [{
+        },{
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
             xtype: "basecombobox",

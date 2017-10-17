@@ -1,7 +1,7 @@
-Ext.define("core.baseset.roomallot.view.SelectRoomGrid", {
+Ext.define("core.baseset.roomallot.view.SelectTeacherGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.baseset.roomallot.selectroomgrid",
-    dataUrl: comm.get('baseUrl') + "/BaseOfficeAllot/officeAllot",
+    alias: "widget.baseset.roomallot.selectteachergrid",
+    dataUrl: comm.get('baseUrl') + "/BaseOfficeAllot/teacherAllot",
     model: "com.zd.school.plartform.system.model.SysUser",
     al:false,
     panelTopBar:{
@@ -35,17 +35,26 @@ Ext.define("core.baseset.roomallot.view.SelectRoomGrid", {
                 //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
             },
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
+                var data = record.data;
                 selectStore = grid.getStore();
-                selectStore.removeAt(index);
 
-                var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectroomlayout]");
+                var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
                 var isSelectGrid;
                 if(basePanel){
-                    isSelectGrid = basePanel.down("panel[xtype=baseset.roomallot.isselectroomgrid]");
+                    
+                    isSelectGrid = basePanel.down("panel[xtype=baseset.roomallot.isselectteachergrid]");
                     var isSelectStore = isSelectGrid.getStore();
+                    for (var i = 0; i < isSelectStore.getCount(); i++) {
+                        if (data.userNumb == isSelectStore.getAt(i).get('userNumb')) {
+                            Ext.Msg.alert("提示", "该教师已存在!");
+                            return;
+                        }
+                    };
+
+                    selectStore.removeAt(index);
                     isSelectStore.insert(0, [record]);
                 }
-                
+
                 return false;
             }
         }
@@ -72,7 +81,7 @@ Ext.define("core.baseset.roomallot.view.SelectRoomGrid", {
             minWidth:120,
             flex:1,
             text: "教师工号",
-            dataIndex: "gh",
+            dataIndex: "userNumb",
             field: {
                 xtype: "textfield"
             }
@@ -87,19 +96,8 @@ Ext.define("core.baseset.roomallot.view.SelectRoomGrid", {
             width:100,
             text: "教师性别",
             dataIndex: "xbm",
-            renderer: function(value) {
-                switch (value) {
-                    case '1':
-                    return '男';
-                    break;
-                    case '2':
-                    return '女';
-                    break;
-                }
-            },
-            field: {
-                xtype: "textfield"
-            }
+            columnType: "basecombobox",
+            ddCode: "XBM"
         },{
             width:100,
             text: "部门",

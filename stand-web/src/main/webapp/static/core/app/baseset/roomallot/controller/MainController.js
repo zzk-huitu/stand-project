@@ -28,7 +28,12 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
                     return false;
                 }
             },
-
+           "basegrid[xtype=baseset.roomallot.maingrid] button[ref=gridAdd_Win]": {
+                beforeclick: function(btn) {
+                    self.openRoomAllot_Win(btn,"add");
+                    return false;
+                }
+            },
             "basegrid[xtype=baseset.roomallot.maingrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
                     self.doDeleteRecords(btn);
@@ -39,8 +44,86 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
       });
  },
 
+ openRoomAllot_Win: function(btn,cmd) {
+    var self = this;
 
-      //作息时间详细信息增加、修改和详细的处理
+        //得到组件
+        var baseGrid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+        }
+
+        var basePanel = baseGrid.up("basepanel");
+
+        //得到配置信息
+        var funData = basePanel.funData;                //主界面的配置信息  
+        var pkName=funData.pkName;
+
+        var funCode = basePanel.funCode;          //主界面的funCode
+        var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
+        
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';  
+
+        //设置window的参数
+        var width = 1200;
+        var height = 550;
+        var iconCls= 'x-fa fa-plus-circle';
+        var winTitle = "教师列表";
+        var recordData=null;
+        var operType="add";
+
+         // 选择的字典项信息
+         var basetreegrid = baseGrid.up("panel[xtype=baseset.roomallot.mainlayout]").down("panel[xtype=baseset.roomallot.roomallottree]");
+         var selectObject = basetreegrid.getSelectionModel().getSelection();
+         if (selectObject.length <= 0) {
+             self.msgbox("请选择办公室!");
+             return;
+         }
+                            // 得到选择的字典
+         var objDic = selectObject[0];
+         var level = objDic.get("level");
+         var roomId = objDic.get("id");
+         if (level != 5) {
+            self.msgbox("只能选择办公室操作!"); 
+            return;
+          }
+         //创建tab内部组件                     
+         var insertObj =  Ext.apply(new Object(),funData.defaultObj);
+         var popFunData = Ext.apply(funData, {   //将一些必要的信息，统一存放于此，提高给处理提交代码使用。
+            grid: baseGrid
+         });
+         if(recordData!=null){
+          insertObj=recordData;
+          }  
+
+         var win = Ext.create('core.base.view.BaseFormWin', {
+                    iconCls:iconCls,
+                    title: winTitle,
+                    operType: operType,
+                    width: width,
+                    height: height,
+                    roomId: roomId,
+                    controller: otherController,
+                    funData: popFunData,
+                    funCode: detCode,
+                    insertObj: insertObj,        
+                    items: [{
+                        xtype: detLayout
+                    }]
+                }).show();
+                var selecTeacherPanel = win.down("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
+                var selectGrid=selecTeacherPanel.down("basegrid[xtype=baseset.roomallot.selectteachergrid]");
+                var selectStore = selectGrid.getStore();
+                var selectProxy = selectStore.getProxy();
+                selectProxy.extraParams = {
+                    filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]',
+                };
+                selectStore.loadPage(1);         
+              },
+
     openRoomAllot_Tab: function(btn,cmd) {
         var self = this;
 
@@ -88,12 +171,6 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
             self.msgbox("只能选择办公室操作!");
             return;
         }
-        /*var areaType = objDic.get("areaType");
-        if (areaType != "02") {
-            self.msgbox("只能选择办公室操作!");
-            return;
-        }
-*/
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
         if(!tabItem){
@@ -180,7 +257,7 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
         };
         if (records.length > 0) {
             //封装ids数组
-            Ext.Msg.confirm('提示',"是否删除数据", function (btn, text) {
+            Ext.Msg.confirm('提示',"是否解除设置", function (btn, text) {
                 if (btn == 'yes') {
                     
                     var loading = new Ext.LoadMask(baseGrid, {

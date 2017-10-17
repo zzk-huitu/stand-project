@@ -36,7 +36,7 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                     return false;
                 }
             },
-
+            
              /**
              * 操作列的操作事件
              */
@@ -198,6 +198,5 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
             self.msgbox("请选择数据");
         }
     },
-
 
 });

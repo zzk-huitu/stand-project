@@ -8,5 +8,5 @@ Ext.define("core.baseset.teacherdorm.controller.DetailController", {
 
     	})
     },
+})
     
-});

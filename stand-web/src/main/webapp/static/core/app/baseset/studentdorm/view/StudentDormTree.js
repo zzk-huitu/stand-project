@@ -2,8 +2,10 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.baseset.studentdorm.studentdormtree",
     displayField: "text",
-    model: "com.zd.school.plartform.comm.model.CommTree",
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
+  /*  model: "com.zd.school.plartform.comm.model.CommTree",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",*/
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/treelist",
+    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     extParams: {
         excludes: "checked",
         whereSql: ""
@@ -26,7 +28,26 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             titleAlign:'right',
     }]
 },
-
+   columns:{
+    defaults:{
+            titleAlign:"center"
+        },
+    items:[{
+            text: "区域名称",
+            dataIndex: "text",
+            xtype:'treecolumn',
+            flex: 1,
+            minWidth:250
+        }, {
+            text: "顺序号",
+            dataIndex: "orderIndex",
+            width:100
+        },{
+            text:"主键",
+            dataIndex:'id',
+            hidden:true
+        }]
+  },
      listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=baseset.studentdorm.mainlayout]");

@@ -11,7 +11,7 @@ Ext.define("core.baseset.studentdorm.view.MainLayout", {
 
 	funCode: "studentdorm_main",
 	detCode: 'studentdorm_detail',
-	//detLayout: 'baseset.studentdorm.selectroomlayout',
+	detLayout: 'baseset.studentdorm.detaillayout',
 
 	 /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'baseset.studentdorm.othercontroller',

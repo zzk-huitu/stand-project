@@ -12,7 +12,7 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:600
             }
         }, '->',{
             xtype: 'button',
@@ -39,7 +39,7 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
         }, {
             text: "顺序号",
             dataIndex: "orderIndex",
-            width:100
+            width:80
         },{
             text:"主键",
             dataIndex:'id',
@@ -51,23 +51,17 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=baseset.roomallot.mainlayout]");
             var basetreegrid = mainLayout.down("basetreegrid[xtype=baseset.roomallot.roomallottree]");
-            var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'roomId'}]";
-            //filter += ",{'type':'integer','comparison':'=','value':0,'field':'isDelete'}]";
             var funData = mainLayout.funData;
+            var roomId=record.get("id");
             mainLayout.funData = Ext.apply(funData, {
-                areaId: record.get("id"),
-                areaType: record.get("areaType"),
-               /* claiId: record.get("id"),
-                claiLevel: record.get("level"),*/
-                filter: filter
+                roomId: roomId,
+                arealevel: record.get("level"),
             });
-            // 加载人员信息
+            // 加载房间的人员信息
             var mianGrid = mainLayout.down("panel[xtype=baseset.roomallot.maingrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams = {
-                filter: filter,
-            };
+            proxy.extraParams.roomId=roomId;
             store.loadPage(1); // 给form赋值
             return false;
         }

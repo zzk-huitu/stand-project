@@ -214,4 +214,22 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		}
 	}
 
+	@RequestMapping("/getMax")
+	public @ResponseBody DormTeacherDorm getMax(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String dormId = request.getParameter("dormId");
+		String sql = "SELECT MAX(ARK_NUM) arkNum,MAX(BED_NUM) bedNum FROM DORM_T_TEACHERDORM WHERE DORM_ID='" + dormId
+				+ "'";
+		List<Object[]> list = thisService.queryObjectBySql(sql);
+		DormTeacherDorm entity = new DormTeacherDorm();
+		try {
+			entity.setArkNum(Integer.parseInt(list.get(0)[0] + ""));
+			entity.setBedNum(Integer.parseInt(list.get(0)[1] + ""));
+		} catch (Exception e) {
+			entity.setArkNum(0);
+			entity.setBedNum(0);
+		}
+		return entity;
+	}
+
 }

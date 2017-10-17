@@ -2,7 +2,9 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.JwOfficeAllot;
 import com.zd.school.build.define.model.BuildOfficeDefine;
+import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
 import com.zd.school.plartform.comm.model.CommTree;
@@ -52,8 +55,20 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	public void list(@ModelAttribute JwOfficeAllot entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		String filter = "";
+		String roomId = request.getParameter("roomId");//获取区域或房间id（areaId/roomId）
+		String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.treeIds like '%"+roomId+"%'";
+		List<String> lists=thisService.queryEntityByHql(hql);
+		StringBuffer sb=new StringBuffer();
+		for(int i=0;i<lists.size();i++){
+			sb.append(lists.get(i)+",");
+		}
+		if(sb.length()>0){
+			filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";
+			
+		}
 		QueryResult<JwOfficeAllot> qr = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), super.filter(request), true);
+				super.sort(request), filter, true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
@@ -85,18 +100,20 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		Boolean flag=false;
 		BuildOfficeDefine off = null;
+		Map<String,JwOfficeAllot> hashMap=new HashMap<String,JwOfficeAllot>();
 		String[] name = { "roomId", "isDelete" };
 		Object[] value = { entity.getRoomId(), 0 };
 		off = offdService.getByProerties(name, value);
 		if (off != null) {
 			SysUser currentUser = getCurrentSysUser();
-			flag = thisService.doAdd(entity, currentUser);// 执行增加方法
+			flag = thisService.doAdd(entity,hashMap,currentUser);// 执行增加方法
 			if (flag) {
                 // 返回实体到前端界面
 				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 			} else {
+				JwOfficeAllot valioff = hashMap.get("valioff");
 				writeJSON(response, jsonBuilder
-						.returnFailureJson( "\"已存在办公室\""));
+						.returnFailureJson("'" + valioff.getXm() + "已存在" + valioff.getRoomName() + "办公室'"));
 				return;
 			}
 
@@ -141,9 +158,9 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value = { "/officeAllot" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/teacherAllot" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void officeAllot(@ModelAttribute SysUser entity, HttpServletRequest request,
+	public void teacherAllot(@ModelAttribute SysUser entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		QueryResult<SysUser> qr = sysUserService.queryPageResult(super.start(request), super.limit(request),

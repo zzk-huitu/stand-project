@@ -60,7 +60,7 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 		String areaType = request.getParameter("areaType");
 		//若为类型不为楼层，则去查询此区域下的所有楼层
 		if(!"04".equals(areaType)){
-			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.treeIds like '%"+areaId+"%'";
+			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.areaType='04' and a.treeIds like '%"+areaId+"%'";
 			List<String> lists=thisService.queryEntityByHql(hql);
 			StringBuffer sb=new StringBuffer();
 			for(int i=0;i<lists.size();i++){

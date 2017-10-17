@@ -4,9 +4,8 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseOfficeAllot/list",
     model: "com.zd.school.build.allot.model.JwOfficeAllot",
     extParams: {
-        filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'roomId'}]"
     },
-    //al:false,
+    al:false,
     menuCode:"BASEROOMALLOT", //new：此表格与权限相关的菜单编码
     panelTopBar:{
         xtype:'toolbar',
@@ -20,8 +19,8 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
             }
         },'->',{
             xtype: 'button',
-            text: '分配办公室',
-            ref: 'gridAdd_Tab',
+            text: '分配房间',
+            ref: 'gridAdd_Win',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
@@ -64,30 +63,18 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         minWidth: 100,
         text: "老师姓名",
         dataIndex: "xm",
-        field: {
-            xtype: "textfield"
-        }
     }, {
          width: 150,
         text: "房间名",
         dataIndex: "roomName",
-        field: {
-            xtype: "textfield"
-        }
     }, {
         width: 150,
         text: "所属楼层",
         dataIndex: "areaName",
-        field: {
-            xtype: "textfield"
-        }
     }, {
         width: 150,
         text: "所属楼栋",
         dataIndex: "upAreaName",
-        field: {
-            xtype: "textfield"
-        }
     }]
 }
 });
