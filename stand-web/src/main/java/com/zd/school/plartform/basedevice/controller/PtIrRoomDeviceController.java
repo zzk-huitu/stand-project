@@ -87,7 +87,7 @@ public class PtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice
       * @return void    返回类型
       * @throws IOException    抛出异常
      */
-    @RequestMapping("/doadd")
+    @RequestMapping("/doAdd")
     public void doAdd(PtIrRoomDevice entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
         String[] roomId=entity.getRoomId().split(",");

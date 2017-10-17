@@ -41,7 +41,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
       
       //发送请求
       resObj = this.ajax({
-          url: comm.get('baseUrl') + "/PtIrRoomDevice/doadd",
+          url: comm.get('baseUrl') + "/PtIrRoomDevice/doAdd",
           params: {
               roomId: win.roomId,
               brandId: brandId
