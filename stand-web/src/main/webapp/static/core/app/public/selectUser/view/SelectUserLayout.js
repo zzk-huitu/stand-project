@@ -8,11 +8,11 @@ Ext.define("core.public.selectUser.view.SelectUserLayout", {
     layout:'border',
     border:false,
     funData: {
-        action: comm.get("baseUrl") + "/sysuser", //请求Action
+        action: comm.get("baseUrl") + "/SysUser", //请求Action
         pkName: "uuid"
     },
     /*设置最小宽度，并且自动滚动*/
-    minWidth:1200,
+    minWidth:1000,
     scrollable:true,
     items: [{
         xtype:'pubselect.selectusergrid',
@@ -23,7 +23,7 @@ Ext.define("core.public.selectUser.view.SelectUserLayout", {
     }, {
         xtype: "pubselect.isselectusergrid",
         region: "east",
-        width:600,
+        width:500,
         margin:'5'
     }]
 })

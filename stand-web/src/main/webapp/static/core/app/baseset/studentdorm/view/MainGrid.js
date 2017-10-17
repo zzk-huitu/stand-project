@@ -6,7 +6,7 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
     extParams: {
         filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'claiId'}]"
     },
-    al:false,
+    //al:false,
    // menuCode:"BASEROOMALLOT", //new：此表格与权限相关的菜单编码
     panelTopBar:{
         xtype:'toolbar',

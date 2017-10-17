@@ -1,9 +1,8 @@
-Ext.define("core.baseset.roomallot.view.IsSelectRoomGrid", {
+Ext.define("core.baseset.roomallot.view.IsSelecTeacherGrid", {
     extend: "Ext.grid.Panel",
-    alias: "widget.baseset.roomallot.isselectroomgrid",
+    alias: "widget.baseset.roomallot.isselectteachergrid",
     extParams: {},
-    ref: 'isselectroomgrid',
-    title: "<font color=#ffeb00>已选人员(选中后向左拖动或双击删除)</font>",
+    title: "<font color=#ffeb00>已选教师(选中后向左拖动或双击删除)</font>",
     columnLines: true,
     loadMask: true,
     multiSelect: true,
@@ -12,7 +11,7 @@ Ext.define("core.baseset.roomallot.view.IsSelectRoomGrid", {
         width: 10
     },
      store: {
-        type: "baseset.roomallot.isselectroomstore"
+        type: "baseset.roomallot.isselectteacherstore"
     },
     viewConfig: {
         stripeRows: true
@@ -29,17 +28,11 @@ Ext.define("core.baseset.roomallot.view.IsSelectRoomGrid", {
             minWidth:120,
             flex:1,
             text: "教师工号",
-            dataIndex: "gh",
-            field: {
-                xtype: "textfield"
-            }
+            dataIndex: "userNumb",            
         }, {
             width:100,
             text: "教师姓名",
-            dataIndex: "xm",
-            field: {
-                xtype: "textfield"
-            }
+            dataIndex: "xm",            
         }, {
             width:100,
             text: "教师性别",
@@ -53,9 +46,6 @@ Ext.define("core.baseset.roomallot.view.IsSelectRoomGrid", {
                     return '女';
                     break;
                 }
-            },
-            field: {
-                xtype: "textfield"
             }
         },{
             width:100,
@@ -80,8 +70,8 @@ Ext.define("core.baseset.roomallot.view.IsSelectRoomGrid", {
                 IsSelectStore = grid.getStore();
                 IsSelectStore.removeAt(index);
 
-                var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectroomlayout]");
-                var selectGrid = basePanel.down("panel[xtype=baseset.roomallot.selectroomgrid]");
+                var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
+                var selectGrid = basePanel.down("panel[xtype=baseset.roomallot.selectteachergrid]");
                 var selectStore = selectGrid.getStore();
                 selectStore.insert(0, [record]);
                 return false;

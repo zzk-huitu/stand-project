@@ -1,6 +1,8 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -116,7 +118,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	}
 
 	@Override
-	public Boolean doAdd(JwOfficeAllot entity, SysUser currentUser) throws IllegalAccessException, InvocationTargetException  {
+	public Boolean doAdd(JwOfficeAllot entity,Map hashMap,SysUser currentUser) throws IllegalAccessException, InvocationTargetException  {
 		Boolean flag=false;
 		Integer orderIndex = 0;
 		JwOfficeAllot perEntity = null;
@@ -128,6 +130,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 				String[] objName = { "roomId", "tteacId", "isDelete" };
 				valioff = this.getByProerties(objName, objValue);
 				if (valioff != null) {
+					hashMap.put("valioff", valioff);
 					flag=false;
 				}
 				// 生成默认的orderindex
@@ -141,7 +144,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 				this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
 			}
 		flag=true;
-		
+		hashMap.put("entity", entity);
 		return flag;
 	}
 
