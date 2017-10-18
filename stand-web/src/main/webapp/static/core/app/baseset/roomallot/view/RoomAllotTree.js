@@ -55,6 +55,7 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
             var roomId=record.get("id");
             mainLayout.funData = Ext.apply(funData, {
                 roomId: roomId,
+                leaf : record.get("leaf"),//true: 房间 false:区域
                 arealevel: record.get("level"),
             });
             // 加载房间的人员信息

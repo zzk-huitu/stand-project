@@ -12,7 +12,7 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:600
             }
         }, '->',{
             xtype: 'button',
@@ -34,11 +34,11 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             dataIndex: "text",
             xtype:'treecolumn',
             flex: 1,
-            minWidth:250
+            minWidth:200
         }, {
             text: "顺序号",
             dataIndex: "orderIndex",
-            width:100
+            width:60
         },{
             text:"主键",
             dataIndex:'id',
