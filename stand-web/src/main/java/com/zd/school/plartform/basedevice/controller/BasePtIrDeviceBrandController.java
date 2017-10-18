@@ -128,7 +128,7 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 		if (ModelUtil.isNotNull(entity))
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 		else
-			writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));
 		
 	}
 	
@@ -155,9 +155,9 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			if (ModelUtil.isNotNull(entity))
 				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 			else
-				writeJSON(response, jsonBuilder.returnFailureJson("'数据修改失败,详情见错误日志'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 		} catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'数据修改失败,详情见错误日志'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 		}
 	}
 	
@@ -184,10 +184,10 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 				if (flag) {
 					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,品牌已经绑定房间'"));
+					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,品牌已经绑定房间\""));
 				}
 			} catch (Exception e) {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
 			}
 		}
 	}

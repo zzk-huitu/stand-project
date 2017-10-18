@@ -20,7 +20,7 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
                 color: '#C44444',
                 fontWeight:800
             }
-        }, '->',{
+        },'->',{
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',

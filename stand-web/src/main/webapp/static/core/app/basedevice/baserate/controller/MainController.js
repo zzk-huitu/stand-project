@@ -33,6 +33,14 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              }
          },
          
+         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
+             beforeclick: function(btn) {
+            	 var baseGrid = btn.up("grid");
+                 var store = baseGrid.getStore().load();
+                 return false;
+             }
+         },
+         
          /**
           * 费率列表操作列事件
           */

@@ -82,15 +82,15 @@ public class BasePtSkMeterController extends FrameWorkController<PtSkMeter> impl
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids = request.getParameter("ids");
 		if (StringUtils.isEmpty(ids)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
