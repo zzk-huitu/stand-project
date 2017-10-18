@@ -12,6 +12,9 @@ import com.zd.school.plartform.baseset.model.BaseDic;
 import com.zd.school.plartform.baseset.model.BaseDicTree;
 import com.zd.school.plartform.baseset.service.BaseDicService;
 import com.zd.school.plartform.system.model.SysUser;
+
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +42,10 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
 
     @Resource
     BaseDicService thisService; // service层接口
-
+    
+    @Resource
+	private RedisTemplate<String, Object> redisTemplate;
+    
     /**
      * list查询 @Title: list @Description: TODO @param @param entity
      * 实体类 @param @param request @param @param response @param @throws
@@ -179,7 +185,11 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
         // 获取当前的操作用户  
         SysUser currentUser = getCurrentSysUser();     
         entity=thisService.doUpdateEntity(entity, currentUser.getXm(),null);
-        
+       
+        // 删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
+		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();			
+		hashOper.delete("baseDicItem", entity.getDicCode());
+     			
         if(entity==null)
        	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
         else        
