@@ -22,12 +22,6 @@ Ext.define("core.baseset.roomallot.view.MainLayout", {
 		defaultObj: {
            
         },
-        tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
-            titleField:'roomName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-            addTitle:'教师列表',
-            editTitle:'',
-            detailTitle:''
-        }
 	},
 
     minWidth:1000,

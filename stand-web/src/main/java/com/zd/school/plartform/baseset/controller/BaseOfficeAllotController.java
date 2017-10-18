@@ -57,16 +57,30 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 		String strData = ""; // 返回给js的数据
 		String filter = "";
 		String roomId = request.getParameter("roomId");//获取区域或房间id（areaId/roomId）
-		String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.treeIds like '%"+roomId+"%'";
+		String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
 		List<String> lists=thisService.queryEntityByHql(hql);
 		StringBuffer sb=new StringBuffer();
+		String areaIds="";
 		for(int i=0;i<lists.size();i++){
 			sb.append(lists.get(i)+",");
 		}
 		if(sb.length()>0){
-			filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";
-			
+			areaIds=sb.substring(0, sb.length()-1);
+		
+			hql="select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType='2' and a.areaId in ('"+areaIds.replace(",", "','")+"')";
+			List<String> roomLists=thisService.queryEntityByHql(hql);
+			sb.setLength(0);
+			for(int i=0;i<roomLists.size();i++){
+				sb.append(roomLists.get(i)+",");
+			}
+			// 房间id
+			if(sb.length()>0){
+				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";			
+			}
+		}else{
+			filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";
 		}
+		
 		QueryResult<JwOfficeAllot> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 

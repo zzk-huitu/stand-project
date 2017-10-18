@@ -38,7 +38,7 @@ Ext.define("core.baseset.teacherdorm.view.MainLayout", {
 		xtype: "baseset.teacherdorm.teacherdormtree",
 		region: "west",
 		split:true,
-		width: comm.get("clientWidth") * 0.18
+		width: comm.get("clientWidth") * 0.2
 	}, {
 		xtype: "baseset.teacherdorm.maingrid",
 		region: "center",
