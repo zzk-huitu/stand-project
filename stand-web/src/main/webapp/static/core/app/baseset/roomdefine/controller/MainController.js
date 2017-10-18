@@ -38,7 +38,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     proxy.extraParams.areaId= areaId;
                     proxy.extraParams.areaType= areaType;
                     store.loadPage(1); // 给form赋值
-                    // return false;
+                    return false;
                 }
             },
             
@@ -134,12 +134,6 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
                 }
 
                 tabTitle = areaName+"-"+tabConfig.addTitle; 
-
-                /* if (level != 4) {
-                    self.msgbox("只能选择楼层添加!");
-                    return;
-                };*/
-
                 break;
             case "edit":
                 //点击操作列的方式

@@ -1,5 +1,7 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormTeacherDorm;
+
 import com.zd.school.plartform.baseset.dao.BaseTeacherDormDao;
 import com.zd.school.plartform.baseset.service.BaseTeacherDormService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -57,4 +60,20 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 		return qResult;
 	}
 
+	@Override
+	public Boolean doOut(String outIds, SysUser currentUser) {
+		boolean flag = false;
+		DormTeacherDorm entity=null;
+		String[] outId = outIds.split(",");
+		for (String id : outId) {
+			entity = this.get(id);
+			entity.setOutTime(new Date());
+			entity.setInout(1);
+			entity.setCreateUser(currentUser.getXm());
+			entity.setUpdateTime(new Date());
+			this.merge(entity);
+			flag = true;
+		}
+		return flag;
+	}
 }

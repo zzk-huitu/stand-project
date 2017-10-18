@@ -4,7 +4,7 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
     al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/sysuser/list", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/SysUser/getUserNotInRoleId", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     /**
      * 工具栏操作按E钮
@@ -38,9 +38,9 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
                 fieldInfo: "deptName~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
-                url:comm.get('baseUrl') + "/BaseOrg/chktreelist"
+                url:comm.get('baseUrl') + "/SysOrg/chkTreeList"
             }
-        },{
+        }, {
             xtype: 'button',
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型
             ref: 'gridFastSearchBtn',
