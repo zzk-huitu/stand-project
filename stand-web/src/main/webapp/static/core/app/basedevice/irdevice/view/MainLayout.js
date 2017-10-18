@@ -33,7 +33,7 @@ Ext.define("core.basedevice.irdevice.view.MainLayout", {
         split: true,
         xtype: "basedevice.irdevice.irbrandtreegrid",
         region: "west",
-        width: comm.get("clientWidth") * 0.31
+        width: comm.get("clientWidth") * 0.29
     }, {
         xtype: "basedevice.irdevice.maingrid",
         region: "center"

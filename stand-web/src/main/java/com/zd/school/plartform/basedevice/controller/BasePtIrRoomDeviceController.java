@@ -39,8 +39,8 @@ import com.zd.school.plartform.system.model.SysUser;
  * @since JDK 1.8
  */
 @Controller
-@RequestMapping("/PtIrRoomDevice")
-public class PtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice> implements Constant {
+@RequestMapping("/BasePtIrRoomDevice")
+public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice> implements Constant {
 
     @Resource
     PtIrRoomDeviceService thisService; // service层接口
@@ -116,7 +116,7 @@ public class PtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice
 				}
 			}
 		}
-        writeJSON(response, jsonBuilder.returnSuccessJson("'绑定成功'"));
+        writeJSON(response, jsonBuilder.returnSuccessJson("\"绑定成功\""));
     }
 
     /**
@@ -132,47 +132,21 @@ public class PtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String ids = request.getParameter("ids");
         if (StringUtils.isEmpty(ids)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
         } else {
 			SysUser currentUser = getCurrentSysUser();
 			try {
 				boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
+					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
 				}
 			} catch (Exception e) {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
 			}
         }
     }
-//    /**
-//     * @Title: doUpdate
-//     * @Description: 编辑指定记录
-//     * @param PtIrRoomDevice
-//     * @param request
-//     * @param response
-//     * @return void    返回类型
-//     * @throws IOException  抛出异常
-//    */
-//    @RequestMapping("/doupdate")
-//    public void doUpdates(PtIrRoomDevice entity, HttpServletRequest request, HttpServletResponse response)
-//            throws IOException, IllegalAccessException, InvocationTargetException {
-//		
-//		//入库前检查代码
-//		
-//		//获取当前的操作用户
-//		SysUser currentUser = getCurrentSysUser();
-//		try {
-//			entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
-//			if (ModelUtil.isNotNull(entity))
-//				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-//			else
-//				writeJSON(response, jsonBuilder.returnFailureJson("'数据修改失败,详情见错误日志'"));
-//		} catch (Exception e) {
-//			writeJSON(response, jsonBuilder.returnFailureJson("'数据修改失败,详情见错误日志'"));
-//		}
-//    }
+    
 }

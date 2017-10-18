@@ -16,16 +16,22 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
             beforeclick: function(btn) {
                 this.savebinding_Win(btn);
              },
-    	 }
+    	 },
     
+    	//选择品牌类型绑定时候弹窗的快速查询
+     	"basegrid[xtype=basedevice.ptirroomdevice.irdevicegrid] button[ref=gridFastSearchBtn]": {
+            	 click:function(btn){             
+                     this.doFastSearch(btn);
+                     return false;
+             }
+         },
     },
     
     //确认绑定事件
     savebinding_Win:function(btn){
       var win = btn.up('window');
       var baseGrid =win.baseGrid;
-      var mainlayout = win.down('panel[xtype=basedevice.irdevice.mainlayout]');
-      var grid = mainlayout.down("panel[xtype=basedevice.irdevice.maingrid]");
+      var grid = win.down('basegrid[xtype=basedevice.ptirroomdevice.irdevicegrid]');
       var rows = grid.getSelectionModel().getSelection();
       
       //定义品牌ID
@@ -41,7 +47,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
       
       //发送请求
       resObj = this.ajax({
-          url: comm.get('baseUrl') + "/PtIrRoomDevice/doAdd",
+          url: comm.get('baseUrl') + "/BasePtIrRoomDevice/doAdd",
           params: {
               roomId: win.roomId,
               brandId: brandId
@@ -56,6 +62,32 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
     	  this.msgbox(resObj.obj);
     	  return false;
       }
-    }
+    },
+    
+    //快速搜索
+    doFastSearch:function(component){
+        //得到组件 
+        var baseGrid = component.up("basegrid"); 
+        if(!baseGrid)
+            return false;
+
+        var toolBar= component.up("toolbar");
+        if(!toolBar)
+            return false;
+
+        var filter= [];
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        for(var i in girdSearchTexts){
+            var name = girdSearchTexts[i].getName();
+            var value = girdSearchTexts[i].getValue();
+
+            filter.push({"type":"string","value":value,"field":name,"comparison":""});
+        }
+        
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();                        
+        proxy.extraParams.filter = JSON.stringify(filter);
+        store.loadPage(1);
+    },
     
 });

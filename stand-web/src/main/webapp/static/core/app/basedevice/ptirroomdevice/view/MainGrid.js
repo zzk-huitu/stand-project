@@ -1,16 +1,23 @@
 Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.ptirroomdevice.maingrid",
-    dataUrl: comm.get('baseUrl') + "/PtIrRoomDevice/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/list",
     model: "com.zd.school.control.device.model.PtIrRoomDevice",
     al: false,
     extParams: {
         whereSql: " and isDelete='0' ",
     },
-    title: "数据列表",
     panelTopBar:{
         xtype:'toolbar',
         items: [{
+            xtype: 'tbtext',
+            html: '数据列表',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',{
             xtype: 'button',
             text: '绑定品牌型号',
             ref: 'gridBinDing',
@@ -22,14 +29,14 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
             xtype:'textfield',
             name:'productModel',
             funCode: 'girdFastSearchText',
-            emptyText: '型号'
+            emptyText: '型号名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

@@ -16,7 +16,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainLayout", {
     layout: 'border',
     border:false,
     funData: {
-        action: comm.get('baseUrl') + "/PtIrRoomDevice", //请求Action 
+        action: comm.get('baseUrl') + "/BasePtIrRoomDevice", //请求Action 
         pkName: "uuid",
         defaultObj: {},
         tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
@@ -27,13 +27,14 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainLayout", {
     },
     /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
-    scrollable:true,
+    scrollable:'x',
+    layout:'border',
+    
     items: [{
-        collapsible: true,
         split: true,
         xtype: "basedevice.ptirroomdevice.roominfotree",
         region: "west",
-        width: comm.get("clientWidth") * 0.27
+        width: comm.get("clientWidth") * 0.24
     }, {
         xtype: "basedevice.ptirroomdevice.maingrid",
         region: "center"

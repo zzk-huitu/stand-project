@@ -1,7 +1,7 @@
 Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
 	extend: "core.base.view.BaseTreeGrid",
     alias: "widget.basedevice.ptirroomdevice.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/PtIrRoomDevice/treelist",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
     selModel: {
@@ -12,13 +12,23 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
         orderSql: "",
         excludes:"checked"
     },
-    title: "区域信息",
-    tbar: [{
-        xtype: 'button',
-        text: '刷新',
-        ref: 'gridRefresh',
-        iconCls: 'x-fa fa-refresh'
-    }],
+    tbar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '区域信息',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        }, '->',{
+            xtype: 'button',
+            text: '刷新',
+            ref: 'gridRefresh',
+            iconCls: ''
+        }]
+    },
     columns:  {        
         defaults:{
             titleAlign:"center"
@@ -27,7 +37,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
             text: "区域名称",
             dataIndex: "text",
             xtype: 'treecolumn',
-            width: comm.get("clientWidth") * 0.27
+            width: comm.get("clientWidth") * 0.24
         }, {
             text: "主键",
             dataIndex: 'id',
