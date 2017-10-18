@@ -84,9 +84,9 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
          }
                             // 得到选择的字典
          var objDic = selectObject[0];
-         var level = objDic.get("level");
+         var leaf = objDic.get("leaf");
          var roomId = objDic.get("id");
-         if (level != 5) {
+         if (leaf != true) {//true: 房间 false:区域
             self.msgbox("只能选择办公室操作!"); 
             return;
           }

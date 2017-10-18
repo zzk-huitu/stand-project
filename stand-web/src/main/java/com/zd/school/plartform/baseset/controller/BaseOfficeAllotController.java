@@ -99,7 +99,7 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
 		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("JW_OFFICEALLOTTREE", whereSql);
+		List<CommTree> lists = treeService.getCommTree("JW_V_OFFICEALLOTTREE", whereSql);
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
