@@ -16,6 +16,7 @@ Ext.define("core.basedevice.baserate.view.MainLayout", {
     funCode: "baserate_main",
     detCode: "baserate_detail",
     detLayout: "basedevice.baserate.detaillayout",
+    
     /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'basedevice.baserate.othercontroller',
     layout: 'border',
@@ -38,7 +39,7 @@ Ext.define("core.basedevice.baserate.view.MainLayout", {
 		region: "west",
 		border: false,
 		margin:'0 5 0 0',
-		width:200
+		width:300
 	}, {
 		xtype: "basedevice.baserate.maingrid",
 		region: "center",

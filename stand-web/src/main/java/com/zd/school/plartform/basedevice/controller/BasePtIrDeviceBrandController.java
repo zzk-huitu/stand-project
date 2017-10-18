@@ -110,28 +110,26 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 				writeJSON(response, jsonBuilder.returnFailureJson("'" + entity.getBrandname() + "已存在'"));
 				return;
 			}
-		try {
-			if (level == 4) {
-				if (thisService.IsFieldExist("productModel", entity.getProductModel(), "-1"," isDelete=0")) {
-					writeJSON(response, jsonBuilder.returnFailureJson("'" + entity.getProductModel() + "已存在'"));
-					return;
-				}
-				bar = thisService.get(entity.getParentNode());
-				entity.setDeviceTypeCode(bar.getDeviceTypeCode());
-			} else {
-				if (level == 3) {
-					bar = thisService.get(entity.getParentNode());
-					entity.setDeviceTypeCode(bar.getUuid());
-				}
+		
+		if (level == 4) {
+			if (thisService.IsFieldExist("productModel", entity.getProductModel(), "-1"," isDelete=0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'" + entity.getProductModel() + "已存在'"));
+				return;
 			}
-			entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
-			if (ModelUtil.isNotNull(entity))
-				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-			else
-				writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
-		} catch (Exception e) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
+			bar = thisService.get(entity.getParentNode());
+			entity.setDeviceTypeCode(bar.getDeviceTypeCode());
+		} else {
+			if (level == 3) {
+				bar = thisService.get(entity.getParentNode());
+				entity.setDeviceTypeCode(bar.getUuid());
+			}
 		}
+		entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
+		
 	}
 	
 	/**
@@ -184,7 +182,7 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			try {
 				boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 				} else {
 					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,品牌已经绑定房间'"));
 				}

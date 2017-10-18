@@ -174,7 +174,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                     var objDetForm = item.down("baseform[funCode=" + detCode + "]");
                     var formDeptObj = objDetForm.getForm();
                     self.setFormValue(formDeptObj, insertObj);
-                    objDetForm.down("combobox[name=categroy]").setDisabled(true);
+                    objDetForm.down("combobox[name=categroy]").setReadOnly(true);
                 }
                 if (cmd=="add") {
                     var objDetForm = item.down("baseform[funCode=" + detCode + "]");

@@ -10,7 +10,23 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
         whereSql: ' and isDelete=0',
         filter: ''
     },
-    tbar: null,
+    tbar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '控制类型',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        }, '->',{
+            xtype: 'button',
+            text: '刷新',
+            ref: 'gridRefresh',
+            iconCls: ''
+        }]
+    },
     columns:  [{
         xtype: "rownumberer",
         width: 50,

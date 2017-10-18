@@ -43,21 +43,20 @@ public class PtIrDeviceBrandServiceImpl extends BaseServiceImpl<PtIrDeviceBrand>
 	@Override
 	public PtIrDeviceBrand doAddEntity(PtIrDeviceBrand entity, SysUser currentUser) {
 		PtIrDeviceBrand saveEntity = new PtIrDeviceBrand();
+		
+		List<String> excludedProp = new ArrayList<>();
+		excludedProp.add("uuid");
 		try {
-			List<String> excludedProp = new ArrayList<>();
-			excludedProp.add("uuid");
 			BeanUtils.copyProperties(saveEntity, entity,excludedProp);
-			saveEntity.setCreateUser(currentUser.getXm()); // 设置修改人的中文名
-			entity = this.merge(saveEntity);// 执行修改方法
-
-			return entity;
-		} catch (IllegalAccessException e) {
-			logger.error(e.getMessage());
-			return null;
-		} catch (InvocationTargetException e) {
-			logger.error(e.getMessage());
-			return null;
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		saveEntity.setCreateUser(currentUser.getXm()); // 设置修改人的中文名
+		entity = this.merge(saveEntity);// 执行修改方法
+
+		return entity;
+		
 	}
 	
 	@Override

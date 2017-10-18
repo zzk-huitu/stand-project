@@ -28,27 +28,50 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
         name: "uuid",
         hidden: true
     },{
-    	beforeLabelTextTpl: comm.get('required'),
-        xtype: "combobox",
-        store: combostore1,
-        fieldLabel: "类别",
-        displayField: 'categroy',
-        valueField: 'id',
-        name: "categroy",
-        triggerAction: 'all',
-        emptyText: '请选择...',
-        blankText: '请选择类别',
-        editable: false,
-        mode: 'local'
+    	xtype: "container",
+        layout: "column", // 从左往右的布局
+        items: [{
+        	columnWidth: 0.7,
+        	beforeLabelTextTpl: comm.get('required'),
+        	columnWidth: 0.7,
+        	xtype: "combobox",
+        	store: combostore1,
+        	fieldLabel: "类别",
+        	displayField: 'categroy',
+        	valueField: 'id',
+        	name: "categroy",
+        	triggerAction: 'all',
+        	emptyText: '请选择...',
+        	blankText: '请选择类别',
+        	editable: false,
+        	mode: 'local'
+        	},{
+        		 columnWidth: 0.3,
+                 xtype: "label",
+                 html: "&nbsp",
+        	}]
     }, {
-        beforeLabelTextTpl: comm.get('required'),
-        xtype: "textfield",
-        fieldLabel: "名称",
-        name: "priceName",
-        allowBlank: false,
-        emptyText: '名称',
-        blankText: "名称不能为空"
+    	xtype: "container",
+        layout: "column", // 从左往右的布局
+        items: [{
+        	columnWidth: 0.7,
+        	beforeLabelTextTpl: comm.get('required'),
+        	xtype: "textfield",
+        	fieldLabel: "名称",
+        	name: "priceName",
+        	allowBlank: false,
+        	emptyText: '名称',
+        	blankText: "名称不能为空"
+        	},{
+                columnWidth: 0.3,
+                xtype: "label",
+                html: "&nbsp",
+            }]
     }, {
+        xtype: "container",
+        layout: "column", // 从左往右的布局
+        items: [{
+        columnWidth: 0.7,
         beforeLabelTextTpl: comm.get('required'),
         xtype: "numberfield",
         allowDecimals:true,
@@ -56,23 +79,46 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
         name: "priceValue",
         allowBlank: false,
         blankText: "费率不能为空"
+        },{
+            columnWidth: 0.3,
+            xtype: "label",
+            html: "&nbsp;<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>(电控：金额/度)&nbsp&nbsp(水控：金额/升)</font>",
+        }]
     }, {
-        xtype: "combobox",
-        store: combostore,
-        fieldLabel: "状态",
-        displayField: 'priceStatus',
-        valueField: 'id',
-        name: "priceStatus",
-        value: "0",
-        triggerAction: 'all',
-        emptyText: '请选择...',
-        blankText: '请选择状态',
-        editable: false,
-        mode: 'local'
+        xtype: "container",
+        layout: "column", // 从左往右的布局
+        items: [{
+        	columnWidth: 0.7,
+        	xtype: "combobox",
+        	store: combostore,
+        	fieldLabel: "状态",
+        	displayField: 'priceStatus',
+        	valueField: 'id',
+        	name: "priceStatus",
+        	value: "0",
+        	triggerAction: 'all',
+        	emptyText: '请选择...',
+        	blankText: '请选择状态',
+        	editable: false,
+        	mode: 'local'
+        	},{
+            columnWidth: 0.3,
+            xtype: "label",
+            html: "&nbsp",
+        	}]
     }, {
-        fieldLabel: "备注",
-        name: "priceNotes",
-        xtype: "textarea",
-        maxLength:500
+    	xtype: "container",
+    	layout: "column", // 从左往右的布局
+    	items: [{
+    		columnWidth: 0.7,
+        	fieldLabel: "备注",
+        	name: "priceNotes",
+        	xtype: "textarea",
+        	maxLength:500
+    		},{
+        	columnWidth: 0.3,
+            xtype: "label",
+            html: "&nbsp",
+    		}]
     }]
 });

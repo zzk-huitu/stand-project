@@ -7,6 +7,14 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
     panelTopBar:{
         xtype:'toolbar',
         items: [{
+            xtype: 'tbtext',
+            html: '数据列表',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',{
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
@@ -26,7 +34,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -99,7 +107,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             }
         }, {
             text: "备注",
-            width: 200,
+            flex:1,
             dataIndex: "priceNotes",
             field: {
                 xtype: "textfield"
