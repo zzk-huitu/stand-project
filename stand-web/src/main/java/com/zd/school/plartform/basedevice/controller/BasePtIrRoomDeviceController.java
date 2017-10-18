@@ -39,8 +39,8 @@ import com.zd.school.plartform.system.model.SysUser;
  * @since JDK 1.8
  */
 @Controller
-@RequestMapping("/PtIrRoomDevice")
-public class PtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice> implements Constant {
+@RequestMapping("/BasePtIrRoomDevice")
+public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDevice> implements Constant {
 
     @Resource
     PtIrRoomDeviceService thisService; // service层接口

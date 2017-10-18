@@ -19,6 +19,14 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
            	 this.dobinding(btn);
             }
         },
+        
+      //绑定品牌列表事件
+    	"basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree] button[ref=gridRefresh]": {
+            beforeclick: function(btn) {
+             btn.up('basetreegrid').getStore().load();
+             return false;
+            }
+        },
     },
     
     //绑定品牌列表事件
@@ -60,7 +68,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
 		if (!win) {
 			win = Ext.create('core.base.view.BaseFormWin', {
 				id: winId,
-				title: "授权菜单选择",
+				title: "品牌型号选择",
 				/*zzk: 必须指定一个viewController控制器，否则，里面的control无法生效*/
 				controller: otherController,
 				width: comm.get("clientWidth") * 0.8,
@@ -74,7 +82,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
 				roomId :roomId,
 				baseGrid :baseGrid,
 				items: [{
-					xtype: "basedevice.irdevice.mainlayout"													
+					xtype: "basedevice.ptirroomdevice.irdevicegrid"													
 				}],
         })
 		}
