@@ -73,10 +73,12 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
 
                 //弹出tab页的方式
                 editClick_Tab: function(data) {
-                    self.openRoomDefine_Tab(null,"edit",data.view,data.record);        
+                    self.openRoomDefine_Tab(null,"edit",data.view,data.record);
+                    return false;        
                 },
                  detailClick_Tab: function(data) {
-                    self.openRoomDefine_Tab(null,"detail",data.view,data.record);        
+                    self.openRoomDefine_Tab(null,"detail",data.view,data.record); 
+                    return false;       
                 },
             },
 

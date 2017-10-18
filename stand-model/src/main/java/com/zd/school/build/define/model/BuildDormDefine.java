@@ -39,7 +39,11 @@ public class BuildDormDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "类型:1男、2女、3不限")
 	@Column(name = "DORM_TYPE", length = 2, nullable = true)
 	private String dormType;
-
+	
+	@FieldInfo(name = "宿舍类别:1学生宿舍、2教师宿舍")
+	@Column(name = "DORM_TYPELB", length = 2, nullable = true)
+	private String dormTypeLb;
+	
 	@FieldInfo(name = "床位数")
 	@Column(name = "DORM_BEDCOUNT", length = 8, nullable = true)
 	private Integer dormBedCount;
@@ -118,6 +122,15 @@ public class BuildDormDefine extends BaseEntity implements Serializable {
 
 	public void setDormType(String dormType) {
 		this.dormType = dormType;
+	}
+	
+		
+	public String getDormTypeLb() {
+		return dormTypeLb;
+	}
+
+	public void setDormTypeLb(String dormTypeLb) {
+		this.dormTypeLb = dormTypeLb;
 	}
 
 	public String getDormAdmin() {

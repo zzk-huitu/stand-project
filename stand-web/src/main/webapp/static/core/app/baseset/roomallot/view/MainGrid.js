@@ -75,6 +75,25 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         width: 150,
         text: "所属楼栋",
         dataIndex: "upAreaName",
+    },{
+        xtype: 'actiontextcolumn',
+        text: "操作",
+        align: 'center',
+        width: 200,
+        fixed: true,
+        items: [{
+            text:'解除设置',  
+            style:'font-size:12px;', 
+            tooltip: '解除设置',
+            ref: 'gridDelete',
+            handler: function(view, rowIndex, colIndex, item) {
+                var rec = view.getStore().getAt(rowIndex);
+                this.fireEvent('deleteClick', {
+                    view: view.grid,
+                    record: rec
+                });
+            }
+        }]
     }]
 }
 });
