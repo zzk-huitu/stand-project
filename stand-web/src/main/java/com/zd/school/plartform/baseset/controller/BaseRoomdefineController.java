@@ -69,6 +69,8 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 				}
 				if (count == 0) {
 					String dormType = request.getParameter("dormType");// 宿舍类型
+					String dormTypeLb = request.getParameter("dormTypeLb");// 宿舍类别
+					
 					String dormBedCount = request.getParameter("dormBedCount");// 床位数
 					String dormChestCount = request.getParameter("dormChestCount");// 柜子数
 					String dormPhone = request.getParameter("dormPhone");// 电话
@@ -76,11 +78,12 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 
 					dormRoom = new BuildDormDefine();
 					dormRoom.setDormType(dormType);
+					dormRoom.setDormTypeLb(dormTypeLb);
 					dormRoom.setDormBedCount(Integer.valueOf(dormBedCount));
 					dormRoom.setDormChestCount(Integer.valueOf(dormChestCount));
 					dormRoom.setDormPhone(dormPhone);
 					dormRoom.setDormFax(dormFax);
-
+					
 					dormRoomService.addDormRoom(entity, dormRoom, id, userCh);
 					++fs;
 				}
