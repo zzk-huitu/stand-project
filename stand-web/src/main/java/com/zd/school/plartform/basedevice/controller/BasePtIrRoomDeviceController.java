@@ -2,6 +2,7 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +21,11 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.control.device.model.PtIrRoomDevice ;
 import com.zd.school.plartform.basedevice.service.PtIrRoomDeviceService;
+import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
+import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -44,6 +48,12 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 
     @Resource
     PtIrRoomDeviceService thisService; // service层接口
+    
+    @Resource
+	BaseOfficeAllotService baseOfficeAllotService; // service层接口
+    
+    @Resource
+    BaseRoominfoService baseRoominfoService ;
 
     @Resource
     CommTreeService treeService;
@@ -60,20 +70,58 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
             org.springframework.web.bind.annotation.RequestMethod.POST })
     public void list(@ModelAttribute PtIrRoomDevice entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-        QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(start, limit, sort, filter,true);
-        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-        writeJSON(response, strData);// 返回数据
+		
+    	String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String leaf = request.getParameter("leaf");
+		String roomId = request.getParameter("roomId");
+		
+		//根据leaf判断到底是传入的房间ID还是区域ID(为true则是房间id,为false则是区域id)
+		if(leaf.equals("true")){
+			filter = "[{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
+			QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+	        writeJSON(response, strData);// 返回数据
+		}else{
+			//若为类型不为楼层，则去查询此区域下的所有楼层
+			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
+			//创建areaIdlists存储区域id
+			List<String> areaIdlists=baseOfficeAllotService.queryEntityByHql(hql);
+			
+			StringBuffer areasb=new StringBuffer();
+			for(int i=0;i<areaIdlists.size();i++){
+				areasb.append("'"+areaIdlists.get(i)+"'"+",");
+			}
+			
+			if(areasb.length()>0){
+				//创建roomIdLists存储房间id
+				List<String> roomIdLists = new ArrayList<>();
+				hql="select a.uuid from BuildRoominfo a where a.areaId in ("+areasb.substring(0,areasb.length()-1) +")";
+				roomIdLists=baseRoominfoService.queryEntityByHql(hql);
+				StringBuffer roomsb=new StringBuffer();
+				
+				//通过循环处理roomId数据
+				for(int i=0;i<roomIdLists.size();i++){
+					roomsb.append(roomIdLists.get(i)+",");
+				}
+						
+				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ roomsb.substring(0,roomsb.length()-1)+"\",\"field\":\"roomId\"}]";
+				QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+		        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		        writeJSON(response, strData);// 返回数据
+		        
+			}else{
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无房间\""));
+			}
+			
+		}
     }
 
     @RequestMapping("/treelist")
 	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
-		List<CommTree> lists = treeService.getCommTree("JW_AREAROOMINFOTREE", " and 1=1");
+		String whereSql = request.getParameter("whereSql");
+		List<CommTree> lists = treeService.getCommTree("JW_AREAROOMINFOTREE", whereSql);
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
