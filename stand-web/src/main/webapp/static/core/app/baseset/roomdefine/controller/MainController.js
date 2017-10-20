@@ -65,6 +65,12 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     return false;
                 }
             },
+             "basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridDelete]": {
+                beforeclick: function(btn) {
+                    self.deleteRoom(btn);
+                    return false;
+                }
+            },
 
              /**
              * 操作列的操作事件
@@ -80,42 +86,62 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     self.openRoomDefine_Tab(null,"detail",data.view,data.record); 
                     return false;       
                 },
+                deleteClick: function(data) {
+                    self.deleteRoom(null,data.view,data.record); 
+                    return false;       
+                },
+                },
+            "basepanel basegrid[xtype=baseset.roomdefine.maingrid] field[funCode=girdFastSearchText]": {
+                specialkey: function (field, e) {
+                    var self = this;
+                    if (e.getKey() == e.ENTER) {
+                        self.doFastSearch(field);
+                        return false;
+                    }
+                }
+            },
+            "basepanel basegrid[xtype=baseset.roomdefine.maingrid] button[ref=gridFastSearchBtn]": {
+                beforeclick: function (btn) {
+                    var self = this;
+                    self.doFastSearch(btn);
+                    return false;
+                }
             },
 
         });
-},
+   },
 
-openRoomDefine_Tab: function(btn,cmd,grid,record){
-    var self = this;
-         //得到组件
-         var baseGrid = grid;
-         if(!baseGrid){
-            baseGrid=btn.up("basegrid");
-        };
+    openRoomDefine_Tab: function(btn,cmd,grid,record){
+        var self = this;
+             //得到组件
+             var baseGrid = grid;
+             if(!baseGrid){
+                baseGrid=btn.up("basegrid");
+            };
 
-        var basePanel = baseGrid.up("basepanel");
-        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
+            var basePanel = baseGrid.up("basepanel");
+            var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
 
-        //得到配置信息
-        var funData = basePanel.funData;                //主界面的配置信息  
-        var pkName=funData.pkName;
+            //得到配置信息
+            var funData = basePanel.funData;                //主界面的配置信息  
+            var pkName=funData.pkName;
 
-        var funCode = basePanel.funCode;          //主界面的funCode
-        var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
-        var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
-        
-        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
-        if (!otherController)
-            otherController = '';  
+            var funCode = basePanel.funCode;          //主界面的funCode
+            var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+            var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
+            
+            var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+            if (!otherController)
+                otherController = '';  
 
-        //获取Tab相关数据,根据cmd的类型，来获取不同的数据
-        var tabConfig=funData.tabConfig;
-        var tabTitle = tabConfig.addTitle; 
-        var tabItemId = funCode + "_gridAdd";
-        var pkValue= null;
-        var operType="add";
-        var recordData=null;
-        switch (cmd) {
+            //获取Tab相关数据,根据cmd的类型，来获取不同的数据
+            var tabConfig=funData.tabConfig;
+            var tabTitle = tabConfig.addTitle; 
+            var tabItemId = funCode + "_gridAdd";
+            var pkValue= null;
+            var operType="add";
+            var recordData=null;
+            switch (cmd) {
             case "add":
                 var basetreegrid = basePanel.down("basetreegrid[xtype=baseset.roomdefine.roomdefinetree]");
                 var selectObject = basetreegrid.getSelectionModel().getSelection()[0];
@@ -141,37 +167,24 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
                 //点击操作列的方式
                 recordData=record.getData();
                  //通过recordData.uuid 获取宿舍对象
-                var data;
-                self.asyncAjax({
+                var resObj= self.ajax({
                     url: funData.action + "/doDormEntity",
                     params: {
                         roomId: recordData.uuid,
                     },                       
-                    success: function(response) {
-                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                        if(data.success){
-
-                            if (data.obj.isMixed ==1 || data.obj.roomStatus == 1) {
-                                self.msgbox("混班宿舍和已分配的宿舍都不允许修改!");
-                                return;
-                            } 
-                            recordData = Ext.apply(recordData,{
-                                dormType: data.obj.dormType,
-                                dormBedCount: data.obj.dormBedCount,
-                                dormChestCount: data.obj.dormChestCount,
-                                dormPhone: data.obj.dormPhone,
-                                dormFax: data.obj.dormFax,
-                            });
-                        }else {
-                            self.Error(data.obj);
-                        }           
-                        
-                    },
-                failure: function(response) {                   
-                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                    loading.hide();
-                }
-            });     
+                });  
+                if (resObj.obj.isMixed ==1 || resObj.obj.roomStatus == 1) {
+                    self.msgbox("混班宿舍和已分配的宿舍都不允许修改!");
+                    return;
+                } 
+                recordData = Ext.apply(recordData,{
+                    dormType: resObj.obj.dormType,
+                    dormBedCount: resObj.obj.dormBedCount,
+                    dormChestCount: resObj.obj.dormChestCount,
+                    dormPhone: resObj.obj.dormPhone,
+                    dormFax: resObj.obj.dormFax,
+                    dormTypeLb:resObj.obj.dormTypeLb,
+                }); 
                //获取名称
                 var titleName = recordData[tabConfig.titleField]; 
                 if(titleName)
@@ -198,8 +211,6 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
                 tabItemId =funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
                 detLayout = "baseset.roomdefine.detailhtml";
                 operType ="detail";
-                console.log(detLayout);
-
                 break;
 
             }
@@ -316,5 +327,124 @@ openRoomDefine_Tab: function(btn,cmd,grid,record){
 
     },
 
-    
+    deleteRoom:function(btn,grid,record){
+        var self=this;
+        var records;
+          //得到组件
+        var baseGrid = grid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+            records = baseGrid.getSelectionModel().getSelection();
+        }else{
+            records=new Array();
+            records.push(record);
+        }
+        
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        var store=baseGrid.getStore();
+        //得到配置信息
+        var funData = basePanel.funData;
+
+        if (records.length > 0) {
+              //封装ids数组
+              var ids = new Array();
+              var names = new Array();
+              Ext.each(records, function(rec) {
+                var pkValue = rec.get("uuid");
+                var name = rec.get("roomName");
+                ids.push(pkValue);
+                names.push(name);
+            });
+
+            Ext.Msg.confirm('提示', '是否要将'+names.join(",")+'解除设置?', function (btn, text) {
+                if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
+
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete",
+                        params: {
+                            ids: ids.join(","),
+                        },                       
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if(data.success){
+                                store.loadPage(1); //不刷新的方式
+                                self.msgbox(data.obj);                               
+                            }else {
+
+                                store.load(); //不刷新的方式
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
+    },
+            /**
+         * 执行快速搜索
+         * @param component
+         * @returns {boolean}
+         */
+        doFastSearch: function (component) {
+  //得到组件                 
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+            return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+            return false;
+
+        var filter = [];
+        var gridFilter=[];
+        //获取baseGrid中编写的默认filter值
+        var gridFilterStr=baseGrid.extParams.filter;
+        if(gridFilterStr&&gridFilterStr.trim()!=""){
+            gridFilter=JSON.parse(gridFilterStr);
+            filter=gridFilter;
+        }
+       
+        //可能存在多个文本框       
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        for (var i in girdSearchTexts) {
+            var name = girdSearchTexts[i].getName();
+            var value = girdSearchTexts[i].getValue();
+
+            //判断gridFilter是否包含此值。
+            var isExist=false;
+            for(var j=0;j<gridFilter.length;j++){
+                if(gridFilter[j].field==name){
+                    if(value!=null){
+                        filter[j]={"type": "string", "value": value, "field": name, "comparison": ""};
+                    }
+                    isExist=true;
+                    break;
+                }
+            }
+            if(isExist==false)
+                filter.push({"type": "string", "value": value, "field": name, "comparison": ""});
+        }
+
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams={};
+        proxy.extraParams.filter = JSON.stringify(filter);
+        store.loadPage(1);
+
+        },
 });

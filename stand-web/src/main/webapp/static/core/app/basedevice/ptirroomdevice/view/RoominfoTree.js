@@ -8,7 +8,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
       
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },
@@ -45,16 +45,27 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
         }]
     },
     listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("panel[xtype=basedevice.ptirroomdevice.mainlayout]");
-            var storeyGrid = mainLayout.down("panel[xtype=basedevice.ptirroomdevice.maingrid]");
-            var store = storeyGrid.getStore();
+        itemclick: function (tree, record, item, index, e, eOpts) {
+        	var mainLayout = tree.up("panel[xtype=basedevice.ptirroomdevice.mainlayout]");
+        	var funData = mainLayout.funData;
+            var roomId=record.get("id");
+            var leaf = record.get("leaf");
+            var filter="[]";
+            mainLayout.funData = Ext.apply(funData, {
+                roomId: roomId,
+                leaf : record.get("leaf"),//true: 房间 false:区域
+                arealevel: record.get("level"),
+            });
+            // 加载房间的人员信息
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.ptirroomdevice.maingrid]");
+            var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams = {
-                filter: "[{'type':'string','comparison':'=','value':'" + record.get('id') + "','field':'roomId'}]"
-            };
-            store.load(); // 给form赋值
+            proxy.extraParams.roomId=roomId;
+            proxy.extraParams.leaf=leaf;
+            proxy.extraParams.filter=filter;
+            store.loadPage(1); // 给form赋值
             return false;
+        	
         }
     }
 });

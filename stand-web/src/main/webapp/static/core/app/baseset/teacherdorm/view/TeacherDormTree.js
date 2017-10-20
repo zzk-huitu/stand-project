@@ -50,22 +50,21 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=baseset.teacherdorm.mainlayout]");
             var treePanel = mainLayout.down("panel[xtype=baseset.teacherdorm.teacherdormtree]");
-            var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'dormId'}]";
+            var dormId = record.get("id");
             var funData = mainLayout.funData;
             mainLayout.funData = Ext.apply(funData, {
-                dormId: record.get("id"),
-                roomId: record.get("iconCls"),
+                dormId: dormId,
+                //roomId: record.get("iconCls"),
+                roomId: record.get("id"),
                 roomName:record.get("text"),
-                roomLevel: record.get("level"),
-                filter: filter
+                leaf: record.get("leaf"),
             });
             // 加载人员信息
             var storeyGrid = mainLayout.down("panel[xtype=baseset.teacherdorm.maingrid]");
             var store = storeyGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams = {
-                querySql: " and dormId='"+record.get("id")+"'",
-                id:record.get("id"),
+                dormId:dormId,
             };
             store.loadPage(1); // 给form赋值
             return false;

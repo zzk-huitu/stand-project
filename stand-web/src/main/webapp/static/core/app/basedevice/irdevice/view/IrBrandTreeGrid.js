@@ -69,20 +69,28 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("panel[xtype=basedevice.irdevice.mainlayout]");
-            var storeyGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
-            var store = storeyGrid.getStore();
+            var basetreegrid = mainLayout.down("basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]");
+        	
+            var funData = mainLayout.funData;
+            var brandId=record.get("id");
+            var leaf = record.get("leaf");
+            var level = record.get("level");
+            var filter="[]";
+            
+            mainLayout.funData = Ext.apply(funData, {
+            	brandId: brandId,
+                leaf : record.get("leaf"),//true: 房间 false:区域
+            });
+            
+            // 加载品牌信息
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
+            var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            if (record.get('level') != 3) {
-                proxy.extraParams = {
-                    filter: "[{'type':'string','comparison':'=','value':'','field':'parentNode'}]"
-                }
-                store.load(); // 给form赋值
-            } else {
-                proxy.extraParams = {
-                    filter: "[{'type':'string','comparison':'=','value':'" + record.get('id') + "','field':'parentNode'}]"
-                };
-                store.load(); // 给form赋值
-            }
+            proxy.extraParams.brandId=brandId;
+            proxy.extraParams.leaf=leaf;
+            proxy.extraParams.filter=filter;
+            proxy.extraParams.level=level;
+            store.loadPage(1); // 给form赋值
             return false;
         }
     }

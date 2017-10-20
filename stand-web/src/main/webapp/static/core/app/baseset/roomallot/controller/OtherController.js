@@ -51,11 +51,9 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
 	                //回调代码必须写在里面
 	                success: function (response) {
 	                	var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
+                        var baseGrid = win.funData.grid; //此tab是否保存有grid参数
 	                	if (data.success) {
-
-	                		self.msgbox("提交成功!");
-	                        var baseGrid = win.funData.grid; //此tab是否保存有grid参数
+                            self.msgbox("提交成功!");
 	                        if (!Ext.isEmpty(baseGrid)) {
 	                        	var store = baseGrid.getStore();
 	                        	store.load();                         
@@ -64,8 +62,13 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
 	                        win.close();
 
 	                    } else {
-	                    	self.Error(data.obj);
-	                    	loading.hide();
+	                    	var error=[""];
+	                    	error.push("<font color=red>" + data.obj+ "</font>");
+	                    	self.msgbox(error.join("<br/>"));
+	                    	var store = baseGrid.getStore();
+	                        store.load();                         
+	                        loading.hide();
+	                    	win.close();
 	                    }
 	                },
 	                failure: function(response) {                   
