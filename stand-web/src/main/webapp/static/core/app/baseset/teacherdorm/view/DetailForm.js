@@ -64,7 +64,6 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
             funcTitle: "人员查询", //查询窗口的标题
             configInfo: {
                 fieldInfo: "tteacId~sendCheckName~userNumb,uuid~xm~userNumb",
-                whereSql: " and isDelete='0' ",
                 muiltSelect: true, //是否多选
                 width:1100,
                 height:500

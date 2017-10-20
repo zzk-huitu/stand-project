@@ -22,11 +22,13 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.define.model.BuildDormDefine;
+import com.zd.school.plartform.baseset.model.BaseCampus;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseTeacherDormService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysUserService;
 
 /**
  * 教师宿舍分配
@@ -41,6 +43,8 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	CommTreeService treeService; // 生成树
 	@Resource
 	BaseDormDefineService dormService; // service层接口
+    @Resource
+	SysUserService userService; // service层接口
 	
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -181,5 +185,17 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		}
 		return entity;
 	}
+	
+	@RequestMapping(value = { "/getTeacherInUser" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void getTeacherInUser(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String strData = ""; // 返回给js的数据
+		QueryResult<SysUser> qr = userService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
 
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
 }

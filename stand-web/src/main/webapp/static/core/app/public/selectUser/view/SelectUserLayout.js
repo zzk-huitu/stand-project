@@ -8,7 +8,7 @@ Ext.define("core.public.selectUser.view.SelectUserLayout", {
     layout:'border',
     border:false,
     funData: {
-        action: comm.get("baseUrl") + "/SysUser", //请求Action
+        action: comm.get("baseUrl") + "/BaseTeacherDrom", //请求Action
         pkName: "uuid"
     },
     /*设置最小宽度，并且自动滚动*/
