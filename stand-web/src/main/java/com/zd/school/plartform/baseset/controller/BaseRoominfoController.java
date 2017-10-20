@@ -57,7 +57,8 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String areaId = request.getParameter("areaId");
-		String areaType = request.getParameter("areaType");
+		String areaType = request.getParameter("areaType")==null?"04":request.getParameter("areaType");
+		
 		//若为类型不为楼层，则去查询此区域下的所有楼层
 		if(!"04".equals(areaType)){
 			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.areaType='04' and a.treeIds like '%"+areaId+"%'";
@@ -73,6 +74,8 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 				}else{
 					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}]";
 				}
+			}else{//为楼栋或校区，其下没有楼层
+				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+null+"\",\"field\":\"areaId\"}]";
 			}
 		}
 		

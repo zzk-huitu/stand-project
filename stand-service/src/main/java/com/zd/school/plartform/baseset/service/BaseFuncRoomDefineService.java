@@ -21,5 +21,5 @@ import com.zd.school.build.define.model.BuildRoominfo;
 public interface BaseFuncRoomDefineService extends BaseService<BuildFuncRoomDefine> {
 	public BuildFuncRoomDefine getByRoomId(String roomId);
 	public void addFunRoom(BuildRoominfo entity, String id, String userCh) throws Exception;
-	public void delFunRoom(BuildRoominfo roomInfo,String delId, String xm)throws Exception;
+	public Boolean delFunRoom(BuildRoominfo roomInfo,String delId, String xm)throws Exception;
 }

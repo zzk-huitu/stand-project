@@ -98,22 +98,29 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 	}
 
 	@Override
-	public void delDormRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delDormRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+		Boolean flag=false;
 		BuildDormDefine dormRoom = null;// 宿舍定义
 		dormRoom = this.getByRoomId(delId);// roomId
+		if (!dormRoom.getRoomStatus().equals("1")) {// 0：未分配 1:已分配
+			roomInfo.setUpdateTime(new Date());
+			roomInfo.setUpdateUser(xm);
+			roomInfo.setRoomType("0");// 设置房间类型为空
+			roomInfo.setAreaStatu(0);// 设置房间状态为未分配
+			roomInfo.setRoomName(roomInfo.getRoomCode());
+			thisService.merge(roomInfo);// 执行更新方法
 
-		roomInfo.setUpdateTime(new Date());
-		roomInfo.setUpdateUser(xm);
-		roomInfo.setRoomType("0");// 设置房间类型为空
-		roomInfo.setAreaStatu(0);// 设置房间状态为未分配
-		roomInfo.setRoomName(roomInfo.getRoomCode());
-		thisService.merge(roomInfo);// 执行更新方法
+			this.delete(dormRoom);
+			/*
+			 * dormRoom.setIsDelete(1); dormRoom.setUpdateTime(new Date());
+			 * dormRoom.setUpdateUser(xm); this.merge(dormRoom);
+			 */
+			flag = true;
+		} else {
+			flag = false;
+		}
 
-		dormRoom.setIsDelete(1);
-		dormRoom.setUpdateTime(new Date());
-		dormRoom.setUpdateUser(xm);
-		this.merge(dormRoom);
-
+		return flag;
 	}
 
 	

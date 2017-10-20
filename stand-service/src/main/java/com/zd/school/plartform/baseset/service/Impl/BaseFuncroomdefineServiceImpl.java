@@ -77,7 +77,8 @@ public class BaseFuncroomdefineServiceImpl extends BaseServiceImpl<BuildFuncRoom
 	}
 
 	@Override
-	public void delFunRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delFunRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+		Boolean flag=false;
 		BuildFuncRoomDefine funRoom = null;// 功能室定义
 		funRoom = this.getByRoomId(delId);
 		
@@ -88,11 +89,12 @@ public class BaseFuncroomdefineServiceImpl extends BaseServiceImpl<BuildFuncRoom
 		roomInfo.setRoomName(roomInfo.getRoomCode());
 		thisService.merge(roomInfo);
 		
-		funRoom.setIsDelete(1);
+		this.delete(funRoom);
+		/*funRoom.setIsDelete(1);
 		funRoom.setUpdateTime(new Date());
 		funRoom.setUpdateUser(xm);
-		this.merge(funRoom);
-		
+		this.merge(funRoom);*/
+		return true;
 	}
 
 }

@@ -13,7 +13,5 @@ Ext.define("core.baseset.teacherdorm.view.DetailLayout",{
 	},
 	items: [{
 		xtype: "baseset.teacherdorm.detailform"
-	}/*,{
-		xtype:"salarybook.readonlyform"
-	}*/]
+	}]
 });

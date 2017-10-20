@@ -16,7 +16,28 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
     				return false;
     			}
     		},
-
+  /**
+         * 角色用户选择列表 快速搜索文本框回车事件
+         */
+        "basepanel basegrid[xtype=pubselect.selectusergrid] field[funCode=girdFastSearchText]": {
+            specialkey: function (field, e) {
+                var self = this;
+                if (e.getKey() == e.ENTER) {
+                    self.doFastSearch(field);
+                    return false;
+                }
+            }
+        },
+        /**
+         * 角色用户选择列表 快速搜索按钮事件
+         */
+        "basepanel basegrid[xtype=pubselect.selectusergrid] button[ref=gridFastSearchBtn]": {
+            beforeclick: function (btn) {
+                var self = this;
+                self.doFastSearch(btn);
+                return false;
+            }
+        },
             "mtfuncwindow[funcPanel=pubselect.selectuserlayout] button[ref=ssOkBtn]": {
 
                 beforeclick: function(btn) {
@@ -35,7 +56,7 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                     var records = baseGrid.getStore().data.items;
                     var valueArray = new Array();
                     var arkNumArr=new Array();
-                    var resObj = self.asyncAjax({
+                    self.asyncAjax({
                         url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getMax",
                         params: {
                             dormId:formDormId
@@ -99,8 +120,10 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
 			self.msgbox("柜子数量不能超过已经定义的");
 			return;
 		}
-
-        //验证表单是否通过
+          //获取当前tab页
+          var tabPanel = btn.up("tabpanel[xtype=app-main]");
+          var tabItem = tabPanel.getComponent(basetab.tabItemId);   
+                //验证表单是否通过
         if (formObj.isValid()) {    
             params = self.getFormValue(formObj);    //获取表单的值
             var loading = self.LoadMask(basetab);
@@ -116,15 +139,15 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                         self.msgbox("提交成功!");
                     	grid.getStore().load();                         
                     	loading.hide();
-
-                        //获取当前tab页
-                        var tabPanel = btn.up("tabpanel[xtype=app-main]");
-                        var tabItem = tabPanel.getComponent(basetab.tabItemId);   
                         tabPanel.remove(tabItem);
                      
                     } else {
-                        self.Error(data.obj);
+                        var error=[""];
+                        error.push("<font color=red>" + data.obj+ "</font>");
+                        self.msgbox(error.join("<br/>"));
+                        grid.getStore().load();  
                         loading.hide();
+                        tabPanel.remove(tabItem);
                     }
                 },
                 failure: function(response) {                   
@@ -143,6 +166,42 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
             });
             self.msgbox(errors.join("<br/>"));
         }
+    },
+        /**
+     * 执行快速搜索
+     * @param component
+     * @returns {boolean}
+     */
+    doFastSearch: function (component) {
+        //得到组件
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+            return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+            return false;
+/*
+        var win = baseGrid.up("window");
+        var winFunData = win.funData;
+        var roleId = winFunData.roleId;
+*/
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        //这里快速搜索就姓名与部门，固定写死查询的条件
+        var filter = new Array();
+        if (girdSearchTexts[0].getValue() != "")
+            filter.push("{'type': 'string', 'comparison': '', 'value':'" + girdSearchTexts[0].getValue() + "', 'field': 'xm'}");
+        if (girdSearchTexts[1].getValue() != "")
+            filter.push("{'type': 'string', 'comparison': '=', 'value':'" + girdSearchTexts[1].getValue() + "', 'field': 'deptId'}");
+        filter = "[" + filter.join(",") + "]";
+
+        var selectStore = baseGrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        selectProxy.extraParams = {
+           // roleId: roleId,
+            filter: filter
+        };
+        selectStore.loadPage(1);
     },
 
 });
