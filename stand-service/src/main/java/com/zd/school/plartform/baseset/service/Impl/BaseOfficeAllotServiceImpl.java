@@ -13,8 +13,10 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwOfficeAllot;
+import com.zd.school.build.define.model.BuildOfficeDefine;
 import com.zd.school.plartform.baseset.dao.BaseOfficeAllotDao;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
+import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.student.studentclass.model.JwClassstudent;
 
@@ -30,7 +32,8 @@ import com.zd.school.student.studentclass.model.JwClassstudent;
 @Service
 @Transactional
 public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> implements BaseOfficeAllotService {
-
+	@Resource
+	BaseOfficeDefineService offRoomService; // 办公室service层接口
 	// @Resource
 	// MjUserrightService mjService; // 门禁权限
 	// @Resource
@@ -119,24 +122,28 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	}
 
 	@Override
-	public Boolean doAdd(JwOfficeAllot entity, Map hashMap, SysUser currentUser)
+	public Boolean doAddRoom(JwOfficeAllot entity, Map hashMap, SysUser currentUser)
 			throws IllegalAccessException, InvocationTargetException {
 		Boolean flag = false;
 		Integer orderIndex = 0;
 		JwOfficeAllot perEntity = null;
 		JwOfficeAllot valioff = null;
 		String[] strId = null;// 多个老师id
+		StringBuffer xm =new StringBuffer();
+		StringBuffer roomName =new StringBuffer();
 		strId = entity.getTteacId().split(",");// 多个老师id
 		for (int i = 0; i < strId.length; i++) {
 			Object[] objValue = { entity.getRoomId(), strId[i], 0 };
 			String[] objName = { "roomId", "tteacId", "isDelete" };
 			valioff = this.getByProerties(objName, objValue);
 			if (valioff != null) {
-				hashMap.put("valioff", valioff);
+				xm.append(valioff.getXm()+',');
+				roomName.append(valioff.getRoomName()+',');
 				flag = false;
-				break;
+				hashMap.put("flag", flag);
+				continue;
 			}
-			// 生成默认的orderindex
+			// 保存房间分配信息
 			orderIndex = this.getDefaultOrderIndex(entity);
 			perEntity = new JwOfficeAllot();
 			BeanUtils.copyPropertiesExceptNull(entity, perEntity);
@@ -145,9 +152,17 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			entity.setOrderIndex(orderIndex);// 排序
 			this.merge(entity); // 执行添加方法
 			this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
+			//将办公室设置为已分配
+			String hql=" from BuildOfficeDefine a where a.roomId='"+entity.getRoomId()+"' ";
+			BuildOfficeDefine office=this.getEntityByHql(hql);
+			if(office!=null){
+				office.setRoomStatus("1");
+				offRoomService.merge(office); 
+			}
 			flag = true;
 		}
-		
+		hashMap.put("xm", xm);
+		hashMap.put("roomName", roomName);
 		return flag;
 	}
 

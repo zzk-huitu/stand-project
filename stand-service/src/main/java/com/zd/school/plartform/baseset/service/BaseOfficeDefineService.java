@@ -21,6 +21,6 @@ import com.zd.school.build.define.model.BuildRoominfo;
 public interface BaseOfficeDefineService extends BaseService<BuildOfficeDefine> {
 	public BuildOfficeDefine getByRoomId(String roomId);
 	public void addOffRoom(BuildRoominfo entity, String id, String userCh) throws Exception;
-	public void delOffRoom(BuildRoominfo roomInfo,String delId, String xm)throws Exception;
+	public Boolean delOffRoom(BuildRoominfo roomInfo,String delId, String xm)throws Exception;
 	
 }

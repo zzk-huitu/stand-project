@@ -22,7 +22,6 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.JwOfficeAllot;
 import com.zd.school.build.define.model.BuildOfficeDefine;
-import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
 import com.zd.school.plartform.comm.model.CommTree;
@@ -76,9 +75,11 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			// 房间id
 			if(sb.length()>0){
 				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";			
+			}else{//楼层下不存在房间
+				filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";
 			}
 		}else{
-			filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";
+			filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";//不存在楼层,本身是roomid
 		}
 		
 		QueryResult<JwOfficeAllot> qr = thisService.queryPageResult(super.start(request), super.limit(request),
@@ -114,20 +115,22 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		Boolean flag=false;
 		BuildOfficeDefine off = null;
-		Map<String,JwOfficeAllot> hashMap=new HashMap<String,JwOfficeAllot>();
+		Map<String,Object> hashMap=new HashMap<String,Object>();
 		String[] name = { "roomId", "isDelete" };
 		Object[] value = { entity.getRoomId(), 0 };
 		off = offdService.getByProerties(name, value);
 		if (off != null) {
 			SysUser currentUser = getCurrentSysUser();
-			flag = thisService.doAdd(entity,hashMap,currentUser);// 执行增加方法
+			flag = thisService.doAddRoom(entity,hashMap,currentUser);// 执行增加方法
+			flag = (Boolean) hashMap.get("flag")== null?true:(Boolean) hashMap.get("flag");
 			if (flag) {
                 // 返回实体到前端界面
 				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 			} else {
-				JwOfficeAllot valioff = hashMap.get("valioff");
+				StringBuffer xm = (StringBuffer) hashMap.get("xm");
+				StringBuffer roomName = (StringBuffer) hashMap.get("roomName");
 				writeJSON(response, jsonBuilder
-						.returnFailureJson("'" + valioff.getXm() + "已存在" + valioff.getRoomName() + "办公室'"));
+						.returnFailureJson("'" + xm.substring(0, xm.length()-1) + "已存在" + roomName.substring(0, roomName.length()-1) + "办公室'"));
 				return;
 			}
 

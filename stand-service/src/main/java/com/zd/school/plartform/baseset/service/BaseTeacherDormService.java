@@ -1,5 +1,10 @@
 package com.zd.school.plartform.baseset.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseService;
 import com.zd.school.build.allot.model.DormTeacherDorm;
@@ -23,4 +28,5 @@ public interface BaseTeacherDormService extends BaseService<DormTeacherDorm> {
 	public QueryResult<DormTeacherDorm> list(Integer start, Integer limit, String sort, String filter, String whereSql,String orderSql,
             SysUser currentUser); 
 	public Boolean doOut(String ids,SysUser currentUser);
+	public Boolean doAddDormTea(DormTeacherDorm entity,Map hashMap,HttpServletRequest request,SysUser currentUser)throws IllegalAccessException, InvocationTargetException;
 }

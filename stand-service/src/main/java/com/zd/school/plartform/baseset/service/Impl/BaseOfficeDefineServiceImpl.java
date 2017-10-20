@@ -72,21 +72,28 @@ public class BaseOfficeDefineServiceImpl extends BaseServiceImpl<BuildOfficeDefi
 	}
 
 	@Override
-	public void delOffRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delOffRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+		Boolean flag=false;
 		BuildOfficeDefine offRoom = null;// 办公室定义
 		offRoom = this.getByRoomId(delId);
-		
-        roomInfo.setUpdateTime(new Date());
-		roomInfo.setUpdateUser(xm);
-		roomInfo.setRoomType("0");// 设置房间类型为空
-		roomInfo.setAreaStatu(0);// 设置房间状态为未分配
-		roomInfo.setRoomName(roomInfo.getRoomCode());
-		thisService.merge(roomInfo);// 执行更新方法
-		
-		offRoom.setIsDelete(1);
-		offRoom.setUpdateTime(new Date());
-		offRoom.setUpdateUser(xm);
-		this.merge(offRoom);
+		if(!offRoom.getRoomStatus().equals("1")){
+			roomInfo.setUpdateTime(new Date());
+			roomInfo.setUpdateUser(xm);
+			roomInfo.setRoomType("0");// 设置房间类型为空
+			roomInfo.setAreaStatu(0);// 设置房间状态为未分配
+			roomInfo.setRoomName(roomInfo.getRoomCode());
+			thisService.merge(roomInfo);// 执行更新方法
+			
+			this.delete(offRoom);
+			/*offRoom.setIsDelete(1);
+			offRoom.setUpdateTime(new Date());
+			offRoom.setUpdateUser(xm);
+			this.merge(offRoom);*/
+			flag=true;
+		}else {//已分配
+			flag=false;
+		}
+        return flag;
 		
 	}
 }

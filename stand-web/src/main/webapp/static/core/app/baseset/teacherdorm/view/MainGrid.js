@@ -6,8 +6,6 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
     al:false,
     menuCode:"BASETEACHERDORM", //new：此表格与权限相关的菜单编码
     extParams: {
-        whereSql: "  and isDelete='0'",
-        filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'roomId'}]",
     },
     defSort: [{
         property: 'bedNum',
@@ -28,19 +26,21 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
             text: '入住',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-plus-circle',
         }, {
             xtype: 'button',
             text: '删除',
             ref: 'gridDelete',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-minus-circle'
-        }, {
+            iconCls: 'x-fa fa-minus-circle',
+            disabled:true,
+         }, {
             xtype: 'button',
             text: '退住',
             ref: 'gridOut',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-minus-circle'
+            iconCls: 'x-fa fa-minus-circle',
+            disabled:true,  
       }],
     }, 
     panelButtomBar:{},
@@ -157,6 +157,12 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '退住',
                 ref: 'gridOut',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(record.get("inout")=="1"){
+                         return 'x-hidden-display';
+                     }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('outClick', {

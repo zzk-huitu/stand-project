@@ -36,6 +36,36 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                     return false;
                 }
             },
+             //表格单击事件
+            "basegrid[xtype=baseset.teacherdorm.maingrid]": {
+                beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                    var basePanel = grid.up("basepanel");
+                    var funCode = basePanel.funCode;
+                    var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    var btnOut = baseGrid.down("button[ref=gridOut]");
+                    var btnDelete = baseGrid.down("button[ref=gridDelete]");
+                   if (records.length == 0) {
+                        if (btnOut)
+                            btnOut.setDisabled(true);
+                        if (btnDelete)
+                            btnDelete.setDisabled(true);
+
+                    } else if (records.length == 1) {
+                        if (btnOut)
+                            btnOut.setDisabled(false);
+                        if (btnDelete)
+                            btnDelete.setDisabled(false);
+                    } else {
+                        if (btnOut)
+                            btnOut.setDisabled(true);
+                        if (btnDelete)
+                            btnDelete.setDisabled(false);
+                    }
+                    return false;
+                }
+                
+            },
             
              /**
              * 操作列的操作事件
@@ -44,7 +74,8 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
 
                 //弹出tab页的方式
                 outClick: function(data) {
-                    self.doGridOut(null,data.view,data.record);        
+                    self.doGridOut(null,data.view,data.record);  
+                    return false;      
                 },
             },
         })
@@ -71,8 +102,8 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
         if (!otherController)
             otherController = '';  
 
-        if (funData.roomLevel!=5) {
-            self.msgbox("请选择房间数据");
+        if (funData.leaf!=true) {
+            self.msgbox("请选择教师宿舍");
             return;
         }
         //获取Tab相关数据,根据cmd的类型，来获取不同的数据
@@ -90,7 +121,6 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
             var tabItem = Ext.create({
                 xtype:'container',
                 title: tabTitle,
-                //iconCls: 'x-fa fa-clipboard',
                 scrollable :true, 
                 itemId:tabItemId,            
                 layout:'fit', 

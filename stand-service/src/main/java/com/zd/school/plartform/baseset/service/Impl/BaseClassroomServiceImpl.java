@@ -74,7 +74,8 @@ public class BaseClassroomServiceImpl extends BaseServiceImpl<BuildClassRoomDefi
 	}
 
 	@Override
-	public void delClassRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delClassRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+		Boolean flag=false;
 		BuildClassRoomDefine classRoom = null;// 教室定义
 		classRoom = this.getByRoomId(delId);
 
@@ -84,11 +85,13 @@ public class BaseClassroomServiceImpl extends BaseServiceImpl<BuildClassRoomDefi
 		roomInfo.setAreaStatu(0);// 设置房间状态为未分配
 		roomInfo.setRoomName(roomInfo.getRoomCode());
 		thisService.merge(roomInfo);
-		
-		classRoom.setIsDelete(1);
+
+		this.delete(classRoom);
+		/*classRoom.setIsDelete(1);
 		classRoom.setUpdateTime(new Date());
 		classRoom.setUpdateUser(xm);
-		this.merge(classRoom);
+		this.merge(classRoom);*/
+		return true;
 	}
 
 }
