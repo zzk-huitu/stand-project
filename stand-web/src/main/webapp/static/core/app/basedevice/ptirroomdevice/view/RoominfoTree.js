@@ -47,7 +47,6 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
         	var mainLayout = tree.up("panel[xtype=basedevice.ptirroomdevice.mainlayout]");
-        	var basetreegrid = mainLayout.down("basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree]");
         	var funData = mainLayout.funData;
             var roomId=record.get("id");
             var leaf = record.get("leaf");
