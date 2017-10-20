@@ -2,6 +2,7 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtIrDeviceBrand;
+import com.zd.school.control.device.model.PtIrRoomDevice;
 import com.zd.school.control.device.model.PtSkMeter;
 import com.zd.school.plartform.basedevice.service.BasePtSkMeterService;
 import com.zd.school.plartform.basedevice.service.PtIrDeviceBrandService;
@@ -74,13 +76,55 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 	public void list(@ModelAttribute PtIrDeviceBrand entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-		QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(start, limit, sort, filter, true);
-		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-		writeJSON(response, strData);// 返回数据
+		String filter = request.getParameter("filter");
+		String leaf = request.getParameter("leaf");
+		String brandId = request.getParameter("brandId");
+		String level = request.getParameter("level");
+		
+		
+		//根据leaf判断到底是传入的品牌ID还是类型ID(为true则是品牌id,为false则是类型id)
+		if(level.equals("3")){
+			filter = "[{'type':'string','comparison':'=','value':'" + brandId + "','field':'parentNode'}]";
+			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+	        writeJSON(response, strData);// 返回数据
+		}else{
+			String hql="";
+			if(brandId.equals("d9012b05-e85e-449d-82fc-4a424dee9b00")){
+				hql="select a.uuid from PtIrDeviceBrand a where a.isDelete=0  and a.level=3";
+			}else{
+				//若此类型不为品牌，则去查询此类型下的所有品牌
+				hql="select a.uuid from PtIrDeviceBrand a where a.isDelete=0  and a.level=3 and a.parentNode like '%"+brandId+"%'";
+			}
+			//创建categorylists存储类型id
+			List<String> categorylists=thisService.queryEntityByHql(hql);
+			
+			StringBuffer categorysb=new StringBuffer();
+			for(int i=0;i<categorylists.size();i++){
+				categorysb.append("'"+categorylists.get(i)+"'"+",");
+			}
+			
+			if(categorysb.length()>0){
+				//创建brandLists存储品牌id
+				List<String> brandLists = new ArrayList<>();
+				hql="select a.uuid from PtIrDeviceBrand a where a.uuid in ("+categorysb.substring(0,categorysb.length()-1) +")";
+				brandLists=thisService.queryEntityByHql(hql);
+				
+				StringBuffer brandsb=new StringBuffer();
+				//通过循环处理brand数据
+				for(int i=0;i<brandLists.size();i++){
+					brandsb.append(brandLists.get(i)+",");
+				}
+						
+				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";
+				QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+		        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		        writeJSON(response, strData);// 返回数据
+		        
+			}else{
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无数据\""));
+			}
+		}
 	}
 
 	/**
