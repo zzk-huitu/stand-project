@@ -142,11 +142,9 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                         tabPanel.remove(tabItem);
                      
                     } else {
-                        var error=[""];
-                        error.push("<font color=red>" + data.obj+ "</font>");
-                        self.msgbox(error.join("<br/>"));
-                        grid.getStore().load();  
                         loading.hide();
+                        self.Warning(data.obj);
+                        grid.getStore().load();  
                         tabPanel.remove(tabItem);
                     }
                 },

@@ -173,9 +173,9 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                         roomId: recordData.uuid,
                     },                       
                 });  
-                if (resObj.obj.isMixed ==1 || resObj.obj.roomStatus == 1) {
+                if (resObj.obj.isMixed ==1 || resObj.obj.roomStatus == 1) {    
                     self.msgbox("混班宿舍和已分配的宿舍都不允许修改!");
-                    return;
+                    return;                    
                 } 
                 recordData = Ext.apply(recordData,{
                     dormType: resObj.obj.dormType,
