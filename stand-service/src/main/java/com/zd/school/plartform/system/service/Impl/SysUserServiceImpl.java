@@ -23,7 +23,6 @@ import com.zd.core.constant.Constant;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
-import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.SortListUtil;
 import com.zd.core.util.StringUtils;
@@ -34,10 +33,12 @@ import com.zd.school.plartform.system.model.SysPermission;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserToUP;
-import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysMenuPermissionService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.student.studentinfo.model.StuBaseinfo;
+import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
 
 /**
@@ -78,10 +79,27 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		String userPwd = entity.getUserPwd();
 		userPwd = new Sha256Hash(userPwd).toHex();
-		// String roleId = entity.getRoleId();
+		
+		// 根据身份来做不同的处理
+		SysUser saveEntity = null;
+		String category = entity.getCategory();
+		if (category.equals("1")) { // 老师
+			TeaTeacherbase t = new TeaTeacherbase();
+			saveEntity = t;
 
-		SysUser saveEntity = new SysUser();
-		BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
+		} else if (category.equals("2")) { // 学生
+			StuBaseinfo t = new StuBaseinfo();
+			// t.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
+			//t.setClassId(entity.getDeptId());
+
+			saveEntity = t;
+
+		} else {
+			saveEntity = new SysUser();
+		}
+		
+		entity.setUuid(null);
+		BeanUtils.copyPropertiesExceptNull(saveEntity,entity );
 
 		// 处理用户所属的角色
 		/*
@@ -92,12 +110,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		 * 
 		 * entity.setSysRoles(isUserRoles); }
 		 */
-		entity.setUserPwd(userPwd);
-		entity.setIssystem(1);
-		entity.setIsHidden("0");
-		entity.setCreateUser(currentUser.getXm()); // 创建人
-		// 持久化到数据库
-		entity = this.merge(entity);
+		saveEntity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
+		saveEntity.setUserPwd(userPwd);
+		saveEntity.setIssystem(1);
+		saveEntity.setIsHidden("0");
+		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
+		saveEntity.setRightType(2);
+		entity = this.merge(saveEntity);
 
 		return entity;
 	}
@@ -871,6 +890,19 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
         QueryResult<SysUser> qr = this.queryResult(hql, start, limit);
         return qr;
 	}
-
+	
+	/**
+	 * 根据部门ID获取部门下的人员
+	 * 
+	 * @param deptId
+	 *            部门ID
+	 * @return
+	 */
+	@Override
+	public List<SysUser> getUserByDeptId(String deptId) {
+		String hql = "select u.uuid from SysUser as u,BaseUserdeptjob as r where u.uuid=r.userId and r.deptId='" + deptId
+				+ "' and r.isDelete=0 and u.isDelete=0";
+		return this.queryByHql(hql);
+	}
 
 }

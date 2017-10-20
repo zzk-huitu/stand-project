@@ -19,9 +19,11 @@ import com.zd.school.plartform.baseset.model.BaseOrgTree;
 import com.zd.school.plartform.system.dao.SysOrgDao;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysOrgService;
+import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysDatapermissionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +58,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 
 	@Resource
 	private JwTBasecourseService courseService; // 基础学科service
+	
+	@Resource
+	private SysUserService sysUserService; // 人员service
 
 	@Override
 	public List<BaseOrgTree> getOrgTreeList(String whereSql, String orderSql, SysUser currentUser) {
@@ -187,16 +192,17 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	}
 
 	@Override
-	public Boolean delOrg(String delIds, SysUser currentUser) {
+	public String delOrg(String delIds, SysUser currentUser) {
 		// 删除班级
-		boolean flag = gradeService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+		//boolean flag = gradeService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 		// 删除年级
-		flag = classService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+		//flag = classService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 		// 删除部门
-		flag = this.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
+		//flag = this.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 
 		// 检查删除的部门的上级部门是否还有子部门
 		// 如果没有子部门了要设置上级部门为叶节点
+	
 		String[] delUuid = delIds.split(",");
 		for (String id : delUuid) {
 			BaseOrg org = this.get(id);
@@ -209,8 +215,116 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 				parentOrg.setUpdateTime(new Date());
 				this.merge(parentOrg);
 			}
+			String deptType = org.getDeptType();
+			List<SysUser> deptUser = sysUserService.getUserByDeptId(id);
+			if (deptUser != null && deptUser.size() > 0) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+				return org.getNodeText() + "部门下存在人员,请删除后重试";
+			}
+			switch (deptType) {
+			case "04": // 年级
+				JwTGrade grade = gradeService.get(id);
+				hql = "from JwTGradeclass where graiId='" + id + "'";
+				List<JwTGradeclass> gradeclasses = classService.queryByHql(hql);
+				// 检查年级下的班级是否存在人员
+				for (JwTGradeclass jwTGradeclass : gradeclasses) {
+					hql = "select count(*) from JwClassstudent where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+							+ "'";
+					count = this.getQueryCountByHql(hql);
+					if (count > 0) {
+						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+						return jwTGradeclass.getClassName() + "班级下存在人员,请删除后重试";
+					}
+
+					hql = "select count(*) from JwClassRoomAllot where isDelete=0 and claiId='"
+							+ jwTGradeclass.getUuid() + "'";
+					count = this.getQueryCountByHql(hql);
+					if (count > 0) {
+						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+						return jwTGradeclass.getClassName() + "班级下存在教室,请删除后重试";
+					}
+
+					hql = "select count(*) from JwClassDormAllot where isDelete=0 and claiId='"
+							+ jwTGradeclass.getUuid() + "'";
+					count = this.getQueryCountByHql(hql);
+					if (count > 0) {
+						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+						return jwTGradeclass.getClassName() + "班级下存在宿舍,请删除后重试";
+					}
+					hql = "select count(*) from PtTerm where isDelete=0 and roomId in("
+							+ "select roomId from JwClassRoomAllot where isDelete=0 and claiId='"
+							+ jwTGradeclass.getUuid() + "')";
+					count = this.getQueryCountByHql(hql);
+					if (count > 0) {
+						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+						return jwTGradeclass.getClassName() + "班级下存在设备,请删除后重试";
+					}
+					hql = "select count(*) from PtTerm where isDelete=0 and roomId in("
+							+ "select dormId from JwClassDormAllot where isDelete=0 and claiId='"
+							+ jwTGradeclass.getUuid() + "')";
+					count = this.getQueryCountByHql(hql);
+					if (count > 0) {
+						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+						return jwTGradeclass.getClassName() + "班级下存在设备,请删除后重试";
+					}
+				}
+				for (JwTGradeclass jwTGradeclass : gradeclasses) {
+					jwTGradeclass.setIsDelete(1);
+					classService.merge(jwTGradeclass);
+				}
+				grade.setIsDelete(1);
+				gradeService.merge(grade);
+				break;
+			case "05": // 班级
+				JwTGradeclass jwTGradeclass = classService.get(id);
+				hql = "select count(*) from JwClassstudent where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+						+ "'";
+				count = this.getQueryCountByHql(hql);
+				if (count > 0) {
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return jwTGradeclass.getClassName() + "班级下存在人员,请删除后重试";
+				}
+				hql = "select count(*) from JwClassRoomAllot where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+						+ "'";
+				count = this.getQueryCountByHql(hql);
+				if (count > 0) {
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return jwTGradeclass.getClassName() + "班级下存在教室,请删除后重试";
+				}
+				hql = "select count(*) from JwClassDormAllot where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+						+ "'";
+				count = this.getQueryCountByHql(hql);
+				if (count > 0) {
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return jwTGradeclass.getClassName() + "班级下存在宿舍,请删除后重试";
+				}
+
+				hql = "select count(*) from PtTerm where isDelete=0 and roomId in("
+						+ "select roomId from JwClassRoomAllot where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+						+ "')";
+				count = this.getQueryCountByHql(hql);
+				if (count > 0) {
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return jwTGradeclass.getClassName() + "班级下存在设备,请删除后重试";
+				}
+				hql = "select count(*) from PtTerm where isDelete=0 and roomId in("
+						+ "select dormId from JwClassDormAllot where isDelete=0 and claiId='" + jwTGradeclass.getUuid()
+						+ "')";
+				count = this.getQueryCountByHql(hql);
+				if (count > 0) {
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return jwTGradeclass.getClassName() + "班级下存在设备,请删除后重试";
+				}
+				jwTGradeclass.setIsDelete(1);
+				classService.merge(jwTGradeclass);
+				break;
+			default:
+				break;
+			}
+			org.setIsDelete(1);
+			this.merge(org);
 		}
-		return flag;
+		return "1";
 	}
 
 	/**
@@ -274,7 +388,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			grade.setOrderIndex(entity.getOrderIndex());
 			grade.setIsDelete(0);
 			grade.setSchoolId(currentUser.getSchoolId());
-
+			grade.setNj(entity.getNj());
+			grade.setSectionCode(entity.getSectionCode());
+			grade.setGradeCode(entity.getSectionCode() + entity.getNj());
 			gradeService.merge(grade);
 			break;
 		case "05": // 班级
@@ -442,7 +558,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			BaseOrgChkTree child = new BaseOrgChkTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(),
 					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
 					org.getRemark(), org.getNodeCode(), org.getParentNode(), org.getOrderIndex(), org.getDeptType(),
-					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0");
+					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode());
 
 			if (org.getParentNode().equals(TreeVeriable.ROOT)) {
 				result.add(child);
@@ -572,6 +688,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		String parentNode = entity.getParentNode();	
 		String nodeText = entity.getNodeText();
 		String uuid = entity.getUuid();
+		String deptType = entity.getDeptType();
 		
 		// 先拿到已持久化的实体
 		BaseOrg perEntity = this.get(uuid);
@@ -604,6 +721,26 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		entity = this.merge(perEntity);// 执行修改方法
+		
+		if (deptType.equals("04")) { // 年级
+			JwTGrade grade = gradeService.get(uuid);
+			grade.setGradeName(nodeText);
+			grade.setUpdateUser(xm);
+			grade.setOrderIndex(entity.getOrderIndex());
+			grade.setIsDelete(0);
+			grade.setNj(entity.getNj());
+			grade.setSectionCode(entity.getSectionCode());
+			grade.setGradeCode(entity.getSectionCode()+entity.getNj());
+			gradeService.merge(grade);
+		} else if (deptType.equals("05")) { // 班级
+			JwTGradeclass gradeclass = classService.get(uuid);
+			gradeclass.setClassName(nodeText);
+			gradeclass.setUpdateUser(xm);
+			gradeclass.setOrderIndex(entity.getOrderIndex());
+			gradeclass.setIsDelete(0);
+			gradeclass.setGraiId(parentNode);
+			classService.merge(gradeclass);
+		}
 		
 		if(!oldDeptName.equals(nodeText)){
 			//再更新其他地方的名称		

@@ -2,10 +2,10 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.baseset.studentdorm.studentdormtree",
     displayField: "text",
-  /*  model: "com.zd.school.plartform.comm.model.CommTree",
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",*/
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/treelist",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    model: "com.zd.school.plartform.comm.model.CommTree",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
+    /*dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/treelist",
+    model: "com.zd.school.build.define.model.BuildRoomAreaTree",*/
     extParams: {
         excludes: "checked",
         whereSql: ""

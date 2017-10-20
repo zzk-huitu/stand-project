@@ -102,7 +102,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
 		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("JW_DORMALLOTTREE", whereSql);
+		List<CommTree> lists = treeService.getCommTree("JW_V_DORMALLOTTREE", whereSql);
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

@@ -87,6 +87,32 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
     public String getOutPhone() {
         return outPhone;
     }
+    
+    /*2017-10-20新加入*/
+    @FieldInfo(name = "学段编码")
+    @Column(name = "SECTION_CODE", length = 32, nullable = true)
+    private String sectionCode;
+
+    public void setSectionCode(String sectionCode) {
+        this.sectionCode = sectionCode;
+    }
+
+    public String getSectionCode() {
+        return sectionCode;
+    }
+    /*2017-10-20新加入*/
+    @FieldInfo(name = "年级")
+    @Column(name = "NJ", length = 32, nullable = true)
+    private String nj;
+
+    public String getNj() {
+        return nj;
+    }
+
+    public void setNj(String nj) {
+        this.nj = nj;
+    }
+    
 
     @FieldInfo(name = "备注")
     @Column(name = "REMARK", length = 255, nullable = true)

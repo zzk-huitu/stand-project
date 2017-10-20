@@ -88,7 +88,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			node = nodeId;
 		}
 		SysUser currentUser = getCurrentSysUser();
-		CommTree root = thisService.getCommTree(node, "05", currentUser);// 该方法功能待完成
+		CommTree root = thisService.getCommTree(node, "05", currentUser);
 		if (node.equalsIgnoreCase(TreeVeriable.ROOT)) {
 			strData = jsonBuilder.buildList(root.getChildren(), excludes);
 		} else {

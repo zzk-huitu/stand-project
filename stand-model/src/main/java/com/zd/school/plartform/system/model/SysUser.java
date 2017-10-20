@@ -191,6 +191,20 @@ public class SysUser extends BaseEntity implements Serializable {
     public void setIsHidden(String isHidden) {
         this.isHidden = isHidden;
     }
+    
+    //默认设置为本部门
+    @FieldInfo(name = "部门权限类型 0-所有权限 1-指定部门 2-本部门")
+	@Column(name = "RIGHT_TYPE", nullable = true)
+	private Integer rightType;
+
+	public Integer getRightType() {
+		return rightType;
+	}
+
+	public void setRightType(Integer rightType) {
+		this.rightType = rightType;
+	}
+
 
     /**
      * CATEGORY=1 对应老师的工号(gh) CATEGORY=2 对应学生的学号(xh)
