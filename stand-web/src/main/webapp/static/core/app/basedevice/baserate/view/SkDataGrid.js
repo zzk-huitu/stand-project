@@ -1,0 +1,72 @@
+Ext.define("core.basedevice.baserate.view.SkDataGrid", {
+	 extend: "core.base.view.BaseGrid",
+    alias: "widget.basedevice.baserate.skdatagrid",
+    title: "房间下存在的设备<font color=red>（往右拖动或者双击选择）</font>",
+    dataUrl: comm.get('baseUrl') + "/PtTerm/list",
+    model: "com.zd.school.control.device.model.PtTerm",
+    extParams: {
+        whereSql: " where termTypeID=8"
+    },
+    viewConfig: {
+        plugins: {
+            ptype: 'gridviewdragdrop',
+            dragGroup: 'secondGridDDGroup',
+            dropGroup: 'firstGridDDGroup'
+        }
+    },
+    panelTopBar:{},
+    panelButtomBar:{},
+    al:false,
+    columns: [{
+        text: "主键",
+        dataIndex: "uuid",
+        hidden: true
+    }, {
+        text: "设备名称",
+        dataIndex: "termName",
+        field: {
+            xtype: "textfield"
+        }
+    }, {
+        text: "序列号",
+        dataIndex: "termSN",
+        field: {
+            xtype: "textfield"
+        }
+    }, {
+        text: "设备类型",
+        dataIndex: "termTypeID",
+        columnType: "basecombobox", //列类型
+        ddCode: "PTTERMTYPE" //字典代码
+    }, {
+        text: "费率",
+        renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
+        	var termTypeID= record.raw.termTypeID;
+        	if(termTypeID==9){
+        		value=record.raw.dkprice;
+        	}
+        	if(termTypeID==8){
+        		value=record.raw.skprice;
+        	}
+			return value
+		}
+    }],
+    listeners: {
+        beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
+            var data = record.data;
+            var grid2 = grid.up('window').down('panel[xtype=basedevice.baserate.skdatagridtwo]');
+            for (var i = 0; i < grid2.getStore().getCount(); i++) {
+                if (data.uuid == grid2.getStore().getAt(i).get('uuid')) {
+                    Ext.Msg.alert("提示", "该设备已存在选中列表，请勿重复操作");
+                    return false;
+                }
+            };
+            grid.getStore().removeAt(index); //将选中的移除
+            grid2.getStore().insert(0, data); //加入到新的grid
+            return false;
+        },
+        beforeitemclick: function(grid, record, item, index, e, eOpts) {
+            return false;
+        }
+    }
+});
