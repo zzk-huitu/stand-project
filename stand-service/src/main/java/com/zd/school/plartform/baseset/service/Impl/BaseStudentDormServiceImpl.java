@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.plartform.baseset.dao.BaseStudentDormDao;
@@ -40,14 +41,15 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	@Override
 	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser) {
 		String userId = currentUser.getUuid();
-		//Integer rightType = currentUser.getRightType();
-		Integer rightType = 0;	//2017-10-9：此模型没有这个属性，待确定
+		Integer rightType = currentUser.getRightType();
+		if(currentUser.getUuid().equals(AdminType.ADMIN_USER_ID))
+			rightType=0;
 		
 		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTGRADCLASSTREE ''{0}'',{1},''{2}''", userId,
 				rightType, deptType);
-		//CommTree gradeTree = commTreeService.getCommTree2(sql, rootId);	//2017-10-9：待完成
+		CommTree gradeTree = commTreeService.getGradeCommTree(sql, rootId);	//2017-10-9：待完成
 
-		//return gradeTree;
-		return null;
+		return gradeTree;
+		//return null;
 	}
 }

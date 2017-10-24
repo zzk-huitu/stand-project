@@ -71,11 +71,19 @@ Ext.define("core.system.dept.view.DetailForm", {
         {
             columnWidth: 0.5,
             beforeLabelTextTpl: comm.get("required"),
-            xtype: "basecombobox",
-            allowBlank: false,
+            //xtype: "basecombobox",
+            //ddCode: "DEPTTYPE",
+            xtype: "combobox",
+            store:{
+                type:'system.dept.depttypestore'
+            },
+            displayField: 'deptType',
+            valueField: 'code',
             fieldLabel: "部门类型",
             name: "deptType",
-            ddCode: "DEPTTYPE",
+            editable:false,
+            allowBlank: false,    
+           
             emptyText: '部门类型',
             blankText: "部门类型不能为空",
             listeners: {

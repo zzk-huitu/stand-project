@@ -30,7 +30,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             ref: 'gridDelete',
             iconCls: 'x-fa fa-plus-circle',
             msg:'是否要解除此房间？',
-            disable:true
+            disabled:true
         },{
             xtype: 'tbtext', 
             html:'快速搜索：'

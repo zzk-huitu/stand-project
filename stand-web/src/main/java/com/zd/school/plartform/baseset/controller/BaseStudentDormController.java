@@ -58,17 +58,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
-	@RequestMapping("/treelist")
-	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String strData = "";
-		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("JW_DORMALLOTTREE", whereSql);
-		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
-		writeJSON(response, strData);// 返回数据
-	}
-
-	/**
+   /**
 	 * 生成树
 	 * 
 	 * @param request
@@ -88,7 +78,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			node = nodeId;
 		}
 		SysUser currentUser = getCurrentSysUser();
-		CommTree root = thisService.getCommTree(node, "05", currentUser);// 该方法功能待完成
+		CommTree root = thisService.getCommTree(node, "05", currentUser);
 		if (node.equalsIgnoreCase(TreeVeriable.ROOT)) {
 			strData = jsonBuilder.buildList(root.getChildren(), excludes);
 		} else {
@@ -150,7 +140,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}*/
-	// 导出EXCEL
+	/*// 导出EXCEL
 	@RequestMapping("/exportExcel")
 	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String claiId = request.getParameter("claiId");
@@ -166,5 +156,5 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			}
 		}
 		FastExcel.exportExcel(response, "学生宿舍分配信息", list);
-	}
+	}*/
 }

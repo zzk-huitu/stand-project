@@ -64,7 +64,7 @@ public interface SysOrgService extends BaseService<BaseOrg> {
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean delOrg(String delIds, SysUser currentUser);
+    public String delOrg(String delIds, SysUser currentUser);
 
     /**
      * 

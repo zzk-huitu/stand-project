@@ -35,11 +35,11 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             xtype:'treecolumn',
             flex: 1,
             minWidth:200
-        }, {
+        },/* {
             text: "顺序号",
             dataIndex: "orderIndex",
             width:60
-        },{
+        },*/{
             text:"主键",
             dataIndex:'id',
             hidden:true

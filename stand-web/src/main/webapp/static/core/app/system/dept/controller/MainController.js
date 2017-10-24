@@ -299,20 +299,21 @@ Ext.define("core.system.dept.controller.MainController", {
                     self.Error("部门类型为学校或校区，此处不能修改");
                     return;
                 } else if (justType == '04') { //年级部门
-                    var resObj = self.ajax({ //获取年级信息
-                        url: comm.get('baseUrl') + "/gradeinfo/getGradeInfo",
-                        params: {
-                            id: just
-                        }
-                    });
-                    if (resObj.success) {
-                        //采用返回的数据刷新表单
+                    //2017-10-20 年级的数据，直接保存到了部门表里面，不用去请求数据了
+                    // var resObj = self.ajax({ //获取年级信息
+                    //     url: comm.get('baseUrl') + "/gradeinfo/getGradeInfo",
+                    //     params: {
+                    //         id: just
+                    //     }
+                    // });
+                    // if (resObj.success) {
+                    //     //采用返回的数据刷新表单
 
-                        var obj = resObj.obj;
-                        insertObj.nj = obj.nj;
-                        insertObj.sectionCode = obj.sectionCode;
+                    //     var obj = resObj.obj;
+                    //     insertObj.nj = obj.nj;
+                    //     insertObj.sectionCode = obj.sectionCode;
 
-                    }
+                    // }
                 }
                 //当前节点的上级节点
                 var parent = recordData["parent"];
@@ -448,6 +449,11 @@ Ext.define("core.system.dept.controller.MainController", {
                     deptJobStore.loadPage(1);
                 }else{
                     self.doInitFormValue(item,cmd);                
+                }
+
+                if(cmd=="edit"){
+                    var detailForm=item.down("baseform[xtype=system.dept.detailform]");
+                    detailForm.getForm().findField("deptType").setReadOnly(true);
                 }
 
             },30);

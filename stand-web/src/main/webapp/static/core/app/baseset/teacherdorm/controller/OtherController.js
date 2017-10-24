@@ -15,10 +15,8 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
     				this.saveDetail_Tab(btn);
     				return false;
     			}
-    		},
-  /**
-         * 角色用户选择列表 快速搜索文本框回车事件
-         */
+          },
+        
         "basepanel basegrid[xtype=pubselect.selectusergrid] field[funCode=girdFastSearchText]": {
             specialkey: function (field, e) {
                 var self = this;
@@ -28,9 +26,6 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                 }
             }
         },
-        /**
-         * 角色用户选择列表 快速搜索按钮事件
-         */
         "basepanel basegrid[xtype=pubselect.selectusergrid] button[ref=gridFastSearchBtn]": {
             beforeclick: function (btn) {
                 var self = this;
@@ -142,11 +137,9 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                         tabPanel.remove(tabItem);
                      
                     } else {
-                        var error=[""];
-                        error.push("<font color=red>" + data.obj+ "</font>");
-                        self.msgbox(error.join("<br/>"));
-                        grid.getStore().load();  
                         loading.hide();
+                        self.Warning(data.obj);
+                        grid.getStore().load();  
                         tabPanel.remove(tabItem);
                     }
                 },
@@ -167,7 +160,7 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
             self.msgbox(errors.join("<br/>"));
         }
     },
-        /**
+     /**
      * 执行快速搜索
      * @param component
      * @returns {boolean}
@@ -181,16 +174,14 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
         var toolBar = component.up("toolbar");
         if (!toolBar)
             return false;
-/*
-        var win = baseGrid.up("window");
-        var winFunData = win.funData;
-        var roleId = winFunData.roleId;
-*/
+
+
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         //这里快速搜索就姓名与部门，固定写死查询的条件
         var filter = new Array();
+        filter.push("{'type': 'string', 'comparison': '', 'value':'1', 'field': 'category'}");
         if (girdSearchTexts[0].getValue() != "")
-            filter.push("{'type': 'string', 'comparison': '', 'value':'" + girdSearchTexts[0].getValue() + "', 'field': 'xm'}");
+        filter.push("{'type': 'string', 'comparison': '', 'value':'" + girdSearchTexts[0].getValue() + "', 'field': 'xm'}");
         if (girdSearchTexts[1].getValue() != "")
             filter.push("{'type': 'string', 'comparison': '=', 'value':'" + girdSearchTexts[1].getValue() + "', 'field': 'deptId'}");
         filter = "[" + filter.join(",") + "]";
@@ -198,7 +189,6 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
         var selectStore = baseGrid.getStore();
         var selectProxy = selectStore.getProxy();
         selectProxy.extraParams = {
-           // roleId: roleId,
             filter: filter
         };
         selectStore.loadPage(1);

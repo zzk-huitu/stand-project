@@ -4,12 +4,18 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
     al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/SysUser/getUserNotInRoleId", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/BaseTeacherDrom/getTeacherInUser", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
-    /**
-     * 工具栏操作按E钮
-     * 继承自core.base.view.BaseGrid可以在此覆盖重写
-     */
+    defSort: [{
+        property: "deptName", //字段名
+        direction: "DESC" //升降序
+    },{
+        property: "xm", //字段名
+        direction: "DESC" //升降序
+    }],
+    extParams: {
+        filter:'[{"type":"string","value":"1","field":"category","comparison":""}]'
+    },
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -76,21 +82,7 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
         }
     },
 
-    /** 排序字段定义 */
-    defSort: [{
-        property: "deptName", //字段名
-        direction: "DESC" //升降序
-    },{
-        property: "jobName", //字段名
-        direction: "DESC" //升降序
-    },{
-        property: "xm", //字段名
-        direction: "DESC" //升降序
-    }],
-    /** 扩展参数 */
-    extParams: {
-        whereSql: ""
-    },
+   
     columns: {
         defaults: {
             titleAlign: "center"

@@ -36,11 +36,11 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
             xtype:'treecolumn',
             flex: 1,
             minWidth:200
-        }, {
+        },/* {
             text: "顺序号",
             dataIndex: "orderIndex",
             width:80
-        },{
+        },*/{
             text:"主键",
             dataIndex:'id',
             hidden:true

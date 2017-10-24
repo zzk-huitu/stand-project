@@ -3,6 +3,7 @@ package com.zd.school.plartform.comm.service.Impl;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.model.BaseEntity;
 import com.zd.core.service.BaseServiceImpl;
+import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.comm.dao.CommTreeDao;
 import com.zd.school.plartform.comm.model.*;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -118,5 +119,64 @@ public class CommTreeServiceImpl extends BaseServiceImpl<BaseEntity> implements 
         List<UpGradeRule> lists = this.queryEntityBySql(sql, UpGradeRule.class);
         return lists;
     }
+    
+	@Override
+	public CommTree getGradeCommTree(String sql, String rootId) {
+		List<CommTree> list = this.getCommTreeList(sql);
+		CommTree root = new CommTree();
+		for (CommTree node : list) {
+			if (!(StringUtils.isNotEmpty(node.getParent()) && !node.getId().equals(rootId))) {
+				root = node;
+				list.remove(node);
+				break;
+			}
+		}
+		createGradeTreeChildren(list, root);
+		return root;
+	}
+	
+	@Override
+	public List<CommTree> getCommTreeList(String sql) {
+		List<CommTree> chilrens = new ArrayList<CommTree>();
+		CommTree node = null;
+		List<Object[]> alist = this.queryObjectBySql(sql);
 
+		for (int i = 0; i < alist.size(); i++) {
+			Object[] obj = (Object[]) alist.get(i);
+			node = new CommTree();
+			node.setId((String) obj[0]);
+			node.setText((String) obj[1]);
+			node.setIconCls((String) obj[2]);
+
+			if ((Boolean) obj[3]) {
+				node.setLeaf(true);
+			} else {
+				node.setLeaf(false);
+			}
+			node.setLevel((Integer) obj[4]);
+			node.setTreeid((String) obj[5]);
+			node.setParent((String) obj[6]);
+			node.setOrderIndex((Integer) obj[7]);
+			node.setNodeType((String) obj[8]);
+			//node.setChecked(false);
+			chilrens.add(node);
+		}
+		return chilrens;
+	}
+	private void createGradeTreeChildren(List<CommTree> childrens, CommTree root) {
+		String parentId = root.getId();
+		for (int i = 0; i < childrens.size(); i++) {
+			CommTree node = childrens.get(i);
+			if (StringUtils.isNotEmpty(node.getParent()) && node.getParent().equals(parentId)) {
+				root.getChildren().add(node);
+				createGradeTreeChildren(childrens, node);
+			}
+			if (i == childrens.size() - 1) {
+				if (root.getChildren().size() < 1) {
+					root.setLeaf(true);
+				}
+				return;
+			}
+		}
+	}
 }

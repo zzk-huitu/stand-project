@@ -127,15 +127,15 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String deptId = request.getParameter("ids");
 		if (StringUtils.isEmpty(deptId)) {
-			writeJSON(response, JsonBuilder.getInstance().returnSuccessJson("'没有传入删除主键'"));
+			writeJSON(response, JsonBuilder.getInstance().returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		}
 		SysUser currentUser = getCurrentSysUser();
-		boolean flag = thisService.delOrg(deptId, currentUser);
-		if (flag) {
-			writeJSON(response, JsonBuilder.getInstance().returnSuccessJson("'删除成功'"));
+		String flag = thisService.delOrg(deptId, currentUser);
+		if ("1".equals(flag)) {
+			writeJSON(response, JsonBuilder.getInstance().returnSuccessJson("\"删除成功\""));
 		} else {
-			writeJSON(response, JsonBuilder.getInstance().returnFailureJson("'删除失败'"));
+			writeJSON(response, JsonBuilder.getInstance().returnFailureJson("\""+flag+"\""));
 		}
 	}
 

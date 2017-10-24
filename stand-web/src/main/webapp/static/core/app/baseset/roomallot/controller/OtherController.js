@@ -62,12 +62,10 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
 	                        win.close();
 
 	                    } else {
-	                    	var error=[""];
-	                    	error.push("<font color=red>" + data.obj+ "</font>");
-	                    	self.msgbox(error.join("<br/>"));
+	                    	loading.hide();
+	                    	self.Warning(data.obj);
 	                    	var store = baseGrid.getStore();
-	                        store.load();                         
-	                        loading.hide();
+	                        store.load();      
 	                    	win.close();
 	                    }
 	                },

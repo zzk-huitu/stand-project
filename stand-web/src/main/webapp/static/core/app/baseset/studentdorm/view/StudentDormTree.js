@@ -2,14 +2,13 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.baseset.studentdorm.studentdormtree",
     displayField: "text",
-  /*  model: "com.zd.school.plartform.comm.model.CommTree",
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",*/
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/treelist",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    model: "com.zd.school.plartform.comm.model.CommTree",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     extParams: {
         excludes: "checked",
         whereSql: ""
     },
+    selModel: {},
     tbar:{
         xtype:'toolbar',
         items: [{
@@ -38,11 +37,11 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             xtype:'treecolumn',
             flex: 1,
             minWidth:250
-        }, {
+        }/*, {
             text: "顺序号",
             dataIndex: "orderIndex",
             width:100
-        },{
+        }*/,{
             text:"主键",
             dataIndex:'id',
             hidden:true

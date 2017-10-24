@@ -9,6 +9,7 @@
 
 package com.zd.school.plartform.comm.model;
 
+import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.extjs.ExtTreeNode;
 
 import java.util.List;
@@ -23,7 +24,18 @@ import java.util.List;
  * @see
  */
 public class CommTree extends ExtTreeNode<CommTree> {
+	
+	@FieldInfo(name = "节点类型")
+	private String nodeType;
 
+	public String getNodeType() {
+		return nodeType;
+	}
+
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
+	}
+	
     public CommTree() {
 
         super();

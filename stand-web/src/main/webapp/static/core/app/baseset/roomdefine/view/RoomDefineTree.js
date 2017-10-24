@@ -39,11 +39,11 @@ Ext.define("core.baseset.roomdefine.view.RoomDefineTree", {
             xtype:'treecolumn',
             flex: 1,
             minWidth:150
-        }, {
+        }, /*{
             text: "顺序号",
             dataIndex: "orderIndex",
             width:100
-        },{
+        },*/{
             text:"主键",
             dataIndex:'id',
             hidden:true
