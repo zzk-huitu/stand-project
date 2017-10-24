@@ -1,8 +1,7 @@
 Ext.define("core.basedevice.baserate.view.SkDataGrid", {
 	 extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.baserate.skdatagrid",
-    title: "房间下存在的设备<font color=red>（往右拖动或者双击选择）</font>",
-    dataUrl: comm.get('baseUrl') + "/PtTerm/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
     extParams: {
         whereSql: " where termTypeID=8"
@@ -14,7 +13,18 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
             dropGroup: 'firstGridDDGroup'
         }
     },
-    panelTopBar:{},
+    panelTopBar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '房间存在设备<font color=red>（往右拖动或者双击选择）</font>',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->'],
+    }, 
     panelButtomBar:{},
     al:false,
     columns: [{
@@ -24,32 +34,17 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
     }, {
         text: "设备名称",
         dataIndex: "termName",
-        field: {
-            xtype: "textfield"
-        }
+        width:120
     }, {
         text: "序列号",
         dataIndex: "termSN",
-        field: {
-            xtype: "textfield"
-        }
+        width:150
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
-        ddCode: "PTTERMTYPE" //字典代码
-    }, {
-        text: "费率",
-        renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-        	var termTypeID= record.raw.termTypeID;
-        	if(termTypeID==9){
-        		value=record.raw.dkprice;
-        	}
-        	if(termTypeID==8){
-        		value=record.raw.skprice;
-        	}
-			return value
-		}
+        ddCode: "PTTERMTYPE", //字典代码
+        flex:1
     }],
     listeners: {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {

@@ -2,11 +2,9 @@ Ext.define("core.basedevice.baserate.view.SkDataGridTwo", {
 	 extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.baserate.skdatagridtwo",
     model: "com.zd.school.control.device.model.PtTerm",
-    title: "选中数据<font color=blue>（往左拖动或者双击删除）</font>",
     al:false,
     noPagging: true,
-    panelTopBar:{},
-    panelButtomBar:{},
+    
     viewConfig: {
         plugins: {
             ptype: 'gridviewdragdrop',
@@ -14,6 +12,21 @@ Ext.define("core.basedevice.baserate.view.SkDataGridTwo", {
             dropGroup: 'secondGridDDGroup'
         }
     },
+    panelTopBar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '选中数据<font color=blue>（往左拖动或者双击删除）</font>',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->'],
+    }, 
+    
+    panelButtomBar:{},
+    
     columns: [{
         text: "主键",
         dataIndex: "uuid",

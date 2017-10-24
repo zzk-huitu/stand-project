@@ -320,8 +320,9 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
         if(categroy=="水控"){
         	var win = Ext.create('Ext.window.Window', {
                 title: "选择设备",
-                ref: 'SkPriceDefineWin',
+                ref: 'DkPriceDefineWin',
                 iconCls: 'application_form',
+                controller:"basedevice.baserate.othercontroller",
                 meterId: rows[0].get('uuid'),
                 categroy:"2",
                 resizable: false,
@@ -352,6 +353,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                     title: "选择设备",
                     ref: 'DkPriceDefineWin',
                     iconCls: 'application_form',
+                    controller:"basedevice.baserate.othercontroller",
                     meterId: rows[0].get('uuid'),
                     categroy:"1",
                     resizable: false,

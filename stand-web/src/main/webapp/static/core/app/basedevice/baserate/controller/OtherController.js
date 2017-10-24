@@ -17,14 +17,27 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
+    	
+    	//编辑界面保存按钮
     	"baseformtab[detCode=baserate_detail] button[ref=formSave]": {
 			beforeclick: function (btn) {    
 				this.doSave_Tab(btn);
 				return false;
 			}
 		},
+		
+		//费率绑定界面确认按钮
+		"window[ref=DkPriceDefineWin] button[ref=ssOkBtn]": {
+            beforeclick: function(btn) {
+                this.saverate(btn);
+                return false;
+             },
+    	 },
     },
     
+    /*
+     * 编辑界面保存事件
+     */
     doSave_Tab:function(btn,cmd){
         var self=this;
         //获取基本的容器
@@ -101,4 +114,45 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
         }
     },
   
+    
+    /*
+     * 费率绑定界面确认事件
+     */
+    saverate:function(btn,cmd){
+    	var self=this;
+        var win = btn.up('window');
+        var termId = [];
+        var termSn=[];
+        var grid = win.down('panel[xtype=basedevice.baserate.skdatagridtwo]');
+        var rows = grid.getSelectionModel().getSelection();
+        if (rows.length < 1) {
+            self.Warning("未选择数据，无法继续操作");
+            return false;
+        } else {
+            for (var i = 0; i < rows.length; i++) {
+                termId.push(rows[i].get('uuid'));
+                termSn.push(rows[i].get('termSN'))
+            };
+            var resObj = self.ajax({
+                url: comm.get('baseUrl') + "/BasePtPriceBind/doAdd",
+                method: 'POST',
+                params: {
+                    termId: termId,
+                    termSn:termSn,
+                    meterId:win.meterId
+                }
+            });
+            if (resObj.success) {
+                self.msgbox(resObj.obj);
+                win.close();
+            } else {
+                self.msgbox('出错。');
+            }
+        }
+    
+    }
+    
+    
+    
+    
 });
