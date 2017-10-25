@@ -19,12 +19,20 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
             beforeclick: function(btn) {
            	 this.doallot(btn);
             }
-        }
+        },
+        
+        //区域列表刷新按钮
+        "basetreegrid[xtype=basedevice.basedeviceallot.roominfotree] button[ref=gridRefresh]": {
+            beforeclick: function(btn) {
+             btn.up('basetreegrid').getStore().load();
+             return false;
+            }
+        },
     	
     },
     
     
-  //绑定品牌列表事件
+    //分配设备事件
     doallot: function (btn) {
     	var self = this;
         var mainlayout = btn.up('panel[xtype=basedevice.basedeviceallot.mainlayout]');
@@ -60,7 +68,6 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
 			win = Ext.create('core.base.view.BaseFormWin', {
 				id: winId,
 				title: "设备型号选择",
-				/*zzk: 必须指定一个viewController控制器，否则，里面的control无法生效*/
 				controller: otherController,
 				width: 1350,
 				height: 600,

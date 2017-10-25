@@ -43,7 +43,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             xtype:'textfield',
             name:'termName',
             funCode: 'girdFastSearchText',
-            emptyText: '型号名称'
+            emptyText: '设备名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
