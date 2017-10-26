@@ -3,8 +3,9 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
     alias: "widget.basedevice.basedeviceallot.deviceallotgrid",
     dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
-    forceFit:true,
-    columnLines: true, //不展示竖线
+    al:true,
+    frame: false,
+    columnLines: false,
     extParams: {
         whereSql: " and isDelete='0' ",
     },
@@ -12,7 +13,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '未分配设备',
+            html: '未分配设备  (双击添加或删除)',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -23,9 +24,16 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             html:'快速搜索：'
         },{
             xtype:'textfield',
+            width:100,
             name:'termSN',
-            funCode: 'girdFastSearchText',
-            emptyText: '设备序列号'
+            funCode:'girdFastSearchText', 
+            emptyText: '序列号'
+        },{
+            xtype:'textfield',
+            width:100,
+            name:'termNo',
+            funCode:'girdFastSearchText', 
+            emptyText: '机号'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
@@ -50,21 +58,31 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             dataIndex: "uuid",
             hidden: true
         },{
-            text: "设备名称",
-            width: 120,
-            dataIndex: "termName",
-            renderer: function(value, metaData) {
-                var title = "设备名称";
-                var html = value;
-                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
-                return value;
-            }
-        }, {
             text: "序列号",
             dataIndex: "termSN",
             width:120,
             renderer: function(value, metaData) {
                 var title = "序列号";
+                var html = value;
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
+                return value;
+            }
+        },{
+            text: "机号",
+            dataIndex: "termNo",
+            width:120,
+            renderer: function(value, metaData) {
+                var title = "机号";
+                var html = value;
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
+                return value;
+            }
+        },{
+            text: "设备名称",
+            width: 120,
+            dataIndex: "termName",
+            renderer: function(value, metaData) {
+                var title = "设备名称";
                 var html = value;
                 metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
                 return value;

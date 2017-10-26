@@ -44,4 +44,11 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree2", {
             hidden: true
         }]
     },
+    
+    listeners: {
+    	 beforeitemclick: function() {
+    	        return false;
+    	    }
+    }
+   
 });

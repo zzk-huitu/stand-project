@@ -58,6 +58,8 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		String filter = request.getParameter("filter");
 		String leaf = request.getParameter("leaf");
 		String roomId = request.getParameter("roomId");
+		String termSN = request.getParameter("termSN");
+		String termNo = request.getParameter("termNo");
 		
 		if(roomId==null&&leaf==null){
 			roomId="";
@@ -71,6 +73,25 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 				filter = filter.substring(0, filter.length()-1)+",{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
 			}else{
 				filter = "[{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
+				
+				if(termSN!=null||termNo!=null){
+					String filters="" ;
+					if(termSN!=null){
+						filters = "[{'type':'string','comparison':'','value':'" + termSN + "','field':'termSN'}]";
+			         }else if(termNo!=null){
+			     		if(filters!=""){
+			     			filters=filters.substring(0, filters.length()-1)+",{'type':'numeric','comparison':'=','value':'" + termNo + "','field':'termNo'}]";
+			     		}else{
+			     			filters = "[{'type':'numeric','comparison':'=','value':'" + termNo + "','field':'termNo'}]";
+			     		}
+			         }
+					filters = filter.substring(0, filter.length()-1)+","+filters.substring(1, filters.length());
+					QueryResult<PtTerm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filters, true);
+			        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+			        writeJSON(response, strData);// 返回数据
+			        return;
+				}
+				
 			}
 			
 			QueryResult<PtTerm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
@@ -127,11 +148,6 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 				throws IOException, IllegalAccessException, InvocationTargetException {
 			String uuids[] = uuid.split(",");
 			PtTerm entity = null;
-			
-			// 获取当前操作用户
-	        SysUser currentUser = getCurrentSysUser();
-	        
-	        boolean flag=true;
 			for (int i = 0; i < uuids.length; i++) {
 				entity = thisService.get(uuids[i]);
 				entity.setRoomId(roomId);
@@ -165,20 +181,13 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		 * void 返回类型 @throws
 		 */
 		@RequestMapping("/doDelete")
-		public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-			String ids = request.getParameter("ids");
-			if (StringUtils.isEmpty(ids)) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
-				return;
-			} else {
-				SysUser currentUser = getCurrentSysUser();
-				boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
-				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
-				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
-				}
+		public void doDelete(String uuid, HttpServletRequest request, HttpServletResponse response)
+				throws IOException, IllegalAccessException, InvocationTargetException {
+			String uuids[] = uuid.split(",");
+			for (int i = 0; i < uuids.length; i++) {
+				thisService.updateByProperties("uuid", uuids[i], "roomId", "");
 			}
-		}
+				writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
+		}		
 		
 }

@@ -41,18 +41,24 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             html:'快速搜索：'
         },{
             xtype:'textfield',
-            name:'termName',
+            name:'termSN',
             funCode: 'girdFastSearchText',
-            emptyText: '设备名称'
+            emptyText: '序列号'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
             iconCls: 'x-fa fa-search',  
+        },' ',{
+            xtype: 'button',
+            text: '高级搜索',
+            ref: 'gridHignSearch',
+            iconCls: 'x-fa fa-sliders'
         }],
     }, 
-    panelButtomBar:null,
-    
+    panelButtomBar:{
+        xtype:'basedevice.basedeviceallot.mainquerypanel'
+    },
     //排序字段及模式定义
     defSort: [{
         property: 'createTime',
@@ -72,7 +78,15 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             text: "主键",
             dataIndex: "uuid",
             hidden: true
+        }, {
+            text: "序列号",
+            dataIndex: "termSN",
+            width: 140,
         },{
+            text: "机号",
+            dataIndex: "termNo",
+            width: 140,
+        }, {
             text: "设备名称",
             dataIndex: "termName",
             width: 140,
@@ -80,10 +94,6 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             text: "房间名称",
             dataIndex: "roomName",
             hidden: true
-        }, {
-            text: "序列号",
-            dataIndex: "termSN",
-            width: 140,
         }, {
             text: "网关名称",
             dataIndex: "gatewayName",

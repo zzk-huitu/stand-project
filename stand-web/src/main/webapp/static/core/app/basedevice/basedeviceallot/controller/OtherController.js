@@ -18,19 +18,20 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
     	//弹出窗口的确认按钮
     	 "panel[xtype=basedevice.basedeviceallot.devicesysgrid] button[ref=gridAdde]": {
             beforeclick: function(btn) {
-                this.saveallot(btn);
+                this.saveAllot(btn);
              },
     	 },
     	
     	 "panel[xtype=basedevice.basedeviceallot.deviceallotgrid] button[ref=gridFastSearchBtn]": {
              beforeclick: function(btn) {
-                 this.doFastSearch(btn);
+                 this.doFastSearchTerm(btn);
+                 return false;
               },
      	 },
     },
     
   //确认绑定事件
-    saveallot:function(btn){
+    saveAllot:function(btn){
       var self = this; 
       var baseGrid =btn.up("basegrid");
       var allotlayout = btn.up('panel[xtype=basedevice.basedeviceallot.deviceallotlayout]');
@@ -70,10 +71,8 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
       return false;
   },
       
-      
-    
     //快速搜索
-    doFastSearch:function(btn){
+  doFastSearchTerm:function(btn){
         //得到组件 
         var baseGrid = btn.up("basegrid"); 
         if(!baseGrid)
@@ -82,19 +81,28 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
         var toolBar= btn.up("toolbar");
         if(!toolBar)
             return false;
-
-        var filter= [];
+        var termSN;
+        var termNo;
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         for(var i in girdSearchTexts){
             var name = girdSearchTexts[i].getName();
             var value = girdSearchTexts[i].getValue();
-
-            filter.push({"type":"string","value":value,"field":name,"comparison":""});
+            if(name=="termSN"){
+            	termSN=value;
+            }
+            if(name=="termNo"){
+            	termNo=value;
+            }	
         }
         
         var store = baseGrid.getStore();
         var proxy = store.getProxy();                        
-        proxy.extraParams.filter = JSON.stringify(filter);
+        if(termSN!=""){
+        	proxy.extraParams.termSN=termSN;
+        }
+        if(termNo!=""){
+        	proxy.extraParams.termNo=termNo;
+        }
         store.loadPage(1);
     },
     

@@ -6,13 +6,11 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
         whereSql: " and isDelete='0' ",
     },
     al:false,
-    forceFit:true,
-    columnLines: true,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '选中的设备',
+            html: '选中的设备  (双击添加或删除)',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -23,11 +21,6 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             text: '保存列表数据',
             ref: 'gridAdde',
             iconCls: 'x-fa fa-plus-circle'
-        }, {
-            xtype: 'button',
-            text: '自定义删除',
-            ref: 'gridDel',
-            iconCls: 'x-fa fa-minus-circle'
         }],
     }, 
     panelButtomBar:null,

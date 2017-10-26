@@ -13,7 +13,6 @@ Ext.define("core.basedevice.basedeviceallot.view.MainLayout", {
     detLayout: "basedevice.basedeviceallot.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'basedevice.basedeviceallot.othercontroller',
-    layout: 'border',
     border:false,
     funData: {
         action: comm.get('baseUrl') + "/BasePtTerm", //请求Action 
@@ -34,7 +33,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainLayout", {
         split: true,
         xtype: "basedevice.basedeviceallot.roominfotree",
         region: "west",
-        width: comm.get("clientWidth") * 0.24
+        width: comm.get("clientWidth") * 0.16
     }, {
         xtype: "basedevice.basedeviceallot.maingrid",
         region: "center"

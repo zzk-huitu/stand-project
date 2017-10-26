@@ -1,11 +1,9 @@
 Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotLayout", {
     extend: "core.base.view.BasePanel",
     alias: 'widget.basedevice.basedeviceallot.deviceallotlayout',
-    layout: {
-        type: 'border',
-//        pack: 'start',
-//        align: 'stretch'
-    },
+    layout:'border',
+    border: false,
+    
     funData: {
         action: comm.get('baseUrl') + "/BasePtTerm", //请求Action
         pkName: "uuid",
@@ -17,16 +15,20 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotLayout", {
     },
     
     items: [{
+    	split: true,//对模块分开的线条
         xtype: "basedevice.basedeviceallot.roominfotree2",
-        width: 300,
+        width: 240,
         region: "west",
     }, {
-        width: 550,
+    	flex:1,
+    	
+    	split: true,
         xtype: "basedevice.basedeviceallot.deviceallotgrid",
         region: "center",
     }, {
-        flex: 1,
-        xtype: "basedevice.basedeviceallot.devicesysgrid",
+    	split: true,
+    	width: 440,
+    	xtype: "basedevice.basedeviceallot.devicesysgrid",
         region: "east",
     }]
 })
