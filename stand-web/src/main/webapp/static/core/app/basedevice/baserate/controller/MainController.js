@@ -45,13 +45,13 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
          },
          
          //控制类型刷新按钮
-         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
-             beforeclick: function(btn) {
-            	 var baseGrid = btn.up("grid");
-                 var store = baseGrid.getStore().load();
-                 return false;
-             }
-         },
+//         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
+//             beforeclick: function(btn) {
+//            	 var baseGrid = btn.up("grid");
+//                 var store = baseGrid.getStore().reload();
+//                 return false;
+//             }
+//         },
          
          //费率列表操作列事件
          "basegrid  actioncolumn": {
@@ -64,9 +64,8 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              deleteClick: function (data) {
             	 this.doBasePriceDefine_Delete(null, null, data.view, data.record);
                  return false;
-             },
+             }
          }
-         
          
     },
     
