@@ -1,9 +1,7 @@
- 
-
-Ext.define("core.baseset.studentdorm.view.DetailLayout", {
+Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.baseset.studentdorm.detaillayout',
-    funCode: "studentdorm_detail",
+    alias: 'widget.baseset.studentdorm.dormallotLayout',
+    funCode: "dormallot_detail",
     funData: {
         action: comm.get('baseUrl') + "/BaseStudentDorm", //请求controller
         pkName: "uuid", //主键
@@ -16,13 +14,18 @@ Ext.define("core.baseset.studentdorm.view.DetailLayout", {
     scrollable:'x',
     layout:'border',
     items: [{
-        xtype:'baseset.studentdorm.dormallotgrid',
+        xtype:'baseset.studentdorm.dormallottree',
         region: "west",
-        width: comm.get("clientWidth") * 0.4,
+        width: comm.get("clientWidth") * 0.15,
+        margin:'5'
+    },{
+        xtype:'baseset.studentdorm.classdormgrid',
+        region: "center",
         margin:'5'
     }, {
         xtype: "baseset.studentdorm.dormnotallotgrid",
-        region: "center",
+        width: comm.get("clientWidth") * 0.37,
+        region: "east",
         margin:'5'
     }]
 })

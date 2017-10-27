@@ -71,7 +71,7 @@ Ext.define("core.baseset.roomallot.view.IsSelecTeacherGrid", {
                 IsSelectStore.removeAt(index);
 
                 var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
-                var selectGrid = basePanel.down("panel[xtype=baseset.roomallot.selectteachergrid]");
+                var selectGrid = basePanel.down("basegrid[xtype=baseset.roomallot.selectteachergrid]");
                 var selectStore = selectGrid.getStore();
                 selectStore.insert(0, [record]);
                 return false;

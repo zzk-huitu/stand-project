@@ -41,7 +41,6 @@ Ext.define("core.baseset.roomallot.view.SelectTeacherGrid", {
                 var basePanel = grid.up("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
                 var isSelectGrid;
                 if(basePanel){
-                    
                     isSelectGrid = basePanel.down("panel[xtype=baseset.roomallot.isselectteachergrid]");
                     var isSelectStore = isSelectGrid.getStore();
                     for (var i = 0; i < isSelectStore.getCount(); i++) {

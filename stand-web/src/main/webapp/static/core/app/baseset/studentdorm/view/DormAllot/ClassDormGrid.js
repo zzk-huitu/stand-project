@@ -1,14 +1,13 @@
-Ext.define("core.baseset.studentdorm.view.DormAllotGrid", {
+Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.baseset.studentdorm.dormallotgrid",
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/dormAllotlist",
+    alias: "widget.baseset.studentdorm.classdormgrid",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classDormlist",
     model: "com.zd.school.build.allot.model.JwClassDormAllot",
     extParams: {
-        whereSql: "  and isDelete='0'",
-        filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'claiId'}]"
+       filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'claiId'}]"
     },
     multiSelect: false,
-    //noPagging: true,
+    noPagging: true,
     selModel: {
     },
     panelTopBar:{
@@ -50,7 +49,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotGrid", {
         flex : 1,
         minWidth:100,
         text: "宿舍名称",
-        dataIndex: "dormCode",
+        dataIndex: "dormName",
         field: {
             xtype: "textfield"
         }

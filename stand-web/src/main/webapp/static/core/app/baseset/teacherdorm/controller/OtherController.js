@@ -33,7 +33,7 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                 return false;
             }
         },
-            "mtfuncwindow[funcPanel=pubselect.selectuserlayout] button[ref=ssOkBtn]": {
+        "mtfuncwindow[funcPanel=pubselect.selectuserlayout] button[ref=ssOkBtn]": {
 
                 beforeclick: function(btn) {
                     var win = btn.up('window');

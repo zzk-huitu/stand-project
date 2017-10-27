@@ -13,7 +13,7 @@ Ext.define("core.public.SelectRoom.view.SelectRoomLayout", {
     },
     /*设置最小宽度，并且自动滚动*/
     minWidth:1200,
-    scrollable:true,
+    scrollable:'x',
     items: [{
         xtype:'pubselect.selectroomgrid',
         //width:600,

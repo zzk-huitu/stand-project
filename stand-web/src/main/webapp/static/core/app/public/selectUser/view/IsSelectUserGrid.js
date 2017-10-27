@@ -55,7 +55,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
                 IsSelectStore.removeAt(index);
 
                 var basePanel = grid.up("panel[xtype=pubselect.selectuserlayout]");
-                var selectGrid = basePanel.down("panel[xtype=pubselect.selectusergrid]");
+                var selectGrid = basePanel.down("basegrid[xtype=pubselect.selectusergrid]");
                 var selectStore = selectGrid.getStore();
                 selectStore.insert(0, [record]);
                 return false;

@@ -20,31 +20,32 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             }
         },'->',{
             xtype: 'button',
+            text: '一键分配宿舍',
+            ref: 'onKeyallotDorm',
+            iconCls: 'x-fa fa-plus-circle'
+        }, {
+            xtype: 'button',
             text: '宿舍分配',
-            ref: 'gridAdd_Tab',
+            ref: 'dormAlllot',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
             text: '虚拟宿舍调整(或换宿舍)',
             ref: 'dormAdjust',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-plus-circle',
         },{
             xtype: 'button',
             text: '推送消息',
             ref: 'dormTs',
             iconCls: 'x-fa fa-plus-circle',
             hidden:true
-        },{
-            xtype: 'button',
-            text: '一键分配宿舍',
-            ref: 'onKeyallotDorm',
-            iconCls: 'table_add'
         }, {
             xtype: 'button',
             text: '导出Excel',
             ref: 'exportExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-minus-circle'
+            iconCls: 'x-fa fa-minus-circle',
+            hidden:true
         }]
     },
     columns:{

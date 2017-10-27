@@ -59,7 +59,7 @@ Ext.define("core.public.SelectRoom.view.IsSelectRoomGrid", {
                 IsSelectStore.removeAt(index);
 
                 var basePanel = grid.up("panel[xtype=pubselect.selectroomlayout]");
-                var selectGrid = basePanel.down("panel[xtype=pubselect.selectroomgrid]");
+                var selectGrid = basePanel.down("basegrid[xtype=pubselect.selectroomgrid]");
                 var selectStore = selectGrid.getStore();
                 selectStore.insert(0, [record]);
                 return false;

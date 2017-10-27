@@ -3,6 +3,7 @@ package com.zd.school.plartform.baseset.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -10,12 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.service.BaseClassRoomDefineService;
@@ -226,5 +230,41 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"获取宿舍对象失败,详情见错误日志\""));
+	}
+	/**
+	 * 用于一键分配宿舍时使用
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping(value = { "/onKeylist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void onKeylist(@ModelAttribute BuildDormDefine entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String areaId = request.getParameter("areaId");
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ areaId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}
+		if(sb.length()>0){
+			if(filter.length()>0){
+				filter = filter.substring(0, filter.length()-1);
+				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}"+"]";
+			}else{
+				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}]";
+			}
+		}else{//为楼栋或校区，其下没有楼层
+			filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+null+"\",\"field\":\"areaId\"}]";
+		}
+		QueryResult<BuildDormDefine> qr = dormRoomService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), filter, true);
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
 	}
 }

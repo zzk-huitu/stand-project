@@ -1,19 +1,18 @@
-Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
+Ext.define("core.baseset.studentdorm.view.DormAllotTree", {
     extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.baseset.studentdorm.studentdormtree",
+    alias: "widget.baseset.studentdorm.dormallottree",
     displayField: "text",
     model: "com.zd.school.plartform.comm.model.CommTree",
     dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     extParams: {
         excludes: "checked",
-        whereSql: ""
     },
     selModel: {},
     tbar:{
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '宿舍分配',
+            html: '数据列表',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -36,12 +35,8 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             dataIndex: "text",
             xtype:'treecolumn',
             flex: 1,
-            minWidth:250
-        }/*, {
-            text: "顺序号",
-            dataIndex: "orderIndex",
-            width:100
-        }*/,{
+            minWidth:200
+        },{
             text:"主键",
             dataIndex:'id',
             hidden:true
@@ -49,22 +44,32 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
   },
      listeners: {
         itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("basepanel[xtype=baseset.studentdorm.mainlayout]");
+            var detailLayout = view.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
             var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'claiId'}]";
-            var funData = mainLayout.funData;
-            mainLayout.funData = Ext.apply(funData, {
+            var funData = detailLayout.funData;
+            detailLayout.funData = Ext.apply(funData, {
                 claiId: record.get("id"),
                 filter: filter
             });
-            // 加载人员信息
-            var storeyGrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.maingrid]");
-            var store = storeyGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                filter: filter,
+            // 加载班级宿舍列表
+             var classDormGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.classdormgrid]");
+             var store = classDormGrid.getStore();
+             var proxy = store.getProxy();
+             proxy.extraParams = {
+                filter: filter
             };
-            store.loadPage(1); // 给form赋值
-            return false;
+            store.loadPage(1); 
+            //获取未分配宿舍学生列表
+            var dormNotAllotGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]");
+            var dormNotAllotGridstore = dormNotAllotGrid.getStore();
+            var proxy = dormNotAllotGridstore.getProxy();
+            whereSql = " where studentId not in (select stuId from DormStudentDorm where isDelete=0) and claiId='" + record.get("id") + "' and isDelete=0";
+            proxy.extraParams = {
+               // filter: filter,
+                whereSql: whereSql
+            };
+            dormNotAllotGridstore.loadPage(1);
+           
         }
     }
 });
