@@ -24,6 +24,7 @@ import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
+import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -46,6 +47,8 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	BaseClassDormAllotService classDormService;// 班级宿舍 
 	@Resource
 	JwClassstudentService classStuService; // 学生分班
+	@Resource
+	BaseDormDefineService dormDefineService;// 宿舍定义
    /**
 		 * 已入住宿舍学生列表 @Title: list @Description: TODO @param @param entity
 		 * 实体类 @param @param request @param @param response @param @throws
@@ -270,5 +273,43 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		}
 		String strData = jsonBuilder.buildObjListToJson(new Long(dormAllotList.size()), dormAllotList, false);// 处理数据
 		writeJSON(response, strData);// 返回数据
+	}
+	/**
+	 * 删除宿舍
+	*/
+	@RequestMapping("/dormDoDelete")
+	public void dormDoDelete(String uuid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		int count = 0;
+		int fs = 0;
+		if (StringUtils.isEmpty(uuid)) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
+			return;
+		} else {
+			String[] ids = uuid.split(",");
+			BuildDormDefine defin = null;
+			JwClassDormAllot jwTClassdorm = null;
+			for (int j = 0; j < ids.length; j++) {
+				jwTClassdorm = classDormService.get(ids[j]);
+				boolean flag = thisService.IsFieldExist("cdormId", jwTClassdorm.getUuid(), "-1", "isdelete=0");
+				if (flag) {
+					++count;
+				}
+				if (count == 0) {
+					defin = dormDefineService.get(jwTClassdorm.getDormId());
+					defin.setRoomStatus("0"); // 设置成未分配
+					dormDefineService.merge(defin); // 持久化
+					jwTClassdorm.setIsDelete(1); // 设置删除状态
+					classDormService.merge(jwTClassdorm); // 持久化
+					++fs;
+				}
+				count = 0;
+			}
+			if (fs > 0) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功。\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"宿舍都已分配给学生，不允许删除。\""));
+			}
+
+		}
 	}
 }

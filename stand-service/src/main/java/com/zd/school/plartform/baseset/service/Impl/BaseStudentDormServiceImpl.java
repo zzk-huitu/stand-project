@@ -240,7 +240,11 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		}
 		for (int i = 0; i < studentId.length; i++) {
 			perEntity = new DormStudentDorm();
-			perEntity.setBedNum(inAllotCount);
+			if(entity.getBedNum()!=null){
+				perEntity.setBedNum(entity.getBedNum());
+			}else{
+				perEntity.setBedNum(inAllotCount);
+			}
 			BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 			this.allotStudentDorm(entity, jwClassDormAllot, studentId[i], entity.getBedNum(), currentUser.getXm());
 			// 分配门禁 待完成

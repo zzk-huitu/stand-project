@@ -127,6 +127,20 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                 return false;
              }
            },
+           //删除数据
+           "basegrid[xtype=baseset.studentdorm.emptymixdormgrid] button[ref=gridDelete]": {
+              beforeclick: function(btn) {
+                self.doDeleteEmpMixDorm(btn);
+                return false;
+             }
+           },
+             //手动分配
+           "basegrid[xtype=baseset.studentdorm.notallotstugrid] button[ref=handAllot]": {
+              beforeclick: function(btn) {
+                self.doHandAllot(btn);
+                return false;
+             }
+           },
 
   		})
 	},
@@ -480,6 +494,140 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
               return;
             }
 
+          },
+          doDeleteEmpMixDorm: function(btn){
+               var self=this;
+               var mainLayout = btn.up('basepanel[xtype=baseset.studentdorm.adjustdormlayout]');
+               var baseGrid = mainLayout.down('basegrid[xtype=baseset.studentdorm.emptymixdormgrid]');
+               var uuid = "";
+               var rows = baseGrid.getSelectionModel().getSelection();
+               if (rows <= 0) {
+                self.msgbox("请先选择宿舍再进行操作!");
+                return;
+               }
+               for (var i = 0; i < rows.length; i++) {
+                uuid = uuid + rows[i].get('uuid') + ",";
+               }
+               Ext.Msg.confirm('删除宿舍', '确定要删除宿舍吗？', function(btns) {
+                  var loading = self.LoadMask(baseGrid,'正在删除中，请等待...');
+                  if (btns == 'yes') {
+                  self.asyncAjax({
+                        url: comm.get('baseUrl') + "/BaseStudentDorm/dormDoDelete",
+                        params: {
+                           uuid: uuid
+                        },                      
+                   success: function(response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if(data.success){
+                            baseGrid.getStore().remove(records); //不刷新的方式
+                            self.msgbox(data.obj); 
+                         }else {
+                            self.Error(data.obj);
+                          }   
+                            loading.hide();        
+                        },    
+                    failure: function(response) {                   
+                          Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                          loading.hide();
+                    }
+                  }); 
+              }
+            });
+         },
+         doHandAllot:function(btn){
+            var self=this;
+            var mainLayout = btn.up('basepanel[xtype=baseset.studentdorm.adjustdormlayout]');
+            var objSelect = null;
+            var yrzs = 0; //宿舍已入住总人数
+            var zdrs = 0; //宿舍最大人数
+            var krzrs = 6; //可入住人数
+            //获取到未住满的宿舍
+            var mixdormgrid =  mainLayout.down('basegrid[xtype=baseset.studentdorm.mixdormgrid]');
+             //获取到空宿舍 
+             var emptymixdormgrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.emptymixdormgrid]");
+             //获取到未分配满的宿舍
+             var selectJwtr = underHunDormGrid.getSelectionModel().getSelection();
+             //获取到人数为零的宿舍
+             var selectJwtr2 = emptymixdormgrid.getSelectionModel().getSelection();
+            //首先判断是否选中了两边的宿舍
+            if (selectJwtr.length <= 0 && selectJwtr2.length <= 0) {
+              self.msgbox("请选择宿舍再进行操作，选择宿舍时可以任意选择未住满宿舍或人数为零的宿舍");
+              return;
+            }
+            if (selectJwtr.length > 0 && selectJwtr2.length > 0) {
+             self.msgbox("只能选取未住满宿舍，或者人数为零的宿舍，不能两边都选取。");
+             return;
+           }
+           if (selectJwtr.length > 0) {
+            objSelect = selectJwtr;
+            var ps = objSelect[0];
+              zdrs = ps.get("dormBedCount"); //宿舍最大人数
+              yrzs = parseInt(ps.get("stuCount")); //宿舍已入住人数
+              krzrs = zdrs - yrzs;
+            }
+            if (selectJwtr2.length > 0) {
+              objSelect = selectJwtr2;
+            }
+                    var gridObj = objSelect[0];
+                    var cdormId = gridObj.get("uuid"); //班级宿舍主键
+                    var dormType = gridObj.get("dormType"); //宿舍类型
+                    var claiId = gridObj.get("claiId"); //班级id
+                    //获取选中的学生
+                    var stuNotDormGrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.notallotstugrid]");
+                    var rows = stuNotDormGrid.getSelectionModel().getSelection();
+                    var stuId = "";
+                    if (rows <= 0) {
+                      self.msgbox("选中要分配的学生再进行操作!");
+                      return;
+                    }
+                    if (rows.length > krzrs) {
+                      self.msgbox("该宿舍现最多只能分配" + krzrs + "人!");
+                      return;
+                    }
+                    //判断性别
+                    for (var i = 0; i < rows.length; i++) {
+                       //将学生主键加入到list
+                       stuId = stuId + rows[i].get('studentId') + ",";
+                       if (dormType != 3) {
+                        if (dormType != rows[i].get('xbm')) {
+                          self.msgbox("选择宿舍的性别与选中学生性别不匹配无法继续!");
+                          return;
+                        }
+                      }
+                    }
+                    Ext.Msg.confirm('分配确认', '分配宿舍之后，只能从宿舍记录中删除，或者手动修改床号、柜号', function(btns) {
+                      if (btns == 'yes') {
+                        var loading = self.LoadMask(detailLayout,'正在分配中，请等待...');
+
+                        self.asyncAjax({
+                          url: comm.get('baseUrl') + "/BaseStudentDorm/dormHandAllot",
+                          params: {
+                            cdormId: cdormId,
+                            stuId: stuId,
+                            claiId: claiId,
+                            bedNum: yrzs
+                          },                 
+                          success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if(data.success){
+                              mixdormgrid.getStore().load();
+                              emptymixdormgrid.getStore().load();
+                              stuNotDormGrid.getStore().load();
+                              self.msgbox(data.obj); 
+                              loading.hide();
+                            }else {
+                              self.Error(data.obj);
+                              loading.hide();
+                            }           
+                            loading.hide();
+                          },
+                          failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                          }
+                        });     
+          }
+          });
           },
 
       });
