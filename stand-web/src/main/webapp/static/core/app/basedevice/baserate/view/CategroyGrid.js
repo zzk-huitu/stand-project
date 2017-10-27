@@ -3,6 +3,11 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
     alias: "widget.basedevice.baserate.categroygrid",
     forceFit: true,
     columnLines: true,
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:40,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        mode:'single',  //multi,simple,single；默认为多选multi
+    },
     store:{
     	type:"basedevice.baserate.categroystore",
     },
@@ -14,6 +19,7 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
+//            height:33,
             html: '控制类型',
             style: {
                 fontSize: '16px',
@@ -21,10 +27,9 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
                 fontWeight:800
             }
         },'->',{
-            xtype: 'button',
-            text: '刷新',
-            ref: 'gridRefresh',
-            iconCls: ''
+        	xtype: 'tbtext',
+          height:33,
+          html: '',
         }]
     },
     columns:  [{

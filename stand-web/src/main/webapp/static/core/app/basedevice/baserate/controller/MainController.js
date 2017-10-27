@@ -12,6 +12,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
     },
     control: {
     	
+    	 //费率列表添加按钮
     	 "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridAdd_Tab]": {
              beforeclick: function(btn) {
             	 this.doBasePriceDefine_Tab(btn,"add");
@@ -19,6 +20,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              }
          },
          
+         //费率列表编辑按钮
          "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridEdit_Tab]": {
              beforeclick: function(btn) {
             	 this.doBasePriceDefine_Tab(btn,"edit");
@@ -26,6 +28,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              }
          },
          
+         //费率列表删除按钮
          "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridDelete]": {
              beforeclick: function(btn) {
             	 this.doBasePriceDefine_Delete(btn,"null");
@@ -33,17 +36,24 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              }
          },
          
-         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
+         //费率列表绑定按钮
+         "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridBinding]": {
              beforeclick: function(btn) {
-            	 var baseGrid = btn.up("grid");
-                 var store = baseGrid.getStore().load();
+            	 this.doBaseBinding(btn,"null");
                  return false;
              }
          },
          
-         /**
-          * 费率列表操作列事件
-          */
+         //控制类型刷新按钮
+//         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
+//             beforeclick: function(btn) {
+//            	 var baseGrid = btn.up("grid");
+//                 var store = baseGrid.getStore().reload();
+//                 return false;
+//             }
+//         },
+         
+         //费率列表操作列事件
          "basegrid  actioncolumn": {
              //操作列编辑
              editClick_Tab: function (data) {
@@ -54,12 +64,14 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              deleteClick: function (data) {
             	 this.doBasePriceDefine_Delete(null, null, data.view, data.record);
                  return false;
-             },
+             }
          }
-         
          
     },
     
+    /*
+     * 添加编辑方法
+     */
     doBasePriceDefine_Tab: function(btn,cmd,grid,record){
         var self = this;
         var baseGrid;
@@ -279,6 +291,94 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
             });
         }
         
+    },
+    
+    /*
+     * 绑定按钮事件
+     */
+    doBaseBinding:function(btn){
+    	var self = this;
+    	var basegrid = btn.up('basegrid');
+        var rows = basegrid.getSelectionModel().getSelection();
+        if (rows.length > 1) {
+            self.Warning("只能选择一条数据。");
+            return false;
+        } else if (rows.length < 1) {
+            self.Warning("至少选择一条数据。");
+            return false;
+        }
+        
+        var funCode = basegrid.funCode; //creditrule_main
+        var basePanel = basegrid.up("basepanel[funCode=" + funCode +"]");
+        var tabPanel=basegrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
+        
+        var categroyGrid = basePanel.down("grid[xtype=basedevice.baserate.categroygrid]");
+        var categroyGridRecords = categroyGrid.getSelectionModel().getSelection();
+        
+        var categroy = categroyGridRecords[0].get("categroy");
+        if(categroy=="水控"){
+        	var win = Ext.create('Ext.window.Window', {
+                title: "选择设备",
+                ref: 'DkPriceDefineWin',
+                iconCls: 'application_form',
+                controller:"basedevice.baserate.othercontroller",
+                meterId: rows[0].get('uuid'),
+                categroy:"2",
+                resizable: false,
+                width: 1200,
+                height: 520,
+                modal: true,
+                iconCls: 'table_add',
+                items: [{
+                    xtype: "basedevice.baserate.dkmainlayout",
+                }],
+                buttonAlign: 'center',
+                buttons: [{
+                    xtype: "button",
+                    text: "确定",
+                    ref: "ssOkBtn",
+                    iconCls: "table_save"
+                }, {
+                    xtype: "button",
+                    text: "取消",
+                    ref: "closeBtn",
+                    iconCls: "return"
+                }]
+            }).show();	
+        	
+        	
+        }else if(categroy=="电控"){
+        		var win = Ext.create('Ext.window.Window', {
+                    title: "选择设备",
+                    ref: 'DkPriceDefineWin',
+                    iconCls: 'application_form',
+                    controller:"basedevice.baserate.othercontroller",
+                    meterId: rows[0].get('uuid'),
+                    categroy:"1",
+                    resizable: false,
+                    width: 1200,
+                    height: 520,
+                    modal: true,
+                    iconCls: 'table_add',
+                    items: [{
+                        xtype: "basedevice.baserate.dkmainlayout",
+                    }],
+                    buttonAlign: 'center',
+                    buttons: [{
+                        xtype: "button",
+                        text: "确定",
+                        ref: "ssOkBtn",
+                        iconCls: "table_save"
+                    }, {
+                        xtype: "button",
+                        text: "取消",
+                        ref: "closeBtn",
+                        iconCls: "return"
+                    }]
+                }).show();	
+        }
+        return false;
     }
-   
+    
+    
 });

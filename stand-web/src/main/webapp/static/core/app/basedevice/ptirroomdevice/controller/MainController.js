@@ -20,7 +20,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
             }
         },
         
-      //绑定品牌列表事件
+        //房间列表刷新按钮
     	"basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
              btn.up('basetreegrid').getStore().load();

@@ -81,7 +81,14 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 		String brandId = request.getParameter("brandId");
 		String level = request.getParameter("level");
 		
-		
+		if(leaf==null){
+			if(filter==null){
+				filter="";
+			}
+			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+	        writeJSON(response, strData);// 返回数据
+		}
 		//根据leaf判断到底是传入的品牌ID还是类型ID(为true则是品牌id,为false则是类型id)
 		if(level.equals("3")){
 			filter = "[{'type':'string','comparison':'=','value':'" + brandId + "','field':'parentNode'}]";
