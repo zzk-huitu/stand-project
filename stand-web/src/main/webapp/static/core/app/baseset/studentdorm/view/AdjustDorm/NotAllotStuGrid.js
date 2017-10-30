@@ -4,7 +4,7 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/classStuNotAllotlist",
     model: "com.zd.school.student.studentclass.model.JwClassstudent",
     extParams: {
-        whereSql: " where studentId not in (select A.stuId from DormStudentDorm as A where A.isDelete=0) and isDelete=0",
+      //  whereSql: " where studentId not in (select A.stuId from DormStudentDorm as A where A.isDelete=0) and isDelete=0",
     },
     noPagging: true,
     panelTopBar:{
@@ -42,7 +42,7 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
         align: 'center'
     },{
         text: "学生主键",
-        dataIndex: "studentId",
+        dataIndex: "userId",
         field: {
             xtype: "textfield"
         },

@@ -170,7 +170,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
            //判断性别
            for (var i = 0; i < rows.length; i++) {
             //将学生主键加入到list
-            stuId+= rows[i].get('studentId') + ",";
+            stuId+= rows[i].get('userId') + ",";
             if (dormType != 3) {
               if (dormType != rows[i].get('xbm')) {
                       self.msgbox("选择宿舍的性别与选中学生性别不匹配无法继续!");
@@ -214,7 +214,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             })
          }
       },
-        doDormAutoAllot: function(btn){
+      doDormAutoAllot: function(btn){
            var self=this;
            var detailLayout = btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
            var dormAllotTree = detailLayout.down("basetreegrid[xtype=baseset.studentdorm.dormallottree]");
@@ -227,15 +227,15 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
            }
            var nodeType = treeObj.get("nodeType");
            if (nodeType != "05") {
-              self.msgbox("只能选择班级操作。");
-              return;
-           }
+               self.msgbox("只能选择班级操作。");
+               return;
+          }
           var claiId = treeObj.get("id");
           var classDormGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.classdormgrid]");
           var count = classDormGrid.getStore().getCount();
           if (count <= 0) {
-             self.msgbox("自动分配时，必须确保班级下有宿舍，并且有未分配的学生。");
-             return;
+              self.msgbox("自动分配时，必须确保班级下有宿舍，并且有未分配的学生。");
+              return;
          }
          var dormNotAllotGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]");
          var counts = dormNotAllotGrid.getStore().getCount();
@@ -246,7 +246,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
          self.asyncAjax({
               url: comm.get('baseUrl') + "/BaseStudentDorm/dormAutoAllot", 
               params: {
-                 claiId: claiId
+                 classId: claiId
                  },                 
                  success: function(response) {
                   var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
@@ -255,7 +255,8 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                         var proxy = dormNotAllotGridstore.getProxy();
                         whereSql = " where studentId not in (select stuId from DormStudentDorm where isDelete=0) and claiId='" + claiId + "' and isDelete=0";
                         proxy.extraParams = {
-                           whereSql: whereSql
+                          // whereSql: whereSql,
+                          classId:claiId
                          };
                      dormNotAllotGridstore.loadPage(1);
                      self.msgbox(data.obj); 
@@ -587,7 +588,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
           //判断性别
           for (var i = 0; i < rows.length; i++) {
              //将学生主键加入到list
-             stuId = stuId + rows[i].get('studentId') + ",";
+             stuId = stuId + rows[i].get('userId') + ",";
              if (dormType != 3) {
               if (dormType != rows[i].get('xbm')) {
                 self.msgbox("选择宿舍的性别与选中学生性别不匹配无法继续!");
@@ -597,7 +598,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
           }
           Ext.Msg.confirm('分配确认', '分配宿舍之后，只能从宿舍记录中删除，或者手动修改床号、柜号', function(btns) {
             if (btns == 'yes') {
-              var loading = self.LoadMask(detailLayout,'正在分配中，请等待...');
+              var loading = self.LoadMask(mainLayout,'正在分配中，请等待...');
               self.asyncAjax({
                   url: comm.get('baseUrl') + "/BaseStudentDorm/dormHandAllot",
                   params: {

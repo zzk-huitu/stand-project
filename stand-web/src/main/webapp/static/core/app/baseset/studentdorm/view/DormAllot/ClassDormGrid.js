@@ -8,6 +8,7 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
     },
     multiSelect: false,
     noPagging: true,
+    al: false,
     selModel: {
     },
     panelTopBar:{
