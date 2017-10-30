@@ -59,8 +59,23 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	public void list(@ModelAttribute DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		String filter="";
+		String claiId=request.getParameter("claiId");
+		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
+				+ claiId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}
+		if (sb.length() > 0) {
+		   filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
+						+ "\",\"field\":\"claiId\"}]";
+		} else {
+			filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + null + "\",\"field\":\"claiId\"}]";
+		}
 		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request), Integer.MAX_VALUE,
-				super.sort(request), super.filter(request), true);
+				super.sort(request), filter, true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据

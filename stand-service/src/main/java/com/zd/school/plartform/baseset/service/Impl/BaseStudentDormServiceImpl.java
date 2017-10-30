@@ -115,7 +115,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 				girlList.add(classStuList.get(i));
 			}
 		}
-		//需要宿舍BuildDormDefine的床位数？  
+	
 		Integer nanDormCount = this.countDorm(gradeClassList, boyList);
 		Integer nvDormCount = this.countDorm(gradeClassList, girlList);
 		
@@ -240,11 +240,12 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		}
 		for (int i = 0; i < studentId.length; i++) {
 			perEntity = new DormStudentDorm();
-			if(entity.getBedNum()!=null){
+			/*if(entity.getBedNum()!=null){
 				perEntity.setBedNum(entity.getBedNum());
 			}else{
 				perEntity.setBedNum(inAllotCount);
-			}
+			}*/
+			perEntity.setBedNum(inAllotCount);
 			BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 			this.allotStudentDorm(entity, jwClassDormAllot, studentId[i], entity.getBedNum(), currentUser.getXm());
 			// 分配门禁 待完成
