@@ -26,7 +26,7 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             iconCls: '',
             titleAlign:'right',
     }]
-},
+  },
    columns:{
     defaults:{
             titleAlign:"center"
@@ -61,7 +61,8 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             var store = storeyGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams = {
-                filter: filter,
+                claiId:record.get("id"),
+               // filter: filter,
             };
             store.loadPage(1); // 给form赋值
             return false;

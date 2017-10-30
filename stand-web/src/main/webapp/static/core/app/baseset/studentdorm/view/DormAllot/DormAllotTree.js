@@ -25,7 +25,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotTree", {
             iconCls: '',
             titleAlign:'right',
     }]
-},
+   },
    columns:{
     defaults:{
             titleAlign:"center"
@@ -66,7 +66,8 @@ Ext.define("core.baseset.studentdorm.view.DormAllotTree", {
             whereSql = " where studentId not in (select stuId from DormStudentDorm where isDelete=0) and claiId='" + record.get("id") + "' and isDelete=0";
             proxy.extraParams = {
                // filter: filter,
-                whereSql: whereSql
+                whereSql: whereSql,
+                classId:record.get("id")
             };
             dormNotAllotGridstore.loadPage(1);
            

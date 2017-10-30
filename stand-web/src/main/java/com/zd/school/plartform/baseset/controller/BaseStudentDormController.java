@@ -30,6 +30,7 @@ import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.student.studentclass.model.JwClassstudent;
+import com.zd.school.student.studentclass.model.StandVClassStudent;
 import com.zd.school.student.studentclass.service.JwClassstudentService;
 
 /**
@@ -59,8 +60,23 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	public void list(@ModelAttribute DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		String filter="";
+		String claiId=request.getParameter("claiId");
+		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
+				+ claiId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}
+		if (sb.length() > 0) {
+		   filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
+						+ "\",\"field\":\"claiId\"}]";
+		} else {
+			filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + null + "\",\"field\":\"claiId\"}]";
+		}
 		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request), Integer.MAX_VALUE,
-				super.sort(request), super.filter(request), true);
+				super.sort(request), filter, true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
@@ -154,17 +170,30 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	public void classStuNotAllotlist(@ModelAttribute JwClassstudent entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		/*select * from STAND_V_CLASSSTUDENT a where classId='' and 
-				userId not in (select STU_ID from DORM_T_STUDENTDORM  where CLAI_ID=a.classId)
-	    */
-		StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + "");
+		String classId = request.getParameter("classId");
+		String sql = " select * from STAND_V_CLASSSTUDENT a where "
+				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
+		String countsql = " select count(*) from STAND_V_CLASSSTUDENT a where "
+				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
+		if(classId!=null){
+			sql+=" and a.classId='"+classId+"' ";
+			countsql+=" and a.classId='"+classId+"' ";
+		}
+		/*String sql=" select * from STAND_V_CLASSSTUDENT a where a.classId='"+classId+"' and "
+				+ " userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
+		String countsql=" select count(*) from STAND_V_CLASSSTUDENT a where a.classId='"+classId+"' and "
+				+ " userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";*/
+		/*StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + "");
 	    StringBuffer countHql = new StringBuffer("select count(*) from " + entity.getClass().getSimpleName() + "");
 		String whereSql = request.getParameter("whereSql");
 	    hql.append(whereSql);
 		countHql.append(whereSql);
-		
 		List<JwClassstudent> lists = classStuService.queryByHql(hql.toString(), 0, 0);// 执行查询方法
 		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
+*/		
+		List<StandVClassStudent> lists =thisService.queryEntityBySql(sql, StandVClassStudent.class);
+		//QueryResult<StandVClassStudent> lists =thisService.queryPageResultBySql(sql, 0, 0, StandVClassStudent.class);
+		Integer count = thisService.getQueryCountBySql(countsql.toString());// 查询总记录数
 		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -200,11 +229,11 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	 * 自动分配宿舍
 	 */
 	@RequestMapping("/dormAutoAllot")
-	public void dormAutoAllot(String claiId, HttpServletRequest request, HttpServletResponse response)
+	public void dormAutoAllot(String classId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		Boolean flag = false;
 		SysUser currentUser = getCurrentSysUser();
-		flag = thisService.dormAutoAllot(claiId, currentUser);
+		flag = thisService.dormAutoAllot(classId, currentUser);
 		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("'自动分配宿舍成功。'"));
 		} else {
@@ -212,7 +241,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		}
 	}
 	/**
-	 * 计算未分配完的混合宿舍
+	 * 计算未分配完的混合宿舍 该年纪下的所有未分配完的宿舍
 	 */
 	@RequestMapping(value = { "/mixDormList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -244,7 +273,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		writeJSON(response, strData);// 返回数据
 	}
 	/**
-	 * 查询出已分配并且人数为0的混班宿舍
+	 * 查询出已分配并且人数为0的混班宿舍  该年纪下的所有人数为0的混班宿舍
 	 */
 	@RequestMapping(value = { "/emptyMixDormList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })

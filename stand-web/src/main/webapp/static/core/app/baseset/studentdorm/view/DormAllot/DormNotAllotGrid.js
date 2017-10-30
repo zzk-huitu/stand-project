@@ -28,7 +28,7 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
             xtype: 'button',
             text: '自动分配宿舍',
             ref: 'dormzdFp',
-            iconCls: 'table_add'
+            iconCls: ''
         }]
     },
     columns: {
@@ -42,7 +42,7 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
             align: 'center'
         }, {
             text: "学生主键",
-            dataIndex: "studentId",
+            dataIndex: "userId",
             hidden: true
         }, {
             flex : 1,

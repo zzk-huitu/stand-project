@@ -5,7 +5,6 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
     funData: {
         action: comm.get('baseUrl') + "/BaseStudentDorm", //请求controller
         pkName: "uuid", //主键
-        //默认的初始值设置
         defaultObj: {
         }
     },
