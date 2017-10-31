@@ -12,12 +12,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     detCode: "useraccess_detail",
     detLayout: "accesscontrol.useraccess.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-//    otherController:'basedevice.measurement.othercontroller',
-//    layout: {
-//        type: 'hbox',
-//        pack: 'start',
-//        align: 'stretch'
-//    },
+    otherController:'accesscontrol.useraccess.othercontroller',
     layout:'border',
     border:false,
     funData: {

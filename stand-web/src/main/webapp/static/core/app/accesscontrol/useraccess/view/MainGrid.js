@@ -17,7 +17,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
         },'->',{
             xtype: 'button',
             text: '选择人员',
-            ref: 'gridAdde',
+            ref: 'gridAdd_Win',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',

@@ -15,13 +15,15 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
                 var uuids=new Array();
                 for (var i = 0; i < selectRow.length; i++) {
                     var temp=selectRow[i].data;
-                    uuids.push("'"+temp.uuid+"'");
+//                    uuids=uuids.substring(0,uuids.length-1)+","+("'"+temp.uuid+"'");
+                    uuids.push(temp.uuid);
                 }
+                var uuid = uuids.join(",");
                 var mainlayout = grid.up('panel[xtype=accesscontrol.useraccess.mainlayout]');
                 var baseGrid = mainlayout.down('panel[xtype=accesscontrol.useraccess.maingrid]');
                 var stores = baseGrid.getStore();
                 var proxys = stores.getProxy();
-                var filter = "[{'type':'string','comparison':'=','value':"+ uuids+",'field':'termId'}]";
+                var filter = "[{'type':'string','comparison':'in','value':'"+uuid +"','field':'termId'}]";
                 proxys.extraParams = {
                 		filter: filter
                 };
