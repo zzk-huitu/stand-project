@@ -1,30 +1,16 @@
-Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
+Ext.define("core.accesscontrol.useraccess.view.UserAccessGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.accesscontrol.useraccess.maingrid",
+    alias: "widget.accesscontrol.useraccess.useraccessgrid",
     dataUrl: comm.get('baseUrl') + "/BaseMjUserright/list",
     model: "com.zd.school.control.device.model.MjUserright",
-    al:false,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
-            xtype: 'tbtext',
-            html: '设备权限角色',
-            style: {
-                fontSize: '14px',
-                color: '#C44444',
-                fontWeight:800
-            }
-        },'->',{
             xtype: 'button',
             text: '删除权限',
             ref: 'gridDelete',
             iconCls: 'x-fa fa-minus-circle'
-        },{
-            xtype: 'button',
-            text: '删除人员权限',
-            ref: 'gridDeleteAll',
-            iconCls: 'x-fa fa-minus-circle'
-        }],
+        },'->'],
     }, 
     panelButtomBar:null,
     
@@ -43,13 +29,25 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         },{
-        	text: "角色名",
-        	dataIndex: "xm",
-        	flex:1
+            text: "设备主键",
+            dataIndex: "termId",
+            hidden: true,
         },{
-        	text: "设备名称",
-        	dataIndex: "termName",
-        	width:150
-    }]
+            text: "设备名称",
+            dataIndex: "termName",
+            width:250
+        },{
+            text: "用户姓名",
+            dataIndex: "xm",
+            width:250
+        },{
+            text: "人员主键",
+            dataIndex: "stuId",
+            hidden: true,
+        },{
+            text: "设备序列号",
+            dataIndex: "termSN",
+            width:250
+        }]
     }    
 });

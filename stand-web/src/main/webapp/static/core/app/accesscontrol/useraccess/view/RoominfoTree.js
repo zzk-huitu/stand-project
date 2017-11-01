@@ -19,7 +19,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
             xtype: 'tbtext',
             html: '区域信息',
             style: {
-                fontSize: '16px',
+                fontSize: '14px',
                 color: '#C44444',
                 fontWeight:800
             }

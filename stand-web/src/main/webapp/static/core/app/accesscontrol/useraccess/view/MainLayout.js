@@ -31,17 +31,22 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     items: [{
     	split: true,//对模块分开的线条
     	xtype: "accesscontrol.useraccess.roominfotree",
-    	width: 240,
+    	width: 230,
         region: "west",
     }, {
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.mjuserrightgrid",
-        flex:1,
+        width:300,
         region: "center",
     }, {
     	split: true,//对模块分开的线条
+        xtype: "accesscontrol.useraccess.mjuserselectgrid",
+        width: 340,
+        region: "east",
+    },{
+    	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.maingrid",
-        width: 450,
+        width:320,
         region: "east",
     }]
 })
