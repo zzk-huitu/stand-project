@@ -18,7 +18,7 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: '',
+            iconCls: 'x-fa fa-refresh',
             titleAlign:'right',
         }]
     },

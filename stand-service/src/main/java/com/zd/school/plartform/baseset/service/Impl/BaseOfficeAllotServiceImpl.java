@@ -1,7 +1,9 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,9 +16,13 @@ import com.zd.core.util.BeanUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwOfficeAllot;
 import com.zd.school.build.define.model.BuildOfficeDefine;
+import com.zd.school.build.define.model.BuildRoominfo;
+import com.zd.school.jw.push.model.PushInfo;
+import com.zd.school.jw.push.service.PushInfoService;
 import com.zd.school.plartform.baseset.dao.BaseOfficeAllotDao;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
+import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.student.studentclass.model.JwClassstudent;
 
@@ -34,6 +40,10 @@ import com.zd.school.student.studentclass.model.JwClassstudent;
 public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> implements BaseOfficeAllotService {
 	@Resource
 	BaseOfficeDefineService offRoomService; // 办公室service层接口
+	@Resource
+	BaseRoominfoService infoService;// 房间
+	@Resource
+	PushInfoService pushService; // 推送
 	// @Resource
 	// MjUserrightService mjService; // 门禁权限
 	// @Resource
@@ -151,6 +161,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			entity.setTteacId(strId[i]);
 			entity.setOrderIndex(orderIndex);// 排序
 			this.merge(entity); // 执行添加方法
+			
 			this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
 			//将办公室设置为已分配
 			String hql=" from BuildOfficeDefine a where a.roomId='"+entity.getRoomId()+"' ";
@@ -163,6 +174,32 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 		}
 		hashMap.put("xm", xm);
 		hashMap.put("roomName", roomName);
+		return flag;
+	}
+
+	@Override
+	public Boolean pushMessage(String roomId) {
+		Boolean flag=false;
+		List<JwOfficeAllot> offTeas = null;
+		PushInfo pushInfo = null;
+		BuildRoominfo roominfo = null;
+		String[] str = { "roomId", "isDelete" };
+		Object[] str2 = { roomId, 0 };
+		offTeas = this.queryByProerties(str, str2);//该办公室下的老师
+	    for (JwOfficeAllot jwTOfficeAllot : offTeas) {
+			pushInfo = new PushInfo();
+			pushInfo.setEmplName(jwTOfficeAllot.getXm());// 姓名
+			pushInfo.setEmplNo(jwTOfficeAllot.getGh());// 学号
+			pushInfo.setRegTime(new Date());
+			pushInfo.setEventType("办公室分配");
+			pushInfo.setPushStatus(0);
+			pushInfo.setPushWay(1);
+			roominfo = infoService.get(jwTOfficeAllot.getRoomId());
+			pushInfo.setRegStatus(pushInfo.getEmplName() + "您好，你的办公室分配在" + roominfo.getAreaUpName() + "，"
+					+ roominfo.getAreaName() + "，" + jwTOfficeAllot.getRoomName() + "房");
+			pushService.merge(pushInfo);
+		}
+		flag=true;
 		return flag;
 	}
 

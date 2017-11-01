@@ -15,23 +15,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zd.core.constant.AdminType;
 import com.zd.core.service.BaseServiceImpl;
-import com.zd.core.util.BeanUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
+import com.zd.school.jw.push.model.PushInfo;
+import com.zd.school.jw.push.service.PushInfoService;
 import com.zd.school.plartform.baseset.dao.BaseStudentDormDao;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
+import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.student.studentclass.model.JwClassstudent;
 import com.zd.school.student.studentclass.model.StandVClassStudent;
 import com.zd.school.student.studentclass.service.JwClassstudentService;
+import com.zd.school.student.studentinfo.model.StuBaseinfo;
+import com.zd.school.student.studentinfo.service.StuBaseinfoService;
 
 /**
  * 
@@ -63,8 +66,15 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	private BaseOfficeAllotService roomaAllotService;// 房间分配 办公室
 	@Resource
 	private BaseClassDormAllotService classDormService;// 班级宿舍
-	@Resource
+	/*@Resource
 	private JwClassstudentService classStuService; // 学生分班
+*/	@Resource
+    private StuBaseinfoService stuBaseinfoService;// 学生
+    @Resource
+    private BaseRoomareaService roomAreaService;// 区域
+    @Resource
+    private PushInfoService pushService; // 推送
+
 	@Override
 	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser) {
 		String userId = currentUser.getUuid();
@@ -248,7 +258,100 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		flag=true;
 		return flag;
 	}
+	
+	@Override
+	public List<JwClassDormAllot> mixDormList(JwClassDormAllot entity) {
+		List<JwClassDormAllot> dormAllotList=null;
+		List list = this.querySql(
+				"SELECT A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,COUNT(*) counts,F.CLAI_ID FROM DORM_T_STUDENTDORM A "
+						+ "JOIN JW_T_CLASSDORMALLOT B ON A.CDORM_ID=B.CDORM_ID "
+						+ "JOIN BUILD_T_DORMDEFINE C ON B.DORM_ID=C.DORM_ID "
+						+ "JOIN BUILD_T_ROOMINFO D ON c.ROOM_ID=d.ROOM_ID "
+						+ "JOIN dbo.JW_T_GRADECLASS F ON b.CLAI_ID=f.CLAI_ID WHERE A.ISDELETE=0 "
+						+ "GROUP BY A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,F.CLAI_ID HAVING COUNT(*)<6");
+		dormAllotList = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] objArray = (Object[]) list.get(i);
+			if (objArray != null) {
+				entity = new JwClassDormAllot();
+				entity.setUuid(objArray[0].toString());
+				entity.setDormName(objArray[1].toString());
+				entity.setClainame(objArray[2].toString());
+				entity.setDormType(objArray[3].toString());
+				entity.setDormBedCount(objArray[4].toString());
+				entity.setStuCount(objArray[5].toString());
+				entity.setClaiId(objArray[6].toString());
+				dormAllotList.add(entity);
+			}
+		}
+		return dormAllotList;
+	}
 
+	@Override
+	public List<JwClassDormAllot> emptyMixDormList(JwClassDormAllot entity) {
+		List<JwClassDormAllot> dormAllotList=null;
+		List list = this
+				.querySql("SELECT A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,F.CLAI_ID FROM "
+						+ " JW_T_CLASSDORMALLOT A JOIN dbo.JW_T_CLASSDORMALLOT B ON A.CDORM_ID=B.CDORM_ID "
+						+ " JOIN dbo.BUILD_T_DORMDEFINE C ON B.DORM_ID=C.DORM_ID "
+						+ " JOIN dbo.BUILD_T_ROOMINFO D ON c.ROOM_ID=d.ROOM_ID "
+						+ " JOIN dbo.JW_T_GRADECLASS F ON b.CLAI_ID=f.CLAI_ID "
+						+ " WHERE A.CDORM_ID NOT IN(SELECT CDORM_ID FROM DORM_T_STUDENTDORM  WHERE ISDELETE=0) AND A.ISDELETE=0");
+		dormAllotList = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] objArray = (Object[]) list.get(i);
+			if (objArray != null) {
+				entity = new JwClassDormAllot();
+				entity.setUuid(objArray[0].toString());
+				entity.setDormName(objArray[1].toString());
+				entity.setClainame(objArray[2].toString());
+				entity.setDormType(objArray[3].toString());
+				entity.setDormBedCount(objArray[4].toString());
+				entity.setClaiId(objArray[5].toString());
+				dormAllotList.add(entity);
+			}
+		}
+		return dormAllotList;
+	}
+
+	@Override
+	public Boolean pushMessage(String classId) {
+		Boolean flag=false;
+		List<DormStudentDorm> claStudentList=null;
+		PushInfo pushInfo = null;
+		StuBaseinfo stuBaseinfo = null;
+		BuildDormDefine dormDefin = null;
+		JwClassDormAllot jwClassDormAllot = null;
+		String roomName = null;
+		String areaName = null;// 楼栋名
+		String areaLc = null;// 楼层
+		
+		String[] str = { "claiId", "isDelete" };
+		Object[] str2 = { classId, 0 };
+		claStudentList = this.queryByProerties(str, str2);//班级下的已经入住宿舍的学生
+		for (DormStudentDorm pushMesStuDorm : claStudentList) {
+			stuBaseinfo = stuBaseinfoService.get(pushMesStuDorm.getStuId()); // 学生信息
+			roomName = pushMesStuDorm.getRoomName();// 房间名
+			jwClassDormAllot = classDormService.getByProerties("uuid", pushMesStuDorm.getCdormId());
+			dormDefin = dormDefineService.get(jwClassDormAllot.getDormId());
+			areaLc = jwClassDormAllot.getAreaName();// 楼层名
+			areaName = roomAreaService.getByProerties("uuid", dormDefin.getAreaId()).getParentName();
+			pushInfo = new PushInfo();
+			pushInfo.setEmplName(stuBaseinfo.getXm());// 姓名
+			pushInfo.setEmplNo(stuBaseinfo.getUserNumb());// 学号
+			pushInfo.setRegTime(new Date());
+			pushInfo.setVersion(0);
+			pushInfo.setEventType("宿舍信息");
+			pushInfo.setPushStatus(0);
+			pushInfo.setPushWay(1);
+			pushInfo.setRegStatus("学生：" + pushInfo.getEmplName() + "，你的宿舍分配在" + areaName + "，" + areaLc + "，" + roomName
+					+ "房间，床号为：" + pushMesStuDorm.getBedNum());
+			pushService.merge(pushInfo);
+		}
+		flag=true;
+		return flag;
+		
+	}
 	@Override
 	public Boolean dormAutoAllot(String classId, SysUser currentUser) {
 		Boolean flag=false;
@@ -704,6 +807,9 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		}
 		return zc + ys.size();
 	}
+
+
+
 
 
 }

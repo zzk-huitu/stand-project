@@ -247,28 +247,8 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void mixDormList(@ModelAttribute JwClassDormAllot entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		List list = thisService.querySql(
-				"SELECT A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,COUNT(*) counts,F.CLAI_ID FROM DORM_T_STUDENTDORM A "
-						+ "JOIN JW_T_CLASSDORMALLOT B ON A.CDORM_ID=B.CDORM_ID "
-						+ "JOIN BUILD_T_DORMDEFINE C ON B.DORM_ID=C.DORM_ID "
-						+ "JOIN BUILD_T_ROOMINFO D ON c.ROOM_ID=d.ROOM_ID "
-						+ "JOIN dbo.JW_T_GRADECLASS F ON b.CLAI_ID=f.CLAI_ID WHERE A.ISDELETE=0 "
-						+ "GROUP BY A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,F.CLAI_ID HAVING COUNT(*)<6");
-		List<JwClassDormAllot> dormAllotList = new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
-			Object[] objArray = (Object[]) list.get(i);
-			if (objArray != null) {
-				entity = new JwClassDormAllot();
-				entity.setUuid(objArray[0].toString());
-				entity.setDormName(objArray[1].toString());
-				entity.setClainame(objArray[2].toString());
-				entity.setDormType(objArray[3].toString());
-				entity.setDormBedCount(objArray[4].toString());
-				entity.setStuCount(objArray[5].toString());
-				entity.setClaiId(objArray[6].toString());
-				dormAllotList.add(entity);
-			}
-		}
+		List<JwClassDormAllot> dormAllotList = null;
+		dormAllotList = thisService.mixDormList(entity);
 		String strData = jsonBuilder.buildObjListToJson(new Long(dormAllotList.size()), dormAllotList, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -279,27 +259,8 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void emptyMixDormList(@ModelAttribute JwClassDormAllot entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		List list = thisService
-				.querySql("SELECT A.CDORM_ID,D.ROOM_NAME,F.CLASS_NAME,C.DORM_TYPE,C.DORM_BEDCOUNT,F.CLAI_ID FROM "
-						+ " JW_T_CLASSDORMALLOT A JOIN dbo.JW_T_CLASSDORMALLOT B ON A.CDORM_ID=B.CDORM_ID "
-						+ " JOIN dbo.BUILD_T_DORMDEFINE C ON B.DORM_ID=C.DORM_ID "
-						+ " JOIN dbo.BUILD_T_ROOMINFO D ON c.ROOM_ID=d.ROOM_ID "
-						+ " JOIN dbo.JW_T_GRADECLASS F ON b.CLAI_ID=f.CLAI_ID "
-						+ " WHERE A.CDORM_ID NOT IN(SELECT CDORM_ID FROM DORM_T_STUDENTDORM  WHERE ISDELETE=0) AND A.ISDELETE=0");
-		List<JwClassDormAllot> dormAllotList = new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
-			Object[] objArray = (Object[]) list.get(i);
-			if (objArray != null) {
-				entity = new JwClassDormAllot();
-				entity.setUuid(objArray[0].toString());
-				entity.setDormName(objArray[1].toString());
-				entity.setClainame(objArray[2].toString());
-				entity.setDormType(objArray[3].toString());
-				entity.setDormBedCount(objArray[4].toString());
-				entity.setClaiId(objArray[5].toString());
-				dormAllotList.add(entity);
-			}
-		}
+		List<JwClassDormAllot> dormAllotList=null;
+		dormAllotList=thisService.emptyMixDormList(entity);
 		String strData = jsonBuilder.buildObjListToJson(new Long(dormAllotList.size()), dormAllotList, false);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -341,4 +302,18 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 
 		}
 	}
+
+	//推送消息
+	@RequestMapping("/pushMessage")
+	public void pushMessage(String classId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Boolean flag=false;
+		flag=thisService.pushMessage(classId);
+		if (flag) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"推送信息成功。\""));
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"推送信息失败。\""));
+		}
+		
+	}
+
 }

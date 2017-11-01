@@ -38,7 +38,6 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             text: '推送消息',
             ref: 'dormTs',
             iconCls: 'x-fa fa-plus-circle',
-            hidden:true
         }, {
             xtype: 'button',
             text: '导出Excel',

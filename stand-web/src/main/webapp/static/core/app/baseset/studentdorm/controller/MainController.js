@@ -42,6 +42,13 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                     return false;
                 }
             },
+              //推送消息
+            "basegrid[xtype=baseset.studentdorm.maingrid] button[ref=dormTs]": {
+                beforeclick: function(btn) {
+                    self.pushMessage(btn);
+                    return false;
+                }
+            },
          
 
         });
@@ -167,5 +174,54 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                     }
                 }
             }).show();      
+        },
+       pushMessage:function(btn) {
+           var self=this;
+           var mainLayout = btn.up("basepanel[xtype=baseset.studentdorm.mainlayout]");
+           var storeyGrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.maingrid]");
+           var jwtrTree = mainLayout.down("basetreegrid[xtype=baseset.studentdorm.studentdormtree]");
+           var selectTreeObject = jwtrTree.getSelectionModel().getSelection();
+           if (selectTreeObject.length <= 0) {
+                self.msgbox("请选择要推送的班级！");
+                return;
+           }
+           var objDic = selectTreeObject[0];
+           var classId = objDic.get("id");
+           var nodeType = objDic.get("nodeType");
+           if (nodeType != "05") {
+                self.msgbox("推送消息时，请选择本班。");
+                return ;
+            }
+            var count = storeyGrid.getStore().getCount();
+            if (count <= 0) {
+                self.msgbox("列表中无任何数据!");
+                return;
+            }
+            Ext.Msg.confirm("推送消息", "您确定要推送信息吗？", function(btns) {
+                if (btns == 'yes') {
+                    var loading = self.LoadMask(mainLayout,'正在推送消息中，请等待...');
+                    self.asyncAjax({
+                      url: comm.get('baseUrl') + "/BaseStudentDorm/pushMessage",
+                      params: {
+                         classId: classId,
+                     },                 
+                     success: function(response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if(data.success){
+                                self.msgbox(data.obj); 
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    }); 
+
+                 }
+            })
+
         },
  });

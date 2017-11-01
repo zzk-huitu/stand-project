@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.zd.core.service.BaseService;
 import com.zd.school.build.allot.model.DormStudentDorm;
+import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.system.model.SysUser;
 
@@ -27,4 +28,7 @@ public interface BaseStudentDormService extends BaseService<DormStudentDorm> {
 	public Boolean oneKeyAllotDorm(String gradId,String boyId,String girlId,SysUser currentUser);
 	public Boolean dormAutoAllot(String claiId,SysUser currentUser);
 	public Boolean dormHandAllot(DormStudentDorm entity,Map hashMap,SysUser currentUser)throws IllegalAccessException, InvocationTargetException ;
+	public List<JwClassDormAllot>  mixDormList(JwClassDormAllot entity);
+	public List<JwClassDormAllot>  emptyMixDormList(JwClassDormAllot entity);
+	public Boolean pushMessage(String classId);
 }

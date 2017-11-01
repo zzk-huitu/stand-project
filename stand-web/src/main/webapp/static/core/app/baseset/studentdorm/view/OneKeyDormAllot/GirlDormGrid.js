@@ -20,12 +20,12 @@ Ext.define("core.baseset.studentdorm.view.GirlDormGrid", {
             xtype: 'button',
             text: '选择女生宿舍',
             ref: 'selectNv',
-            iconCls: ''
+            iconCls: 'x-fa fa-plus-circle'
         }, {
             xtype: 'button',
             text: '批量删除',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-minus-circle' 
         }]
     },
     bottomInfoPanelRef:'girlTotalInfo',

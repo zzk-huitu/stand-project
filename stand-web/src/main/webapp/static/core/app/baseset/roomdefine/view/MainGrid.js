@@ -28,7 +28,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             xtype: 'button',
             text: '解除设置',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-minus-circle',
             msg:'是否要解除此房间？',
             disabled:true
         },{
