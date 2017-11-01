@@ -81,15 +81,15 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
         }, {
             text: "序列号",
             dataIndex: "termSN",
-            width: 140,
+            width: 120,
         },{
             text: "机号",
             dataIndex: "termNo",
-            width: 140,
+            width: 120,
         }, {
             text: "设备名称",
             dataIndex: "termName",
-            width: 140,
+            flex:1,
         }, {
             text: "房间名称",
             dataIndex: "roomName",
@@ -97,17 +97,17 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
         }, {
             text: "网关名称",
             dataIndex: "gatewayName",
-            width: 140,	
+            width: 120,	
         }, {
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE", //字典代码
-            width: 140,
+            width: 120,
         }, {
             text: "设备状态",
             dataIndex: "termStatus",
-            flex:1,
+            width: 120,
             renderer: function(value) {
                 switch (value) {
                     case 0:
