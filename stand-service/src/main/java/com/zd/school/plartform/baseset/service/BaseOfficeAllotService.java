@@ -29,4 +29,5 @@ public interface BaseOfficeAllotService extends BaseService<JwOfficeAllot> {
 	 */
 	public boolean mjUserRight(String uuid, String roomId, String userId, DormStudentDorm dorm,JwClassstudent classStu);
 	public Boolean doAddRoom(JwOfficeAllot entity,Map hashMap,SysUser currentUser)throws IllegalAccessException, InvocationTargetException;
+	public Boolean pushMessage(String roomId);
 }

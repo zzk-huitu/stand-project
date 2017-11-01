@@ -20,13 +20,13 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
             xtype: 'button',
             text: '删除数据',
             ref: 'gridDelete',
-            iconCls: '',
+            iconCls: 'x-fa fa-minus-circle',
             titleAlign:'right',
         },{
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: '',
+            iconCls: 'x-fa fa-refresh',
             titleAlign:'right',
         }]
     },

@@ -21,13 +21,13 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
             xtype: 'button',
             text: '手动分配',
             ref: 'handAllot',
-            iconCls: '',
+            iconCls: 'x-fa fa-plus-circle',
             titleAlign:'right',
         },{
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: '',
+            iconCls: 'x-fa fa-refresh',
             titleAlign:'right',
         }]
     },

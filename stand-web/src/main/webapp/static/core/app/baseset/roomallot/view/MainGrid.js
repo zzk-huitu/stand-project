@@ -20,19 +20,18 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         },'->',{
             xtype: 'button',
             text: '分配房间',
-            ref: 'gridAdd_Win',
+            ref: 'allotOffRoom',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
             text: '解除设置',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-minus-circle'
         },{
             xtype: 'button',
             text: '推送消息',
             ref: 'officeTs',
             iconCls: 'x-fa fa-plus-circle',
-            hidden:true
         }]
     }, 
    panelButtomBar:{},

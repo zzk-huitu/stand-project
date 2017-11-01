@@ -23,7 +23,7 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: '',
+            iconCls: 'x-fa fa-refresh',
             titleAlign:'right',
     }]
   },

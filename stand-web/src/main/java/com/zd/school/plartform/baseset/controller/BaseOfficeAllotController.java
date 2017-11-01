@@ -170,11 +170,7 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	/**
 	 * 公用的教师查询（用于办公室分配使用）
 	 * 
-	 * @param entity
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 */
+	*/
 	@RequestMapping(value = { "/teacherAllot" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void teacherAllot(@ModelAttribute SysUser entity, HttpServletRequest request,
@@ -185,7 +181,17 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
-		
+	}
+	//推送消息
+	@RequestMapping("/pushMessage")
+	public void pushMessage(String roomId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Boolean flag=false;
+		flag=thisService.pushMessage(roomId);
+		if (flag) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"推送信息成功。\""));
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"推送信息失败。\""));
+		}
 		
 	}
 }

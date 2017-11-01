@@ -106,7 +106,7 @@ Ext.define("core.system.user.controller.MainController", {
                 }
             },
             //添加用户事件
-            "panel[xtype=system.user.usergrid] button[ref=gridAdd]": {
+            "panel[xtype=system.user.usergrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     var self = this;
                     var baseGrid = btn.up("basegrid");

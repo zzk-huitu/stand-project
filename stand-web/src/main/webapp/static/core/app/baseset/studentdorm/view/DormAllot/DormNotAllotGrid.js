@@ -22,13 +22,13 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
             xtype: 'button',
             text: '手动分配宿舍',
             ref: 'dormFp',
-            iconCls: '',
+            iconCls: 'x-fa fa-plus-circle',
             titleAlign:'right',
         },{
             xtype: 'button',
             text: '自动分配宿舍',
             ref: 'dormzdFp',
-            iconCls: ''
+            iconCls: 'x-fa fa-plus-circle'
         }]
     },
     columns: {

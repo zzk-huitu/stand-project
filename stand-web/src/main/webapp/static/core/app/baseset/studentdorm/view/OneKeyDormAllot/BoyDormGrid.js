@@ -20,12 +20,12 @@ Ext.define("core.baseset.studentdorm.view.BoyDormGrid", {
             xtype: 'button',
             text: '选择男生宿舍',
             ref: 'selectNan',
-            iconCls: ''
+            iconCls: 'x-fa fa-plus-circle'
         }, {
             xtype: 'button',
             text: '批量删除',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-minus-circle'
         }]
     },
     bottomInfoPanelRef:'boyTotalInfo',
