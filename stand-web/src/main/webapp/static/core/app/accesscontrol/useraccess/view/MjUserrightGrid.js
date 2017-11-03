@@ -15,7 +15,6 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
                 var uuids=new Array();
                 for (var i = 0; i < selectRow.length; i++) {
                     var temp=selectRow[i].data;
-//                    uuids=uuids.substring(0,uuids.length-1)+","+("'"+temp.uuid+"'");
                     uuids.push(temp.uuid);
                 }
                 var uuid = uuids.join(",");
@@ -38,7 +37,7 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
             xtype: 'tbtext',
             html: '房间下属设备',
             style: {
-                fontSize: '16px',
+                fontSize: '14px',
                 color: '#C44444',
                 fontWeight:800
             }
@@ -54,11 +53,6 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
         whereSql: ""
     },
     columns: [{
-        xtype: "rownumberer",
-        width: 50,
-        text: '序号',
-        align: 'center'
-    },{
         text: "主键",
         dataIndex: "uuid",
         hidden: true
@@ -69,13 +63,13 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
     }, {
         text: "序列号",
         dataIndex: "termSN",
-        width:150
+        width:100
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
-        width:150	
+        width:100	
     }],
     listeners: {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {

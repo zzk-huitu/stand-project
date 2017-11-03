@@ -1,9 +1,8 @@
 package com.zd.school.plartform.basedevice.service;
 
-import com.zd.core.dao.BaseDao;
-import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseService;
 import com.zd.school.control.device.model.MjUserright ;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -21,7 +20,6 @@ import com.zd.school.control.device.model.MjUserright ;
  
 public interface MjUserrightService extends BaseService<MjUserright> {
 
-	BaseDao<MjUserright> getDao();
-
-	QueryResult<MjUserright> list(Integer start, Integer limit, String sort, String filter, Boolean isDelete);
+	public MjUserright doAddEntity(MjUserright entity, SysUser currentUser);
+	
 }
