@@ -5,7 +5,6 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
     model: "com.zd.school.control.device.model.PtTerm",
     al:false,
     extParams: {
-        whereSql: "   where roomId='ROOT'"
     },
     panelTopBar:{
         xtype:'toolbar',

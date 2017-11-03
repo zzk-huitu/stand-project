@@ -1,36 +1,20 @@
 Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
-    extend: "core.base.view.BaseGrid",
+    extend: "Ext.grid.Panel",
     alias: "widget.basedevice.basedeviceallot.devicesysgrid",
-    model: "com.zd.school.control.device.model.PtTerm",
-    extParams: {
-        whereSql: " and isDelete='0' ",
+    title: "<font color='#ffeb00'>选中的设备 (双击添加或删除)</font>",
+    columnLines: true,
+    loadMask: true,
+    multiSelect: true,
+    selModel: {
+        selType: "checkboxmodel",
+        width: 10
     },
-    al:false,
-    panelTopBar:{
-        xtype:'toolbar',
-        items: [{
-            xtype: 'tbtext',
-            html: '选中的设备  (双击添加或删除)',
-            style: {
-                fontSize: '16px',
-                color: '#C44444',
-                fontWeight:800
-            }
-        },'->',{
-            xtype: 'button',
-            text: '保存列表数据',
-            ref: 'gridAdde',
-            iconCls: 'x-fa fa-plus-circle'
-        }],
-    }, 
-    panelButtomBar:null,
-    
-    //排序字段及模式定义
-    defSort: [{
-        property: 'createTime',
-        direction: 'DESC'
-    }],
-    extParams: {},
+     viewConfig: {
+        stripeRows: true
+    },
+    store: {
+        type: "basedevice.basedeviceallot.isselectstore"
+    },
     columns:  {        
         defaults:{
             titleAlign:"center"
@@ -40,19 +24,31 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             dataIndex: "uuid",
             hidden: true
         },{
+            text: "机号",
+            dataIndex: "termNo",
+            hidden: true
+        },{
+            text: "序列号",
+            dataIndex: "termSN",
+            hidden: true
+        },{
             text: "房间名称",
             dataIndex: "roomName",
+            width:100
         }, {
             text: "设备名称",
             dataIndex: "termName",
+            width:100
         }, {
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
-            ddCode: "PTTERMTYPE" //字典代码
+            ddCode: "PTTERMTYPE", //字典代码
+            width:100
         }, {
             text: "网关名称",
             dataIndex: "gatewayName",
+            width:100
         }]
     },
     
@@ -74,7 +70,9 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
                 gatewayName: gatewayName,
                 termTypeID: termTypeID,
                 termName: termName,
-                uuid: tremId
+                uuid: tremId,
+                termNo:record.get('termNo'),
+                termSN:record.get('termSN'),
             };
             grid.getStore().removeAt(index); //将选中的移除
             deviceAllotGrid.getStore().insert(0, data); //加入到新的grid

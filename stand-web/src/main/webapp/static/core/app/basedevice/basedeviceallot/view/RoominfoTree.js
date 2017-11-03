@@ -27,7 +27,7 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: ''
+            iconCls: 'x-fa fa-refresh'
         }]
     },
     columns:  {        

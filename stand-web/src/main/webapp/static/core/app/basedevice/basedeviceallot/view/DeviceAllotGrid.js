@@ -7,7 +7,6 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
     frame: false,
     columnLines: false,
     extParams: {
-        whereSql: " and isDelete='0' ",
     },
     panelTopBar:{
         xtype:'toolbar',
@@ -58,9 +57,10 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             dataIndex: "uuid",
             hidden: true
         },{
+            flex:1,
+            minWidth:100,
             text: "序列号",
             dataIndex: "termSN",
-            width:120,
             renderer: function(value, metaData) {
                 var title = "序列号";
                 var html = value;
@@ -68,9 +68,9 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         },{
+            width:100,
             text: "机号",
             dataIndex: "termNo",
-            width:120,
             renderer: function(value, metaData) {
                 var title = "机号";
                 var html = value;
@@ -78,8 +78,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         },{
+            width:100,
             text: "设备名称",
-            width: 120,
             dataIndex: "termName",
             renderer: function(value, metaData) {
                 var title = "设备名称";
@@ -88,8 +88,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         }, {
+            width:100,
             text: "网关名称",
-            width: 120,
             dataIndex: "gatewayName",
             renderer: function(value, metaData) {
                 var title = "网关名称";
@@ -98,8 +98,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         }, {
+            width:120,
             text: "设备类型",
-            flex:1,
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE" //字典代码
@@ -110,7 +110,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
             var mainlayout = grid.up('panel[xtype=basedevice.basedeviceallot.deviceallotlayout]');
             var deviceSysGrid = mainlayout.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
-            var tree = mainlayout.down("panel[xtype=basedevice.basedeviceallot.roominfotree2]");
+            var tree = mainlayout.down("basetreegrid[xtype=basedevice.basedeviceallot.roominfotree2]");
             var treelevel = tree.getSelectionModel().getSelection()[0];
             var level = undefined;
             var roomName = undefined;
@@ -118,9 +118,12 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             var termName = undefined;
             var tremId = undefined;
             var termTypeID = undefined;
+            var termNo = undefined;
+            var termSN = undefined;
             var gatewayName = undefined;
+
             if (treelevel == null) {
-                Ext.Msg.alert("提示", "请选择房间!");
+                Ext.example.msg("提示", "请选择房间!");
                 return false;
             }
             level = treelevel.get('level');
@@ -131,7 +134,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             gatewayName = record.get('gatewayName');
             tremId = record.get('uuid');
             if (level != 5) {
-                Ext.Msg.alert("提示", "只能选择房间进行操作!");
+                Ext.example.msg("提示", "只能选择房间进行操作!");
                 return false;
             }
             var data = {
@@ -140,7 +143,9 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 gatewayName: gatewayName,
                 termTypeID: termTypeID,
                 termName: termName,
-                uuid: tremId
+                uuid: tremId,
+                termNo:treelevel.get('termNo'),
+                termSN:treelevel.get('termSN'),
             };
             grid.getStore().removeAt(index); //将选中的移除
             deviceSysGrid.getStore().insert(0, data); //加入到新的grid

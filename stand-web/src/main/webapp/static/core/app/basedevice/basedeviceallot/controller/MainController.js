@@ -45,59 +45,27 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
     	var baseGrid=btn.up("basegrid");
 
     	var basePanel = baseGrid.up("basepanel");
-    	var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
-
-    	//得到配置信息
-    	var funData = basePanel.funData;                //主界面的配置信息  
-    	var pkName=funData.pkName;
-
-    	var funCode = basePanel.funCode;          //主界面的funCode
-    	var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
-    	var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
+      var detCode =  "deviceallot_layout";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
        
     	var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
     	if (!otherController)
-    		otherController = '';  
-       
-    	//默认的tab参数
-    	var tabTitle = funData.tabConfig.addTitle; //标签页的标题
-    	var tabItemId = funCode + "_mainGridAdd";     //命名规则：funCode+'_ref名称',确保不重复
-    	var itemXtype = "basedevice.basedeviceallot.deviceallotlayout";
-       
-    	var tabItem = tabPanel.getComponent(tabItemId);
-
-    	//判断是否已经存在tab了
-    	if (!tabItem) {
-           tabItem = Ext.create({
-               xtype: 'container',
-               title: tabTitle,
-               scrollable: true,
-               itemId: tabItemId,
-               layout: 'fit',
-           });
-           tabPanel.add(tabItem);
-
-           //延迟放入到tab中
-           setTimeout(function () {
-               //创建组件
-               var item = Ext.widget("baseformtab", {
-                   controller: otherController,         //指定重写事件的控制器
-                   funCode: funCode,                    //指定mainLayout的funcode
-                   detCode: detCode,                    //指定detailLayout的funcode
-                   tabItemId: tabItemId,                //指定tab页的itemId
-                   items: [{
-                           xtype: itemXtype
-                   }]
-               });
-               tabItem.add(item);
-           }, 30);
-    	} else if (tabItem.itemPKV && tabItem.itemPKV != pkValue) {     //判断是否点击的是同一条数据，不同则替换数据
-           self.Warning("您当前已经打开了一个编辑窗口了！");
-           return;
-    	}
-    	
-    	tabPanel.setActiveTab(tabItem);
-  } ,
+    		  otherController = '';  
+       var itemXtype = "basedevice.basedeviceallot.deviceallotlayout";
+       var xItemType=[{
+          xtype:itemXtype,
+          funCode:detCode
+        }];
+        var win = Ext.create('core.base.view.BaseFormWin', {
+                    title: "添加型号",
+                    width: 1300,
+                    height: 700,
+                    operType: "add",
+                    controller: otherController,
+                    detCode: detCode,
+                    iconCls: 'x-fa fa-plus-circle',
+                    items:xItemType,
+         }).show();
+  },
   
   		//分配设备事件
   		doDelete: function (btn) {

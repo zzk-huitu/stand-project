@@ -63,10 +63,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
 		var detCode = basePanel.detCode;
 		var iconCls = "x-fa fa-user-secret";
 		var winId = detCode + "_win";
-		var win = Ext.getCmp(winId);
-		
-		if (!win) {
-			win = Ext.create('core.base.view.BaseFormWin', {
+	    var win = Ext.create('core.base.view.BaseFormWin', {
 				id: winId,
 				title: "品牌型号选择",
 				/*zzk: 必须指定一个viewController控制器，否则，里面的control无法生效*/
@@ -85,7 +82,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
 					xtype: "basedevice.ptirroomdevice.irdevicegrid"													
 				}],
         })
-		}
+		
 		win.show(true,function(){},baseGrid);//打开自定义窗口
         return false;
     },
