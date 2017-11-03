@@ -27,7 +27,7 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
 		},
 		
 		//费率绑定界面确认按钮
-		"window[ref=DkPriceDefineWin] button[ref=ssOkBtn]": {
+		"baseformwin[detCode=rateBinding_detail] button[ref=formSave]": {
             beforeclick: function(btn) {
                 this.saverate(btn);
                 return false;
@@ -118,41 +118,49 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
     /*
      * 费率绑定界面确认事件
      */
-    saverate:function(btn,cmd){
+    saverate:function(btn){
     	var self=this;
         var win = btn.up('window');
+        var detCode = win.detCode;
+        //找到详细布局视图
+        var basepanel = win.down("basepanel[detCode=" + detCode + "]");
         var termId = [];
         var termSn=[];
-        var grid = win.down('panel[xtype=basedevice.baserate.skdatagridtwo]');
-        var rows = grid.getSelectionModel().getSelection();
-        if (rows.length < 1) {
-            self.Warning("未选择数据，无法继续操作");
-            return false;
-        } else {
-            for (var i = 0; i < rows.length; i++) {
-                termId.push(rows[i].get('uuid'));
-                termSn.push(rows[i].get('termSN'))
-            };
-            var resObj = self.ajax({
-                url: comm.get('baseUrl') + "/BasePtPriceBind/doAdd",
-                method: 'POST',
-                params: {
-                    termId: termId,
-                    termSn:termSn,
-                    meterId:win.meterId
+        var isselectgrid = basepanel.down('panel[xtype=basedevice.baserate.skdatagridtwo]');
+        var getCount = isselectgrid.getStore().getCount();
+        if (getCount <= 0) {
+            self.msgbox("有数据才能继续操作!");
+            return;
+        }
+
+        var isSelectStore = isselectgrid.getStore();
+        for (var i = 0; i < getCount; i++) {
+             var record = isSelectStore.getAt(i);
+             termId.push(record.get('uuid'));
+             termSn.push(record.get('termSN'))
+        };
+        self.asyncAjax({
+            url: comm.get('baseUrl') + "/BasePtPriceBind/doAdd",
+            params: {
+                termId: termId,
+                termSn:termSn,
+                meterId:win.meterId
+            },
+            //回调代码必须写在里面
+            success: function (response) {
+                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                if (data.success) {
+                       self.msgbox("保存成功!");
+                       win.close();
+                    } else {
+                        self.Error(data.obj);
+                         win.close();
+                    }
+                },
+                failure: function(response) {
+                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
                 }
             });
-            if (resObj.success) {
-                self.msgbox(resObj.obj);
-                win.close();
-            } else {
-                self.msgbox('出错。');
-            }
-        }
+ }
     
-    }
-    
-    
-    
-    
-});
+ });

@@ -43,6 +43,19 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                  return false;
              }
          },
+
+         //快速搜索
+         "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridFastSearchBtn]": {
+           beforeclick: function(btn) {
+                var self=this;
+                var basepanel = btn.up("basepanel[xtype=basedevice.baserate.mainlayout]");
+                var funData=basepanel.funData;
+                if(funData.categroy==""){
+                    this.msgbox("请先选择类型!");
+                    return false;
+                }
+         },
+    },
          
          //控制类型刷新按钮
 //         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
@@ -218,14 +231,16 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
     doBasePriceDefine_Delete:function(btn,cmd,grid,record){
     	var self = this;
         var baseGrid;
-        var recordData;
+        var records;
 
         //根据点击的地方是按钮或者操作列，处理一些基本数据
         if (btn) {
             baseGrid = btn.up("basegrid");
+            records = baseGrid.getSelectionModel().getSelection();
         } else {
             baseGrid = grid;
-            recordData = record.getData();
+            records=new Array();
+            records.push(record);
         }
         //得到组件
         var funCode = baseGrid.funCode;
@@ -235,64 +250,49 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
         var funData = basePanel.funData;
         var pkName = funData.pkName;
         //得到选中数据
-        var records = baseGrid.getSelectionModel().getSelection();
         var categroyGridRecords = categroyGrid.getSelectionModel().getSelection();
+
         var categroy = categroyGridRecords[0].get("categroy");
-        
-        if(btn){
-        	if (records.length > 0) {
+          if (records.length > 0) {
                 //封装ids数组
-                Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+                Ext.Msg.confirm('提示',"是否删除数据", function (btn, text) {
                     if (btn == 'yes') {
+                        var loading = self.LoadMask(baseGrid,"是否删除数据");
                         var ids = new Array();
                         Ext.each(records, function (rec) {
                             var pkValue = rec.get(pkName);
                             ids.push(pkValue);
                         });
-                        //发送ajax请求
-                        var resObj = self.ajax({
+                        self.asyncAjax({
                             url: funData.action + "/doDelete",
                             params: {
-                                ids: ids.join(","),
-                                pkName: pkName,
-                                categroy:categroy
+                                 ids: ids.join(","),
+                                 categroy:categroy
+                            },                    
+                            success: function(response) {
+                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                if(data.success){
+                                     baseGrid.getStore().remove(records); //不刷新的方式
+                                     self.msgbox(data.obj);                               
+                                }else {
+                                    self.Error(data.obj);
+                                }           
+                                loading.hide();
+                            },
+                            failure: function(response) {                   
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                loading.hide();
                             }
-                        });
-                        if (resObj.success) {
-                            baseGrid.getStore().load();
-                            self.msgbox(resObj.obj);
-                        } else {
-                            self.Error(resObj.obj);
-                        }
+                        });     
                     }
                 });
             } else {
-                self.Warning("请选择数据");
+                self.msgbox("请选择数据");
             }
-        }else{
-        	Ext.Msg.confirm('提示', '是否删除数据?', function(btn, text) {
-                if (btn == 'yes') {                        
-                    //发送ajax请求
-                    var resObj = self.ajax({
-                        url: funData.action + "/doDelete",
-                        params: {
-                            ids: record.get(pkName),
-                            pkName: pkName,
-                            categroy:categroy
-                        }
-                    });
-                    if (resObj.success) {
-                        baseGrid.getStore().remove(record); //不刷新的方式
-                        self.msgbox(resObj.obj);
-                    } else {
-                        self.Error(resObj.obj);
-                    }
-                }
-            });
-        }
-        
-    },
-    
+
+     },
+
     /*
      * 绑定按钮事件
      */
@@ -300,85 +300,37 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
     	var self = this;
     	var basegrid = btn.up('basegrid');
         var rows = basegrid.getSelectionModel().getSelection();
-        if (rows.length > 1) {
-            self.Warning("只能选择一条数据。");
-            return false;
-        } else if (rows.length < 1) {
-            self.Warning("至少选择一条数据。");
-            return false;
+        if (rows.length != 1) {
+            self.msgbox("请选择一条数据。");
+            return;
         }
         
-        var funCode = basegrid.funCode; //creditrule_main
-        var basePanel = basegrid.up("basepanel[funCode=" + funCode +"]");
-        var tabPanel=basegrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
-        
+        var basePanel = basegrid.up("basepanel");
         var categroyGrid = basePanel.down("grid[xtype=basedevice.baserate.categroygrid]");
         var categroyGridRecords = categroyGrid.getSelectionModel().getSelection();
-        
+        var detCode="rateBinding_detail";
         var categroy = categroyGridRecords[0].get("categroy");
+        var categroyValue="1";
         if(categroy=="水控"){
-        	var win = Ext.create('Ext.window.Window', {
-                title: "选择设备",
-                ref: 'DkPriceDefineWin',
-                iconCls: 'application_form',
-                controller:"basedevice.baserate.othercontroller",
-                meterId: rows[0].get('uuid'),
-                categroy:"2",
-                resizable: false,
-                width: 1200,
-                height: 520,
-                modal: true,
-                iconCls: 'table_add',
-                items: [{
-                    xtype: "basedevice.baserate.dkmainlayout",
-                }],
-                buttonAlign: 'center',
-                buttons: [{
-                    xtype: "button",
-                    text: "确定",
-                    ref: "ssOkBtn",
-                    iconCls: "table_save"
-                }, {
-                    xtype: "button",
-                    text: "取消",
-                    ref: "closeBtn",
-                    iconCls: "return"
-                }]
-            }).show();	
-        	
-        	
-        }else if(categroy=="电控"){
-        		var win = Ext.create('Ext.window.Window', {
-                    title: "选择设备",
-                    ref: 'DkPriceDefineWin',
-                    iconCls: 'application_form',
-                    controller:"basedevice.baserate.othercontroller",
-                    meterId: rows[0].get('uuid'),
-                    categroy:"1",
-                    resizable: false,
-                    width: 1200,
-                    height: 520,
-                    modal: true,
-                    iconCls: 'table_add',
-                    items: [{
-                        xtype: "basedevice.baserate.dkmainlayout",
-                    }],
-                    buttonAlign: 'center',
-                    buttons: [{
-                        xtype: "button",
-                        text: "确定",
-                        ref: "ssOkBtn",
-                        iconCls: "table_save"
-                    }, {
-                        xtype: "button",
-                        text: "取消",
-                        ref: "closeBtn",
-                        iconCls: "return"
-                    }]
-                }).show();	
+            categroyValue="0";
         }
-        return false;
-    }
+        
+        var win = Ext.create('core.base.view.BaseFormWin', {
+            title: "选择设备",
+            iconCls:'x-fa fa-plus-circle',
+            controller:"basedevice.baserate.othercontroller",
+            meterId: rows[0].get('uuid'),
+            categroy:categroyValue,
+            width: 1200,
+            height: 520,
+            operType:"add",
+            detCode:detCode,
+            items: [{
+                detCode:detCode,
+                xtype: "basedevice.baserate.dkmainlayout",
+            }],
+        }).show();	
+     },
     
     
 });

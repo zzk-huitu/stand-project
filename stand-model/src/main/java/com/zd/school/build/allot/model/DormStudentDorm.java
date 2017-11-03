@@ -14,9 +14,11 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zd.core.annotation.ExportExcelAnnotation;
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
 import com.zd.core.util.DateTimeSerializer;
+import com.zd.school.excel.annotation.MapperCell;
 
 /**
  * 
@@ -53,7 +55,9 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	@FieldInfo(name = "床位编号")
 	@Column(name = "BED_NUM", length = 10, nullable = false)
 	private Integer bedNum=0;
-
+	
+	@ExportExcelAnnotation(columnName="入住时间",columnWidth=20,order = 5)
+	@MapperCell(cellName = "入住时间", order = 3)
 	@FieldInfo(name = "入住时间")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonSerialize(using = DateTimeSerializer.class)
@@ -66,20 +70,28 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	 * @Transient
 	 * @FieldInfo(name = "") private String field1;
 	 */
+	@ExportExcelAnnotation(columnName="宿舍名称",columnWidth=25,order =4)
+	@MapperCell(cellName = "宿舍名称", order = 2)
 	@Formula("(SELECT C.ROOM_NAME FROM dbo.JW_T_CLASSDORMALLOT A"
 			+ " JOIN dbo.BUILD_T_DORMDEFINE B ON A.DORM_ID=B.DORM_ID"
 			+ " JOIN dbo.BUILD_T_ROOMINFO C ON C.ROOM_ID = B.ROOM_ID" + " WHERE A.CDORM_ID =CDORM_ID AND A.ISDELETE=0)")
 	@FieldInfo(name = "房间名称")
 	private String roomName;
-
+	
+	@ExportExcelAnnotation(columnName="班级名称",columnWidth=25,order =1)
+	@MapperCell(cellName = "班级名称", order = 2)
 	@Formula("(SELECT A.CLASS_NAME FROM dbo.JW_T_GRADECLASS A WHERE A.CLAI_ID=CLAI_ID)")
 	@FieldInfo(name = "班级名称")
 	private String claiName;
-
+	
+	@ExportExcelAnnotation(columnName="学号",columnWidth=25,order =2)
+	@MapperCell(cellName = "学号", order = 3)
 	@FieldInfo(name = "学号")
 	@Formula("(SELECT A.USER_NUMB FROM dbo.SYS_T_USER A WHERE A.USER_ID=STU_ID)")
 	private String userNumb;
-
+	
+	@ExportExcelAnnotation(columnName="学生姓名",columnWidth=25,order =3)
+	@MapperCell(cellName = "学生姓名", order = 1)
 	@Formula("(SELECT A.XM FROM dbo.SYS_T_USER A WHERE A.USER_ID=STU_ID)")
 	@FieldInfo(name = "姓名")
 	private String xm;

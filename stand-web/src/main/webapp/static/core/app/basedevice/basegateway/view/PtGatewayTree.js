@@ -20,7 +20,7 @@ Ext.define("core.basedevice.basegateway.view.PtGatewayTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: ''
+            iconCls: 'x-fa fa-refresh'
         }]
     },
     extParams: {

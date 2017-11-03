@@ -26,7 +26,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: ''
+            iconCls: 'x-fa fa-refresh'
         }]
     },
     columns:  {        
@@ -50,7 +50,6 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
         	var funData = mainLayout.funData;
             var roomId=record.get("id");
             var leaf = record.get("leaf");
-            var filter="[]";
             mainLayout.funData = Ext.apply(funData, {
                 roomId: roomId,
                 leaf : record.get("leaf"),//true: 房间 false:区域
@@ -61,8 +60,6 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams.roomId=roomId;
-            proxy.extraParams.leaf=leaf;
-            proxy.extraParams.filter=filter;
             store.loadPage(1); // 给form赋值
             return false;
         	

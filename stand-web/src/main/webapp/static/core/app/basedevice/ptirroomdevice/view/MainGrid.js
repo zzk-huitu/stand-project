@@ -34,7 +34,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             html:'快速搜索：'
         },{
             xtype:'textfield',
-            name:'productModel',
+            name:'deviceTypeCode',
             funCode: 'girdFastSearchText',
             emptyText: '型号名称'
         },{

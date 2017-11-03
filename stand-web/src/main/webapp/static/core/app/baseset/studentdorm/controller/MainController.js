@@ -49,7 +49,12 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                     return false;
                 }
             },
-         
+            "basegrid[xtype=baseset.studentdorm.maingrid] button[ref=exportExcel]": {
+                beforeclick: function(btn) {
+                    this.doExportExcel(btn);
+                    return false;
+                }
+            },
 
         });
      },
@@ -222,6 +227,73 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
 
                  }
             })
+
+        },
+        doExportExcel: function(btn){
+            var self = this;
+            var baseGrid = btn.up("basegrid");
+            var basepanel = baseGrid.up("basepanel[xtype=baseset.studentdorm.mainlayout]");
+            var basetreegrid = basepanel.down("basetreegrid[xtype=baseset.studentdorm.studentdormtree]");
+            var selectObject = basetreegrid.getSelectionModel().getSelection();
+            if (selectObject.length <= 0) {
+                self.msgbox("请选择班级");
+                return;
+            }
+            var objDic = selectObject[0];
+            var classId = objDic.get("id");
+            var nodeType = objDic.get("nodeType");
+            if (nodeType != "05") {
+                self.msgbox("请先选择班级");
+                return;
+            }
+            var title = "确定要导出宿舍学生的信息吗？";
+            Ext.Msg.confirm('提示', title, function (btn, text) {
+                if (btn == "yes") {
+                    Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+                    var component = Ext.create('Ext.Component', {
+                        title: 'HelloWorld',
+                        width: 0,
+                        height: 0,
+                        hidden: true,
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseStudentDorm/exportExcel?claiId='+classId+'"></iframe>',
+                        renderTo: Ext.getBody()
+                    });
+
+                    var time = function () {
+                        self.syncAjax({
+                            url: comm.get('baseUrl') + '/BaseStudentDorm/checkExportEnd?claiId='+classId,
+                            timeout: 1000 * 60 * 30,        //半个小时
+                            //回调代码必须写在里面
+                            success: function (response) {
+                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                                if (data.success) {
+                                    Ext.Msg.hide();
+                                    self.msgbox(data.obj);
+                                    component.destroy();
+                                } else {
+                                    if (data.obj == 0) {    //当为此值，则表明导出失败
+                                        Ext.Msg.hide();
+                                        self.Error("导出失败，请重试或联系管理员！");
+                                        component.destroy();
+                                    } else {
+                                        setTimeout(function () {
+                                            time()
+                                        }, 1000);
+                                    }
+                                }
+                            },
+                            failure: function (response) {
+                                Ext.Msg.hide();
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                component.destroy();
+                            }
+                        });
+                    };
+                    setTimeout(function () {
+                        time()
+                    }, 1000);    //延迟1秒执行
+                }
+            });
 
         },
  });

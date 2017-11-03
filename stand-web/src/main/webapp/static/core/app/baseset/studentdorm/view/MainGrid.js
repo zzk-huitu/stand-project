@@ -44,7 +44,6 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             ref: 'exportExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-minus-circle',
-            hidden:true
         }]
     },
     columns:{

@@ -32,7 +32,7 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
             text: "区域名称",
             dataIndex: "text",
             xtype: 'treecolumn',
-            width: comm.get("clientWidth") * 0.24
+            width: 200
         }, {
             text: "主键",
             dataIndex: 'id',
@@ -42,15 +42,12 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
     		var mainLayout =tree.up("panel[xtype=basedevice.baserate.dkmainlayout]");
-    		var win = mainLayout.up('window');
-    		var categroy = win.categroy;
     		var funData = mainLayout.funData;
             var roomId=record.get("id");
             var leaf = record.get("leaf");
             mainLayout.funData = Ext.apply(funData, {
                 roomId: roomId,
-                leaf : record.get("leaf"),//true: 房间 false:区域
-                arealevel: record.get("level"),
+                leaf :leaf,//true: 房间 false:区域
             });
             // 加载房间的人员信息
             var mianGrid = mainLayout.down("panel[xtype=basedevice.baserate.skdatagrid]");

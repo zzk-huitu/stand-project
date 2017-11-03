@@ -73,48 +73,57 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		
     	String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
-		String leaf = request.getParameter("leaf");
 		String roomId = request.getParameter("roomId");
 		
-		//根据leaf判断到底是传入的房间ID还是区域ID(为true则是房间id,为false则是区域id)
-		if(leaf.equals("true")){
-			filter = "[{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
-			QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
-	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-	        writeJSON(response, strData);// 返回数据
-		}else{
-			//若为类型不为楼层，则去查询此区域下的所有楼层
-			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
-			//创建areaIdlists存储区域id
-			List<String> areaIdlists=baseOfficeAllotService.queryEntityByHql(hql);
-			
-			StringBuffer areasb=new StringBuffer();
-			for(int i=0;i<areaIdlists.size();i++){
-				areasb.append("'"+areaIdlists.get(i)+"'"+",");
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ roomId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		String areaIds = "";
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}
+		if (sb.length() > 0) {
+			areaIds = sb.substring(0, sb.length() - 1);
+
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
+					+ areaIds.replace(",", "','") + "')";
+			List<String> roomLists = thisService.queryEntityByHql(hql);
+			sb.setLength(0);
+			for (int i = 0; i < roomLists.size(); i++) {
+				sb.append(roomLists.get(i) + ",");
 			}
-			
-			if(areasb.length()>0){
-				//创建roomIdLists存储房间id
-				List<String> roomIdLists = new ArrayList<>();
-				hql="select a.uuid from BuildRoominfo a where a.areaId in ("+areasb.substring(0,areasb.length()-1) +")";
-				roomIdLists=baseRoominfoService.queryEntityByHql(hql);
-				StringBuffer roomsb=new StringBuffer();
-				
-				//通过循环处理roomId数据
-				for(int i=0;i<roomIdLists.size();i++){
-					roomsb.append(roomIdLists.get(i)+",");
+			// 房间id
+			if (sb.length() > 0) {
+				if(filter!=null){
+					filter = filter.substring(0, filter.length()-1);
+					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}"+"]";
+				}else{
+					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";
 				}
-						
-				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ roomsb.substring(0,roomsb.length()-1)+"\",\"field\":\"roomId\"}]";
-				QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
-		        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-		        writeJSON(response, strData);// 返回数据
-		        
+			}else {//区域下没有房间
+				if(filter!=null){
+					 filter = filter.substring(0, filter.length()-1);
+					 filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ roomId +"\",\"field\":\"roomId\"}"+"]";
+				}else{
+					 filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId + "\",\"field\":\"roomId\"}]";	
+				}
+			}
+		} else {//传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
+			if(filter!=null){
+				 if(roomId!=null){
+					 filter = filter.substring(0, filter.length()-1);
+					 filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ roomId +"\",\"field\":\"roomId\"}"+"]";	 
+				 }
 			}else{
-				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无房间\""));
+				 filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId + "\",\"field\":\"roomId\"}]";	
 			}
 			
 		}
+		
+		QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+        writeJSON(response, strData);// 返回数据
     }
 
     @RequestMapping("/treelist")

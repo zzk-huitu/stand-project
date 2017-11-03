@@ -19,6 +19,8 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.EntityUtil;
+import com.zd.core.util.ExportExcelAnnoUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
@@ -316,4 +318,41 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		
 	}
 
+		@RequestMapping("/exportExcel")
+	    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	        request.getSession().setAttribute("exportTerinfoIsEnd", "0");
+	        request.getSession().removeAttribute("exportTerinfoIsState");
+	        String claiId = request.getParameter("claiId");
+	        try {
+	        Class<?> clazz = EntityUtil.getClassByName("com.zd.school.build.allot.model.DormStudentDorm");//根据实体类名获取类
+	        List<DormStudentDorm> list  =  thisService.queryByHql("from " + clazz.getSimpleName()
+	        					+" where isDelete=0 and claiId='"+claiId+"' order by inTime");//获取数据
+	        Map<Integer, String> headMap =ExportExcelAnnoUtil.getHeadMap(clazz);//获取表头信息MAP<排序，列名>
+	        Map<Integer, Integer> widthMap = ExportExcelAnnoUtil.getWidthMap(clazz);//获取表头列宽MAP<排序，列宽>
+	        ExportExcelAnnoUtil.exportExcel(response, "学生宿舍分配信息", headMap, widthMap, list);
+	        request.getSession().setAttribute("exportTerinfoIsEnd", "1");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            request.getSession().setAttribute("exportTerinfoIsEnd", "0");
+	            request.getSession().setAttribute("exportTerinfoIsState", "0");
+	        }
+	    } 
+	    
+	    @RequestMapping("/checkExportEnd")
+	    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	        Object isEnd = request.getSession().getAttribute("exportTerinfoIsEnd");
+	        Object state = request.getSession().getAttribute("exportTerinfoIsState");
+	        if (isEnd != null) {
+	            if ("1".equals(isEnd.toString())) {
+	                writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+	            } else if (state != null && state.equals("0")) {
+	                writeJSON(response, jsonBuilder.returnFailureJson("0"));
+	            } else {
+	                writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+	            }
+	        } else {
+	            writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+	        }
+	    }
 }

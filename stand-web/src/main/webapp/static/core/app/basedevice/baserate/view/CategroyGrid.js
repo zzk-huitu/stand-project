@@ -44,20 +44,24 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
     listeners: {
         itemclick: function(view, record) {
             var mainLayout = view.up("panel[xtype=basedevice.baserate.mainlayout]");
+            var funData = mainLayout.funData;
             var categroy = record.get('categroy');
+            var categroyValue="";
             var storeyGrid = mainLayout.down("panel[xtype=basedevice.baserate.maingrid]");
             var store = storeyGrid.getStore();
             var proxy = store.getProxy();
             if(categroy==="水控"){
-            	proxy.extraParams = {
-            			categroy: "0",
-                    };
+                categroyValue="0"
             }
             if(categroy==="电控"){
-            	proxy.extraParams = {
-            			categroy: "1",
-                    };
+                categroyValue="1"
             }
+            proxy.extraParams = {
+                categroy: categroyValue
+            };
+            mainLayout.funData = Ext.apply(funData, {
+              categroy:categroyValue
+           });
             store.load(); // 给form赋值
             return false;
         }

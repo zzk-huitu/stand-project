@@ -47,24 +47,20 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 		String strData = ""; // 返回给js的数据
 		//获取类型
 		String categroy = request.getParameter("categroy");
-		
-		if(categroy==null){
-			 writeJSON(response, jsonBuilder.returnFailureJson("\"请先选择类型！\""));
-			 return;
-		}
-		
-		//为水控时
-		if(categroy.equals("0")){
-			QueryResult<SkPriceDefine> qr = skPriceDefineService.queryPageResult(super.start(request), super.limit(request),
-					super.sort(request), super.filter(request), true);
-			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
-		}
-		
-		//为电控时
-		if(categroy.equals("1")){
-			QueryResult<DkPriceDefine> qr = dkPriceDefineService.queryPageResult(super.start(request), super.limit(request),
-					super.sort(request), super.filter(request), true);
-			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		if(categroy!=null){
+			//为水控时
+			if(categroy.equals("0")){
+				QueryResult<SkPriceDefine> qr = skPriceDefineService.queryPageResult(super.start(request), super.limit(request),
+						super.sort(request), super.filter(request), true);
+				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+			}
+			
+			//为电控时
+			if(categroy.equals("1")){
+				QueryResult<DkPriceDefine> qr = dkPriceDefineService.queryPageResult(super.start(request), super.limit(request),
+						super.sort(request), super.filter(request), true);
+				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+			}	
 		}
 		
 		writeJSON(response, strData);// 返回数据

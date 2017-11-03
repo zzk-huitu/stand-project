@@ -86,14 +86,14 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
         }, {
             text: "费率",
             dataIndex: "priceValue",
-            width: 150,
+            width: 100,
             field: {
                 xtype: "textfield"
             }
         }, {
             text: "状态",
             dataIndex: "priceStatus",
-            width: 150,
+            width: 100,
              renderer: function(value) {
                 switch (value) {
                     case '0':
@@ -106,7 +106,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             }
         }, {
             text: "币种",
-            width: 150,
+            width: 100,
             dataIndex: "currencyType",
             field: {
                 xtype: "textfield"
@@ -114,6 +114,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
         }, {
             text: "备注",
             flex:1,
+            minWidth:150,
             dataIndex: "priceNotes",
             field: {
                 xtype: "textfield"
@@ -122,7 +123,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 150,
             fixed: true,
             items: [{
                 text:'编辑',  

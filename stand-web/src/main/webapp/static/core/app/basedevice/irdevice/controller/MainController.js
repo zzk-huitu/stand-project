@@ -103,11 +103,11 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         var treeGrid = basePanel.down("panel[xtype=basedevice.irdevice.irbrandtreegrid]");
         var rows = treeGrid.getSelectionModel().getSelection();
         if (rows.length <= 0) {
-            self.Error("请先选择品牌");
-            return false;
+            self.msgbox("请先选择品牌");
+            return;
         } else if (rows[0].get('level') != 3) {
-            self.Error("只能选择品牌");
-            return false;
+            self.msgbox("只能选择品牌");
+            return;
         }
         var id = rows[0].get('id');
         var name = rows[0].get('text');
