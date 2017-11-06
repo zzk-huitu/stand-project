@@ -96,7 +96,19 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
                         record: rec
                     });
                 }
-            },  {
+            }, {
+                text:'详细',  
+                style:'font-size:12px;', 
+                tooltip: '详细',
+                ref: 'gridDetail',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }, {
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
