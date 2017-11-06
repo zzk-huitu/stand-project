@@ -64,6 +64,9 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String strData = ""; // 返回给js的数据
 		String filter="";
 		String claiId=request.getParameter("claiId");
+		if(claiId==null){
+			claiId="";
+		}
 		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
 				+ claiId + "%'";
 		List<String> lists = thisService.queryEntityByHql(hql);
