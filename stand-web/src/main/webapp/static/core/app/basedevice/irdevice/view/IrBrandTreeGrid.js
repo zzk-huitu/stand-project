@@ -6,6 +6,7 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     selModel: {
       
     },
+    sortableColumns:false,
     extParams: {
         excludes:"checked"
     },

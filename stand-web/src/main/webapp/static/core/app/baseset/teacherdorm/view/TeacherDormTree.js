@@ -4,6 +4,7 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
     dataUrl: comm.get('baseUrl') + "/BaseTeacherDrom/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
+    sortableColumns:false,
     tbar:{
         xtype:'toolbar',
         items: [{

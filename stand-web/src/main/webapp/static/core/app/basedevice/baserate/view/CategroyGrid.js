@@ -2,6 +2,7 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
 	extend: "Ext.grid.Panel",
     alias: "widget.basedevice.baserate.categroygrid",
     forceFit: true,
+    sortableColumns:false,
     columnLines: true,
     selModel: {
         type: "checkboxmodel",   

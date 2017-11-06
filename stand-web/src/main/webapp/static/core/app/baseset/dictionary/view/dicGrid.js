@@ -10,6 +10,7 @@ Ext.define("core.baseset.dictionary.view.DicGrid", {
         orderSql: ""
         //filter: "[{'type':'string','comparison':'=','value':'0','field':'isDelete'}]"
     },
+    sortableColumns:false,
     title: "数据字典目录",
     tbar: [{
         xtype: 'button',

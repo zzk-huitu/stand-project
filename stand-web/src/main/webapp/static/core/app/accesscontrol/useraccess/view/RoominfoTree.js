@@ -5,6 +5,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
     forceFit:true,
+    sortableColumns:false,
     selModel: {
       
     },

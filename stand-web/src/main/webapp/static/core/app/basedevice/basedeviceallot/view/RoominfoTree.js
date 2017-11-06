@@ -5,6 +5,7 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree", {
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
     forceFit:true,
+    sortableColumns:false,
     selModel: {
       
     },
