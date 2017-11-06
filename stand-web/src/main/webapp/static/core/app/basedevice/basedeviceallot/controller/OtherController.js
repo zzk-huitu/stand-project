@@ -21,11 +21,27 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
             }
         },
     	//弹出窗口的确认按钮
-    	 "baseformwin[detCode=deviceallot_layout] button[ref=formSave]": {
-            beforeclick: function(btn) {
-                this.saveAllot(btn);
-             },
-    	 },
+      "baseformwin[detCode=deviceallot_layout] button[ref=formSave]": {
+        beforeclick: function(btn) {
+          this.saveAllot(btn);
+          return false;
+        },
+      },
+      //快速搜索按按钮
+      "basegrid[xtype=basedevice.basedeviceallot.deviceallotgrid] button[ref=gridFastSearchBtn]": {
+          beforeclick: function (btn) {
+            this.queryFastSearchForm(btn);
+            return false;
+            }
+        },
+      //快速搜索文本框回车事件
+      "basegrid[xtype=basedevice.basedeviceallot.deviceallotgrid] button[ref=girdFastSearchText]": {
+        specialkey: function (field, e) {
+          if (e.getKey() == e.ENTER) {
+            this.queryFastSearchForm(field);                
+          }
+        }
+      },
     },
     
   //确认绑定事件
@@ -77,8 +93,41 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
             loading.hide();
           }
       });
+ },
+     queryFastSearchForm:function(component){
+        //得到组件                 
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+            return false;
 
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+            return false;
 
-      },
-      
+        var filter = [];
+        var filterStr = [];
+        //可能存在多个文本框       
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        for (var i in girdSearchTexts) {
+            var name = girdSearchTexts[i].getName();
+            var value = girdSearchTexts[i].getValue();
+            if(girdSearchTexts[i].dataType=='numeric'){
+              if(value==null){
+                 filter= [];
+              }else{
+                filter[i]={"type": "numeric", "value": value, "field": name, "comparison": ""};
+              }
+            
+            }else{
+                filterStr[i]={"type": "string", "value": value, "field": name, "comparison": ""};
+            }
+          }
+       for(var j in filter){
+          filterStr.push(filter[j]);
+        }
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.filter = JSON.stringify(filterStr);
+        store.loadPage(1);
+    },
 });

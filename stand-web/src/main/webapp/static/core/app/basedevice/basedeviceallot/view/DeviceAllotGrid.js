@@ -25,12 +25,14 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             xtype:'textfield',
             width:100,
             name:'termSN',
+            dataType:'string',
             funCode:'girdFastSearchText', 
             emptyText: '序列号'
         },{
-            xtype:'textfield',
+            xtype:'numberfield',
             width:100,
             name:'termNo',
+            dataType:'numeric',
             funCode:'girdFastSearchText', 
             emptyText: '机号'
         },{

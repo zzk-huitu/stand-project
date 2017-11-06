@@ -56,6 +56,9 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 		String strData = ""; // 返回给js的数据
 		String filter = "";
 		String roomId = request.getParameter("roomId");//获取区域或房间id（areaId/roomId）
+		if(roomId==null){
+			roomId="";
+		}
 		String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
 		List<String> lists=thisService.queryEntityByHql(hql);
 		StringBuffer sb=new StringBuffer();

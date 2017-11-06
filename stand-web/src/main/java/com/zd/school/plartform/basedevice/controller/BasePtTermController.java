@@ -52,60 +52,54 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			throws IOException {
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
-		String leaf = request.getParameter("leaf");
 		String roomId = request.getParameter("roomId");
-		if (roomId == null && leaf == null) {
-			roomId = "";
-			leaf = "true";
+		
+		if(filter!=null && filter.equals("[]")){
+			filter = null;
 		}
-		if(filter.equals("[]")){
-			filter=null;
+		if(roomId==null){
+			 roomId=""; 
+		 }
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ roomId + "%'";
+		List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
+		StringBuffer areasb = new StringBuffer();
+		for (int i = 0; i < areaIdlists.size(); i++) {
+			areasb.append("'" + areaIdlists.get(i) + "'" + ",");
 		}
-        // 根据leaf判断到底是传入的房间ID还是区域ID(为true则是房间id,为false则是区域id)
-		if (leaf.equals("true")) {
-            if (filter != null) {
+		if (areasb.length() > 0) {
+			List<String> roomIdLists = new ArrayList<>();
+			hql = "select a.uuid from BuildRoominfo a where a.areaId in (" + areasb.substring(0, areasb.length() - 1)
+					+ ")";
+			roomIdLists = baseRoominfoService.queryEntityByHql(hql);
+			areasb.setLength(0);
+			for (int i = 0; i < roomIdLists.size(); i++) {
+				areasb.append(roomIdLists.get(i) + ",");
+			}
+			if (areasb.length() > 0) {
+				if (filter != null) {
+					filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'in','value':'"
+							+ areasb.substring(0, areasb.length() - 1) + "','field':'roomId'}]";
+				} else {
+					filter = "[{'type':'string','comparison':'in','value':'" + areasb.substring(0, areasb.length() - 1)
+							+ "','field':'roomId'}]";
+				}
+			} else {
+				if (filter != null) {
+					filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'in','value':'"
+							+ roomId + "','field':'roomId'}]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}]";
+				}
+			}
+		} else {
+			if (filter != null) {
 				filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'=','value':'"
 						+ roomId + "','field':'roomId'}]";
 			} else {
 				filter = "[{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
-
 			}
-		} else {
-			// 若为类型不为楼层，则去查询此区域下的所有楼层
-			String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-					+ roomId + "%'";
-			// 创建areaIdlists存储区域id
-			List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
-            StringBuffer areasb = new StringBuffer();
-			for (int i = 0; i < areaIdlists.size(); i++) {
-				areasb.append("'" + areaIdlists.get(i) + "'" + ",");
-			}
-            if (areasb.length() > 0) {
-				// 创建roomIdLists存储房间id
-				List<String> roomIdLists = new ArrayList<>();
-				hql = "select a.uuid from BuildRoominfo a where a.areaId in ("
-						+ areasb.substring(0, areasb.length() - 1) + ")";
-				roomIdLists = baseRoominfoService.queryEntityByHql(hql);
-				areasb.setLength(0);
-                for (int i = 0; i < roomIdLists.size(); i++) {
-					areasb.append(roomIdLists.get(i) + ",");
-				}
-                if(areasb.length() > 0){
-                    if (filter != null) {
-    					filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'in','value':'"
-    							+ areasb.substring(0, areasb.length() - 1) + "','field':'roomId'}]";
-    				} else {
-    					filter = "[{'type':'string','comparison':'in','value':'" + areasb.substring(0, areasb.length() - 1)
-    							+ "','field':'roomId'}]";
-    				}	
-                }else{
-                  writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无房间\""));
-                }
-
-			} else {
-				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无房间\""));
-			}
-
 		}
 		QueryResult<PtTerm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
