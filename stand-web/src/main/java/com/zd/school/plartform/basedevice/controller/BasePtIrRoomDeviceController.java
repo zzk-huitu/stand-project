@@ -74,7 +74,9 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
     	String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
-		
+		if(roomId==null){
+			 roomId=""; 
+		 }
 		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
 				+ roomId + "%'";
 		List<String> lists = thisService.queryEntityByHql(hql);

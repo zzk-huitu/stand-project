@@ -57,7 +57,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		if(filter!=null && filter.equals("[]")){
 			filter = null;
 		}
-		 if(roomId==null){
+		if(roomId==null){
 			 roomId=""; 
 		 }
 		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
