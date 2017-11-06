@@ -37,15 +37,16 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
             xtype: 'tbtext',
             html: '房间下属设备',
             style: {
-                fontSize: '14px',
+                fontSize: '16px',
                 color: '#C44444',
                 fontWeight:800
             }
         },'->',{
-        	xtype: 'tbtext',
-        	height:32,
-            html: '',
-          }],
+            xtype: 'button',
+            text: '选择人员',
+            ref: 'selectPersonnel',
+            iconCls: 'x-fa fa-plus-circle'
+        }]
     }, 
     panelButtomBar:null,
     
@@ -70,7 +71,26 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
         width:100	
-    }],
+    },{
+            xtype: 'actiontextcolumn',
+            text: "操作",
+            align: 'center',
+            width: 200,
+            fixed: true,
+            items: [{
+                text:'选择人员',  
+                style:'font-size:12px;', 
+                tooltip: '选择人员',
+                ref: 'selectPer',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('selectPersonnel_Win', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }]
+        }],
     listeners: {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
             return false;

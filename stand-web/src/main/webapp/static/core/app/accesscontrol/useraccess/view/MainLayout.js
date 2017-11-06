@@ -31,22 +31,21 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     items: [{
     	split: true,//对模块分开的线条
     	xtype: "accesscontrol.useraccess.roominfotree",
-    	width: 230,
+    	width: comm.get("clientWidth") * 0.18,
         region: "west",
     }, {
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.mjuserrightgrid",
-        width:300,
         region: "center",
-    }, {
+    }/*, {
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.mjuserselectgrid",
         width: 340,
         region: "east",
-    },{
+    }*/,{
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.maingrid",
-        width:320,
+        width: comm.get("clientWidth") * 0.25,
         region: "east",
     }]
 })

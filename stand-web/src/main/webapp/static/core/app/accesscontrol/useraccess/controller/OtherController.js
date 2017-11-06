@@ -26,49 +26,84 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
     
     //选择人员保存事件
     saveDetail_Win:function(btn){
+        var self=this;
         var win = btn.up('window');
         var termId = win.termid;
         var termSN = win.termSN;
         var termName = win.termName;
 
-        var upGrid = win.baseGrid;
-        var basePanel = win.down("panel[xtype=pubselect.selectuserlayout]");
-        var funCode = basePanel.funCode;
-        var baseGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
         var employeeID = ""; //人员id
         var employeeName = ""; //人员主键
-        var getCount = baseGrid.getStore().getCount();
-        if (getCount <= 0) {
-            this.Warning("有数据才能继续操作!");
-            return false;
+        var stuId = "";
+        var termId = "";
+
+        var tabPanel = Ext.ComponentQuery.query("tabpanel[xtype=app-main]")[0];
+        var mainlayout = tabPanel.getActiveTab(); 
+        var usExistGrid = mainlayout.down('panel[xtype=accesscontrol.useraccess.maingrid]');
+
+        var grid = win.funData.grid;
+        var gridStore = grid.getStore();
+        var gridCount = grid.getStore().getCount()
+       
+        var selectuserlayout = win.down("basepanel[xtype=pubselect.selectuserlayout]");
+        var isSelectUserGrid = selectuserlayout.down("panel[xtype=pubselect.isselectusergrid]");
+        var isSelectUserStore = isSelectUserGrid.getStore();
+        var isSelectUserCount = isSelectUserStore.getCount();
+        if (isSelectUserCount <= 0) {
+            self.msgbox("有数据才能继续操作!");
+            return;
         }
-        var gridStore = baseGrid.getStore();
-        var upStore = upGrid.getStore();
-        var upGridCount = upGrid.getStore().getCount()
-        for (var i = 0; i < getCount; i++) {
-            employeeID = gridStore.getAt(i).data.uuid;
-            for (var k = 0; k < upGridCount; k++) {
-                var employeeid = upStore.getAt(k).data.stuId;
-                var xm = upStore.getAt(k).data.xm;
+       
+       for (var i = 0; i < isSelectUserCount; i++) {
+            employeeID = isSelectUserStore.getAt(i).data.uuid;
+            for (var k = 0; k < gridCount; k++) {
+                 var employeeid = gridStore.getAt(k).data.stuId;
+                 var xm = gridStore.getAt(k).data.xm;
                 if (employeeID == employeeid) {
-                    Ext.Msg.alert("提示", "姓名为：" + xm + "的已存在!");
-                    return false;
+                    self.Info("提示", "姓名为：" + xm + "的已存在!");
+                    return ;
                 }
             };
             employeeName = gridStore.getAt(i).data.xm;
-            data = {
+           /* data = {
                 stuId: employeeID, //人员id
                 termId: termId, //设备id
                 xm: employeeName, //人员名称
                 termSN: termSN, //设备序列号
                 termName: termName //设备名称
-            };
-            upGrid.getStore().insert(0, data); //加入到新的grid
+            };*/
+           // grid.getStore().insert(0, data); //加入到新的grid
+           stuId += employeeID + "," ;
+           termId += termId + ",";
         }
-        win.close();
-        return false;
-        
-        
-    },
+        var loading= self.LoadMask(win,"正在处理中...,请等待！");
+        self.asyncAjax({
+            url: comm.get('baseUrl') + "/BaseMjUserright/doAdd",
+            params: {
+              stuId: stuId,
+              termId: termId,
+          },          
+        //回调代码必须写在里面
+        success: function (response) {
+            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+            if (data.success) {
+                self.msgbox("提交成功!");
+                usExistGrid.getStore().load();                         
+                loading.hide();
+                win.close();
+
+            } else {
+                loading.hide();
+                self.Warning(data.obj);
+                win.close();
+            }
+        },
+        failure: function(response) {                   
+            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+            loading.hide();
+        }
+    });
+
+},
     
 });
