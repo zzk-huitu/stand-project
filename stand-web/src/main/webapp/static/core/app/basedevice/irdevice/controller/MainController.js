@@ -74,6 +74,12 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 this.doirdevice_Tab(null, "edit", data.view, data.record);
                 return false;
             },
+            
+            //操作列详细
+            detailClick_Tab: function (data) {
+                this.doirdevice_Tab(null, "detail", data.view, data.record);
+                return false;
+            },
         }
         
     },
@@ -82,7 +88,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
      * 设备列表增加编辑事件（MainGrid）
      */
     doirdevice_Tab:function(btn,cmd,grid,record){
-        var self = this;
+    	var self = this;
         var baseGrid;
         var recordData;
 
@@ -103,11 +109,11 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         var treeGrid = basePanel.down("panel[xtype=basedevice.irdevice.irbrandtreegrid]");
         var rows = treeGrid.getSelectionModel().getSelection();
         if (rows.length <= 0) {
-            self.msgbox("请先选择品牌");
-            return;
+            self.Error("请先选择品牌");
+            return false;
         } else if (rows[0].get('level') != 3) {
-            self.msgbox("只能选择品牌");
-            return;
+            self.Error("只能选择品牌");
+            return false;
         }
         var id = rows[0].get('id');
         var name = rows[0].get('text');
@@ -131,17 +137,13 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             filter: "[{'type':'string','comparison':'=','value':'" + id + "','field':'parentNode'}]"
         });
 
-        //本方法只提供班级详情页使用
-        var tabTitle = funData.tabConfig.addTitle;
-        //设置tab页的itemId
-        var tabItemId=funCode+"_gridAdd";     //命名规则：funCode+'_ref名称',确保不重复
         var pkValue= null;
         var operType = cmd;    // 只显示关闭按钮
         var itemXtype=[{
             xtype:detLayout,                        
             funCode: detCode             
         }];
-
+        
         switch (cmd) {
             case "edit":
                 if (btn) {
@@ -153,12 +155,12 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                     recordData = rescords[0].getData();
                 }
                 
+                insertObj = recordData;
                 //获取主键值
                 var pkName = funData.pkName;
                 pkValue= recordData[pkName];
 
                 //处理编辑事件表单返回页面的值
-                insertObj = recordData;
                 insertObj = Ext.apply(insertObj, {
                     parentNode: id,
                     level: level,
@@ -170,6 +172,26 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 
                 tabTitle = funData.tabConfig.editTitle;
                 tabItemId=funCode+"_gridEdit"; 
+                break;
+            case "detail":
+            	//本方法只提供班级详情页使用
+                var tabTitle = funData.tabConfig.detailTitle;
+                //设置tab页的itemId
+                var tabItemId=funCode+"_gridDetail";     //命名规则：funCode+'_ref名称',确保不重复
+                insertObj = recordData;
+                //获取主键值
+                var pkName = funData.pkName;
+                pkValue= recordData[pkName];
+
+                //处理编辑事件表单返回页面的值
+                insertObj = Ext.apply(insertObj, {
+                    parentNode: id,
+                    level: level,
+                    uuid: recordData.uuid,
+                    brandname: name,
+                    productModel: recordData.productModel,
+                    notes: recordData.notes,
+                });
                 break;
             case "add":
                 if (btn) {
@@ -215,15 +237,13 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 tabItem.add(item);  
                
                 //将数据显示到表单中（或者通过请求ajax后台数据之后，再对应的处理相应的数据，显示到界面中） 
-                if (cmd=="edit") {
-                    var objDetForm = item.down("baseform[funCode=" + detCode + "]");
-                    var formDeptObj = objDetForm.getForm();
-                    self.setFormValue(formDeptObj, insertObj);
-                }
-                if (cmd=="add") {
-                    var objDetForm = item.down("baseform[funCode=" + detCode + "]");
-                    var formDeptObj = objDetForm.getForm();
-                    self.setFormValue(formDeptObj, insertObj);
+                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                var formDeptObj = objDetForm.getForm();
+                self.setFormValue(formDeptObj, insertObj);
+                
+                if(cmd=="detail"){
+                	objDetForm.down("basetreefield[name=brandname]").setDisabled(true);
+                	self.setFuncReadOnly(funData, objDetForm, true);
                 }
                 
             },30);
@@ -232,7 +252,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             self.Warning("您当前已经打开了一个编辑窗口了！");
             return;
         }
-        tabPanel.setActiveTab( tabItem);        
+        tabPanel.setActiveTab( tabItem);      
     },
     
     //增加修改区域

@@ -202,5 +202,4 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 		strData = JsonBuilder.getInstance().buildList(lists, excludes);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
 }
