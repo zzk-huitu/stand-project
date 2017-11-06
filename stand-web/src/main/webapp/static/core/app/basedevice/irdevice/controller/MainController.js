@@ -254,7 +254,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         //先确定要选择记录
         var records = baseGrid.getSelectionModel().getSelection();
         if (records.length != 1) {
-            self.Error("请先选择区域");
+            self.msgbox("请先选择区域");
             return;
         }
         //当前节点
@@ -282,14 +282,14 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 break;
         }
         //根据选择的记录与操作确定form初始化的数据
-        var iconCls = "table_add";
+        var iconCls = "x-fa fa-plus-circle";
         var title = "增加下级区域";
         var operType = cmd;
         switch (cmd) {
             case "child":
                 operType = "add";
                 if (justType == 3) {
-                    self.Error("无法添加品牌以下的子节点");
+                    self.msgbox("无法添加品牌以下的子节点");
                     return;
                 }
                 insertObj = Ext.apply(insertObj, {
@@ -302,7 +302,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             case "brother":
                 title = "增加同级区域";
                 if (justType == 1) {
-                    self.Error("区域类型为所有，只能增加下级");
+                    self.msgbox("区域类型为所有，只能增加下级");
                     return;
                 }
                 operType = "add";
@@ -326,26 +326,20 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 });
                 break;
         }
-        var winId = detCode + "_win";
-        var win = Ext.getCmp(winId);
-        if (!win) {
-            win = Ext.create('core.base.view.BaseFormWin', {
-                id: winId,
-                title: title,
-                width: 400,
-                height: 300,
-                resizable: false,
-                iconCls: iconCls,
-                operType: operType,
-                funData: popFunData,
-                funCode: detCode,
-                //给form赋初始值
-                insertObj: insertObj,
-                items: [{
-                    xtype: "basedevice.irdevice.branddetaillayout"
-                }]
+      
+        var win = Ext.create('core.base.view.BaseFormWin', {
+            title: title,
+            width: 400,
+            height: 300,
+            iconCls: iconCls,
+            operType: operType,
+            funData: popFunData,
+            funCode: detCode,
+            insertObj: insertObj,
+            items: [{
+                xtype: "basedevice.irdevice.branddetaillayout"
+            }]
             });
-        }
         win.show();
         var detailPanel = win.down("basepanel[funCode=" + detCode + "]");
         var objDetForm = detailPanel.down("baseform[funCode=" + detCode + "]");

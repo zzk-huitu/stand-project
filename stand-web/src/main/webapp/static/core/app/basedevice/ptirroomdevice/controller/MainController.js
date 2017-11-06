@@ -42,7 +42,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
             }
         };
         if (roomId == '') {
-            self.Warning("请选择需要绑定的房间!");
+            self.msgbox("请选择需要绑定的房间!");
             return false;
         }
         var  baseGrid = btn.up("basegrid");

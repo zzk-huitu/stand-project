@@ -13,7 +13,6 @@ Ext.define("core.basedevice.irdevice.view.BrandDetailLayout", {
 		}
 	},
 	layout: 'fit',
-	bodyPadding: 2,
 	items: [{
 		xtype: "basedevice.irdevice.treeform"
 	}]

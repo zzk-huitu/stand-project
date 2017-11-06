@@ -5,7 +5,6 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
     model: "com.zd.school.control.device.model.PtIrDeviceBrand",
     al: false,
     extParams: {
-        whereSql: " and isDelete='0' ",
     },
     title: "型号列表",
     panelTopBar:{
