@@ -3,7 +3,6 @@ Ext.define("core.basedevice.irdevice.view.TreeForm", {
     alias: "widget.basedevice.irdevice.treeform",
     layout: "form",
     autoHeight: true,
-    frame: true,
     fieldDefaults: { // 统一设置表单字段默认属性
         labelSeparator: '：', // 分隔符
         msgTarget: 'qtip',

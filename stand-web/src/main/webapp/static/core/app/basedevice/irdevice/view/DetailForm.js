@@ -33,7 +33,7 @@ Ext.define("core.basedevice.irdevice.view.DetailForm", {
         configInfo: {
             multiSelect: false,
             fieldInfo: "brandname~parentNode,text~id",
-            url: comm.get('baseUrl') + "/PtIrDeviceBrand/treelist",
+            url: comm.get('baseUrl') + "/BasePtIrDeviceBrand/treelist",
         }
     }, {
         beforeLabelTextTpl: comm.get('required'),

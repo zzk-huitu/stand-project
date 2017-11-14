@@ -4,27 +4,20 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtIrDeviceBrand;
-import com.zd.school.control.device.model.PtIrRoomDevice;
-import com.zd.school.control.device.model.PtSkMeter;
-import com.zd.school.plartform.basedevice.service.BasePtSkMeterService;
 import com.zd.school.plartform.basedevice.service.PtIrDeviceBrandService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -88,10 +81,18 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
 	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 	        writeJSON(response, strData);// 返回数据
+	        return;
 		}
 		//根据leaf判断到底是传入的品牌ID还是类型ID(为true则是品牌id,为false则是类型id)
 		if(level.equals("3")){
-			filter = "[{'type':'string','comparison':'=','value':'" + brandId + "','field':'parentNode'}]";
+			if (filter!=null) {
+				filter = filter.substring(0, filter.length() - 1)
+						+ ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + brandId
+						+ "\",\"field\":\"parentNode\"}]";
+			} else {
+				filter = "[{'type':'string','comparison':'=','value':'" + brandId + "','field':'parentNode'}]";
+			}
+
 			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
 	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 	        writeJSON(response, strData);// 返回数据
@@ -122,8 +123,12 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 				for(int i=0;i<brandLists.size();i++){
 					brandsb.append(brandLists.get(i)+",");
 				}
-						
-				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";
+			    if(filter!=null){			
+			    	filter = filter.substring(0,filter.length() - 1)+",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";	
+			    }else{
+			    	filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";
+			    }
+				
 				QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
 		        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		        writeJSON(response, strData);// 返回数据

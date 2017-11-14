@@ -1,7 +1,6 @@
 Ext.define("core.accesscontrol.useraccess.view.MjUserSelectGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.accesscontrol.useraccess.mjuserselectgrid",
-//    dataUrl: comm.get('baseUrl') + "/BaseMjUserright/list",
     model: "com.zd.school.control.device.model.MjUserright",
     al:false,
     panelTopBar:{

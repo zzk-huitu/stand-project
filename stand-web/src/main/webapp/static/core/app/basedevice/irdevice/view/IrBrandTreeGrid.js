@@ -3,13 +3,11 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     alias: "widget.basedevice.irdevice.irbrandtreegrid",
     dataUrl: comm.get('baseUrl') + "/BasePtIrDeviceBrand/treelist",
     model: "com.zd.school.plartform.comm.model.CommTree",
-    al: true,
     selModel: {
       
     },
+    sortableColumns:false,
     extParams: {
-        whereSql: " and isDelete='0' ",
-        orderSql: "",
         excludes:"checked"
     },
     title: "品牌信息",
@@ -75,7 +73,6 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             var brandId=record.get("id");
             var leaf = record.get("leaf");
             var level = record.get("level");
-            var filter="[]";
             
             mainLayout.funData = Ext.apply(funData, {
             	brandId: brandId,
@@ -88,7 +85,6 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             var proxy = store.getProxy();
             proxy.extraParams.brandId=brandId;
             proxy.extraParams.leaf=leaf;
-            proxy.extraParams.filter=filter;
             proxy.extraParams.level=level;
             store.loadPage(1); // 给form赋值
             return false;

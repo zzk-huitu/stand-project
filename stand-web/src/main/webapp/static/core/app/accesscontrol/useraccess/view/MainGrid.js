@@ -10,7 +10,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
             xtype: 'tbtext',
             html: '设备权限角色',
             style: {
-                fontSize: '14px',
+                fontSize: '16px',
                 color: '#C44444',
                 fontWeight:800
             }
@@ -45,7 +45,8 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
         },{
         	text: "角色名",
         	dataIndex: "xm",
-        	flex:1
+        	flex:1,
+            minWidth:150,
         },{
         	text: "设备名称",
         	dataIndex: "termName",

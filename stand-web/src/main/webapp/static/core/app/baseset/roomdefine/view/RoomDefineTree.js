@@ -4,6 +4,7 @@ Ext.define("core.baseset.roomdefine.view.RoomDefineTree", {
     dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
+    sortableColumns:false,
     selModel: {
       
     },

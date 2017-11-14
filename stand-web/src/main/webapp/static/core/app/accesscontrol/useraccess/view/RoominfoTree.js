@@ -5,12 +5,12 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
     forceFit:true,
+    sortableColumns:false,
     selModel: {
       
     },
     extParams: {
         whereSql: "",
-        orderSql: "",
         excludes:"checked"
     },
     tbar:{
@@ -19,7 +19,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
             xtype: 'tbtext',
             html: '区域信息',
             style: {
-                fontSize: '14px',
+                fontSize: '16px',
                 color: '#C44444',
                 fontWeight:800
             }
@@ -27,7 +27,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: ''
+            iconCls: 'x-fa fa-refresh'
         }]
     },
     columns:  {        
@@ -49,7 +49,6 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
         	var mainLayout = tree.up("panel[xtype=accesscontrol.useraccess.mainlayout]");
         	var funData = mainLayout.funData;
             var roomId=record.get("id");
-            var leaf = record.get("leaf");
             mainLayout.funData = Ext.apply(funData, {
                 roomId: roomId,
                 leaf : record.get("leaf"),//true: 房间 false:区域
@@ -60,7 +59,6 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams.roomId=roomId;
-            proxy.extraParams.leaf=leaf;
             store.loadPage(1); // 给form赋值
             return false;
         	

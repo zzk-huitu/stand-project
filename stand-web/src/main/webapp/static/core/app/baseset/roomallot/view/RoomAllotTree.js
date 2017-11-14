@@ -4,6 +4,7 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
     dataUrl: comm.get('baseUrl') + "/BaseOfficeAllot/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
+    sortableColumns:false,
     tbar:{
         xtype:'toolbar',
         items: [{
