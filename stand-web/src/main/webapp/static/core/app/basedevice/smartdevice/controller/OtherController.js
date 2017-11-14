@@ -10,57 +10,86 @@ Ext.define("core.basedevice.smartdevice.controller.OtherController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
-    	
-    	//弹出窗口的确认按钮
-    	"baseformwin[funCode=ptirroomdevice_branddetaillayout] button[ref=formSave]": {
-            beforeclick: function(btn) {
-                this.savebinding_Win(btn);
-             },
-    	 },
+        "baseformtab[detCode=highparam_detail] button[ref=formSave]": {
+            beforeclick: function (btn) {                
+                this.saveHighParam_Tab(btn,"setHighParam");
+                return false;
+            }
+        },
     },
     
-    //确认绑定事件
-    savebinding_Win:function(btn){
+    saveHighParam_Tab:function(btn,cmd){
         var self=this;
-        var win = btn.up('window');
-        var baseGrid =win.baseGrid;
-        var grid = win.down('basegrid[xtype=basedevice.smartdevice.irdevicegrid]');
-        var rows = grid.getSelectionModel().getSelection();
-        
-        //定义品牌ID
-        var brandId = '';
-        if (rows.length <= 0) {
-          self.Warning("请选择型号!");
-          return false;
-        } else {
-          for (var i = 0; i < rows.length; i++) {
-            brandId += rows[i].get('uuid') + ",";
-          };
-        }
-        self.asyncAjax({
-            url: comm.get('baseUrl') + "/BasePtIrRoomDevice/doAdd",
-            params: {
-                roomId: win.roomId,
-                brandId: brandId
-            },                       
-          success: function(response) {
-              var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+        var basetab = btn.up('baseformtab');
+        var tabPanel = btn.up("tabpanel[xtype=app-main]");
+        var tabItemId = basetab.tabItemId;
+        var tabItem = tabPanel.getComponent(tabItemId);   //当前tab页
+        var uuid = tabItem.uuid;
 
-              if(data.success){
-                   win.close();
-                   baseGrid.getStore().load();
-                   self.msgbox(data.obj);                               
-               }else {
-                  self.Error(data.obj);
-              }           
-              loading.hide();
-            },
-          failure: function(response) {                   
-              Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-              loading.hide();
-            }
-        });     
-   
+        var detCode = basetab.detCode;
+        var detLayout = basetab.detLayout;  
+
+        var objForm = basetab.down("baseform");
+        var formObj = objForm.getForm();
+        var params = self.getFormValue(formObj); 
+       
+        //高级参数
+        var valInt = '';
+        for (var i = 1; i <= 4; i++) {
+            valInt += Ext.util.Format.date("0 "+params["time" + i + ""], 'H:i') + "|";
+        };
+        valInt = valInt.substring(1, valInt.length - 1);
+        //基本参数                    
+        Ext.apply(params, objForm.highFormData,{
+            'tlvs[0].valStr': valInt
+        });
+        params.termRadio=objForm.down("radiogroup[ref=termRadio]").getChecked()[0].inputValue;
+        params.termTypeID= basetab.recordData.termTypeID;
+        
+        //判断当前是保存还是修改操作
+        if (formObj.isValid()) {
+
+            var loading = new Ext.LoadMask(basetab, {
+                msg: '正在提交，请稍等...',
+                removeMask: true// 完成后移除
+            });
+            loading.show();
+
+            self.asyncAjax({
+                url: comm.get('baseUrl') + "/BasePtTerm/doSetHighParam",
+                params: params,
+                //回调代码必须写在里面
+                success: function (response) {
+                    var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                    if (data.success) {
+
+                        self.msgbox("提交成功!");
+                        basetab.baseGrid.getStore().load();
+                        loading.hide();
+                        tabPanel.remove(tabItem);
+                     
+                    } else {
+                        self.Error(data.obj);
+                        loading.hide();
+                    }
+                },
+                failure: function(response) {                   
+                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                    loading.hide();
+                }
+            });
+
+        } else {
+            var errors = ["前台验证失败，错误信息："];
+            formObj.getFields().each(function (f) {
+                if (!f.isValid()) {
+                    errors.push("<font color=red>" + f.fieldLabel + "</font>：" + f.getErrors().join(","));
+                }
+            });
+            self.msgbox(errors.join("<br/>"));
+        }
     },
+   
     
 });

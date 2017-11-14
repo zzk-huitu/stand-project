@@ -3,6 +3,7 @@ package com.zd.school.plartform.basedevice.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.TLVUtils;
 import com.zd.school.control.device.model.PtTerm;
+import com.zd.school.control.device.model.TLVModel;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
@@ -107,58 +111,128 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		writeJSON(response, strData);// 返回数据
 	}
 			
-		/**
-		 * 
-		 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
-		 *         实体类 @param @param request @param @param response @param @throws
-		 *         IOException 设定参数 @return void 返回类型 @throws
-		 */
-		@RequestMapping("/doAdd")
-		public void doAdd(String roomId, String uuid, HttpServletRequest request, HttpServletResponse response)
-				throws IOException, IllegalAccessException, InvocationTargetException {
-			String uuids[] = uuid.split(",");
-			String roomIds[] = roomId.split(",");
-			PtTerm entity = null;
-			for (int i = 0; i < uuids.length; i++) {
-				entity = thisService.get(uuids[i]);
-				entity.setRoomId(roomIds[i]);
-				thisService.merge(entity);
-				//thisService.updateByProperties("uuid", uuids[i], "roomId", roomId);
-			}
-				writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
-		}		
-		
-		/**
-		 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-		 * MjUserright @param @param request @param @param response @param @throws
-		 * IOException 设定参数 @return void 返回类型 @throws
-		 */
-		@RequestMapping("/doUpdate")
-		public void doUpdates(PtTerm entity, HttpServletRequest request, HttpServletResponse response)
-				throws IOException, IllegalAccessException, InvocationTargetException {
-			SysUser currentUser = getCurrentSysUser();
-			 entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
-		        if (ModelUtil.isNotNull(entity))
-		            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-		        else
-		            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
-			
-			
+	/**
+	 * 
+	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
+	 *         实体类 @param @param request @param @param response @param @throws
+	 *         IOException 设定参数 @return void 返回类型 @throws
+	 */
+	@RequestMapping("/doAdd")
+	public void doAdd(String roomId, String uuid, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String uuids[] = uuid.split(",");
+		String roomIds[] = roomId.split(",");
+		PtTerm entity = null;
+		for (int i = 0; i < uuids.length; i++) {
+			entity = thisService.get(uuids[i]);
+			entity.setRoomId(roomIds[i]);
+			thisService.merge(entity);
+			//thisService.updateByProperties("uuid", uuids[i], "roomId", roomId);
 		}
+			writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
+	}		
 	
-		/**
-		 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-		 * request @param @param response @param @throws IOException 设定参数 @return
-		 * void 返回类型 @throws
-		 */
-		@RequestMapping("/doDelete")
-		public void doDelete(String uuid, HttpServletRequest request, HttpServletResponse response)
-				throws IOException, IllegalAccessException, InvocationTargetException {
-			String uuids[] = uuid.split(",");
-			for (int i = 0; i < uuids.length; i++) {
-				thisService.updateByProperties("uuid", uuids[i], "roomId", "");
-			}
-				writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
-		}		
+	/**
+	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
+	 * MjUserright @param @param request @param @param response @param @throws
+	 * IOException 设定参数 @return void 返回类型 @throws
+	 */
+	@RequestMapping("/doUpdate")
+	public void doUpdates(PtTerm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		SysUser currentUser = getCurrentSysUser();
+		 entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+	        if (ModelUtil.isNotNull(entity))
+	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+	        else
+	            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 		
+		
+	}
+
+	/**
+	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
+	 * request @param @param response @param @throws IOException 设定参数 @return
+	 * void 返回类型 @throws
+	 */
+	@RequestMapping("/doDelete")
+	public void doDelete(String uuid, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String uuids[] = uuid.split(",");
+		for (int i = 0; i < uuids.length; i++) {
+			thisService.updateByProperties("uuid", uuids[i], "roomId", "");
+		}
+			writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
+	}	
+	
+	
+	//获取高级参数
+	@RequestMapping("/highParam_read")
+	public void highParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		PtTerm perEntity = thisService.get(tlvs.getUuid());
+		String strData ="";
+		if(perEntity.getAdvParam()!=null){
+			TLVUtils.decode(perEntity.getAdvParam(), tlvs.getTlvs());
+			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
+		}
+		writeJSON(response, strData);// 返回数据
+	}
+	@RequestMapping("/doSetHighParam")
+	public void doSetHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		SysUser currentUser = getCurrentSysUser();
+		String termTypeID=request.getParameter("termTypeID");
+		
+		//1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
+		String termRadio=request.getParameter("termRadio");
+		if("1".equals(termRadio)){
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"1",currentUser.getXm());
+		}else if("2".equals(termRadio)){
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"2",currentUser.getXm());
+		}else if("3".equals(termRadio)){
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"3",currentUser.getXm());
+		}else if("4".equals(termRadio)){
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"4",currentUser.getXm());
+		}/*else if("5".equals(termRadio)){
+			String termIds=request.getParameter("termIds");
+			thisService.doUpdatHighParamToIds(tlvs, termIds , currentUser.getXm());
+		}*/else{	//默认为0，只设置当前自己
+			thisService.doUpdateHighParam(tlvs, currentUser.getXm());
+		}
+		
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
+		
+//		byte[] result = null;
+//		PtTerm perEntity = thisService.get(tlvs.getUuid());
+//		SysUser currentUser = getCurrentSysUser();
+//		result=TLVUtils.encode(tlvs.getTlvs());
+//		perEntity.setAdvParam(result);
+//		perEntity.setUpdateUser(currentUser.getXm());
+//		perEntity.setUpdateTime(new Date());
+//		thisService.merge(perEntity);// 执行修改方法
+//		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+	}
+	
+	
+	//获取基础参数
+	@RequestMapping("/baseParam_read")
+	public void baseParam_read(TLVModel tlvs, HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		PtTerm perEntity = thisService.get(tlvs.getUuid());
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		String strData ="";
+		if(perEntity.getBaseParam()!=null){
+			TLVUtils.decode(perEntity.getBaseParam(), tlvs.getTlvs());
+			if("11".equals(perEntity.getTermTypeID())||"17".equals(perEntity.getTermTypeID())){
+				tlvs.setNotes(perEntity.getNotes());
+				strData=JsonBuilder.getInstance().toJson(tlvs);
+			}else{
+				strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
+			}
+		}
+		writeJSON(response, strData);// 返回数据
+		
+	}
+	
 }

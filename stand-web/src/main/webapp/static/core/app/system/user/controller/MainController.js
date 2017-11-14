@@ -106,80 +106,80 @@ Ext.define("core.system.user.controller.MainController", {
                 }
             },
             //添加用户事件
-            "panel[xtype=system.user.usergrid] button[ref=gridAdd_Tab]": {
-                beforeclick: function(btn) {
-                    var self = this;
-                    var baseGrid = btn.up("basegrid");
-                    var funCode = baseGrid.funCode;
-                    var basePanel = baseGrid.up("panel[xtype=system.user.mainlayout]");
-                    var funData = basePanel.funData;
-                    var detCode = "selectsysuser_main";
-                    var detLayout = "selectsysuser.mainlayout";
-                    var deptId = funData.deptId;
-                    var isRight = funData.isRight;
-                    var deptType = funData.deptType; 
-                    if (!deptId){
-                        self.msgbox("请选择一个部门");
-                        return false;
-                    }
-                    if (isRight=="1"){
-                        self.Warning("您无权限给此部门添加用户，请重新选择");
-                        return false;                        
-                    }
-                    if (deptType=="04"||deptType=="05"||deptType=="06"){
-                        self.Warning("年级、班级及学科的教师由其它模块维护");
-                        return false;                         
-                    }
-                    // var filterArry = new Array();
-                    // filterArry.push("{'type':'string','comparison':'=','value':'" + funData.deptId + "','field':'deptId'}");
-                    // filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
-                    var popFunData = Ext.apply(funData, {
-                        grid: baseGrid
-                        //filter: "[" + filterArry.join(",") + "]"
-                    });
-                    // //选择的部门信息
-                    // var deptTree = baseGrid.up("panel[xtype=user.mainlayout]").down("panel[xtype=user.depttree]");
-                    // var selectDept = deptTree.getSelectionModel().getSelection();
-                    // if (selectDept.length != 1) {
-                    //     self.msgbox("请选择部门!");
-                    //     return false;
-                    // }
-                    // var deptObj = selectDept[0];
-                    // var deptId = deptObj.get("id");
-                    // var deptName = deptObj.get("text");
-                    // var deptCode = deptObj.get("code");
-                    // //处理特殊默认值
-                    // var defaultObj = funData.defaultObj;
-                    // var insertObj = self.getDefaultValue(defaultObj);
-                    // //根据选择的记录与操作确定form初始化的数据
-                    // insertObj = Ext.apply(insertObj, {
-                    //     deptId: deptId,
-                    //     deptName: deptName
-                    // }); //
-                    var iconCls = "table_add";
-                    var title = "新增用户";
-                    var winId = detCode + "_win";
-                    var win = Ext.getCmp(winId);
-                    if (!win) {
-                        win = Ext.create('core.app.base.BaseFormWin', {
-                            id: winId,
-                            title: title,
-                            width: comm.get("clientWidth")*0.6,
-                            height: 768,
-                            resizable: false,
-                            iconCls: iconCls,
-                            operType: "addReturn",
-                            funData: popFunData,
-                            funCode: detCode,
-                            items: [{
-                                xtype: detLayout
-                            }]
-                        });
-                    }
-                    win.show();
-                    return false;
-                }
-            },
+            // "panel[xtype=system.user.usergrid] button[ref=gridAdd_Tab]": {
+            //     beforeclick: function(btn) {
+            //         var self = this;
+            //         var baseGrid = btn.up("basegrid");
+            //         var funCode = baseGrid.funCode;
+            //         var basePanel = baseGrid.up("panel[xtype=system.user.mainlayout]");
+            //         var funData = basePanel.funData;
+            //         var detCode = "selectsysuser_main";
+            //         var detLayout = "selectsysuser.mainlayout";
+            //         var deptId = funData.deptId;
+            //         var isRight = funData.isRight;
+            //         var deptType = funData.deptType; 
+            //         if (!deptId){
+            //             self.msgbox("请选择一个部门");
+            //             return false;
+            //         }
+            //         if (isRight=="1"){
+            //             self.Warning("您无权限给此部门添加用户，请重新选择");
+            //             return false;                        
+            //         }
+            //         if (deptType=="04"||deptType=="05"||deptType=="06"){
+            //             self.Warning("年级、班级及学科的教师由其它模块维护");
+            //             return false;                         
+            //         }
+            //         // var filterArry = new Array();
+            //         // filterArry.push("{'type':'string','comparison':'=','value':'" + funData.deptId + "','field':'deptId'}");
+            //         // filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
+            //         var popFunData = Ext.apply(funData, {
+            //             grid: baseGrid
+            //             //filter: "[" + filterArry.join(",") + "]"
+            //         });
+            //         // //选择的部门信息
+            //         // var deptTree = baseGrid.up("panel[xtype=user.mainlayout]").down("panel[xtype=user.depttree]");
+            //         // var selectDept = deptTree.getSelectionModel().getSelection();
+            //         // if (selectDept.length != 1) {
+            //         //     self.msgbox("请选择部门!");
+            //         //     return false;
+            //         // }
+            //         // var deptObj = selectDept[0];
+            //         // var deptId = deptObj.get("id");
+            //         // var deptName = deptObj.get("text");
+            //         // var deptCode = deptObj.get("code");
+            //         // //处理特殊默认值
+            //         // var defaultObj = funData.defaultObj;
+            //         // var insertObj = self.getDefaultValue(defaultObj);
+            //         // //根据选择的记录与操作确定form初始化的数据
+            //         // insertObj = Ext.apply(insertObj, {
+            //         //     deptId: deptId,
+            //         //     deptName: deptName
+            //         // }); //
+            //         var iconCls = "table_add";
+            //         var title = "新增用户";
+            //         var winId = detCode + "_win";
+            //         var win = Ext.getCmp(winId);
+            //         if (!win) {
+            //             win = Ext.create('core.app.base.BaseFormWin', {
+            //                 id: winId,
+            //                 title: title,
+            //                 width: comm.get("clientWidth")*0.6,
+            //                 height: 768,
+            //                 resizable: false,
+            //                 iconCls: iconCls,
+            //                 operType: "addReturn",
+            //                 funData: popFunData,
+            //                 funCode: detCode,
+            //                 items: [{
+            //                     xtype: detLayout
+            //                 }]
+            //             });
+            //         }
+            //         win.show();
+            //         return false;
+            //     }
+            // },
             
             "panel[xtype=system.user.usergrid] button[ref=sync]": {
                 beforeclick: function(btn) {

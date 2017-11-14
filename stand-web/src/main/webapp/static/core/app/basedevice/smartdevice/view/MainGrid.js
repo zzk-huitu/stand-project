@@ -2,7 +2,7 @@
 Ext.define("core.basedevice.smartdevice.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.smartdevice.maingrid",
-    dataUrl: comm.get('baseUrl') + "/PtTerm/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
 
     menuCode:"BASESMARTDEVICE", //new：此表格与权限相关的菜单编码
@@ -72,15 +72,15 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             text: "设备名称",
             dataIndex: "termName",            
         }, {           
-            width: 200,
+            width: 150,
             text: "网关名称",
             dataIndex: "gatewayName"
         }, {
-            width: 200,
+            width: 150,
             text: "所属房间",
             dataIndex: "roomName",
         }, {
-            width: 200,
+            width: 150,
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
@@ -98,10 +98,9 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
                 ref: 'gridSetHigh',
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('setParamClick_Tab', {
+                    this.fireEvent('setHighParamClick_Tab', {
                         view: view.grid,
-                        record: rec,
-                        cmd:'high'
+                        record: rec
                     });
                 }
             }, {
@@ -111,10 +110,9 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
                 ref: 'gridSetBase',
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('setParamClick_Tab', {
+                    this.fireEvent('setBaseParamClick_Tab', {
                         view: view.grid,
-                        record: rec,
-                        cmd:'base'
+                        record: rec
                     });
                 }
             }]

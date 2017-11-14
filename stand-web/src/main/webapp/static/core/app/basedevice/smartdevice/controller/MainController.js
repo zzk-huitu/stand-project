@@ -13,78 +13,531 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
     },
     control: {
     	
-    	//绑定品牌列表事件
-    	"basegrid[xtype=basedevice.smartdevice.maingrid] button[ref=gridBinDing]": {
-            beforeclick: function(btn) {
-           	 this.dobinding(btn);
+        //区域列表刷新按钮事件
+        "basetreegrid[xtype=basedevice.smartdevice.roominfotree] button[ref=gridRefresh]": {
+            click: function(btn) {
+                var baseGrid = btn.up("basetreegrid");
+                var store = baseGrid.getStore();
+                store.load(); //刷新父窗体的grid
+                return false;
             }
         },
-        
-        //房间列表刷新按钮
-    	"basetreegrid[xtype=basedevice.smartdevice.roominfotree] button[ref=gridRefresh]": {
-            beforeclick: function(btn) {
-             btn.up('basetreegrid').getStore().load();
-             return false;
+
+
+    	//绑定列表事件
+    	"basegrid[xtype=basedevice.smartdevice.maingrid] actioncolumn": {
+            setHighParamClick_Tab: function(data) {
+                this.openHighParamDetail(data.view,data.record,"edit");        
+            },
+
+            setBaseParamClick_Tab: function(data) {            
+                this.openBaseParamDetail(data.view,data.record,"edit");        
             }
         },
+               
     },
     
-    //绑定品牌列表事件
-    dobinding: function (btn) {
-    	var self = this;
-        var mainlayout = btn.up('panel[xtype=basedevice.smartdevice.mainlayout]');
-        var tree = mainlayout.down('panel[xtype=basedevice.smartdevice.roominfotree]');
-        var rows = tree.getSelectionModel().getSelection();
-        var roomId = "";
-        for (var i = 0; i < rows.length; i++) {
-            if (rows[i].get('level') == 5) {
-                roomId += rows[i].get('id') + ",";
-            }
-        };
-        if (roomId == '') {
-            self.Warning("请选择需要绑定的房间!");
+    openHighParamDetail:function(grid,record,cmd){
+        var self = this;
+        //得到组件
+        var baseGrid = grid;
+        var recordData=record.getData();
+
+        var uuid =recordData.uuid;
+        var termName=recordData.termName;
+        var xItemType="";
+        var termTypeID = recordData.termTypeID;
+        if (termTypeID == "9" || termTypeID == "4") {
+            //9电控，4门禁
+            xItemType = "basedevice.smartdevice.highparamform";
+        } else {
+            self.msgbox('现只支持电控机、门禁机的高级参数设置');
             return false;
         }
-        var  baseGrid = btn.up("basegrid");
-        var funCode = baseGrid.funCode;
-		var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-		
-		//关键：window的视图控制器
-        var otherController=mainlayout.otherController;  
-        if(!otherController)
-            otherController='';
 
-		//得到配置信息
-		var funData = basePanel.funData;
-		
-		var popFunData = Ext.apply(funData, {
-			grid: baseGrid
-		});
-		var detCode = basePanel.detCode;
-		var iconCls = "x-fa fa-user-secret";
-		var winId = detCode + "_win";
-	    var win = Ext.create('core.base.view.BaseFormWin', {
-				id: winId,
-				title: "品牌型号选择",
-				/*zzk: 必须指定一个viewController控制器，否则，里面的control无法生效*/
-				controller: otherController,
-				width: comm.get("clientWidth") * 0.8,
-				height: 600,
-				resizable: false,
-				iconCls: iconCls,
-				operType: "edit",
-				txtformSave: "确定",
-				funData: popFunData,
-				funCode: detCode,
-				roomId :roomId,
-				baseGrid :baseGrid,
-				items: [{
-					xtype: "basedevice.smartdevice.irdevicegrid"													
-				}],
-        })
-		
-		win.show(true,function(){},baseGrid);//打开自定义窗口
-        return false;
+      
+        var basePanel = baseGrid.up("basepanel");
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';  
+
+        //得到配置信息
+        var funCode = basePanel.funCode;          //主界面的funCode
+        var detCode = "highparam_detail";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = "basedevice.smartdevice.detaillayout";            //打开的tab页的布局视图   
+        var tabTitle = termName+"-设备高级参数"; 
+        var tabItemId = funCode + "_gridHighParam";    //命名规则：funCode+'_ref名称',确保不重复              
+              
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem=tabPanel.getComponent(tabItemId);
+        if(!tabItem){
+
+            //创建tabItem
+            var tabItem = Ext.create({
+                xtype:'container',
+                title: tabTitle,
+                scrollable :true, 
+                itemId:tabItemId,            
+                layout:'fit', 
+                uuid: uuid,      //主键值
+            });
+            tabPanel.add(tabItem); 
+
+            //延迟放入到tab中
+            setTimeout(function(){
+                var item=Ext.widget("baseformtab",{
+                    operType:"edit",                            
+                    controller:otherController,         //指定重写事件的控制器
+                    funCode:funCode,                    //指定mainLayout的funcode
+                    detCode:detCode,
+                    detLayout:detLayout,                   
+                    tabItemId:tabItemId,                //指定tab页的itemId
+                    recordData:recordData,                    //保存一些需要默认值，提供给提交事件中使用
+                    baseGrid:baseGrid,                     //保存funData数据，提供给提交事件中使用
+                    items:[{
+                        xtype:detLayout,
+                        items:[{
+                            xtype:xItemType
+                        }]
+                    }]
+                }); 
+              
+                tabItem.add(item);  
+              
+                //处理打开界面之后，显示的初始数据
+                var objForm = item.down("baseform");
+                var formObj = objForm.getForm();     
+
+
+                //9电控，4门禁
+                if (termTypeID == "9" || termTypeID == "4") {
+                    //高级参数
+                    var highParams =  objForm.highFormData;
+                    highParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/highParam_read",
+                        params: highParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var controlVal = null;
+                            if (data.length > 0) {
+                                var valStr = data[0].valStr.split("|");
+                                for (var j = 1; j <= valStr.length; j++) {
+                                    valInt = "time" + j + "";
+                                    controlVal = formObj.findField(valInt);
+                                    if (controlVal != null) {
+                                        controlVal.setValue(valStr[j - 1]);
+                                    }
+                                };
+                            };
+                        }
+                    });   
+            
+                    
+                    // 旧的方式
+                    // var params = self.getFormValue(formObj);
+                    // var valInt = '';
+                    // for (var i = 0; i < 4; i++) {
+                    //     valInt += Ext.util.Format.date(params["time" + i + ""], 'H:i') + "|";
+                    // };
+                    // valInt = valInt.substring(1, valInt.length - 1);
+                    // Ext.apply(params, form.formData, {
+                    //     uuid: uuid,
+                    //     'tlvs[0].valStr': valInt
+                    // });
+                    // var resObj = self.ajax({
+                    //     url: comm.get('baseUrl') + "/PtTerm/highParam_read",
+                    //     params: params
+                    // });
+                    // if (resObj.length > 0) {
+                    //     var valStr = resObj[0].valStr.split("|");
+                    //     for (var i = 0; i <= 3; i++) {
+                    //         dicForm._fields.items[i].setValue(valStr[i]);
+                    //     };
+                    // }                                    
+                }            
+        
+          },30);
+                           
+        }else if(tabItem.uuid&&tabItem.uuid!=uuid){     //判断是否点击的是同一条数据
+            self.msgbox("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab(tabItem);   
+           
     },
+
+    openBaseParamDetail:function(grid,record,cmd){
+        var self = this;
+        //得到组件
+        var baseGrid = grid;
+        var recordData=record.getData();
+
+        var uuid =recordData.uuid;
+        var termName=recordData.termName;
+        var xItemType="";
+        var termTypeID = recordData.termTypeID;
+        if (termTypeID == '9') {
+            //电控基础参数
+            xItemType = "basedevice.smartdevice.dkbaseparamform";
+        } else if (termTypeID == '4') {     
+            //门禁基础参数
+            xItemType = "basedevice.smartdevice.doorcontrolform";
+        } else if (termTypeID == '17') {
+            //17灯控开关
+            xItemType = "basedevice.smartdevice.ampcontrolform";           
+        } else if (termTypeID == '11') {
+            //11红外
+            xItemType = "basedevice.smartdevice.infraredparamform";          
+        } else if (termTypeID == '8') {            
+            //水控基础参数
+            xItemType = "basedevice.smartdevice.skbaseparamform";
+        } else {
+            self.msgbox('现只支持电控机、门禁机、水控机基础参数设置');
+            return false;
+        }
+      
+        var basePanel = baseGrid.up("basepanel");
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';  
+
+        //得到配置信息
+        var funCode = basePanel.funCode;          //主界面的funCode
+        var detCode = "highparam_detail";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = "basedevice.smartdevice.detaillayout";            //打开的tab页的布局视图   
+        var tabTitle = termName+"-设备基础参数"; 
+        var tabItemId = funCode + "_gridBaseParam";    //命名规则：funCode+'_ref名称',确保不重复              
+              
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem=tabPanel.getComponent(tabItemId);
+        if(!tabItem){
+
+            //创建tabItem
+            var tabItem = Ext.create({
+                xtype:'container',
+                title: tabTitle,
+                scrollable :true, 
+                itemId:tabItemId,            
+                layout:'fit', 
+                uuid: uuid,      //主键值
+            });
+            tabPanel.add(tabItem); 
+
+            //延迟放入到tab中
+            setTimeout(function(){
+                var item=Ext.widget("baseformtab",{
+                    operType:"edit",                            
+                    controller:otherController,         //指定重写事件的控制器
+                    funCode:funCode,                    //指定mainLayout的funcode
+                    detCode:detCode,
+                    detLayout:detLayout,                   
+                    tabItemId:tabItemId,                //指定tab页的itemId
+                    recordData:recordData,                    //保存一些需要默认值，提供给提交事件中使用
+                    baseGrid:baseGrid,                     //保存funData数据，提供给提交事件中使用
+                    items:[{
+                        xtype:detLayout,
+                        items:[{
+                            xtype:xItemType
+                        }]
+                    }]
+                }); 
+              
+                tabItem.add(item);  
+              
+                //处理打开界面之后，显示的初始数据
+                var objForm = item.down("baseform");
+                var formObj = objForm.getForm();     
+
+                //门禁
+                if (termTypeID == '4') {  
+                    //门禁基础参数
+                    var baseParams =  objForm.baseFormData;
+                    baseParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
+                        params: baseParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var valStr = null;
+                            var controlVal = null;
+                            var checkboxgroup = objForm.down("checkboxgroup[ref=KrateForm_lblOperationBehaviors]");
+                           
+                            for (var i = 0; i < data.length; i++) {
+                                valInt = "tlvs[" + i + "].valInt";
+                                valStr = "tlvs[" + i + "].valStr";
+                                if (data[i].tag == 0x1015) {
+                                    for (var j = 0; j < data[i].valStr.length; j++) {
+                                        var che = data[i].valStr;
+                                        if (checkboxgroup != null) {
+                                            for (var k = 0; k < checkboxgroup.items.items.length; k++) {
+                                                if (che[0] == 0) {
+                                                    checkboxgroup.items.items[k].setValue(false)
+                                                } else {
+                                                    checkboxgroup.items.items[k].setValue(true)
+                                                }
+                                                che = che.substring(1, che.length);
+                                            };
+                                        }
+                                    };
+                                } else {
+                                    controlVal = formObj.findField(valInt);
+                                    if (controlVal != null) {
+                                        if (controlVal.xtype != 'numberfield') {
+                                            for (var k = 0; k < controlVal.items.items.length; k++) {
+                                                if (controlVal.items.items[k].inputValue == data[i].valInt) {
+                                                    controlVal.items.items[k].setValue(data[i].valInt);
+                                                }
+                                            };
+                                        } else {
+                                            controlVal.setValue(data[i].valInt);
+                                        }
+                                    } else if (controlVal == null) {
+                                        controlVal = formObj.findField(valStr);
+                                        if (controlVal != null) controlVal.setValue(data[i].valStr);
+                                    }
+                                }
+                            };
+                        }
+                    }); 
+                } //水控
+                else if (termTypeID == '8') {                                
+                    var baseParams =  objForm.baseFormData;
+                    baseParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
+                        params: baseParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var valStr = null;
+                            var controlVal = null;
+                         
+                            for (var i = 0; i < data.length; i++) {
+                                valInt = "tlvs[" + i + "].valInt";
+                                valStr = "tlvs[" + i + "].valStr";
+                                //32类卡
+                                if (data[i].tag == 0x2007) {
+                                    var che = data[i].valStr;
+                                    for (var l = 0; l < 4; l++) {
+                                        var check = objForm.down("checkboxgroup[ref=sKBaseParamForm_lblOperationBehaviors" + l + "]");                                       
+                                        if (check != null) {
+                                            for (var k = 0; k < check.items.items.length; k++) {
+                                                if (che[0] == 0) {
+                                                    check.items.items[k].setValue(false)
+                                                } else {
+                                                    check.items.items[k].setValue(true)
+                                                }
+                                                che = che.substring(1, che.length);
+                                            };
+                                        }
+                                    }
+                                  
+                                }  //32类卡费率
+                                else if (resObj[i].tag == 0x7000) {
+                                    var val = data[i].valStr.split("|");
+                                    for (var k = 0; k < 4; k++) {
+                                        var numitems = objForm.down("container[ref=termparam.KrateForm" + k + "]");                                         
+                                        if (numitems != null) {
+                                            for (var j = 0; j < numitems.items.items.length; j++) {
+                                                numitems.items.items[j].setValue(val[0]);
+                                                val.shift(0);
+                                            };
+                                        }
+                                    }
+                                }else {
+                                    controlVal = formObj.findField(valInt);
+                                    if (controlVal != null) {
+                                        if (controlVal.xtype != 'numberfield') {
+                                            controlVal.setValue(data[i].valInt.toString());
+                                        } else {
+                                            controlVal.setValue(data[i].valInt);
+                                        }
+                                    } else if (controlVal == null) {
+                                        controlVal = formObj.findField(valStr);
+                                        if (controlVal != null) controlVal.setValue(data[i].valStr);
+                                    }                            
+                                }
+                            }
+                        }
+                    });                               
+                }
+                 //9电控
+                else if (termTypeID == "9") {
+                    //基础参数
+                    var baseParams =  objForm.baseFormData;
+                    baseParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
+                        params: baseParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var controlVal = null;
+                            if (data.length > 0) {
+                                var valStr = data[0].valStr.split("|");
+                                for (var j = 1; j <= valStr.length; j++) {
+                                    valInt = "time" + j + "";
+                                    controlVal = formObj.findField(valInt);
+                                    if (controlVal != null) {
+                                        controlVal.setValue(valStr[j - 1]);
+                                    }
+                                };
+                            };
+                        }
+                    });       
+                } //11红外
+                else if (termTypeID == '11') {     
+                    var baseParams =  objForm.baseFormData;
+                    baseParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
+                        params: baseParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var controlVal = null;
+
+                            if(data.tlvs){
+                                for (var i = 0; i < data.tlvs.length; i++) {
+                                    valInt = "tlvs[" + i + "].valInt";
+                                    controlVal = formObj.findField(valInt);
+                                    if (data.tlvs[i].tag == 0xC001) {
+                                        var arr1 = data.tlvs[i].valStr.split("#");
+                                        var arr2 = arr1[2].split("|");
+                                        for (var i = 0; i < arr2.length; i++) {
+                                            controlVal = formObj.findField("time" + i)
+                                            if (controlVal != null) {
+                                                controlVal.setValue(arr2[i]);
+                                            }
+                                        };
+                                        if (arr1[1] != null) {
+                                            controlVal = formObj.findField("type");
+                                            if (controlVal != null) {
+                                                controlVal.setValue(arr1[1]);
+                                            }
+                                        }
+                                        if (arr1[3] != null) {
+                                            for (var i = 0; i < arr1[3].length; i++) {
+                                                controlVal = formObj.findField("status" + i);
+                                                for (var k = 0; k < controlVal.items.items.length; k++) {
+                                                    if (controlVal.items.items[k].inputValue == arr1[3][i]) {
+                                                        controlVal.items.items[k].setValue(arr1[3][i]);
+                                                    }
+                                                };
+                                                if (controlVal != null) {
+                                                    if (arr1[3][i] == 0) {
+                                                        controlVal.setValue(false);
+                                                    } else {
+                                                        controlVal.setValue(true);
+                                                    }
+                                                }
+                                            };
+                                        }
+                                    } else if (controlVal != null) {
+                                        controlVal.setValue(data.tlvs[i].valInt);
+                                    }
+                                }
+
+                                if (data['notes'] != null && data[''] != '') {
+                                    controlVal = formObj.findField("notes");
+                                    if (controlVal != null) {
+                                        controlVal.setValue(resObj['notes']);
+                                    }
+                                }
+                            }                          
+                        }
+                    });                   
+                }  //17灯控
+                else if (termTypeID == '17') { 
+                    //17灯控开关
+                    var baseParams =  objForm.baseFormData;
+                    baseParams.uuid = uuid;
+                    self.asyncAjax({                      
+                        url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
+                        params: baseParams,                      
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
+                            var valInt = null;
+                            var controlVal = null;
+                            if (data.length > 0) {
+                                
+                            };
+                        }
+                    });    
+
+                    // var formvalue = null;
+                    // var controlVal = null;
+                    // if (resObj.tlvs != null)
+                    //     if (resObj.tlvs.length > 0) {
+                    //         for (var k = 0; k < resObj.tlvs.length; k++) {
+                    //             if (resObj.tlvs[k].tag == 0x1006) {
+                    //                 baseParamPanel.down("[ref=tlvsvalInt]").setValue(resObj.tlvs[0].valInt);
+                    //             } else if (resObj.tlvs[k].valStr != '') {
+                    //                 var item = resObj.tlvs[k].valStr.split('&');
+                    //                 for (var i = 0; i < item.length; i++) {
+                    //                     var arr1 = item[i].split('#');
+                    //                     var time = arr1[2].split('|');
+                    //                     formvalue = baseParamPanel.down("form[ref=lItems" + arr1[0] + "]").getForm();
+                    //                     formvalue.findField('type').setValue(arr1[1]);
+                    //                     for (var l = 0; l < time.length; l++) {
+                    //                         formvalue.findField("time" + l + "").setValue(time[l]);
+                    //                         controlVal = formvalue.findField("status" + l);
+                    //                         for (var o = 0; o < controlVal.items.items.length; o++) {
+                    //                             if (controlVal.items.items[o].inputValue == arr1[3][l]) {
+                    //                                 controlVal.items.items[o].setValue(arr1[3][l]);
+                    //                             }
+                    //                         }
+                    //                     };
+                    //                 };
+                    //             }
+                    //         };
+                    //         if (resObj.notes != null && notes != '') {
+                    //             var notes = resObj.notes.split('|');
+                    //             for (var i = 0; i < notes.length; i++) {
+                    //                 formvalue = baseParamPanel.down("form[ref=lItems" + (i + 1) + "]").getForm();
+                    //                 var startss=notes[i].lastIndexOf(":")+1;
+                    //                 var ss=notes[i].split(':');
+                    //                 if(startss>2){
+                    //                     formvalue.findField('notes').setValue(ss[1]);
+                    //                 }
+                    //                 if(startss<=2){
+                    //                     formvalue.findField('notes').setValue(notes[i].substring(2,notes[i].length));
+                    //                     }
+                    //                 var onss=notes[i].substring(startss,notes[i].length);
+                    //                 if(startss>2&&onss=="1"){formvalue.findField('on').setValue("1");}
+                    //                 if(startss>2&&onss=="0"){formvalue.findField('on').setValue("0");}
+                    //             };
+                    //         }
+                    //         if (resObj.tlvs[2].valInt != null && resObj.tlvs[2].valInt!= '') {
+                    //             baseParamPanel.down("[ref=tlvsva2Int]").setValue(String(resObj.tlvs[2].valInt));
+                    //         }else{
+                    //             baseParamPanel.down("[ref=tlvsva2Int]").setValue("0");
+                    //         }
+                    //     }
+                }      
+        
+          },30);
+                           
+        }else if(tabItem.uuid&&tabItem.uuid!=uuid){     //判断是否点击的是同一条数据
+            self.msgbox("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab(tabItem);   
+           
+    }
+    
     
 });

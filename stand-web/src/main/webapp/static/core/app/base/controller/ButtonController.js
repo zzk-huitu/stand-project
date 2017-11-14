@@ -463,7 +463,7 @@ Ext.define("core.base.controller.ButtonController", {
                                     store.loadPage(store.currentPage-1);
                                 }else{
                                     //store.load();
-                                    baseGrid.getStore().remove(records); //不刷新的方式
+                                    store.remove(records); //不刷新的方式
                                 }
                             
                                 self.msgbox(data.obj);                               
