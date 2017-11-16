@@ -26,7 +26,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.IsSelectDormGrid", {
                 //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
             },
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
-                IsSelectStore = grid.getStore();
+                var IsSelectStore = grid.getStore();
                 IsSelectStore.removeAt(index);
 
                 var basePanel = grid.up("basepanel[xtype=pubonkeyallotdorm.mainlayout]");

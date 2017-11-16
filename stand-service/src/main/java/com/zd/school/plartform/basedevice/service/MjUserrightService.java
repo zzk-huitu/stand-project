@@ -21,5 +21,7 @@ import com.zd.school.plartform.system.model.SysUser;
 public interface MjUserrightService extends BaseService<MjUserright> {
 
 	public MjUserright doAddEntity(MjUserright entity, SysUser currentUser);
+
+	public void doAddMj(String userId, String termId, SysUser currentUser);
 	
 }

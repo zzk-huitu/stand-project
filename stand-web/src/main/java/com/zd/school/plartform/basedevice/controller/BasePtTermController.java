@@ -63,7 +63,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 		if(roomId==null){
 			 roomId=""; 
-		 }
+		}
 		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
 				+ roomId + "%'";
 		List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
@@ -110,7 +110,49 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-			
+		
+	/**
+	 * 获取未分配的设备
+	 */
+	@RequestMapping(value = { "/getNoAllotList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void getNoAllotList(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		
+		String hql="from PtTerm g where g.isDelete=0 and (g.roomId = '' or g.roomId is null) ";
+		
+		//QueryResult<PtTerm> qResult = thisService.queryResult(hql, super.start(request), super.limit(request));
+		QueryResult<PtTerm> qResult =thisService.queryCountToHql(super.start(request), 
+				super.limit(request), super.sort(request), super.filter(request), hql, null, null);
+		
+		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
+	
+	/**
+	 * 设置设备的房间绑定关系
+	 * @param roomId
+	 * @param uuid
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/doSetPtTerm")
+	public void doSetPtTerm(String roomId, String uuid, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		//String uuids[] = uuid.split(",");
+		//String roomIds[] = roomId.split(",");
+		//PtTerm entity = null;
+		SysUser currentUser = getCurrentSysUser();
+		thisService.doSetPtTerm(roomId,uuid,currentUser);// 执行修改方法
+       
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"分配成功!\""));
+		
+	}	
+	
 	/**
 	 * 
 	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
@@ -129,7 +171,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			thisService.merge(entity);
 			//thisService.updateByProperties("uuid", uuids[i], "roomId", roomId);
 		}
-			writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"分配成功!\""));
 	}		
 	
 	/**
@@ -140,7 +182,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	@RequestMapping("/doUpdate")
 	public void doUpdates(PtTerm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		SysUser currentUser = getCurrentSysUser();
+		 SysUser currentUser = getCurrentSysUser();
 		 entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
 	        if (ModelUtil.isNotNull(entity))
 	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -232,6 +274,33 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			}
 		}
 		writeJSON(response, strData);// 返回数据
+		
+	}
+	@RequestMapping("/doSetBaseParam")
+	public void doSetBaseParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		SysUser currentUser = getCurrentSysUser();
+		String termTypeID=request.getParameter("termTypeID");
+		String notes=request.getParameter("notes");
+		
+		//1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
+		String termRadio=request.getParameter("termRadio");
+		if("1".equals(termRadio)){
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"1",currentUser.getXm());
+		}else if("2".equals(termRadio)){
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"2",currentUser.getXm());
+		}else if("3".equals(termRadio)){
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"3",currentUser.getXm());
+		}else if("4".equals(termRadio)){
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"4",currentUser.getXm());
+		}/*else if("5".equals(termRadio)){
+			String termIds=request.getParameter("termIds");
+			thisService.doUpdatHighParamToIds(tlvs, termIds , currentUser.getXm());
+		}*/else{	//默认为0，只设置当前自己
+			thisService.doUpdateBaseParam(tlvs, notes,currentUser.getXm());
+		}
+		
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
 		
 	}
 	

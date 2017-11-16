@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.TLVUtils;
-import com.zd.school.control.device.model.PtGateway;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.control.device.model.TLVModel;
 import com.zd.school.plartform.basedevice.dao.BasePtTermDao;
@@ -169,5 +168,86 @@ public class BasePtTermServiceImpl extends BaseServiceImpl<PtTerm> implements Ba
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public void doUpdateBaseParam(TLVModel tlvs, String notes, String xm) {
+		// TODO Auto-generated method stub
+		byte[] baseResult = null;
+		baseResult = TLVUtils.encode(tlvs.getTlvs());
+		
+		PtTerm perEntity = this.get(tlvs.getUuid());
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		perEntity.setUpdateUser(xm);
+		perEntity.setUpdateTime(new Date());
+		perEntity.setBaseParam(baseResult);
+		if("11".equals(perEntity.getTermTypeID())||"17".equals(perEntity.getTermTypeID())){
+			perEntity.setNotes(notes);
+		}
+		this.merge(perEntity);// 执行修改方法		
+	}
+
+	@Override
+	public void doBatchUpdateBaseParam(TLVModel tlvs, String termTypeID, String notes, String areaType, String xm) {
+		// TODO Auto-generated method stub
+		String uuid = tlvs.getUuid();
+		byte[] baseResult = null;
+		baseResult = TLVUtils.encode(tlvs.getTlvs());
+
+		PtTerm term = this.get(uuid);
+		String roomid = term.getRoomId();
+		int area = Integer.parseInt(areaType);
+		//最多5层，但也可能为4层（无校区的情况）
+		for (int level = 5; level > area; level--) {
+			String sql = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='" + roomid + "'";
+			List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
+			//加入判断，防止出错
+			if(lists.size()>0){
+				String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='"
+						+ lists.get(0).getParent() + "'";
+				lists = this.queryEntityBySql(sql2, CommBase.class);
+				
+				//加入判断，防止出错
+				if(lists.size()>0){
+					roomid = lists.get(0).getId();
+				}else{
+					break;
+				}
+			}
+		}
+		
+		List<CommBase> list = null;
+		list = findChildren(list, roomid);	//查找此区域下的所有房间
+		
+		String[] propertyNames=null;
+		Object[] propertyValues=null;
+		if("11".equals(termTypeID)||"17".equals(termTypeID)){
+			propertyNames=new String[]{"baseParam","notes","updateUser","updateTime"};
+			propertyValues=new Object[]{ baseResult,notes,xm,new Date()};
+		}else{
+			propertyNames=new String[]{"baseParam","updateUser","updateTime"};
+			propertyValues=new Object[]{ baseResult,xm,new Date()};
+		}
+		
+		for (CommBase cb : list) {
+			updateByProperties(new String[] { "termTypeID", "roomId" }, new Object[] { termTypeID, cb.getId() },
+					propertyNames, propertyValues);
+		}
+	}
+
+	@Override
+	public void doSetPtTerm(String roomId, String uuid, SysUser currentUser) {
+		// TODO Auto-generated method stub
+		String uuids[] = uuid.split(",");
+		String roomIds[] = roomId.split(",");
+		PtTerm entity = null;
+		for (int i = 0; i < uuids.length; i++) {
+			entity = this.get(uuids[i]);
+			entity.setRoomId(roomIds[i]);
+			entity.setCreateUser(currentUser.getXm());
+			entity.setUpdateTime(new Date());
+			this.merge(entity);
+			//thisService.updateByProperties("uuid", uuids[i], "roomId", roomId);
+		}
 	}
 }

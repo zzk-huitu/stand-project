@@ -46,15 +46,19 @@ Ext.define("core.public.selectJob.view.SelectJobGrid", {
             drop: function(node, data, dropRec, dropPosition) {
             },
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
-                selectStore = grid.getStore();
-                selectStore.removeAt(index);
-
+               
                 var basePanel = grid.up("panel[xtype=pubselect.selectjoblayout]");
                 var isSelectGrid;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=pubselect.isselectjobgrid]");
-                    var isSelectStore = isSelectGrid.getStore();
-                    isSelectStore.insert(0, [record]);
+
+                    if(isSelectGrid.isVisible()==true){
+                        var isSelectStore = isSelectGrid.getStore();
+                        isSelectStore.insert(0, [record]);
+
+                        var selectStore = grid.getStore();
+                        selectStore.removeAt(index);
+                    }
                 }
                 
                 return false;

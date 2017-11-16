@@ -19,9 +19,9 @@ Ext.define("core.basedevice.basedeviceallot.view.MainLayout", {
         pkName: "uuid",
         defaultObj: {},
         tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
-        	addTitle:'添加型号',
-        	editTitle:'编辑型号',
-        	detailTitle:'型号详情'
+        	addTitle:'分配设备',
+        	editTitle:'编辑设备',
+        	detailTitle:'设备详情'
         }
     },
     /*设置最小宽度，并且自动滚动*/
@@ -33,7 +33,8 @@ Ext.define("core.basedevice.basedeviceallot.view.MainLayout", {
         split: true,
         xtype: "basedevice.basedeviceallot.roominfotree",
         region: "west",
-        width: comm.get("clientWidth") * 0.16
+        width:250
+        //width: comm.get("clientWidth") * 0.16
     }, {
         xtype: "basedevice.basedeviceallot.maingrid",
         region: "center"

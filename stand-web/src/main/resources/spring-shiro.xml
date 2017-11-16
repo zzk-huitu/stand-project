@@ -25,7 +25,7 @@
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="sid"/> <!-- 设置session的名称为sid -->
         <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="180000"/>
+        <property name="maxAge" value="-1"/><!-- cookie过期时间，-1关闭浏览器时过期Cookie；若设置了时间，则超过时间就自动过期了，与session冲突  -->
     </bean>
     
     

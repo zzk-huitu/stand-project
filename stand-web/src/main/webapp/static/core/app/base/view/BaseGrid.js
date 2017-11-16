@@ -30,15 +30,18 @@ Ext.define("core.base.view.BaseGrid", {
     //扩展参数
     extParams: {},
     
-    noPagging: false,   //是否要在这里装载分页栏
-    bottomInfoPanelRef:null,   //是否显示底部消息栏，并且此值作为该组件ref的值
+
+   
     model: '',          //model的名称
     storePageSize:20,
     store:'',           //store的名称，若为空，则在下面的初始化代码中加载，否则不再加载
     al: true,           //是否store自动加载
     remoteSort: true,   //是否远程排序
 
- 
+    noPagging: false,   //是否要在这里装载分页栏
+    pageDisplayInfo:true,   //是否显示分页栏目的信息
+    bottomInfoPanelRef:null,   //是否显示底部消息栏，并且此值作为该组件ref的值
+
     columns: [],
     /*
     tbar: [{
@@ -236,7 +239,7 @@ Ext.define("core.base.view.BaseGrid", {
                 cls:'basegridPagingToolbar',         
                 store: this.store,
                 pageSize: this.storePageSize,
-                displayInfo: true,
+                displayInfo: this.pageDisplayInfo,
                 plugins: [
                     //Ext.create('Ext.ux.ProgressBarPager', {}),
                     Ext.create('Ext.ux.ComboPageSize', {})

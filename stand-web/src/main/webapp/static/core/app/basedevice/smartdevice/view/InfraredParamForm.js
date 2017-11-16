@@ -122,7 +122,7 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '状态',
-                name: 'status0',
+                //name: 'status0',
                 columnWidth: 0.25,
                 //width:200,
                 vertical: true,
@@ -156,7 +156,7 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '状态',
-                name: 'status1',
+                //name: 'status1',
                 columnWidth: 0.25,                
                 vertical: true,
                 items: [{
@@ -189,7 +189,7 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '状态',
-                name: 'status2',
+                //name: 'status2',
                 columnWidth: 0.25,
                 vertical: true,
                 items: [{
@@ -222,7 +222,7 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '状态',
-                name: 'status3',
+                //name: 'status3',
                 columnWidth: 0.25,
                 vertical: true,
                 items: [{

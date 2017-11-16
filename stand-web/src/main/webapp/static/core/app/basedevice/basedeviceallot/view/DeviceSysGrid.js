@@ -1,7 +1,7 @@
 Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
     extend: "Ext.grid.Panel",
     alias: "widget.basedevice.basedeviceallot.devicesysgrid",
-    title: "<font color='#ffeb00'>选中的设备 (双击添加或删除)</font>",
+    //title: "<font color='#ffeb00'>选中的设备 (双击移除)</font>",
     columnLines: true,
     loadMask: true,
     multiSelect: true,
@@ -9,12 +9,23 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
         selType: "checkboxmodel",
         width: 10
     },
-     viewConfig: {
+    viewConfig: {
         stripeRows: true
     },
     store: {
         type: "basedevice.basedeviceallot.isselectstore"
     },
+
+    tbar:[{
+        xtype: 'tbtext',
+        html: '选中的设备（双击添加）',
+        style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:800
+        }
+    }],
+
     columns:  {        
         defaults:{
             titleAlign:"center"
@@ -23,7 +34,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             text: "主键",
             dataIndex: "uuid",
             hidden: true
-        },{
+        },/*{
             text: "机号",
             dataIndex: "termNo",
             hidden: true
@@ -31,7 +42,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             text: "序列号",
             dataIndex: "termSN",
             hidden: true
-        },{
+        },*/{
             text: "房间名称",
             dataIndex: "roomName",
             width:100
@@ -56,29 +67,12 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
             var mainlayout = grid.up('panel[xtype=basedevice.basedeviceallot.deviceallotlayout]');
             var deviceAllotGrid = mainlayout.down("panel[xtype=basedevice.basedeviceallot.deviceallotgrid]");
-            var roomName = undefined;
-            var roomId = undefined;
-            var termName = undefined;
-            var tremId = undefined;
-            var termTypeID = undefined;
-            var gatewayName = undefined;
-            termName = record.get('termName');
-            termTypeID = record.get('termTypeID');
-            gatewayName = record.get('gatewayName');
-            tremId = record.get('uuid');
-            var data = {
-                gatewayName: gatewayName,
-                termTypeID: termTypeID,
-                termName: termName,
-                uuid: tremId,
-                termNo:record.get('termNo'),
-                termSN:record.get('termSN'),
-            };
+
+            var IsSelectStore = grid.getStore();
+            IsSelectStore.removeAt(index);
+
             grid.getStore().removeAt(index); //将选中的移除
-            deviceAllotGrid.getStore().insert(0, data); //加入到新的grid
-            return false;
-        },
-        beforeitemclick: function() {
+            deviceAllotGrid.getStore().insert(0, record); //加入到新的grid
             return false;
         }
     }

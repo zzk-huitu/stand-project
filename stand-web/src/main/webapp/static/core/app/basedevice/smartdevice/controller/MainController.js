@@ -171,6 +171,9 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
            
     },
 
+    /*此方法用于打开所有功能的基础数据界面，并且根据类型去初始化数据；  
+        通过各个参数名称可以快速找到具体参数的设置方法
+    */
     openBaseParamDetail:function(grid,record,cmd){
         var self = this;
         //得到组件
@@ -209,7 +212,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
 
         //得到配置信息
         var funCode = basePanel.funCode;          //主界面的funCode
-        var detCode = "highparam_detail";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detCode = "baseparam_detail";               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
         var detLayout = "basedevice.smartdevice.detaillayout";            //打开的tab页的布局视图   
         var tabTitle = termName+"-设备基础参数"; 
         var tabItemId = funCode + "_gridBaseParam";    //命名规则：funCode+'_ref名称',确保不重复              
@@ -291,11 +294,21 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                     controlVal = formObj.findField(valInt);
                                     if (controlVal != null) {
                                         if (controlVal.xtype != 'numberfield') {
-                                            for (var k = 0; k < controlVal.items.items.length; k++) {
-                                                if (controlVal.items.items[k].inputValue == data[i].valInt) {
-                                                    controlVal.items.items[k].setValue(data[i].valInt);
-                                                }
-                                            };
+
+                                            controlVal=objForm.query("field[name='" + valInt +"']");  
+                                            if (data[i].valInt == 0) {
+                                                controlVal[0].setValue(true);
+                                                controlVal[1].setValue(false);
+                                            } else {
+                                                controlVal[0].setValue(false);
+                                                controlVal[1].setValue(true);
+                                            } 
+
+                                            // for (var k = 0; k < controlVal.items.items.length; k++) {
+                                            //     if (controlVal.items.items[k].inputValue == data[i].valInt) {
+                                            //         controlVal.items.items[k].setValue(data[i].valInt);
+                                            //     }
+                                            // };
                                         } else {
                                             controlVal.setValue(data[i].valInt);
                                         }
@@ -328,7 +341,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                 if (data[i].tag == 0x2007) {
                                     var che = data[i].valStr;
                                     for (var l = 0; l < 4; l++) {
-                                        var check = objForm.down("checkboxgroup[ref=sKBaseParamForm_lblOperationBehaviors" + l + "]");                                       
+                                        var check = objForm.down("checkboxgroup[ref=sKBaseParamForm_lblOperationBehaviors" + (l+1) + "]");                                       
                                         if (check != null) {
                                             for (var k = 0; k < check.items.items.length; k++) {
                                                 if (che[0] == 0) {
@@ -342,10 +355,10 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                     }
                                   
                                 }  //32类卡费率
-                                else if (resObj[i].tag == 0x7000) {
+                                else if (data[i].tag == 0x7000) {
                                     var val = data[i].valStr.split("|");
                                     for (var k = 0; k < 4; k++) {
-                                        var numitems = objForm.down("container[ref=termparam.KrateForm" + k + "]");                                         
+                                        var numitems = objForm.down("container[ref=termparam.KrateForm" + (k+1) + "]");                                         
                                         if (numitems != null) {
                                             for (var j = 0; j < numitems.items.items.length; j++) {
                                                 numitems.items.items[j].setValue(val[0]);
@@ -379,19 +392,18 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                         url: comm.get('baseUrl') + "/BasePtTerm/baseParam_read",
                         params: baseParams,                      
                         //回调代码必须写在里面
-                        success: function(response) {
+                        success: function(response) {                            
                             var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
                             var valInt = null;
                             var controlVal = null;
                             if (data.length > 0) {
-                                var valStr = data[0].valStr.split("|");
-                                for (var j = 1; j <= valStr.length; j++) {
-                                    valInt = "time" + j + "";
+                                for (var i = 0; i < data.length; i++) {
+                                    valInt = "tlvs[" + i + "].valInt";
                                     controlVal = formObj.findField(valInt);
                                     if (controlVal != null) {
-                                        controlVal.setValue(valStr[j - 1]);
+                                        controlVal.setValue(data[i].valInt);
                                     }
-                                };
+                                }                                
                             };
                         }
                     });       
@@ -429,19 +441,27 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                         }
                                         if (arr1[3] != null) {
                                             for (var i = 0; i < arr1[3].length; i++) {
-                                                controlVal = formObj.findField("status" + i);
-                                                for (var k = 0; k < controlVal.items.items.length; k++) {
-                                                    if (controlVal.items.items[k].inputValue == arr1[3][i]) {
-                                                        controlVal.items.items[k].setValue(arr1[3][i]);
-                                                    }
-                                                };
-                                                if (controlVal != null) {
-                                                    if (arr1[3][i] == 0) {
-                                                        controlVal.setValue(false);
-                                                    } else {
-                                                        controlVal.setValue(true);
-                                                    }
-                                                }
+                                                controlVal=objForm.query("field[name=status" + i+"]");  
+                                                if (arr1[3][i] == 0) {
+                                                    controlVal[0].setValue(true);
+                                                    controlVal[1].setValue(false);
+                                                } else {
+                                                    controlVal[0].setValue(false);
+                                                    controlVal[1].setValue(true);
+                                                }      
+                                                // controlVal = formObj.findField("status" + i);
+                                                // for (var k = 0; k < controlVal.items.items.length; k++) {
+                                                //     if (controlVal.items.items[k].inputValue == arr1[3][i]) {
+                                                //         controlVal.items.items[k].setValue(arr1[3][i]);
+                                                //     }
+                                                // };
+                                                // if (controlVal != null) {
+                                                //     if (arr1[3][i] == 0) {
+                                                //         controlVal.setValue(false);
+                                                //     } else {
+                                                //         controlVal.setValue(true);
+                                                //     }
+                                                // }
                                             };
                                         }
                                     } else if (controlVal != null) {
@@ -452,7 +472,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                 if (data['notes'] != null && data[''] != '') {
                                     controlVal = formObj.findField("notes");
                                     if (controlVal != null) {
-                                        controlVal.setValue(resObj['notes']);
+                                        controlVal.setValue(data['notes']);
                                     }
                                 }
                             }                          
@@ -468,64 +488,72 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                         params: baseParams,                      
                         //回调代码必须写在里面
                         success: function(response) {
-                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                        
-                            var valInt = null;
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));                          
                             var controlVal = null;
-                            if (data.length > 0) {
-                                
-                            };
+                            var fieldsetCpt = null;
+                            if (data.tlvs){
+                                for (var k = 0; k < data.tlvs.length; k++) {
+                                    if (data.tlvs[k].tag == 0x1006) {
+                                        objForm.down("[ref=tlvsvalInt]").setValue(data.tlvs[0].valInt);
+                                    } else if (data.tlvs[k].valStr != '') {
+                                        var item = data.tlvs[k].valStr.split('&');
+                                        for (var i = 0; i < item.length; i++) {
+                                            var arr1 = item[i].split('#');
+                                            var time = arr1[2].split('|');                                          
+                                            fieldsetCpt = objForm.down("fieldset[ref=lItems" + arr1[0] + "]");
+                                            fieldsetCpt.down('field[name=type]').setValue(arr1[1]);
+
+                                            for (var l = 0; l < time.length; l++) {
+                                                fieldsetCpt.down("field[name=time" + l + "]").setValue(time[l]);
+
+                                                controlVal=fieldsetCpt.query("field[name='items"+arr1[0]+".status" + l +"']");  
+                                                if (arr1[3][l] == 0) {
+                                                    controlVal[0].setValue(true);
+                                                    controlVal[1].setValue(false);
+                                                }else {
+                                                    controlVal[0].setValue(false);
+                                                    controlVal[1].setValue(true);
+                                                }
+                                                // controlVal = fieldsetCpt.down("field[name=status" + l+"]");
+                                                // for (var o = 0; o < controlVal.items.items.length; o++) {
+                                                //     if (controlVal.items.items[o].inputValue == arr1[3][l]) {
+                                                //         controlVal.items.items[o].setValue(arr1[3][l]);
+                                                //     }
+                                                // }
+                                            };
+                                        };
+                                    }
+                                };
+                                if (data.notes != null && data.notes != '') {
+                                    var notes = data.notes.split('|');
+                                    for (var i = 0; i < notes.length; i++) {
+                                        fieldsetCpt = objForm.down("fieldset[ref=lItems" + (i + 1) + "]");
+                                   
+                                        var startss=notes[i].lastIndexOf(":")+1;
+                                        var ss=notes[i].split(':');
+                                        if(startss>2){
+                                            fieldsetCpt.down('field[name=notes]').setValue(ss[1]);                                           
+                                        }
+                                        if(startss<=2){
+                                            fieldsetCpt.down('field[name=notes]').setValue(notes[i].substring(2,notes[i].length));                                       
+                                        }
+                                        var onss=notes[i].substring(startss,notes[i].length);
+                                        if(startss>2&&onss=="1"){
+                                            fieldsetCpt.down('field[name=on]').setValue("1");
+                                        }
+                                        if(startss>2&&onss=="0"){
+                                            fieldsetCpt.down('field[name=on]').setValue("0");
+                                        }
+                                    };
+                                }
+                                if (data.tlvs[2].valInt != null && data.tlvs[2].valInt!= '') {
+                                    objForm.down("[ref=tlvsva2Int]").setValue(String(data.tlvs[2].valInt));
+                                }else{
+                                    objForm.down("[ref=tlvsva2Int]").setValue("0");
+                                }
+                            }
                         }
                     });    
-
-                    // var formvalue = null;
-                    // var controlVal = null;
-                    // if (resObj.tlvs != null)
-                    //     if (resObj.tlvs.length > 0) {
-                    //         for (var k = 0; k < resObj.tlvs.length; k++) {
-                    //             if (resObj.tlvs[k].tag == 0x1006) {
-                    //                 baseParamPanel.down("[ref=tlvsvalInt]").setValue(resObj.tlvs[0].valInt);
-                    //             } else if (resObj.tlvs[k].valStr != '') {
-                    //                 var item = resObj.tlvs[k].valStr.split('&');
-                    //                 for (var i = 0; i < item.length; i++) {
-                    //                     var arr1 = item[i].split('#');
-                    //                     var time = arr1[2].split('|');
-                    //                     formvalue = baseParamPanel.down("form[ref=lItems" + arr1[0] + "]").getForm();
-                    //                     formvalue.findField('type').setValue(arr1[1]);
-                    //                     for (var l = 0; l < time.length; l++) {
-                    //                         formvalue.findField("time" + l + "").setValue(time[l]);
-                    //                         controlVal = formvalue.findField("status" + l);
-                    //                         for (var o = 0; o < controlVal.items.items.length; o++) {
-                    //                             if (controlVal.items.items[o].inputValue == arr1[3][l]) {
-                    //                                 controlVal.items.items[o].setValue(arr1[3][l]);
-                    //                             }
-                    //                         }
-                    //                     };
-                    //                 };
-                    //             }
-                    //         };
-                    //         if (resObj.notes != null && notes != '') {
-                    //             var notes = resObj.notes.split('|');
-                    //             for (var i = 0; i < notes.length; i++) {
-                    //                 formvalue = baseParamPanel.down("form[ref=lItems" + (i + 1) + "]").getForm();
-                    //                 var startss=notes[i].lastIndexOf(":")+1;
-                    //                 var ss=notes[i].split(':');
-                    //                 if(startss>2){
-                    //                     formvalue.findField('notes').setValue(ss[1]);
-                    //                 }
-                    //                 if(startss<=2){
-                    //                     formvalue.findField('notes').setValue(notes[i].substring(2,notes[i].length));
-                    //                     }
-                    //                 var onss=notes[i].substring(startss,notes[i].length);
-                    //                 if(startss>2&&onss=="1"){formvalue.findField('on').setValue("1");}
-                    //                 if(startss>2&&onss=="0"){formvalue.findField('on').setValue("0");}
-                    //             };
-                    //         }
-                    //         if (resObj.tlvs[2].valInt != null && resObj.tlvs[2].valInt!= '') {
-                    //             baseParamPanel.down("[ref=tlvsva2Int]").setValue(String(resObj.tlvs[2].valInt));
-                    //         }else{
-                    //             baseParamPanel.down("[ref=tlvsva2Int]").setValue("0");
-                    //         }
-                    //     }
                 }      
         
           },30);

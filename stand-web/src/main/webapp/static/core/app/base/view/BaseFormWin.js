@@ -15,7 +15,7 @@ Ext.define("core.base.view.BaseFormWin", {
     maximizable:true,
     resizable:false,
     modal: true,
-    iconCls: 'application_form',
+    iconCls: 'x-fa fa-check-square',
     operType: '', // 操作类型,
     funData: "", //自定义的配置参数
     funCode: "",

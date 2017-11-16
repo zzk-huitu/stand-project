@@ -51,7 +51,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
         var detCode = win.detCode;
         //找到详细布局视图
         var allotlayout = win.down("basepanel[funCode=" + detCode + "]");
-        var treegrid = allotlayout.down('basetreegrid[xtype=basedevice.basedeviceallot.roominfotree2]');
+        //var treegrid = allotlayout.down('basetreegrid[xtype=basedevice.basedeviceallot.roominfotree2]');
         var baseGrid =allotlayout.down('panel[xtype=basedevice.basedeviceallot.devicesysgrid]');
         var rows =  baseGrid.getStore().getCount();
         if (rows <= 0) {
@@ -65,12 +65,12 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
             var record = isSelectStore.getAt(i);
             roomId+= record.get("roomId")+",";
             uuid += record.get("uuid") + "," ;
-          }
+        }
 
         var loading = self.LoadMask(win);
 
         self.asyncAjax({
-            url: comm.get('baseUrl') + "/BasePtTerm/doAdd",
+            url: comm.get('baseUrl') + "/BasePtTerm/doSetPtTerm",
             params: {
              roomId: roomId,
              uuid: uuid
@@ -93,8 +93,8 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
             loading.hide();
           }
       });
- },
-     queryFastSearchForm:function(component){
+    },
+    queryFastSearchForm:function(component){
         //得到组件                 
         var baseGrid = component.up("basegrid");
         if (!baseGrid)

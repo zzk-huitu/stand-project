@@ -19,7 +19,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
             },
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
                 var data = record.data;
-                selectStore = grid.getStore();
+                var selectStore = grid.getStore();
 
                 var basePanel = grid.up("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
                 var isSelectGrid;

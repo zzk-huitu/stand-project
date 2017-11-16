@@ -25,8 +25,8 @@ Ext.define("core.system.dept.controller.MainController", {
             //增加下级按钮事件
             "basetreegrid button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
-                    //console.log(btn);
-                    //return false;
+                    this.openDetail_Tab(btn,"add");
+                    return false;
                 }
             },
 
@@ -277,6 +277,15 @@ Ext.define("core.system.dept.controller.MainController", {
                 tabItemId = funCode + "_gridAdd";    //命名规则：funCode+'_ref名称',确保不重复
                 pkValue= null;
                 operType="add";
+
+                var rescords = baseGrid.getSelectionModel().getSelection();
+                if(rescords.length!=0){
+                    insertObj = Ext.apply(insertObj, {
+                        parentNode: rescords[0].get("id"),
+                        parentName: rescords[0].get("text"),
+                        parentType: rescords[0].get("parentType"),               
+                    });
+                }                
                 break;
             case "edit":
                 if (btn) {  //点击按钮的方式

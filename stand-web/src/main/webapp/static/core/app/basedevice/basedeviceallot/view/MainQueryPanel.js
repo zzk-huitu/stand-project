@@ -28,6 +28,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainQueryPanel", {
             dataType:'numberfield',
             operationType:"other",
             fieldLabel: "机号",
+            value:''
         }, {
             columnWidth: 0.33,
             xtype: "basequeryfield",

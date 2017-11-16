@@ -29,13 +29,12 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
         var self=this;
         var win = btn.up('window');
         var termId = win.termid;
-        var termSN = win.termSN;
-        var termName = win.termName;
+        //var termSN = win.termSN;
+        //var termName = win.termName;
 
         var employeeID = ""; //人员id
         var employeeName = ""; //人员主键
         var stuId = "";
-        var termId = "";
 
         var tabPanel = Ext.ComponentQuery.query("tabpanel[xtype=app-main]")[0];
         var mainlayout = tabPanel.getActiveTab(); 
@@ -73,14 +72,13 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
                 termName: termName //设备名称
             };*/
            // grid.getStore().insert(0, data); //加入到新的grid
-           stuId += employeeID + "," ;
-           termId += termId + ",";
+           stuId += employeeID + "," ;          
         }
         var loading= self.LoadMask(win,"正在处理中...,请等待！");
         self.asyncAjax({
-            url: comm.get('baseUrl') + "/BaseMjUserright/doAdd",
+            url: comm.get('baseUrl') + "/BaseMjUserright/doAddMj",
             params: {
-              stuId: stuId,
+              userId: stuId,
               termId: termId,
           },          
         //回调代码必须写在里面

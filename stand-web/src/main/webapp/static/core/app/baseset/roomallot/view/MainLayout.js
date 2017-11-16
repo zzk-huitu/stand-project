@@ -32,7 +32,8 @@ Ext.define("core.baseset.roomallot.view.MainLayout", {
 		xtype: "baseset.roomallot.roomallottree",
 		region: "west",
 		split:true,
-		width: comm.get("clientWidth") * 0.2
+		width:250
+		//width: comm.get("clientWidth") * 0.2
 	}, {
 		xtype: "baseset.roomallot.maingrid",
 		region: "center",

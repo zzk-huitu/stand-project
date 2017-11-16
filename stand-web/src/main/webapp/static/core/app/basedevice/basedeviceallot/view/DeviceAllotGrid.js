@@ -1,9 +1,10 @@
 Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.basedevice.basedeviceallot.deviceallotgrid",
-    dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtTerm/getNoAllotList",
     model: "com.zd.school.control.device.model.PtTerm",
     al:true,
+    pageDisplayInfo:false,  //不显示分页数据信息
     frame: false,
     columnLines: false,
     extParams: {
@@ -12,7 +13,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '未分配设备  (双击添加或删除)',
+            html: '未分配的设备（双击添加）',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -34,6 +35,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             name:'termNo',
             dataType:'numeric',
             funCode:'girdFastSearchText', 
+            value:'',
             emptyText: '机号'
         },{
             xtype: 'button',            
@@ -100,62 +102,54 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         }, {
-            width:120,
+            width:100,
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE" //字典代码
         }]
     },
-    
+
     listeners: {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
+
             var mainlayout = grid.up('panel[xtype=basedevice.basedeviceallot.deviceallotlayout]');
             var deviceSysGrid = mainlayout.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
             var tree = mainlayout.down("basetreegrid[xtype=basedevice.basedeviceallot.roominfotree2]");
             var treelevel = tree.getSelectionModel().getSelection()[0];
-            var level = undefined;
-            var roomName = undefined;
-            var roomId = undefined;
-            var termName = undefined;
-            var tremId = undefined;
-            var termTypeID = undefined;
-            var termNo = undefined;
-            var termSN = undefined;
-            var gatewayName = undefined;
-
             if (treelevel == null) {
                 Ext.example.msg("提示", "请选择房间!");
                 return false;
             }
-            level = treelevel.get('level');
-            roomName = treelevel.get('text');
-            roomId = treelevel.get('id');
-            termName = record.get('termName');
-            termTypeID = record.get('termTypeID');
-            gatewayName = record.get('gatewayName');
-            tremId = record.get('uuid');
-            if (level != 5) {
+        
+            var leaf = treelevel.get('leaf');
+            if (leaf != true) {
                 Ext.example.msg("提示", "只能选择房间进行操作!");
                 return false;
             }
-            var data = {
-                roomName: roomName,
-                roomId: roomId,
-                gatewayName: gatewayName,
-                termTypeID: termTypeID,
-                termName: termName,
-                uuid: tremId,
-                termNo:treelevel.get('termNo'),
-                termSN:treelevel.get('termSN'),
-            };
-            grid.getStore().removeAt(index); //将选中的移除
-            deviceSysGrid.getStore().insert(0, data); //加入到新的grid
-            return false;
-        },
-        beforeitemclick: function() {
+
+
+            var selectStore = grid.getStore();
+            selectStore.removeAt(index);
+
+            var basePanel = grid.up("panel[xtype=basedevice.basedeviceallot.deviceallotlayout]");
+            var isSelectGrid;
+            if(basePanel){
+                isSelectGrid = basePanel.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
+                var isSelectStore = isSelectGrid.getStore();
+
+                var roomName = treelevel.get('text');
+                var roomId = treelevel.get('id');            
+                record.set("roomName",roomName);
+                record.set("roomId",roomId);
+                //record.commit();
+
+                isSelectStore.insert(0, record);
+            }
+            
             return false;
         }
     }
+    
     
 });

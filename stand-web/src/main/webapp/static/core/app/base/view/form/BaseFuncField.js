@@ -65,6 +65,9 @@ Ext.define("core.base.view.form.BaseFuncField", {
     },
     onTriggerClick: function () {
         var self = this;
+        if(self.readOnly==true)
+            return;
+        
         //得到功能信息
         var funcController = self.funcController;
         var funcPanel = self.funcPanel;
@@ -91,14 +94,16 @@ Ext.define("core.base.view.form.BaseFuncField", {
         if (flag != false) {
             whereSql = configInfo.whereSql;
             filter = configInfo.filter;
-            if (whereSql) {
-                var bf, rec;//表格和表单，如果是表格的化则更新表格的字段值，如果是表单则更新表单
-                if (self.ownerCt.xtype == 'editor') {
-                    var grid = self.ownerCt.floatParent;
-                    rec = grid.getSelectionModel().getSelection()[0];
-                } else {
-                    bf = self.up('form').getForm();
-                }
+
+            var bf, rec;//表格和表单，如果是表格的化则更新表格的字段值，如果是表单则更新表单
+            if (self.ownerCt.xtype == 'editor') {
+                var grid = self.ownerCt.floatParent;
+                rec = grid.getSelectionModel().getSelection()[0];
+            } else {
+                bf = self.up('form').getForm();
+            }
+
+            if (whereSql) {            
                 whereSql = self.parseWhereSql(whereSql, bf, rec);
             }
             //加载控制器

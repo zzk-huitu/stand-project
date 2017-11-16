@@ -25,6 +25,7 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
             items: [{
                 columnWidth: 0.4,
                 name:'tlvs[0].valInt',
+                ref: 'tlvsvalInt',
                 fieldLabel: '心跳间隔',
                 xtype: 'numberfield',
                 value: 60,
@@ -114,18 +115,18 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status0',
+                    //name: 'status0',
                     columnWidth: 0.5,
                     //width:200,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status0',
+                        name: 'items1.status0',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status0',
+                        name: 'items1.status0',
                         inputValue: 1,
                     }]
                 }]
@@ -148,17 +149,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status1',
+                    //name: 'status1',
                     columnWidth: 0.5,                
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status1',
+                        name: 'items1.status1',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status1',
+                        name: 'items1.status1',
                         inputValue: 1,
                     }]
                 }]
@@ -181,17 +182,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status2',
+                    //name: 'status2',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status2',
+                        name: 'items1.status2',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status2',
+                        name: 'items1.status2',
                         inputValue: 1,
                     }]
                 }]
@@ -214,17 +215,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status3',
+                    //name: 'status3',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status3',
+                        name: 'items1.status3',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status3',
+                        name: 'items1.status3',
                         inputValue: 1,
                     }]
                 }]
@@ -287,18 +288,18 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status0',
+                    //name: 'status0',
                     columnWidth: 0.5,
                     //width:200,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status0',
+                        name: 'items2.status0',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status0',
+                        name: 'items2.status0',
                         inputValue: 1,
                     }]
                 }]
@@ -321,17 +322,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status1',
+                    //name: 'status1',
                     columnWidth: 0.5,                
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status1',
+                        name: 'items2.status1',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status1',
+                        name: 'items2.status1',
                         inputValue: 1,
                     }]
                 }]
@@ -354,17 +355,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status2',
+                    //name: 'status2',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status2',
+                        name: 'items2.status2',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status2',
+                        name: 'items2.status2',
                         inputValue: 1,
                     }]
                 }]
@@ -387,17 +388,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status3',
+                    //name: 'status3',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status3',
+                        name: 'items2.status3',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status3',
+                        name: 'items2.status3',
                         inputValue: 1,
                     }]
                 }]
@@ -460,18 +461,18 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status0',
+                    //name: 'status0',
                     columnWidth: 0.5,
                     //width:200,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status0',
+                        name: 'items3.status0',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status0',
+                        name: 'items3.status0',
                         inputValue: 1,
                     }]
                 }]
@@ -494,17 +495,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status1',
+                    //name: 'status1',
                     columnWidth: 0.5,                
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status1',
+                        name: 'items3.status1',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status1',
+                        name: 'items3.status1',
                         inputValue: 1,
                     }]
                 }]
@@ -527,17 +528,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status2',
+                    //name: 'status2',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status2',
+                        name: 'items3.status2',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status2',
+                        name: 'items3.status2',
                         inputValue: 1,
                     }]
                 }]
@@ -560,17 +561,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status3',
+                    //name: 'status3',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status3',
+                        name: 'items3.status3',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status3',
+                        name: 'items3.status3',
                         inputValue: 1,
                     }]
                 }]
@@ -633,18 +634,18 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status0',
+                    //name: 'status0',
                     columnWidth: 0.5,
                     //width:200,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status0',
+                        name: 'items4.status0',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status0',
+                        name: 'items4.status0',
                         inputValue: 1,
                     }]
                 }]
@@ -667,17 +668,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status1',
+                    //name: 'status1',
                     columnWidth: 0.5,                
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status1',
+                        name: 'items4.status1',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status1',
+                        name: 'items4.status1',
                         inputValue: 1,
                     }]
                 }]
@@ -700,17 +701,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status2',
+                    //name: 'status2',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status2',
+                        name: 'items4.status2',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status2',
+                        name: 'items4.status2',
                         inputValue: 1,
                     }]
                 }]
@@ -733,17 +734,17 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 }, {
                     xtype: 'radiogroup',
                     fieldLabel: '状态',
-                    name: 'status3',
+                    //name: 'status3',
                     columnWidth: 0.5,
                     vertical: true,
                     items: [{
                         boxLabel: '关',
                         inputValue: 0,
-                        name: 'status3',
+                        name: 'items4.status3',
                         checked: true
                     }, {
                         boxLabel: '开',
-                        name: 'status3',
+                        name: 'items4.status3',
                         inputValue: 1,
                     }]
                 }]

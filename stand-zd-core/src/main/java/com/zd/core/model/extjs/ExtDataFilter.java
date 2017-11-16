@@ -30,7 +30,7 @@ public class ExtDataFilter {
     public String field;
 
     /** 比较规则 */
-    public String comparison;
+    public String comparison;    
 
     public String getType() {
         return type;
@@ -63,4 +63,6 @@ public class ExtDataFilter {
     public void setComparison(String comparison) {
         this.comparison = comparison;
     }
+    
+    
 }

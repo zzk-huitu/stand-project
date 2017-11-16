@@ -16,16 +16,17 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotLayout", {
     items: [{
     	split: true,//对模块分开的线条
         xtype: "basedevice.basedeviceallot.roominfotree2",
-        width: comm.get("clientWidth") * 0.15,
+        width: 230,
         region: "west",
     }, {
-    	 flex:1,
+    	//flex:1,
     	split: true,
         xtype: "basedevice.basedeviceallot.deviceallotgrid",
         region: "center",
+        //width:600,
     }, {
     	split: true,
-    	width: comm.get("clientWidth") * 0.31,
+    	width:420,
     	xtype: "basedevice.basedeviceallot.devicesysgrid",
         region: "east",
     }]

@@ -6,6 +6,7 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree", {
     al: true,
     forceFit:true,
     sortableColumns:false,
+    multiSelect: false,
     selModel: {
       
     },

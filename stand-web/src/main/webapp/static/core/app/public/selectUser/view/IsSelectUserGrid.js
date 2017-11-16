@@ -51,7 +51,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
             drop: function (node, data, dropRec, dropPosition) {
             },
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
-                IsSelectStore = grid.getStore();
+                var IsSelectStore = grid.getStore();
                 IsSelectStore.removeAt(index);
 
                 var basePanel = grid.up("panel[xtype=pubselect.selectuserlayout]");

@@ -59,7 +59,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '卡片类型',
-                name: 'tlvs[1].valInt',
+                //name: 'tlvs[1].valInt',
                 vertical: true,
                 items: [{
                     width:100,
@@ -76,7 +76,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '名单方式',
-                name: 'tlvs[5].valInt',
+                //name: 'tlvs[5].valInt',
                 vertical: true,
                 items: [{
                     width:100,
@@ -93,7 +93,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '自动锁卡',
-                name: 'tlvs[4].valInt',
+                //name: 'tlvs[4].valInt',
                 vertical: true,
                 items: [{
                     width:100,
@@ -110,7 +110,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '未关门报警',
-                name: 'tlvs[10].valInt',
+                //name: 'tlvs[10].valInt',
                 vertical: true,
                 items: [{
                     width:100,
@@ -204,7 +204,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '卡片有效期',
-                name: 'tlvs[7].valInt',
+                //name: 'tlvs[7].valInt',
                 vertical: true,
                 items: [{
                     width: 100,
@@ -221,7 +221,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '门状态',
-                name: 'tlvs[3].valInt',            
+                //name: 'tlvs[3].valInt',            
                 vertical: true,
                 items: [{
                     width: 100,
@@ -238,7 +238,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '首卡开门',
-                name: 'tlvs[8].valInt',
+                //name: 'tlvs[8].valInt',
                 vertical: true,
                 items: [{
                     width: 100,
@@ -255,7 +255,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '刷卡提示',
-                name: 'tlvs[12].valInt',
+                //name: 'tlvs[12].valInt',
                 vertical: true,
                 items: [{
                     width: 100,
@@ -272,7 +272,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             }, {
                 xtype: 'radiogroup',
                 fieldLabel: '卡机绑定',
-                name: 'tlvs[13].valInt',
+                //name: 'tlvs[13].valInt',
                 vertical: true,
                 items: [{
                     width: 100,

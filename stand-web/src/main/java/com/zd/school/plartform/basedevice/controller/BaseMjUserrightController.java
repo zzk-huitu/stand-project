@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.zd.school.control.device.model.MjUserright;
 import com.zd.school.plartform.basedevice.service.MjUserrightService;
@@ -98,5 +99,27 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
+	}
+	
+	/**
+	 * 给设备增加用户权限
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/doAddMj")
+	public void doAddMj(@RequestParam("userId") String userId,@RequestParam("termId") String termId, 
+			HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		
+		// 获取当前操作用户
+        SysUser currentUser = getCurrentSysUser();
+     
+        thisService.doAddMj(userId, termId,currentUser);// 执行增加方法
+      
+        writeJSON(response, jsonBuilder.returnSuccessJson("\"增加权限成功\""));       
 	}
 }

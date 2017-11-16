@@ -27,11 +27,11 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     },
     /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
-    scrollable:true,
+    scrollable:'x',
     items: [{
     	split: true,//对模块分开的线条
     	xtype: "accesscontrol.useraccess.roominfotree",
-    	width: comm.get("clientWidth") * 0.18,
+    	width: 250,
         region: "west",
     }, {
     	split: true,//对模块分开的线条
@@ -45,7 +45,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     }*/,{
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.maingrid",
-        width: comm.get("clientWidth") * 0.25,
+        width: 400,
         region: "east",
     }]
 })

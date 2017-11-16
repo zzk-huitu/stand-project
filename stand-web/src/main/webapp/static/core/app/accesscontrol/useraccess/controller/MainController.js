@@ -15,7 +15,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     	
     	//房间列表刷新按钮
     	"basetreegrid[xtype=accesscontrol.useraccess.roominfotree] button[ref=gridRefresh]": {
-            beforeclick: function(btn) {
+          beforeclick: function(btn) {
              btn.up('basetreegrid').getStore().load();
              var baseGrid = btn.up("basetreegrid");
              var mainLayout= baseGrid.up("panel[xtype=accesscontrol.useraccess.mainlayout]");
@@ -23,11 +23,11 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
              var mjuserrightstore = mjuserrightGrid.getStore();
              mjuserrightstore.removeAll();
              return false;
-            }
+          }
         },
     	
-    	//选择人员按钮
-    	"basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid] button[ref=selectPersonnel]": {
+    	 //选择人员按钮
+    	 "basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid] button[ref=selectPersonnel]": {
             beforeclick: function(btn) {
                 this.openRoomAccess_Win(btn);
                 return false;
@@ -63,6 +63,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     	 * 选择人员事件
     	 */
   	openRoomAccess_Win: function(btn,grid,record) {
+      
     		var self = this;
         var baseGrid;
         var selectGrid; 
@@ -103,7 +104,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
         if (!otherController)
           otherController = '';  
         var width = 1200;
-        var height = 550;
+        var height = 600;
         var iconCls= 'x-fa fa-plus-circle';
         var winTitle = "人员列表";
 
@@ -138,7 +139,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
   	 * 删除人员的权限
   	 */
       deleteUserAccess: function(btn) {
-  		var self = this;
+  		    var self = this;
 
           //得到组件
           var baseGrid=btn.up("basegrid");
@@ -180,26 +181,26 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
            });
 
            var win = Ext.create('core.base.view.BaseFormWin', {
-                      title: winTitle,
-                      baseGrid:baseGrid,
-                      width: width,
-                      height: height,
-                      controller: otherController,
-                      funData: popFunData,
-                      funCode: detCode,
-                      items: [{
-                          xtype: "accesscontrol.useraccess.detaillayout"
-                      }],
-                      listeners: {
-                          beforerender: function(win) {
-                              // //隐藏按钮
-                              baseGrids = win.down("panel[xtype=accesscontrol.useraccess.useraccessgrid]");
-                              var store = baseGrids.getStore();
-                              var proxy = store.getProxy();
-                              proxy.extraParams.filter="["+"{\"type\":\"string\",\"value\":"+"\""+stuId+"\""+",\"field\":\"stuId\",\"comparison\":\"\"}"+"]";
-                          }
-                      },
-                  }).show();
+                title: winTitle,
+                baseGrid:baseGrid,
+                width: width,
+                height: height,
+                controller: otherController,
+                funData: popFunData,
+                funCode: detCode,
+                items: [{
+                    xtype: "accesscontrol.useraccess.detaillayout"
+                }],
+                listeners: {
+                    beforerender: function(win) {
+                        // //隐藏按钮
+                        baseGrids = win.down("panel[xtype=accesscontrol.useraccess.useraccessgrid]");
+                        var store = baseGrids.getStore();
+                        var proxy = store.getProxy();
+                        proxy.extraParams.filter="["+"{\"type\":\"string\",\"value\":"+"\""+stuId+"\""+",\"field\":\"stuId\",\"comparison\":\"\"}"+"]";
+                    }
+                },
+            }).show();
   	
     } ,
       

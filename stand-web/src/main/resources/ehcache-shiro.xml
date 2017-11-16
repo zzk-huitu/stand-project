@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache name="ehcache-shiro">
 
-	<diskStore path="java.io.tmpdir/jw-ehcache" />
+	<diskStore path="java.io.tmpdir/stand-shiro-ehcache" />
 	
 	<defaultCache               
         maxElementsInMemory="10000"  

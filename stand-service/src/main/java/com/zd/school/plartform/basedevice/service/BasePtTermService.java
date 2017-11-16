@@ -23,5 +23,11 @@ public interface BasePtTermService extends BaseService<PtTerm>{
 	public void doUpdateHighParam(TLVModel tlvs, String xm);
 
 	public void doBatchUpdateHighParam(TLVModel tlvs, String termTypeID, String areaType, String xm);
+
+	public void doUpdateBaseParam(TLVModel tlvs, String notes, String xm);
+
+	public void doBatchUpdateBaseParam(TLVModel tlvs, String termTypeID, String notes, String areaType, String xm);
+
+	public void doSetPtTerm(String roomId, String uuid, SysUser currentUser);
 	
 }

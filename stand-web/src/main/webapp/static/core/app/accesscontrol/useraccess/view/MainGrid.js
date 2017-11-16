@@ -4,6 +4,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseMjUserright/list",
     model: "com.zd.school.control.device.model.MjUserright",
     al:false,
+    pageDisplayInfo:false,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -21,7 +22,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
             iconCls: 'x-fa fa-minus-circle'
         },{
             xtype: 'button',
-            text: '删除人员权限',
+            text: '批量删除人员权限',
             ref: 'gridDeleteAll',
             iconCls: 'x-fa fa-minus-circle'
         }],
