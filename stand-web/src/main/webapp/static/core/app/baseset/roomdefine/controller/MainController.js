@@ -311,7 +311,6 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                             var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
                             var dormDetailContainer = tabItem.down("container[ref=dormDetailInfo]");
                             dormDetailContainer.setData(data);
-                            console.log(data);
                         }
                     });
                 }

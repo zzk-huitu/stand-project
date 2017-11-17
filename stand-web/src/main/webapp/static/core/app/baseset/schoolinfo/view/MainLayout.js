@@ -23,26 +23,7 @@ Ext.define("core.baseset.schoolinfo.view.MainLayout", {
         action: comm.get('baseUrl') + "/BaseSchool", //请求Action 
         pkName: "uuid",
         defaultObj: {
-            
-        },
-          excelInfo: {
-            excelFields: [{
-                name: "学校代码",
-                code: "schoolCode"
-            }, {
-                name: "学校名称",
-                code: "schoolName"
-            }, {
-                name: "学校地址",
-                code: "schoolAddr"
-            }, {
-                name: "建校年月",
-                code: "foundYear"
-            }, {
-                name: "校庆日",
-                code: "anniversaryDay"
-            }]
-        },
+         },
        tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
             titleField:'schoolName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
             addTitle:'添加学校',
@@ -53,8 +34,6 @@ Ext.define("core.baseset.schoolinfo.view.MainLayout", {
     /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
     scrollable:true,
-
-    layout:'fit',
     items: [{
         xtype: "baseset.schoolinfo.maingrid"
     }]

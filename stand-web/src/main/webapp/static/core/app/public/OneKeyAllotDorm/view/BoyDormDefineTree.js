@@ -1,11 +1,11 @@
-Ext.define("core.public.OneKeyAllotDorm.view.DormDefinTree", {
+Ext.define("core.public.OneKeyAllotDorm.view.BoyDormDefinTree", {
    extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.pubonkeyallotdorm.dormdefintree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
+    alias: "widget.pubonkeyallotdorm.boydormdefinetree",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/getBoyTree",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
     extParams: {
-        whereSql: " and isDelete='0' ",
+         whereSql: "",
          excludes:"checked"
     },
     tbar:{

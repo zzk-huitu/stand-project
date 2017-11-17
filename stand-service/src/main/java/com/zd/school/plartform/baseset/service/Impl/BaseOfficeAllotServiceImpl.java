@@ -2,7 +2,6 @@ package com.zd.school.plartform.baseset.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +16,15 @@ import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwOfficeAllot;
 import com.zd.school.build.define.model.BuildOfficeDefine;
 import com.zd.school.build.define.model.BuildRoominfo;
+import com.zd.school.control.device.model.MjUserright;
+import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.jw.push.model.PushInfo;
 import com.zd.school.jw.push.service.PushInfoService;
+import com.zd.school.plartform.basedevice.service.BasePtTermService;
+import com.zd.school.plartform.basedevice.service.MjUserrightService;
 import com.zd.school.plartform.baseset.dao.BaseOfficeAllotDao;
+import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
+import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
@@ -44,19 +49,19 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	BaseRoominfoService infoService;// 房间
 	@Resource
 	PushInfoService pushService; // 推送
-	// @Resource
-	// MjUserrightService mjService; // 门禁权限
-	// @Resource
-	// PtTermService ptTermService; // 设备表接口
-	//
-	// @Resource
-	// JwClassRoomAllotService classservice;
-	//
-	// @Resource
-	// BuildDormDefineService dormDefine;
-	//
-	// @Resource
-	// JwClassDormAllotService classDormService;
+	 @Resource
+	 MjUserrightService mjService; // 门禁权限
+	 @Resource
+	 BasePtTermService ptTermService; // 设备表接口
+	
+	/* @Resource
+	 JwClassRoomAllotService classservice;*/
+	
+	 @Resource
+	 BaseDormDefineService dormDefine;
+	
+	 @Resource
+	 BaseClassDormAllotService classDormService;
 
 	@Resource
 	public void setJwOfficeallotDao(BaseOfficeAllotDao dao) {
@@ -64,71 +69,76 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	}
 
 	/**
-	 * 分配门禁 2017-10-9：待完成
+	 * 1: 学生宿舍分配的门禁分配
+	 * roomaAllotService.mjUserRight(entity.getStuId(), null, null, entity, null);
+	 * dorm ：学生宿舍
+	 * uuid ：DormStudentDorm表的学生id
+	 * 2：办公室分配（现名为房间分配）
+	 * 	this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
+	 *  this.mjUserRight(null, roomId, tteacId, null, null);
+	 * roomId: JwOfficeAllot的房间id 
+	 * userId :JwOfficeAllot的主键id
+	 * uuid :JwOfficeAllot表的教师id
 	 */
 	@Override
 	public boolean mjUserRight(String uuid, String roomId, String userId, DormStudentDorm dorm,
 			JwClassstudent classStu) {
-		// try {
-		// if (dorm != null) {
-		// String dormId = classDormService.get(dorm.getCdormId()).getDormId();
-		// roomId = dormDefine.get(dormId).getRoomId();
-		// } else if (classStu != null) {
-		// String[] propName = { "claiId", "isDelete" };
-		// Object[] propValue = { classStu.getClaiId(), 0 };
-		// roomId = classservice.getByProerties(propName,
-		// propValue).getRoomId();
-		// }
-		// String[] propName = { "termTypeID", "isDelete", "roomId" };
-		// Object[] propValue = { 4, 0, roomId };
-		// MjUserright userRight = null;
-		// List<PtTerm> list = ptTermService.queryByProerties(propName,
-		// propValue);
-		// if (uuid == null || uuid.equals("")) {
-		// if (list.size() > 0) {
-		// String[] uId = userId.split(",");
-		// for (int i = 0; i < list.size(); i++) {
-		// for (int j = 0; j < uId.length; j++) {
-		// String[] name = { "termId", "stuId" };
-		// String[] value = { list.get(i).getUuid(), uId[j] };
-		// userRight = mjService.getByProerties(name, value);
-		// if (userRight != null) {
-		// userRight.setIsDelete(1);
-		// userRight.setControlsegId(0);
-		// userRight.setCardstatusId(0);
-		// userRight.setUpdateTime(new Date());
-		// mjService.merge(userRight);
-		// }
-		// }
-		// }
-		// }
-		// } else {
-		// if (list.size() > 0) {
-		// for (int i = 0; i < list.size(); i++) {
-		// String[] name = { "termId", "stuId" };
-		// String[] value = { list.get(i).getUuid(), uuid };
-		// userRight = mjService.getByProerties(name, value);
-		// if (userRight != null) {
-		// userRight.setIsDelete(0);
-		// userRight.setUpdateTime(new Date());
-		// mjService.merge(userRight);
-		// } else {
-		// userRight = new MjUserright();
-		// userRight.setTermId(list.get(i).getUuid());
-		// userRight.setCreateUser("超级管理员");
-		// userRight.setStuId(uuid);
-		// mjService.merge(userRight);
-		// }
-		// }
-		// }
-		// }
-		// return true;
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// return false;
-		// }
-		return false;
-
+		try {
+			if (dorm != null) {//学生宿舍门禁分配
+				String dormId = classDormService.get(dorm.getCdormId()).getDormId(); //班级宿舍id
+				roomId = dormDefine.get(dormId).getRoomId();
+			} else if (classStu != null) { //教师分配门禁  目前还未增加教师分配该模块
+				String[] propName = { "claiId", "isDelete" };
+				Object[] propValue = { classStu.getClaiId(), 0 };
+				//roomId = classservice.getByProerties(propName, propValue).getRoomId();
+			}
+			String[] propName = { "termTypeID", "isDelete", "roomId" };
+			Object[] propValue = { 4, 0, roomId };
+			MjUserright userRight = null;
+			List<PtTerm> list = ptTermService.queryByProerties(propName, propValue);
+			if (uuid == null || uuid.equals("")) {
+				if (list.size() > 0) {//解除门禁权限
+					String[] uId = userId.split(","); //房间分配解除门禁设置
+					for (int i = 0; i < list.size(); i++) {
+						for (int j = 0; j < uId.length; j++) {
+							String[] name = { "termId", "stuId" };
+							String[] value = { list.get(i).getUuid(), uId[j] };
+							userRight = mjService.getByProerties(name, value);
+							if (userRight != null) {
+								userRight.setIsDelete(1);
+								userRight.setControlsegId(0);
+								userRight.setCardstatusId(0);
+								userRight.setUpdateTime(new Date());
+								mjService.merge(userRight);
+							}
+						}
+					}
+				}
+			} else {//增加门禁权限
+				if (list.size() > 0) {
+					for (int i = 0; i < list.size(); i++) {
+						String[] name = { "termId", "stuId" };
+						String[] value = { list.get(i).getUuid(), uuid };
+						userRight = mjService.getByProerties(name, value);
+						if (userRight != null) {
+							userRight.setIsDelete(0);
+							userRight.setUpdateTime(new Date());
+							mjService.merge(userRight);
+						} else {
+							userRight = new MjUserright();
+							userRight.setTermId(list.get(i).getUuid());
+							userRight.setCreateUser("超级管理员");
+							userRight.setStuId(uuid);
+							mjService.merge(userRight);
+						}
+					}
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override

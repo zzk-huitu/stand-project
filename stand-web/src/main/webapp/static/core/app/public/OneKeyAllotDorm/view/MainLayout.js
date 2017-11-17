@@ -4,18 +4,25 @@ Ext.define("core.public.OneKeyAllotDorm.view.MainLayout", {
     controller: 'pubselect.dormdefinecontroller',
     funCode: "pubonkeyallotdorm_main",
     funData: {
-        action: comm.get("baseUrl") + "/BaseRoomdefine", //请求Action
+        action: comm.get("baseUrl") + "/BaseStudentDorm", //请求Action
         pkName: "uuid"
     },
     minWidth:1200,
     scrollable:'x',
     layout: 'border',
     items: [{
-        xtype: "pubonkeyallotdorm.dormdefintree",
+        xtype: "pubonkeyallotdorm.boydormdefinetree",
         region: "west",
         margin:'5',
-        width: 150
-    }, {
+        width: 150,
+        hidden:true
+    },{
+        xtype: "pubonkeyallotdorm.girldormdefinetree",
+        region: "west",
+        margin:'5',
+        width: 150,
+        hidden:true
+    },{
         xtype: "pubonkeyallotdorm.selectdormgrid",
         region: "center",
         margin:'5',

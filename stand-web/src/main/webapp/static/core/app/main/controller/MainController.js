@@ -99,8 +99,6 @@ Ext.define('core.main.controller.MainController', {
     *菜单栏显示子菜单
     */
     onViewIconItemClick:function(view,record,item,index){
-        
-
         var viewport=this.getView();    
         var tabPanel=viewport.down("tabpanel[xtype=app-main]");
             

@@ -87,8 +87,17 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
               return false;
             }
         },
-          //选择男（女）宿舍刷新按钮事件
-          "panel[xtype=pubonkeyallotdorm.dormdefintree] button[ref=gridRefresh]": {
+          //选择男宿舍刷新按钮事件
+        "panel[xtype=pubonkeyallotdorm.boydormdefinetree] button[ref=gridRefresh]": {
+            click: function(btn) {
+             var baseGrid = btn.up("basetreegrid");
+             var store = baseGrid.getStore();
+               store.load(); //刷新父窗体的grid
+               return false;
+             }
+           },
+            //选择女宿舍刷新按钮事件
+        "panel[xtype=pubonkeyallotdorm.girldormdefinetree] button[ref=gridRefresh]": {
             click: function(btn) {
              var baseGrid = btn.up("basetreegrid");
              var store = baseGrid.getStore();
@@ -363,15 +372,11 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
         var self=this;
     		var dormInfo = btn.up('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
     		var baseGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]')
-    		var funcController = "core.public.OneKeyAllotDorm.controller.DormDefineController";
     		var funcPanel = "pubonkeyallotdorm.mainlayout";
     		var funcTitle = "宿舍列表";
         var otherController = 'baseset.studentdorm.othercontroller';
         var win = Ext.createWidget("mtfuncwindow", {
             title: funcTitle,
-            items: {
-               xtype: funcPanel
-            },
             width: 1000,
             identify: 1,
             baseGrid: baseGrid,
@@ -380,7 +385,17 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             maximizable: false,
             resizable: false, //禁止拖动
             funcPanel: funcPanel,
-            }).show(); //打开自定义窗口  
+            items: {
+              xtype: funcPanel
+            },
+           }); //打开自定义窗口 
+      
+          var oneKeyPanel = win.down("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
+          var girldormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree]");
+          var boydormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree]");
+          girldormdefintree.hidden=true;
+          boydormdefintree.hidden=false;
+          win.show();
           },
         doDeleteBoyDorm :function(btn){
           var self=this;
@@ -402,7 +417,6 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             var self=this;
           	var dormInfo = btn.up('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
           	var baseGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.girldormgrid]')
-          	var funcController = "core.public.OneKeyAllotDorm.controller.DormDefineController";
             var funcPanel = "pubonkeyallotdorm.mainlayout";
           	var funcTitle = "宿舍列表";
             var otherController = 'baseset.studentdorm.othercontroller';
@@ -410,7 +424,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             	title: funcTitle,
             	items: {
             		xtype: funcPanel
-            	},
+              },
             	width: 1100,
             	identify: 2,
             	baseGrid: baseGrid,
@@ -419,7 +433,14 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             	maximizable: false,
               resizable: false, //禁止拖动
               funcPanel: funcPanel,
-              }).show(); //打开自定义窗口
+              }); //打开自定义窗口
+
+          var oneKeyPanel = win.down("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
+          var girldormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree]");
+          var boydormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree]");
+          girldormdefintree.hidden=false;
+          boydormdefintree.hidden=true;
+          win.show();
         },
         doDeleteGirlDorm :function(btn){
           var self=this;
