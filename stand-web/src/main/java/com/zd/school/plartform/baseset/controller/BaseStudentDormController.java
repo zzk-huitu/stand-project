@@ -229,7 +229,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		Map<String, Object> hashMap = new HashMap<String, Object>();
 		flag = thisService.dormHandAllot(entity, hashMap, currentUser);
 		if (flag) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'自动分配宿舍成功。'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("'手动分配宿舍成功。'"));
 		} else {
 			Integer count = (Integer) hashMap.get("count");
 			BuildDormDefine buildDormDefine = (BuildDormDefine) hashMap.get("buildDormDefine");

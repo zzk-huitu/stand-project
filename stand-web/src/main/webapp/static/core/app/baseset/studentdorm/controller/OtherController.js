@@ -156,6 +156,8 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
 
       doDormHandAllot: function(btn){
            var self=this;
+           var win = btn.up("window");
+           var baseGrid = win.baseGrid;
            var detailLayout = btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
            var classDormGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.classdormgrid]");
            var selectClaDorm = classDormGrid.getSelectionModel().getSelection();
@@ -167,7 +169,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
            var cdormId = classdormgrid.get("uuid"); //班级宿舍主键
            var dormType = classdormgrid.get("dormType"); //宿舍类型
            var claiId = classdormgrid.get("claiId"); //班级id   
-
+            
            var dormNotAllotGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]");
            var rows = dormNotAllotGrid.getSelectionModel().getSelection();
            var stuId = "";
@@ -206,10 +208,11 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                     if(data.success){
                         var store = dormNotAllotGrid.getStore();
                         store.load(); //刷新
+                        baseGrid.getStore().load();
                         self.msgbox(data.obj); 
                         loading.hide();
                     }else {
-                        self.Error(data.obj);
+                        self.Warning(data.obj);
                         loading.hide();
                      }           
                     loading.hide();
@@ -225,6 +228,8 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
       },
       doDormAutoAllot: function(btn){
            var self=this;
+           var win = btn.up("window");
+           var baseGrid = win.baseGrid;
            var detailLayout = btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
            var dormAllotTree = detailLayout.down("basetreegrid[xtype=baseset.studentdorm.dormallottree]");
            var treeObj = dormAllotTree.getSelectionModel().getSelection();
@@ -268,6 +273,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                           classId:claiId
                          };
                      dormNotAllotGridstore.loadPage(1);
+                     baseGrid.getStore().loadPage(1);
                      self.msgbox(data.obj); 
 
                  }else {
@@ -284,6 +290,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
       saveDormAllot_Win: function(btn){
           var self=this;
           var win = btn.up('window');
+          var basegrid = win.basegrid;
           var gradId = win.gradId;//areaId
           var basepanel = win.down('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
           var dormallotdetailgrid = basepanel.down('basegrid[xtype=baseset.studentdorm.dormallotdetailgrid]');
@@ -350,7 +357,8 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                   success: function(response) {
                     var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
                     if(data.success){
-                      self.msgbox(data.obj); 
+                      basegrid.getStore().load(); 
+                      self.msgbox(data.obj);
                       loading.hide();
                       win.close();                              
                     }else {
@@ -558,6 +566,8 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
          },
       doHandAllot:function(btn){
           var self=this;
+          var win = btn.up('window');
+          var baseGrid = win.baseGrid;
           var mainLayout = btn.up('basepanel[xtype=baseset.studentdorm.adjustdormlayout]');
           var objSelect = null;
           var yrzs = 0; //宿舍已入住总人数
@@ -634,6 +644,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                       mixdormgrid.getStore().load();
                       emptymixdormgrid.getStore().load();
                       stuNotDormGrid.getStore().load();
+                      baseGrid.getStore().load();
                       self.msgbox(data.obj); 
                       loading.hide();
                   }else {

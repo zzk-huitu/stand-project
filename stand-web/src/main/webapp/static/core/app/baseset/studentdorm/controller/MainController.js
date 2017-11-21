@@ -105,6 +105,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                 controller: otherController,
                 funData: popFunData,
                 funCode: detCode,
+                baseGrid:baseGrid,
                 insertObj: insertObj,        
                 items: [{
                     xtype: detLayout
@@ -160,6 +161,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                 resizable: false, //禁止缩放
                 modal: true,
                 items:xItemType,
+                basegrid:basegrid,
                 listeners: {
                     beforerender: function(win) {
                         var dormInfo = win.down("basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]");

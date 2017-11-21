@@ -2,6 +2,7 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,11 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.SysFrontServer;
 import com.zd.school.plartform.basedevice.service.BaseFrontServerService;
+import com.zd.school.plartform.basedevice.service.BaseGatewayService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
@@ -33,7 +34,8 @@ import com.zd.school.plartform.system.model.SysUser;
 public class BaseFrontServerController extends FrameWorkController<SysFrontServer> implements Constant {
 	@Resource
 	BaseFrontServerService thisService; // service层接口
-
+	@Resource
+	BaseGatewayService gateWayService; // service层接口
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
@@ -91,7 +93,14 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 				writeJSON(response, jsonBuilder.returnFailureJson("\"必须保留一个前置服务器！\""));
 				return;
 			}
-						
+			// 当该前置服务器处于网关管理使用中 不能被删除
+		    hql = " from PtGateway a where a.isDelete=0 and a.frontserverId  in ('"
+					+ delIds.replace(",", "','") + "')";
+		    List lists = gateWayService.queryByHql(hql);
+		    if(lists.size()>0){
+		    	writeJSON(response, jsonBuilder.returnFailureJson("\"该前置服务器使用中，不能删除！\""));
+				return;
+		    }
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, currentUser.getXm());
 			if (flag) {

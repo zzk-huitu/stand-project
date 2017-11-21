@@ -94,7 +94,7 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
         }
         String hql1 = " o.isDelete='0' and parentNode='" + parentNode + "' ";
         if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql1)) {
-            writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此顺序号！'"));
+            writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此顺序号！\""));
             return;
         }
         // 获取当前操作用户    

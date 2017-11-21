@@ -34,6 +34,8 @@ Ext.define("core.baseset.calendar.view.CalendarForm", {
 		configInfo: {
 			fieldInfo: "campusId~campusName,uuid~campusName",
 			whereSql: " and isDelete='0' ",
+			width :850,
+			height:500,
 			muiltSelect: false //是否多选
 		}
 	}, {

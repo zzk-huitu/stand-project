@@ -192,7 +192,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
 
         var basePanel = baseGrid.up("basepanel");
         var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
-    
+        var calendargrid = basePanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
         //得到配置信息
         var funData = basePanel.funData;                //主界面的配置信息  
         var canderId = funData.canderId;
@@ -216,12 +216,19 @@ Ext.define("core.baseset.calendar.controller.MainController", {
         var pkValue= null;
         var operType="";
         var recordData=null;
+        var caleSelected =null;
         switch (cmd) {
             case "add":
                 tabTitle = tabConfig.addTitle; 
                 tabItemId = funCode + "_gridAdd";    //命名规则：funCode+'_ref名称',确保不重复
                 pkValue = null;
                 operType="add";
+                caleSelected = calendargrid.getSelectionModel().getSelection();
+                if(caleSelected.length!=1){
+                    self.msgbox("请选择一条数据！");
+                    return;
+                 }
+
                 break;
             case "edit":
                 if (btn) {  //点击按钮的方式

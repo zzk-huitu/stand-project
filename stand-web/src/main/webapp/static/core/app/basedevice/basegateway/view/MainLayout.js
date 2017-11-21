@@ -41,7 +41,7 @@ Ext.define("core.basedevice.basegateway.view.MainLayout", {
 		//margin:'0 5 0 0',
 		split:true,
 		//collapsible:true,
-		width: comm.get("clientWidth") * 0.2
+		width: comm.get("clientWidth") * 0.15
 	}, {
 		xtype: "basedevice.basegateway.miangrid",
 		region: "center",
