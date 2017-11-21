@@ -1,12 +1,13 @@
 Ext.define("core.public.OneKeyAllotDorm.view.GirlDormDefineTree", {
    extend: "core.base.view.BaseTreeGrid",
     alias: "widget.pubonkeyallotdorm.girldormdefinetree",
-    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/getGirlTree",
+    dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/getTree",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
     extParams: {
          whereSql: "",
-         excludes:"checked"
+         excludes:"checked",
+         identity:"2"
     },
     tbar:{
         xtype:'toolbar',
@@ -50,7 +51,9 @@ Ext.define("core.public.OneKeyAllotDorm.view.GirlDormDefineTree", {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
             var filter = "[{'type':'string','comparison':'=','value':'0','field':'roomStatus'}";
-            filter += ",{'type':'string','comparison':'=','value':'0','field':'isMixed'}]";
+            filter += ",{'type':'string','comparison':'=','value':'0','field':'isMixed'}";
+            filter += ",{'type':'string','comparison':'=','value':'2','field':'dormType'}]";
+           
             var funData = mainLayout.funData;
             mainLayout.funData = Ext.apply(funData, {
                 claiId: record.get("id"),

@@ -1,6 +1,7 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,10 +50,10 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	BaseRoominfoService infoService;// 房间
 	@Resource
 	PushInfoService pushService; // 推送
-	 @Resource
-	 MjUserrightService mjService; // 门禁权限
-	 @Resource
-	 BasePtTermService ptTermService; // 设备表接口
+	@Resource
+	MjUserrightService mjService; // 门禁权限
+	@Resource
+	BasePtTermService ptTermService; // 设备表接口
 	
 	/* @Resource
 	 JwClassRoomAllotService classservice;*/
@@ -93,7 +94,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 				//roomId = classservice.getByProerties(propName, propValue).getRoomId();
 			}
 			String[] propName = { "termTypeID", "isDelete", "roomId" };
-			Object[] propValue = { 4, 0, roomId };
+			Object[] propValue = { "4", 0, roomId };
 			MjUserright userRight = null;
 			List<PtTerm> list = ptTermService.queryByProerties(propName, propValue);
 			if (uuid == null || uuid.equals("")) {
@@ -145,6 +146,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	public Boolean doAddRoom(JwOfficeAllot entity, Map hashMap, SysUser currentUser)
 			throws IllegalAccessException, InvocationTargetException {
 		Boolean flag = false;
+		Boolean qxflag = false;
 		Integer orderIndex = 0;
 		JwOfficeAllot perEntity = null;
 		JwOfficeAllot valioff = null;
@@ -172,7 +174,13 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			entity.setOrderIndex(orderIndex);// 排序
 			this.merge(entity); // 执行添加方法
 			
-			this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
+			qxflag=this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
+			/*if(!qxflag){ 
+				flag = false;
+				hashMap.put("flag", flag);
+				hashMap.put("qx", "qx");
+				continue;
+			}*/
 			//将办公室设置为已分配
 			String hql=" from BuildOfficeDefine a where a.roomId='"+entity.getRoomId()+"' ";
 			BuildOfficeDefine office=this.getEntityByHql(hql);
@@ -213,4 +221,60 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 		return flag;
 	}
 
+	@Override
+	public Boolean doDeleteOff(String delIds,String roomId,String tteacId) {
+		JwOfficeAllot offAllot = null ;
+		Boolean flag =false;
+		String offRoomId = "";
+		String[] delId = delIds.split(",");
+		for (String id : delId) {
+			offAllot = this.get(id);
+			offRoomId += offAllot.getRoomId()+',';
+			this.mjUserRight(null, offAllot.getRoomId(), offAllot.getTteacId(), null, null);
+			flag = this.deleteByPK(id);
+		
+	  }
+/*		String[] roomIds = offRoomId.split(",");
+		List list =new ArrayList<>();
+	    for (String officeRoomId : roomIds) {
+			sql="select a.ROOM_ID ,b.OFFICE_ID from JW_T_OFFICEALLOT a right join BUILD_T_OFFICEDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+officeRoomId+"'";
+			list = this.querySql(sql);
+			for(int j=0; j<list.size();j++){
+				Object[] object= (Object[]) list.get(j);
+				if(object[0]==null){
+					String dormId= (String) object[1];
+					office = offRoomService.get(dormId);
+					office.setRoomStatus("0");
+					office.setUpdateTime(new Date());
+					offRoomService.merge(office);
+				}
+			}
+			
+		}*/
+		return flag;
+  }
+	@Override
+	public void doOffSetOff(String roomIds) {
+		String[] roomId = roomIds.split(",");
+		BuildOfficeDefine office =null;
+		String sql="";
+		List list =new ArrayList<>();
+	    for (String officeRoomId : roomId) {
+			sql="select a.ROOM_ID ,b.OFFICE_ID from JW_T_OFFICEALLOT a right join BUILD_T_OFFICEDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+officeRoomId+"'";
+			list = this.querySql(sql);
+			for(int j=0; j<list.size();j++){
+				Object[] object= (Object[]) list.get(j);
+				if(object[0]==null){
+					String dormId= (String) object[1];
+					office = offRoomService.get(dormId);
+					if(office.getRoomStatus().equals("1")){
+						office.setRoomStatus("0");
+						office.setUpdateTime(new Date());
+						offRoomService.merge(office);
+					}
+					
+				}
+			}
+	    }
+	}
 }

@@ -377,7 +377,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
         var otherController = 'baseset.studentdorm.othercontroller';
         var win = Ext.createWidget("mtfuncwindow", {
             title: funcTitle,
-            width: 1000,
+            width: 1100,
             identify: 1,
             baseGrid: baseGrid,
             controller: otherController, 

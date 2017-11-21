@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.JsonBuilder;
@@ -160,8 +159,9 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
-			boolean flag = thisService.doLogicDelOrRestore(uuid, StatuVeriable.ISDELETE,"");
-			thisService.mjUserRight(null, roomId, tteacId, null, null);
+		//	boolean flag = thisService.doLogicDelOrRestore(uuid, StatuVeriable.ISDELETE,"");
+			boolean flag = thisService.doDeleteOff(uuid,roomId,tteacId);
+			//thisService.mjUserRight(null, roomId, tteacId, null, null);
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
@@ -169,7 +169,12 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			}
 		}
 	}
-	
+	@RequestMapping("/doSetOff")
+	public void doSetOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String roomIds = request.getParameter("roomId");
+        thisService.doOffSetOff(roomIds);
+			
+	}
 	/**
 	 * 公用的教师查询（用于办公室分配使用）
 	 * 

@@ -116,22 +116,22 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		writeJSON(response, strData);// 返回数据
 	}
 	
-	@RequestMapping("/getBoyTree")
+	@RequestMapping("/getTree")
 	public void getBoyTree(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
+		List<CommTree> lists=null;
 		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("[JW_V_STU_BOY_DORMALLOTTREE]", whereSql);
+		String identity = request.getParameter("identity");
+		if(identity.equals("1")){//男生
+			lists = treeService.getCommTree("[JW_V_STU_BOY_DORMALLOTTREE]", whereSql);
+		}else{//女生
+			lists = treeService.getCommTree("JW_V_STU_GRIL_DORMALLOTTREE", whereSql);
+		}
+		
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	@RequestMapping("/getGirlTree")
-	public void getGirlTree(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String strData = "";
-		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("JW_V_STU_GRIL_DORMALLOTTREE", whereSql);
-		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
-		writeJSON(response, strData);// 返回数据
-	}
+
 	/**
 	 * 查询出一键分配宿舍的信息
 	 */

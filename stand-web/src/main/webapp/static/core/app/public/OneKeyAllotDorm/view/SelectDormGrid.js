@@ -49,7 +49,8 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
         dataIndex: "uuid",
         hidden: true
     }, {
-        width: 80,
+        flex:1,
+        minWidth:100,
         text: "宿舍名称",
         dataIndex: "roomName",
         field: {
@@ -70,8 +71,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
             xtype: "textfield"
         }
     }, { 
-        flex:1,
-        minWidth:100,
+        width: 80,
         text: "宿舍类型",
         dataIndex: "dormType",
         renderer: function(value) {

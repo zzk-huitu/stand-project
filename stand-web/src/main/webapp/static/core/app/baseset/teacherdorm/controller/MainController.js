@@ -36,6 +36,13 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                     return false;
                 }
             },
+            //删除
+            "basegrid[xtype=baseset.teacherdorm.maingrid] button[ref=gridDelete]": {
+                beforeclick: function(btn) {
+                    self.doDeleteRecords(btn);
+                    return false;
+                }
+            },
              //表格单击事件
             "basegrid[xtype=baseset.teacherdorm.maingrid]": {
                 beforeitemclick: function(grid, record, item, index, e, eOpts) {
@@ -73,11 +80,17 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
              "basegrid[xtype=baseset.teacherdorm.maingrid] actioncolumn": {
 
                 //弹出tab页的方式
-                outClick: function(data) {
+             outClick: function(data) {
                     self.doGridOut(null,data.view,data.record);  
                     return false;      
                 },
             },
+
+             deleteClick: function(data) {
+                    self.doDeleteRecords(null,data.view,data.record);
+                     return false;
+                },
+                
         })
     },
 
@@ -228,5 +241,80 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
             self.msgbox("请选择数据");
         }
     },
+   
+       doDeleteRecords:function(btn,grid,record){
+            var self=this;
+            var records;
+            var baseGrid = grid;
+            if(!baseGrid){
+                baseGrid=btn.up("basegrid");
+                records = baseGrid.getSelectionModel().getSelection();
+            }else{
+                records=new Array();
+                records.push(record);
+            }
+            funCode = baseGrid.funCode;
+            var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+            //得到配置信息
+            var funData = basePanel.funData;
+            var ids = '';
+            var roomIds ='';
+            if (records.length <= 0) {
+                self.msgbox('请选择一条数据');
+                return;
+            }
+            //var roomId = records[0].get('roomId');
+            for (var i = 0; i < records.length; i++) {
+                ids += records[i].get('uuid') + ',';
+                roomIds += records[i].get('roomId')+ ',';
+            };
+            if (records.length > 0) {
+                //封装ids数组
+                Ext.Msg.confirm('提示',"是否删除", function (btn, text) {
+                    if (btn == 'yes') {
+                        
+                        var loading = new Ext.LoadMask(baseGrid, {
+                            msg: '正在提交，请稍等...',
+                            removeMask: true// 完成后移除
+                        });
+                        loading.show();
 
+                        self.asyncAjax({
+                            url: funData.action + "/doDelete",
+                            params: {
+                                 ids: ids,
+                              //   roomId: roomId,
+                            },                    
+                            success: function(response) {
+                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                                if(data.success){
+                                     baseGrid.getStore().load(); //不刷新的方式
+                                     setTimeout(function(){
+                                      self.ajax({
+                                          url: funData.action + "/doSetOff",
+                                          params: {
+                                            roomIds: roomIds,
+                                        },
+                                    })
+
+                                  },30);
+                                    
+                                    self.msgbox(data.obj);                               
+                                }else {
+                                    self.Error(data.obj);
+                                }           
+                                loading.hide();
+                            },
+                            failure: function(response) {                   
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                loading.hide();
+                            }
+                        });     
+                    }
+                });
+            } else {
+                self.msgbox("请选择数据");
+            }
+        },
 });

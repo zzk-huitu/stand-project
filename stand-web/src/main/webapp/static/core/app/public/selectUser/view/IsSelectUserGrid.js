@@ -23,7 +23,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
         text: '序号',
         align: 'center'
     }, {
-        width: 70,
+        width: 150,
         text: "姓名",
         dataIndex: "xm"
     }, {

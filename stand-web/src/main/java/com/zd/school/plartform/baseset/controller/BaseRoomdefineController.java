@@ -2,6 +2,7 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.service.BaseClassRoomDefineService;
@@ -249,19 +249,33 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 				+ areaId + "%'";
 		List<String> lists = thisService.queryEntityByHql(hql);
 		StringBuffer sb = new StringBuffer();
+		String areaIds = "";
 		for (int i = 0; i < lists.size(); i++) {
 			sb.append(lists.get(i) + ",");
 		}
 		if(sb.length()>0){
-			if(filter.length()>0){
-				filter = filter.substring(0, filter.length()-1);
-				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}"+"]";
-			}else{
-				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}]";
+			List<String> roomIdLists = new ArrayList<>();
+			areaIds = sb.substring(0, sb.length() - 1);
+
+			hql = "select a.uuid from BuildDormDefine a where a.isDelete=0 and a.dormTypeLb='1' and a.areaId in ('"
+					+ areaIds.replace(",", "','") + "')";
+			roomIdLists = dormRoomService.queryEntityByHql(hql);
+			sb.setLength(0);
+			for (int i = 0; i < roomIdLists.size(); i++) {
+				sb.append(roomIdLists.get(i) + ",");
 			}
-		}else{//为楼栋或校区，其下没有楼层
-			filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+null+"\",\"field\":\"areaId\"}]";
-		}
+			if (sb.length() > 0) {
+				filter = filter.substring(0, filter.length()-1);
+				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}"+"]";
+			} else {
+				filter = filter.substring(0, filter.length()-1);
+				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaId+"\",\"field\":\"roomId\"}"+"]";
+			}
+
+		}else{
+			   filter = filter.substring(0, filter.length()-1);
+			   filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaId+"\",\"field\":\"roomId\"}"+"]";
+			}
 		QueryResult<BuildDormDefine> qr = dormRoomService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据

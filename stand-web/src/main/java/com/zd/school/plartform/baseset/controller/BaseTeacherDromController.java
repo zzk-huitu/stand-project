@@ -22,7 +22,6 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.define.model.BuildDormDefine;
-import com.zd.school.plartform.baseset.model.BaseCampus;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseTeacherDormService;
 import com.zd.school.plartform.comm.model.CommTree;
@@ -45,7 +44,8 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	BaseDormDefineService dormService; // service层接口
     @Resource
 	SysUserService userService; // service层接口
-	
+  
+    
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute DormTeacherDorm entity, HttpServletRequest request, HttpServletResponse response)
@@ -133,16 +133,13 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
+		
 		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
 			boolean flag = false;
-			String[] delId = delIds.split(",");
-			for (String id : delId) {
-				flag = thisService.deleteByPK(id);
-				// 应当移除门禁
-			}
+			flag = thisService.doDelete(delIds);
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
@@ -150,12 +147,18 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 			}
 		}
 	}
+	@RequestMapping("/doSetOff")
+	public void doSetOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String roomIds = request.getParameter("roomIds");
+        thisService.doSettingOff(roomIds);
+			
+	}
 
 	// 退住
 	@RequestMapping("/out")
 	public void out(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		boolean flag = false;
-		String outIds = request.getParameter("ids");
+	    String outIds = request.getParameter("ids");
 		SysUser currentUser = getCurrentSysUser();
 		if (StringUtils.isEmpty(outIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入退住主键\""));
@@ -188,7 +191,14 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		}
 		return entity;
 	}
-	
+	@RequestMapping("/getTeaDormXmb")
+	public @ResponseBody BuildDormDefine getTeaDormXmb(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		String roomId = request.getParameter("roomId");
+		String hql = " FROM  BuildDormDefine WHERE roomId='" + roomId + "'";
+		BuildDormDefine entity= thisService.getEntityByHql(hql);
+		return entity;
+	}
 	@RequestMapping(value = { "/getTeacherInUser" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })

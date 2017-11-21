@@ -29,4 +29,6 @@ public interface BaseTeacherDormService extends BaseService<DormTeacherDorm> {
             SysUser currentUser); 
 	public Boolean doOut(String ids,SysUser currentUser);
 	public Boolean doAddDormTea(DormTeacherDorm entity,Map hashMap,HttpServletRequest request,SysUser currentUser)throws IllegalAccessException, InvocationTargetException;
+    public Boolean doDelete(String delIds);
+    public void doSettingOff(String roomIds);
 }

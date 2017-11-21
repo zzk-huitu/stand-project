@@ -150,14 +150,16 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
             var funData = basePanel.funData;
             var tteacId = '';
             var uuid = '';
+            var roomId ='';
             if (records.length <= 0) {
                 self.msgbox('请选择一条数据');
                 return;
             }
-            var roomId = records[0].get('roomId');
+           // var roomId = records[0].get('roomId');
             for (var i = 0; i < records.length; i++) {
                 tteacId += records[i].get('tteacId') + ',';
                 uuid += records[i].get('uuid') + ',';
+                roomId += records[i].get('roomId')+ ',';
             };
             if (records.length > 0) {
                 //封装ids数组
@@ -181,11 +183,22 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
                                 var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
                                 if(data.success){
-                                     baseGrid.getStore().remove(records); //不刷新的方式
-                                     self.msgbox(data.obj);                               
+                                     baseGrid.getStore().load(); //不刷新的方式
+
+                                     setTimeout(function(){
+                                       self.ajax({
+                                          url: funData.action + "/doSetOff",
+                                          params: {
+                                            roomId: roomId,
+                                        },
+                                    })   
+
+                                   },30);
+                           
+                                    self.msgbox(data.obj);                               
                                 }else {
                                     self.Error(data.obj);
-                                }           
+                                }
                                 loading.hide();
                             },
                             failure: function(response) {                   

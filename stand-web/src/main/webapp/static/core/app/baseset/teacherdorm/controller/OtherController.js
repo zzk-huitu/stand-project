@@ -40,11 +40,49 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                     var dataField = win.dataField;
                     var gridField = win.gridField;
 
+                    var funcPanel = win.down('basepanel[xtype='+ win.funcPanel+']');
+                    var IsSelectStore = funcPanel.down("panel[xtype=pubselect.isselectusergrid]");
                     var tabPanel = Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
                     var tabItem = tabPanel.getActiveTab();
                     var formpanel = tabItem.down('form[xtype='+ win.formPanel+']');
                     var bf = formpanel.getForm();
                     var formDormId = bf.findField("dormId").getValue();
+                    var formRoomId = bf.findField("roomId").getValue();
+
+                    var isStoreXmb=new Array();;
+                    var store = IsSelectStore.getStore();
+                     for (var i = 0; i < store.getCount(); i++) {
+                        var record = store.getAt(i);
+                        var xbm = record.get("xbm");
+                        isStoreXmb.push(xbm);
+                     }
+                  
+                     var date = self.ajax({
+                        url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getTeaDormXmb",
+                        params: {
+                            roomId:formRoomId
+                        },
+                    });
+                     var xmb = '';
+                     var dormType='';
+                     if(date!=null){
+                        dormType = date.dormType;
+                        if (dormType=='1'){
+                            xmb = '男';
+                        }else if(dormType=='2'){
+                           xmb = '女';
+                       }else{
+                           xmb = '不限';
+                       }
+                    }
+                    for(var j=0; j<isStoreXmb.length; j++){
+                        if(isStoreXmb[j]!=dormType){
+                            self.Warning("该教师宿舍为"+ xmb+ "宿舍,请均选择"+ xmb+ "教师。");
+                            return false;
+
+                        }
+
+                    }
 
                     var basePanel = win.down("basepanel[xtype=pubselect.selectuserlayout]");
                     var baseGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
@@ -69,7 +107,6 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                         },
                         failure: function(response) {                   
                             Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                            loading.hide();
                         }
                     });
 
@@ -103,6 +140,7 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
 		  	dormId:basetab.funData.dormId
 		  }
 		});
+        //选择的数据量
         var bedCount=formObj.findField("bedCount").getValue().split(",");
 		var arkCount=formObj.findField("arkCount").getValue().split(",");
 

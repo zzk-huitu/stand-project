@@ -66,7 +66,8 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
                 fieldInfo: "tteacId~sendCheckName~userNumb,uuid~xm~userNumb",
                 muiltSelect: true, //是否多选
                 width:1100,
-                height:500
+                height:500,
+             //   whereSql: ' and xmb = "1" '
             }
         },{
             columnWidth:0.5,

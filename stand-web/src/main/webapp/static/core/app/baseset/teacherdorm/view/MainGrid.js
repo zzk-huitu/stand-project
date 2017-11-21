@@ -79,7 +79,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:150,
             text: "工号",
             dataIndex: "gh",
             field: {
@@ -114,7 +114,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:80,
             text: "入/退状态",
             dataIndex: "inout",
             renderer: function(value) {

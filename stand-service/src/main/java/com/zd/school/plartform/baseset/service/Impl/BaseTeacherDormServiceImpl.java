@@ -22,6 +22,7 @@ import com.zd.school.control.device.model.MjUserright;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.jw.push.service.PushInfoService;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
+import com.zd.school.plartform.basedevice.service.MjUserrightService;
 import com.zd.school.plartform.baseset.dao.BaseTeacherDormDao;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseTeacherDormService;
@@ -53,8 +54,8 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 	BasePtTermService ptTermService;
     @Resource
 	PushInfoService pushService;
-/*	 @Resource
-	 MjUserrightService mjService;*/
+	@Resource
+	MjUserrightService mjService;
     @Override
 	public QueryResult<DormTeacherDorm> list(Integer start, Integer limit, String sort, String filter, String whereSql,
 			String orderSql, SysUser currentUser) {
@@ -148,13 +149,13 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 				mj.setStatusID(0);
 				mj.setStuId(userNumb[i]);
 				mj.setTermId(ptTerm.getUuid());
-				// mjService.merge(mj);
+				mjService.merge(mj);
 			}
 
 			// 推送消息
 			String regStatus = "您好," + sendCheckName[i] + "老师,您已经成功分配至" + roomName + "房间,床位编号:" + bedCount[i] + ",柜子编号:"
 					+ arkCount[i];
-			// pushService.pushInfo(sendCheckName[i], userNumb[i], "事件提醒",regStatus,currentUser);
+			//pushService.pushInfo(sendCheckName[i], userNumb[i], "事件提醒",regStatus,currentUser);
 			
 			//将教室宿舍设置为已分配
 			String dormHql=" from BuildDormDefine a where a.roomId='"+entity.getRoomId()+"'";
@@ -168,5 +169,81 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 		hashMap.put("teaName",teaName );
 		hashMap.put("teaInRoom",teaInRoom );
 		return flag;
+	}
+
+	@Override
+	public Boolean doDelete(String delIds) {
+		DormTeacherDorm entity=null;
+		MjUserright userRight = null;
+	    boolean flag = false;
+		String roomId = new String();
+		String[] delId = delIds.split(",");
+		for (String id : delId) {
+			entity = this.get(id);
+			roomId += entity.getRoomId()+',';
+		   // 应当移除门禁
+		  List<PtTerm> list = ptTermService.queryByProerties("roomId", entity.getRoomId());
+		  if (list.size() > 0) {// 解除门禁权限
+				for (int i = 0; i < list.size(); i++) {
+                    String[] name = { "termId","stuId"};
+				    String[] value = { list.get(i).getUuid(),entity.getGh()};
+					userRight = mjService.getByProerties(name, value);
+					if (userRight != null) {
+						userRight.setIsDelete(1);
+						userRight.setControlsegId(0);
+						userRight.setCardstatusId(0);
+						userRight.setUpdateTime(new Date());
+						mjService.merge(userRight);
+					}
+
+				}
+			}
+		 flag = this.deleteByPK(id);
+		}
+	/*	String[] roomIds = roomId.split(",");
+		List list =new ArrayList<>();
+	    for (String teacRoomId : roomIds) {
+			teacDormSql="select a.ROOM_ID ,b.DORM_ID from DORM_T_TEACHERDORM a right join BUILD_T_DORMDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+teacRoomId+"'";
+			list = this.querySql(teacDormSql);
+			for(int j=0; j<list.size();j++){
+				Object[] object= (Object[]) list.get(j);
+				if(object[0]==null){
+					String dormId= (String) object[1];
+					dorm = dormRoomService.get(dormId);
+					dorm.setRoomStatus("0");
+					dorm.setUpdateTime(new Date());
+					dormRoomService.merge(dorm);
+				}
+			}
+			
+		}*/
+	 return flag;
+	}
+
+	@Override
+	public void doSettingOff(String roomIds) {
+		String[] roomId = roomIds.split(",");
+		String teacDormSql="";
+		BuildDormDefine dorm = null;
+		List list =new ArrayList<>();
+	    for (String teacRoomId : roomId) {
+			teacDormSql="select a.ROOM_ID ,b.DORM_ID from DORM_T_TEACHERDORM a right join BUILD_T_DORMDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+teacRoomId+"'";
+			list = this.querySql(teacDormSql);
+			for(int j=0; j<list.size();j++){
+				Object[] object= (Object[]) list.get(j);
+				if(object[0]==null){
+					String dormId= (String) object[1];
+					dorm = dormRoomService.get(dormId);
+					if(dorm.getRoomStatus().equals("1")){
+						dorm.setRoomStatus("0");
+						dorm.setUpdateTime(new Date());
+						dormRoomService.merge(dorm);	
+					}
+					
+				}
+			}
+			
+		}
+		
 	}
 }

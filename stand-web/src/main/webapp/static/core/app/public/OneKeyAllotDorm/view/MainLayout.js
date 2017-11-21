@@ -14,13 +14,13 @@ Ext.define("core.public.OneKeyAllotDorm.view.MainLayout", {
         xtype: "pubonkeyallotdorm.boydormdefinetree",
         region: "west",
         margin:'5',
-        width: 150,
+        width: 220,
         hidden:true
     },{
         xtype: "pubonkeyallotdorm.girldormdefinetree",
         region: "west",
         margin:'5',
-        width: 150,
+        width: 220,
         hidden:true
     },{
         xtype: "pubonkeyallotdorm.selectdormgrid",
@@ -30,6 +30,6 @@ Ext.define("core.public.OneKeyAllotDorm.view.MainLayout", {
         xtype: "pubonkeyallotdorm.isselectdormgrid",
         region: "east",
         margin:'5',
-        width: 570
+        width: 500
     }]
 })
