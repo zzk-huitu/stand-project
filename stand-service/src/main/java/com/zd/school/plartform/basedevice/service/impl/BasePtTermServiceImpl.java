@@ -39,9 +39,9 @@ public class BasePtTermServiceImpl extends BaseServiceImpl<PtTerm> implements Ba
 		String roomid = term.getRoomId();
 		int area = Integer.parseInt(areaType);
 		for (int level = 5; level > area; level--) {
-			String sql = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='" + roomid + "'";
+			String sql = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='" + roomid + "'";
 			List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
-			String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='"
+			String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='"
 					+ lists.get(0).getParent() + "'";
 			lists = this.queryEntityBySql(sql2, CommBase.class);
 			roomid = lists.get(0).getId();
@@ -126,11 +126,11 @@ public class BasePtTermServiceImpl extends BaseServiceImpl<PtTerm> implements Ba
 		int area = Integer.parseInt(areaType);
 		//最多5层，但也可能为4层（无校区的情况）
 		for (int level = 5; level > area; level--) {
-			String sql = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='" + roomid + "'";
+			String sql = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='" + roomid + "'";
 			List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
 			//加入判断，防止出错
 			if(lists.size()>0){
-				String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='"
+				String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='"
 						+ lists.get(0).getParent() + "'";
 				lists = this.queryEntityBySql(sql2, CommBase.class);
 				
@@ -158,7 +158,7 @@ public class BasePtTermServiceImpl extends BaseServiceImpl<PtTerm> implements Ba
 	public List<CommBase> findChildren(List<CommBase> list, String roomid) {
 		if (list == null)
 			list = new ArrayList<>();
-		String sql = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where parent='" + roomid + "'";
+		String sql = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where parent='" + roomid + "'";
 		List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
 		for (CommBase cb : lists) {
 			if (cb.getLeaf().equals("true")) {
@@ -199,11 +199,11 @@ public class BasePtTermServiceImpl extends BaseServiceImpl<PtTerm> implements Ba
 		int area = Integer.parseInt(areaType);
 		//最多5层，但也可能为4层（无校区的情况）
 		for (int level = 5; level > area; level--) {
-			String sql = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='" + roomid + "'";
+			String sql = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='" + roomid + "'";
 			List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
 			//加入判断，防止出错
 			if(lists.size()>0){
-				String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_AREAROOMINFOTREE where id='"
+				String sql2 = "select id,text,iconCls,leaf,level,parent from  JW_V_AREAROOMINFOTREE where id='"
 						+ lists.get(0).getParent() + "'";
 				lists = this.queryEntityBySql(sql2, CommBase.class);
 				

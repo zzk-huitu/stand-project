@@ -17,6 +17,13 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
                 this.savebinding_Win(btn);
              },
     	 },
+      "basegrid[xtype=basedevice.ptirroomdevice.irdevicegrid] button[ref=gridFastSearchBtn]": {
+            beforeclick: function (btn) {
+                var self = this;
+                self.doFastSearch(btn);
+                return false;
+            }
+        }
     },
     
     //确认绑定事件
@@ -62,5 +69,32 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
         });     
    
     },
-    
+      doFastSearch: function (component) {
+        //得到组件
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+          return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+          return false;
+
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var brandId= '';
+        var level = '';
+            console.log(777);
+        if (girdSearchTexts[0].getValue() != ""){
+             console.log(888);
+             brandId = girdSearchTexts[0].getValue();
+        }
+        if (girdSearchTexts[1].getValue() != ""){
+
+             level = girdSearchTexts[1].getValue();
+        }
+        var selectStore = baseGrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        selectProxy.extraParams.brandId=brandId;
+        selectProxy.extraParams.level=level;
+        selectStore.loadPage(1);
+    },
 });

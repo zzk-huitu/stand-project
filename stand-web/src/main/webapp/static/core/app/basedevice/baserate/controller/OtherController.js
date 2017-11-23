@@ -17,7 +17,15 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
-    	
+    	   "basetreegrid[xtype=basedevice.baserate.roominfotree] button[ref=gridRefresh]": {
+                click: function(btn) {
+                    console.log(88);
+                    var baseGrid = btn.up("basetreegrid");
+                    var store = baseGrid.getStore();
+                    store.load(); //刷新父窗体的grid
+                    return false;
+                }
+            },
     	//编辑界面保存按钮
     	"baseformtab[detCode=baserate_detail] button[ref=formSave]": {
 			beforeclick: function (btn) {    

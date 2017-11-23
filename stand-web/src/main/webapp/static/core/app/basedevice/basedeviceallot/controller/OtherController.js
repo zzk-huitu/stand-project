@@ -2,7 +2,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
     extend: "Ext.app.ViewController",
     alias: 'controller.basedevice.basedeviceallot.othercontroller',
     mixins: {
-    	 suppleUtil: "core.util.SuppleUtil",
+    	  suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",
         formUtil: "core.util.FormUtil",
         gridActionUtil: "core.util.GridActionUtil",
@@ -55,7 +55,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
         var baseGrid =allotlayout.down('panel[xtype=basedevice.basedeviceallot.devicesysgrid]');
         var rows =  baseGrid.getStore().getCount();
         if (rows <= 0) {
-          self.msgbox("提示", "请选择列表中的数据!");
+          self.msgbox("选中的设备列表没有数据，请选择!");
           return;
         }
         var isSelectStore = baseGrid.getStore();

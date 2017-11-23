@@ -67,16 +67,12 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("panel[xtype=basedevice.irdevice.mainlayout]");
-            var basetreegrid = mainLayout.down("basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]");
-        	
             var funData = mainLayout.funData;
             var brandId=record.get("id");
-            var leaf = record.get("leaf");
             var level = record.get("level");
             
             mainLayout.funData = Ext.apply(funData, {
             	brandId: brandId,
-                leaf : record.get("leaf"),//true: 房间 false:区域
             });
             
             // 加载品牌信息
@@ -84,7 +80,6 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams.brandId=brandId;
-            proxy.extraParams.leaf=leaf;
             proxy.extraParams.level=level;
             store.loadPage(1); // 给form赋值
             return false;

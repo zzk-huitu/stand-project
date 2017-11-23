@@ -4,7 +4,7 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
     alias: "widget.basedevice.smartdevice.maingrid",
     dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
-
+    al:false,
     menuCode:"BASESMARTDEVICE", //new：此表格与权限相关的菜单编码
 
     panelTopBar:{

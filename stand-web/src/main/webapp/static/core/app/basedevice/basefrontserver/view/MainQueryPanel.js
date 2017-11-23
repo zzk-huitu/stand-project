@@ -17,9 +17,11 @@ Ext.define("core.basedevice.basefrontserver.view.MainQueryPanel", {
         }, {
             columnWidth: 0.25,
             xtype: "basequeryfield",
-            name: "frontServerIp",
+            name: "frontServerPort",
             fieldLabel: "服务器端口",
-            queryType: "textfield",
+            queryType: "numberfield",
+            dataType:'numberfield',
+            value:''
         }]
     }],
     buttonAlign: "center",

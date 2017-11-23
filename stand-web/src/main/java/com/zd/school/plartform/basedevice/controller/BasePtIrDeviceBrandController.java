@@ -19,6 +19,7 @@ import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtIrDeviceBrand;
 import com.zd.school.plartform.basedevice.service.PtIrDeviceBrandService;
+import com.zd.school.plartform.basedevice.service.PtIrRoomDeviceService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -34,7 +35,8 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 	
 	@Resource
 	PtIrDeviceBrandService thisService; // service层接口
-	
+	@Resource
+	PtIrRoomDeviceService deveiceService; // service层接口
 	@Resource
 	CommTreeService treeService;
 
@@ -70,21 +72,10 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			throws IOException {
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
-		String leaf = request.getParameter("leaf");
 		String brandId = request.getParameter("brandId");
 		String level = request.getParameter("level");
 		
-		if(leaf==null){
-			if(filter==null){
-				filter="";
-			}
-			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
-	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-	        writeJSON(response, strData);// 返回数据
-	        return;
-		}
-		//根据leaf判断到底是传入的品牌ID还是类型ID(为true则是品牌id,为false则是类型id)
-		if(level.equals("3")){
+		if(level.equals("3")){//品牌类型以下的子节点
 			if (filter!=null) {
 				filter = filter.substring(0, filter.length() - 1)
 						+ ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + brandId
@@ -92,51 +83,32 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			} else {
 				filter = "[{'type':'string','comparison':'=','value':'" + brandId + "','field':'parentNode'}]";
 			}
-
-			QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
-	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-	        writeJSON(response, strData);// 返回数据
-		}else{
+     	}else{
 			String hql="";
-			if(brandId.equals("d9012b05-e85e-449d-82fc-4a424dee9b00")){
+			if(brandId.equals("d9012b05-e85e-449d-82fc-4a424dee9b00")){//所有品牌
 				hql="select a.uuid from PtIrDeviceBrand a where a.isDelete=0  and a.level=3";
-			}else{
-				//若此类型不为品牌，则去查询此类型下的所有品牌
+			}else{//品牌类型
 				hql="select a.uuid from PtIrDeviceBrand a where a.isDelete=0  and a.level=3 and a.parentNode like '%"+brandId+"%'";
 			}
-			//创建categorylists存储类型id
-			List<String> categorylists=thisService.queryEntityByHql(hql);
-			
 			StringBuffer categorysb=new StringBuffer();
-			for(int i=0;i<categorylists.size();i++){
-				categorysb.append("'"+categorylists.get(i)+"'"+",");
+		    List<String> categorylists=thisService.queryEntityByHql(hql);
+		    for(int i=0;i<categorylists.size();i++){
+				categorysb.append(categorylists.get(i)+",");
 			}
-			
 			if(categorysb.length()>0){
-				//创建brandLists存储品牌id
-				List<String> brandLists = new ArrayList<>();
-				hql="select a.uuid from PtIrDeviceBrand a where a.uuid in ("+categorysb.substring(0,categorysb.length()-1) +")";
-				brandLists=thisService.queryEntityByHql(hql);
-				
-				StringBuffer brandsb=new StringBuffer();
-				//通过循环处理brand数据
-				for(int i=0;i<brandLists.size();i++){
-					brandsb.append(brandLists.get(i)+",");
-				}
-			    if(filter!=null){			
-			    	filter = filter.substring(0,filter.length() - 1)+",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";	
+				if(filter!=null){			
+			    	filter = filter.substring(0,filter.length() - 1)+",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ categorysb.substring(0,categorysb.length()-1)+"\",\"field\":\"parentNode\"}]";	
 			    }else{
-			    	filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandsb.substring(0,brandsb.length()-1)+"\",\"field\":\"parentNode\"}]";
+			    	filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ categorysb.substring(0,categorysb.length()-1)+"\",\"field\":\"parentNode\"}]";
 			    }
-				
-				QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
-		        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-		        writeJSON(response, strData);// 返回数据
-		        
 			}else{
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无数据\""));
+				return ;
 			}
 		}
+		QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+        writeJSON(response, strData);// 返回数据
 	}
 
 	/**
@@ -235,16 +207,21 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			try {
-				boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
-				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
-				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,品牌已经绑定房间\""));
-				}
-			} catch (Exception e) {
-				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
+			String hql = " from PtIrRoomDevice a where a.isDelete=0 and a.brandId  in ('" + ids.replace(",", "','")
+					+ "')";
+			List lists = deveiceService.queryByHql(hql);
+			if (lists.size() > 0) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"该品牌已经绑定房间，不能删除！\""));
+				return;
 			}
+			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE, currentUser.getXm());
+
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情请见日志\""));
+			}
+
 		}
 	}
 	

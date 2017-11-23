@@ -123,7 +123,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String whereSql = request.getParameter("whereSql");
 		String identity = request.getParameter("identity");
 		if(identity.equals("1")){//男生
-			lists = treeService.getCommTree("[JW_V_STU_BOY_DORMALLOTTREE]", whereSql);
+			lists = treeService.getCommTree("JW_V_STU_BOY_DORMALLOTTREE", whereSql);
 		}else{//女生
 			lists = treeService.getCommTree("JW_V_STU_GRIL_DORMALLOTTREE", whereSql);
 		}

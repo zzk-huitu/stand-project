@@ -23,7 +23,13 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
                 color: '#C44444',
                 fontWeight:800
             }
-        }, '->']
+        }, '->',{
+            xtype: 'button',
+            text: '刷新',
+            ref: 'gridRefresh',
+            iconCls: 'x-fa fa-refresh',
+            titleAlign:'right',
+        }]
     },
     columns:  {        
         defaults:{

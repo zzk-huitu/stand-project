@@ -1,8 +1,8 @@
 package com.zd.school.plartform.basedevice.service;
 
 import com.zd.core.service.BaseService;
-import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.control.device.model.PtIrDeviceBrand ;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -21,4 +21,5 @@ import com.zd.school.control.device.model.PtIrDeviceBrand ;
 public interface PtIrDeviceBrandService extends BaseService<PtIrDeviceBrand> {
 	public PtIrDeviceBrand doAddEntity(PtIrDeviceBrand entity, SysUser currentUser);
 	public PtIrDeviceBrand doUpdateEntity(PtIrDeviceBrand entity, SysUser currentUser);
+	
 }
