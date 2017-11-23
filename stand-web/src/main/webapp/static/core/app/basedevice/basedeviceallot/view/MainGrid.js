@@ -89,6 +89,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             text: "设备名称",
             dataIndex: "termName",
             flex:1,
+            minWidth:100,
         }, {
             text: "房间名称",
             dataIndex: "roomName",

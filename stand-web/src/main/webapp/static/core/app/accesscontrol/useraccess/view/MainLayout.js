@@ -31,7 +31,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     items: [{
     	split: true,//对模块分开的线条
     	xtype: "accesscontrol.useraccess.roominfotree",
-    	width: 250,
+    	width: comm.get("clientWidth") * 0.18,
         region: "west",
     }, {
     	split: true,//对模块分开的线条
@@ -45,7 +45,8 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     }*/,{
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.maingrid",
-        width: 400,
+        width: comm.get("clientWidth") * 0.29,
         region: "east",
+
     }]
 })

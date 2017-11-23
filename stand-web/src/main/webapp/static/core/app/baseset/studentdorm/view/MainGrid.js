@@ -84,14 +84,14 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:75,
             text: "床号",
             dataIndex: "bedNum",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:75,
             text: "柜号",
             dataIndex: "arkNum",
             field: {

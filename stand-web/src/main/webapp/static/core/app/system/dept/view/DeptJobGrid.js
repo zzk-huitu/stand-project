@@ -69,8 +69,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 		}, {
 			text: "岗位",
 			dataIndex: "jobName",
-			minWidth:150,
-			flex:1
+			width:100,
 		}, {
 			text: "是否部门主负责岗位",
 			width:150,

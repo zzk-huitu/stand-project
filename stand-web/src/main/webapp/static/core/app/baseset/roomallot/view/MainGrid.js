@@ -42,7 +42,7 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         },
     items:[{
         xtype: "rownumberer",
-        width: 80,
+        width: 60,
         text: '序号',
         align: 'center'
     }, {
@@ -59,26 +59,26 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         hidden:true
     }, {
         flex: 1,
-        minWidth: 100,
+        minWidth: 120,
         text: "老师姓名",
         dataIndex: "xm",
     }, {
-         width: 150,
+        width: 120,
         text: "房间名",
         dataIndex: "roomName",
     }, {
-        width: 150,
+        width: 120,
         text: "所属楼层",
         dataIndex: "areaName",
     }, {
-        width: 150,
+        width: 120,
         text: "所属楼栋",
         dataIndex: "upAreaName",
     },{
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 200,
+        width: 120,
         fixed: true,
         items: [{
             text:'解除设置',  

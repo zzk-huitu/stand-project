@@ -10,7 +10,7 @@
         }
     },
 
-    minWidth:1200,
+    minWidth:1000,
     scrollable:'x',
     layout: 'border',
     items : [{  
@@ -26,7 +26,7 @@
     },{ 
        region : 'center',  
        xtype: 'baseset.studentdorm.girldormgrid',
-       minWidth:600,
+       minWidth:550,
        margin:'5',
    }] 
 })

@@ -42,7 +42,7 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
         },
         hidden: true
     },{
-        width: 120,
+        width: 110,
         text: "宿舍名称",
         dataIndex: "dormName",
         field: {
@@ -57,7 +57,7 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
             xtype: "textfield"
         }
     }, {
-        width: 100,
+        width: 80,
         text: "宿舍类型",
         dataIndex: "dormType",
         renderer: function(value) {
@@ -71,14 +71,14 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
             }
         }
     }, {
-        width: 100,
+        width: 80,
         text: "最大人数",
         dataIndex: "dormBedCount",
         field: {
             xtype: "textfield"
         }
     }, {
-        width: 100,
+        width: 80,
         text: "入住人数",
         dataIndex: "stuCount",
         field: {

@@ -73,8 +73,8 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             text: '序号',
             align: 'center'
         }, {
-             minWidth: 100,
-             flex: 1,
+            flex: 1,
+            minWidth: 100,
             text: "学校名称",
             dataIndex: "schoolName"
            
@@ -83,7 +83,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             dataIndex: "schoolCode",        
             width: 100
         }, {
-            width: 200,
+            width: 100,
             text: "学校英文名",
             dataIndex: "schoolEng"
          
@@ -143,30 +143,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
                         record: rec
                     });
                 }
-            }/*, {
-                text:'删除',  
-                style:'font-size:12px;', 
-                tooltip: '删除',
-                ref: 'gridDelete',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="SCHOOLINFO";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                            return 'x-hidden-display';
-                        }
-                    }
-                    return null; 
-                },  
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('deleteClick', {
-                        view: view.grid,
-                        record: rec
-           
-                 });
-                }
-            }*/]
+            }]
         }]
     }    
 });

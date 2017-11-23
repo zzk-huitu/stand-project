@@ -82,7 +82,8 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            width:100,
+            flex: 1,
+            minWidth: 100,
             text: "校区名称",
             dataIndex: "campusName"
         }, {
@@ -97,8 +98,6 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             width:100,
             text: "校区地址",
             dataIndex: "campusAddr",
-            flex: 1,
-            minWidth: 150,
         }, {
             width:100,
             text: "邮政编码",

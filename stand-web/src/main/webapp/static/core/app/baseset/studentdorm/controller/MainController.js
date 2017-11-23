@@ -76,14 +76,14 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
             var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
             if (!otherController)
                 otherController = '';  
-            var width = 1250;
+            var width = 1150;
             var height = 550;
             var iconCls= 'x-fa fa-plus-circle';
             var winTitle = "学生分配宿舍";
             var operType="add";
             switch(cmd){
                case "adjust":
-                width = 1380;
+                width = 1150;
                 height = 650;
                 winTitle = "虚拟宿舍调整";
                 operType="add";
@@ -151,7 +151,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                 }];
             var win = Ext.create('core.base.view.BaseFormWin', {
                 title: "一键分配宿舍",
-                width: 1200,
+                width: 1150,
                 height: 700,
                 operType: "add",
                 controller: otherController,

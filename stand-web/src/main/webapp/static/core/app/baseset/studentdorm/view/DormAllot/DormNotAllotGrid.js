@@ -60,7 +60,7 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:70,
             text: "性别",
             dataIndex: "xbm",
             renderer: function(value) {

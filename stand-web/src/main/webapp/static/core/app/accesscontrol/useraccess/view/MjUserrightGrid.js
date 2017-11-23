@@ -67,11 +67,12 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
         text: "设备名称",
         dataIndex: "termName",
         flex:1,
-        minWidth:100,
+        minWidth:80,
     }, {
         text: "序列编号",
         dataIndex: "termSN",
-        width:100
+        flex:1,
+        minWidth:80,
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
@@ -81,7 +82,6 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
     },{
         text: "所属房间",
         dataIndex: "roomName",
-        flex:1,
         minWidth:100,
     }, 
     /*{

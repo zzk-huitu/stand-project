@@ -79,7 +79,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
         },{
             text: "名称",
             dataIndex: "priceName",
-            width: 150,
+            width: 120,
             field: {
                 xtype: "textfield"
             }
@@ -93,7 +93,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
         }, {
             text: "状态",
             dataIndex: "priceStatus",
-            width: 100,
+            width: 80,
              renderer: function(value) {
                 switch (value) {
                     case '0':
@@ -123,7 +123,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 150,
+            width: 120,
             fixed: true,
             items: [{
                 text:'编辑',  

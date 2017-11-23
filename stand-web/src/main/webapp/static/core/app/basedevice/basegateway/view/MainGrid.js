@@ -108,7 +108,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width: 100,
+            width: 80,
             text: "网关状态",
             dataIndex: "gatewayStatus",
             renderer: function(value) {
@@ -136,7 +136,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width: 100,
+            width: 80,
             text: "是否启用",
             dataIndex: "frontServerStatus",
             renderer: function(value) {
@@ -160,7 +160,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 180,
             fixed: true,
             items: [{
                 text:'设备参数',  

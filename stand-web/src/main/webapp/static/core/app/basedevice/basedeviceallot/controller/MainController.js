@@ -70,7 +70,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
           }];
           var win = Ext.create('core.base.view.BaseFormWin', {
                       title: "分配设备",
-                      width: 1250,
+                      width: 1150,
                       height: 650,
                       operType: "add",
                       controller: otherController,

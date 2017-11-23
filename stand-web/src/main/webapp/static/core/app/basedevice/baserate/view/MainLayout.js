@@ -34,17 +34,15 @@ Ext.define("core.basedevice.baserate.view.MainLayout", {
     },
     /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
-    scrollable:true,
+    scrollable:'x',
     items: [{
 		xtype: "basedevice.baserate.categroygrid",
 		region: "west",
-		border: false,
-		margin:'0 5 0 0',
-		width:300
+		margin:'5',
+		width: comm.get("clientWidth") * 0.18
 	}, {
 		xtype: "basedevice.baserate.maingrid",
+        margin:'5',
 		region: "center",
-		border: false,
-		flex:1
 	}]
 })

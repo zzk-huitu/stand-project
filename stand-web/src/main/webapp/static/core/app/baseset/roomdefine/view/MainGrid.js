@@ -112,7 +112,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 180,
             fixed: true,
             items: [{
                 text:'编辑宿舍',  

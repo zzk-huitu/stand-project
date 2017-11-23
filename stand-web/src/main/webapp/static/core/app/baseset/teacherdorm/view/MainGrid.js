@@ -72,7 +72,6 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
         }, {
             flex:1,
             minWidth: 150,
-            minwidth:150,
             text: "老师姓名",
             dataIndex: "xm",
             field: {
@@ -138,7 +137,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 150,
+            width: 120,
             fixed: true,
             items: [{
                 text:'删除',  

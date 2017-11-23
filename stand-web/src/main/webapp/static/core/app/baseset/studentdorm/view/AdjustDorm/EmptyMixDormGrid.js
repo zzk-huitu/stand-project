@@ -67,7 +67,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
         dataIndex: "claiId",
         hidden: true
     }, {
-        width: 100,
+        width: 80,
         text: "宿舍类型",
         dataIndex: "dormType",
         renderer: function(value) {
@@ -81,7 +81,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
             }
         }
     }, {
-        width: 100,
+        width: 80,
         text: "最大人数",
         dataIndex: "dormBedCount",
         field: {

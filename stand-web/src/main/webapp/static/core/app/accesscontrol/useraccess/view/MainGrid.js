@@ -47,7 +47,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
         	text: "角色名",
         	dataIndex: "xm",
         	flex:1,
-            minWidth:150,
+            minWidth:120,
         },{
         	text: "设备名称",
         	dataIndex: "termName",
