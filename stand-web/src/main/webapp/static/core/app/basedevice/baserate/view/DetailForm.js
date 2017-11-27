@@ -61,7 +61,8 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
         	name: "priceName",
         	allowBlank: false,
         	emptyText: '名称',
-        	blankText: "名称不能为空"
+        	blankText: "名称不能为空",
+            maxLength:36
         	},{
                 columnWidth: 0.3,
                 xtype: "label",

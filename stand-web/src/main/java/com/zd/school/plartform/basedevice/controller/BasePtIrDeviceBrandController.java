@@ -74,6 +74,12 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 		String filter = request.getParameter("filter");
 		String brandId = request.getParameter("brandId");
 		String level = request.getParameter("level");
+		if(filter!=null && filter.length()>0){
+			if(brandId==null && level==null){
+				brandId = "d9012b05-e85e-449d-82fc-4a424dee9b00";
+				level = "1";
+			}
+		}
 		
 		if(level.equals("3")){//品牌类型以下的子节点
 			if (filter!=null) {

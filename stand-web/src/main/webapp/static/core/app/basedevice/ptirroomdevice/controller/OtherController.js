@@ -82,9 +82,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var brandId= '';
         var level = '';
-            console.log(777);
         if (girdSearchTexts[0].getValue() != ""){
-             console.log(888);
              brandId = girdSearchTexts[0].getValue();
         }
         if (girdSearchTexts[1].getValue() != ""){

@@ -46,6 +46,12 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         	click: function(btn) {
                 var baseGrid = btn.up("basetreegrid");
                 var store = baseGrid.getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=basedevice.irdevice.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=basedevice.irdevice.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.brandId="";
+                proxy.extraParams.level="";
                 return false;
             }
         },

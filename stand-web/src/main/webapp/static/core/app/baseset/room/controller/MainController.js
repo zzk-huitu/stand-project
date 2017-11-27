@@ -62,7 +62,13 @@ Ext.define("core.baseset.room.controller.MainController", {
                         excludes:"checked"
                     };
                     store.load(); //刷新父窗体的grid
-                    return false;
+                    var mainlayout = btn.up("basepanel[xtype=baseset.room.mainlayout]");
+                    var mianGrid = mainlayout.down("basegrid[xtype=baseset.room.maingrid]");
+                    var store = mianGrid.getStore();
+                    var proxy = store.getProxy();
+                    proxy.extraParams.areaId= "";
+                    proxy.extraParams.areaType= "";
+                        return false;
                 }
             },
             //区域列表删除按钮事件

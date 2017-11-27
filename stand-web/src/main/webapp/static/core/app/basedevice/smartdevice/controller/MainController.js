@@ -19,6 +19,11 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                 var baseGrid = btn.up("basetreegrid");
                 var store = baseGrid.getStore();
                 store.load(); //刷新父窗体的grid
+                var mainlayout = btn.up("basepanel[xtype=basedevice.smartdevice.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=basedevice.smartdevice.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
                 return false;
             }
         },

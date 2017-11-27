@@ -129,22 +129,28 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             }
 
 
-            var selectStore = grid.getStore();
-            selectStore.removeAt(index);
-
             var basePanel = grid.up("panel[xtype=basedevice.basedeviceallot.deviceallotlayout]");
             var isSelectGrid;
+            var data = record.data;
+            var selectStore = grid.getStore();
             if(basePanel){
                 isSelectGrid = basePanel.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
-                var isSelectStore = isSelectGrid.getStore();
+                if(isSelectGrid.isVisible()==true){
+                    var isSelectStore = isSelectGrid.getStore();
+                    for (var i = 0; i < isSelectStore.getCount(); i++) {
+                        if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                            Ext.Msg.alert("提示", data.termName+"已存在!");
+                            return false;
+                        }
+                    }; 
+                    var roomName = treelevel.get('text');
+                    var roomId = treelevel.get('id');            
+                    record.set("roomName",roomName);
+                    record.set("roomId",roomId);
 
-                var roomName = treelevel.get('text');
-                var roomId = treelevel.get('id');            
-                record.set("roomName",roomName);
-                record.set("roomId",roomId);
-                //record.commit();
-
-                isSelectStore.insert(0, record);
+                    selectStore.removeAt(index);
+                    isSelectStore.insert(0, record);
+             }
             }
             
             return false;

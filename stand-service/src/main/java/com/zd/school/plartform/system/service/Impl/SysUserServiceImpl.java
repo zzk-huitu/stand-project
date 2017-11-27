@@ -234,9 +234,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			 * " order by  o.jobCode "); QueryResult<SysUser> qr =
 			 * this.queryPageResult(hql.toString(), start, limit);
 			 */
-			hql.append(" from SysUser where uuid in(" + userId + ")");
+			hql.append(" from SysUser o  where o.uuid in(" + userId + ")");
 			if (isDelete)
-				hql.append(" and isDelete=0 ");
+				hql.append(" and o.isDelete=0 ");
 			hql.append(filterSql);
 			QueryResult<SysUser> qr = this.queryResult(hql.toString(), start, limit);
 

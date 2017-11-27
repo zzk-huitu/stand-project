@@ -453,8 +453,12 @@ Ext.define("core.system.dept.controller.MainController", {
                 //处理打开界面之后，显示的初始数据
                 if(cmd=="setJob"){
                     var deptJobGrid = item.down("basegrid[xtype=system.dept.deptjobgrid]");
+                    var filter = '[{"type":"string","comparison":"=","value":"' + pkValue + '","field":"deptId"}]';
+                    deptJobGrid.extParams={
+                        filter:filter
+                    };
                     var deptJobStore = deptJobGrid.getStore();
-                    deptJobStore.getProxy().extraParams.filter='[{"type":"string","comparison":"=","value":"' + pkValue + '","field":"deptId"}]';
+                    deptJobStore.getProxy().extraParams.filter=filter;
                     deptJobStore.loadPage(1);
                 }else{
                     self.doInitFormValue(item,cmd);                

@@ -5,7 +5,6 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
     model: "com.zd.school.control.device.model.PtIrRoomDevice",
     al: false,
     extParams: {
-        whereSql: " and isDelete='0' ",
     },
     panelTopBar:{
         xtype:'toolbar',

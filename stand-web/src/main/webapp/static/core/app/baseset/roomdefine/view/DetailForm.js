@@ -51,10 +51,14 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
             }
         }, {
             beforeLabelTextTpl: comm.get("required"),
+            allowBlank: false,
+            blankText: "房间名称不能为空",
             columnWidth: 0.5,
             xtype: "textfield",
             fieldLabel: "房间名称",
-            name: "roomName"
+            name: "roomName",
+            maxLength: 32,
+            emptyText: '请输入房间名称(最大32个字符)'
         }]
     }, {
         ref:'dormContainer',
@@ -129,7 +133,8 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
             fieldLabel: "电话",
             regex: /^[0-9]*$/,
             regexText: '只能输入数字',
-            name: "dormPhone"
+            name: "dormPhone",
+            maxLength: 20,
         }, {
             columnWidth:0.5,
             xtype: "textfield",
@@ -137,6 +142,7 @@ Ext.define("core.baseset.roomdefine.view.DetailForm", {
             regex: /^[0-9]*$/,
             regexText: '只能输入数字',
             name: "dormFax",
+            maxLength: 20,
         }]
     }, {
         xtype: "container",

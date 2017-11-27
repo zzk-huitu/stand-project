@@ -68,15 +68,22 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
               
                 var basePanel = grid.up("panel[xtype=pubselect.selectuserlayout]");
+                var data = record.data;
+                var selectStore = grid.getStore();
                 var isSelectGrid;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
                     if(isSelectGrid.isVisible()==true){
                         var isSelectStore = isSelectGrid.getStore();
-                        isSelectStore.insert(0, [record]);
-
-                        var selectStore = grid.getStore();
+                        for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.xm+"已存在!");
+                                return ;
+                            }
+                        };
+                      
                         selectStore.removeAt(index);
+                        isSelectStore.insert(0, [record]);
                     }
                 }
                 
@@ -91,6 +98,10 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
             titleAlign: "center"
         },
         items: [{
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
+        },{
             xtype: "rownumberer",
             flex:0,
             width: 50,

@@ -98,6 +98,23 @@ Ext.define("core.system.dept.controller.OtherController", {
                     return false;
                 }
             },
+               //快速搜索按按钮
+            "basegrid[xtype=system.dept.deptjobgrid] button[ref=gridFastSearchBtn]": {
+                click: function (btn) {
+                    this.queryFastSearchForm(btn);
+                    return false;   
+                }
+            },
+            //快速搜索文本框回车事件
+            "basegrid[xtype=system.dept.deptjobgrid] field[funCode=girdFastSearchText]": {
+                specialkey: function (field, e) {
+                    if (e.getKey() == e.ENTER) {
+                        this.queryFastSearchForm(field);     
+                        return false;           
+                    }
+                }
+            },
+
     	       
 
 
@@ -664,5 +681,34 @@ Ext.define("core.system.dept.controller.OtherController", {
             }]
         });
         win.show();  
-    }
+    },
+  queryFastSearchForm:function(component){
+        //得到组件                 
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+            return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+            return false;
+
+        var filter = [];
+        var gridFilter=[];
+        //获取baseGrid中编写的默认filter值
+        var gridFilterStr=baseGrid.extParams.filter;
+        if(gridFilterStr&&gridFilterStr.trim()!=""){
+            gridFilter=JSON.parse(gridFilterStr);
+            filter=gridFilter;
+        }
+       
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        if(girdSearchTexts[0].getValue()!=null){
+          filter.push({"type": "string", "value": "" + girdSearchTexts[0].getValue() + "", "field": "jobName", "comparison": ""});
+        } 
+        
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.filter = JSON.stringify(filter);
+        store.loadPage(1);
+    },
 });

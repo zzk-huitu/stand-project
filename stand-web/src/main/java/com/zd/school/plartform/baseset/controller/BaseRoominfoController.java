@@ -77,6 +77,15 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 			}else{//为楼栋或校区，其下没有楼层
 				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+null+"\",\"field\":\"areaId\"}]";
 			}
+		}else{
+			if(areaId!=null){
+				if(filter.length()>0){
+					filter = filter.substring(0, filter.length()-1);
+					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+areaId+"\",\"field\":\"areaId\"}"+"]";
+				}else{
+					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaId+"\",\"field\":\"areaId\"}]";
+				}
+			}
 		}
 		
 		QueryResult<BuildRoominfo> qr = thisService.queryPageResult(super.start(request), super.limit(request),

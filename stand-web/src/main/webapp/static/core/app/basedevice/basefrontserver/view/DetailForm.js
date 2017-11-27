@@ -30,6 +30,7 @@ Ext.define("core.basedevice.basefrontserver.view.DetailForm", {
             allowBlank: false,
             emptyText: '名称',
             blankText: "名称不能为空",
+            maxLength: 200,
             columnWidth:0.5
         }, {
             beforeLabelTextTpl: comm.get('required'),
@@ -60,6 +61,7 @@ Ext.define("core.basedevice.basefrontserver.view.DetailForm", {
             fieldLabel: "请求的URL",
             name: "frontServerUrl",
             xtype: "textfield",
+            maxLength: 100,
             columnWidth:0.5
         }]
     }, {

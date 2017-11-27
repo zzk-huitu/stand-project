@@ -18,6 +18,11 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
         "basetreegrid[xtype=basedevice.basedeviceallot.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
                 btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=basedevice.basedeviceallot.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=basedevice.basedeviceallot.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
                 return false;
             }
         },
@@ -76,6 +81,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
                       controller: otherController,
                       detCode: detCode,
                       iconCls: 'x-fa fa-plus-circle',
+                      baseGrid:baseGrid,
                       items:xItemType,
            }).show();
     },

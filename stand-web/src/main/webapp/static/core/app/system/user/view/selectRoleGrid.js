@@ -2,7 +2,7 @@ Ext.define("core.system.user.view.selectRoleGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.system.user.selectrolegrid",
     dataUrl: comm.get('baseUrl') + "/SysRole/selectList",
-    title: "待选角色(选中后拖动添加)",
+    model: 'com.zd.school.plartform.system.model.SysRole',
     al: false,
     tbar: [],
     panelTopBar:{
@@ -33,16 +33,36 @@ Ext.define("core.system.user.view.selectRoleGrid", {
     },
     panelButtomBar:null,
     viewConfig: {
-        stripeRows: false,
         plugins: {
             ptype: 'gridviewdragdrop',
-            dragGroup: 'firstGridDDGroup',
-            dropGroup: 'secondGridDDGroup'
+            ddGroup: "DrapDropGroup"            //与下面的2行代码一样的效果
         },
         listeners: {
             drop: function(node, data, dropRec, dropPosition) {
-                var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
-                //Ext.example.msg("Drag from right to left", 'Dropped ' + data.records[0].get('name') + dropOn);  
+            },
+            beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
+              
+                var basePanel = grid.up("panel[xtype=system.user.selectrolelayout]");
+                var data = record.data;
+                var selectStore = grid.getStore();
+                var isSelectGrid;
+                if(basePanel){
+                    isSelectGrid = basePanel.down("panel[xtype=system.user.isselectrolegrid]");
+                    if(isSelectGrid.isVisible()==true){
+                        var isSelectStore = isSelectGrid.getStore();
+                        for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.roleName+"已存在!");
+                                return ;
+                            }
+                        };
+                      
+                        selectStore.removeAt(index);
+                        isSelectStore.insert(0, [record]);
+                    }
+                }
+                
+                return false;
             }
         }
     },
@@ -52,10 +72,8 @@ Ext.define("core.system.user.view.selectRoleGrid", {
         direction: 'DESC'
     }],
     extParams: {
-        whereSql: "",
-        //filter: '[{"type":"numeric","comparison":"=","value":0,"field":"isDelete"}]'
     },
-    model: 'com.zd.school.plartform.system.model.SysRole',
+  
     columns:  { 
         defaults:{
             //flex:1,     //【若使用了 selType: "checkboxmodel"；则不要在这设定此属性了，否则多选框的宽度也会变大 】

@@ -37,7 +37,8 @@ Ext.define("core.baseset.dictionary.view.ItemForm", {
         name: "itemName",
         allowBlank: false,
         emptyText: '请输入字典项名称',
-        blankText: "字典项不能为空"
+        blankText: "字典项不能为空",
+        maxLength: 128
     }, {
         beforeLabelTextTpl: comm.get('required'),
         xtype: "textfield",
@@ -45,7 +46,8 @@ Ext.define("core.baseset.dictionary.view.ItemForm", {
         fieldLabel: '字典项编码',
         allowBlank: false,
         emptyText: '请输入字典项编码',
-        blankText: "字典编码不能为空"
+        blankText: "字典编码不能为空",
+        maxLength: 16
     }, {
         beforeLabelTextTpl: comm.get('required'),
         allowBlank: false,
@@ -61,6 +63,7 @@ Ext.define("core.baseset.dictionary.view.ItemForm", {
         fieldLabel: '字典项说明',
         allowBlank: true,
         emptyText: '请输入字典项说明',
-        blankText: "字典项说明不能为空"
+        blankText: "字典项说明不能为空",
+        maxLength: 128
     }]
 });

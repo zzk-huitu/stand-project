@@ -169,7 +169,8 @@ Ext.define("core.system.dept.view.DetailForm", {
             name: "fax",
             allowBlank: true,
             emptyText: '传真号码',
-            blankText: ""
+            blankText: "",
+            maxLength: 64,
         }]
     },    {
         xtype: "container",
@@ -210,7 +211,8 @@ Ext.define("core.system.dept.view.DetailForm", {
             name: "inPhone",
             allowBlank: true,
             emptyText: '内线电话',
-            blankText: ""
+            blankText: "",
+            maxLength: 64,
         }, {
             columnWidth: 0.5,
             beforeLabelTextTpl: "",
@@ -219,7 +221,8 @@ Ext.define("core.system.dept.view.DetailForm", {
             name: "outPhone",
             allowBlank: true,
             emptyText: '外线电话',
-            blankText: ""
+            blankText: "",
+            maxLength: 64,
         }]
     },/* {
         xtype: "container",

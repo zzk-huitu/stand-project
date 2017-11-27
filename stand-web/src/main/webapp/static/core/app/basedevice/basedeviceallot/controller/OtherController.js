@@ -48,6 +48,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
     saveAllot:function(btn){
         var self = this; 
         var win = btn.up('window');
+        var basegrid = win.baseGrid;
         var detCode = win.detCode;
         //找到详细布局视图
         var allotlayout = win.down("basepanel[funCode=" + detCode + "]");
@@ -79,7 +80,8 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
              var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
              if (data.success) {
                 self.msgbox("提交成功!");
-                baseGrid.getStore().removeAll();                         
+              //  baseGrid.getStore().removeAll();  
+                basegrid.getStore().load();                       
                 loading.hide();
                 win.close();
              } else {
