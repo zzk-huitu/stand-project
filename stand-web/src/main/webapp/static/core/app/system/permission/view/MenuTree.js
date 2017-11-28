@@ -29,6 +29,11 @@ Ext.define("core.system.permission.view.MenuTree", {
             var tree = header.ownerCt
             tree.getStore().load();
             tree.getSelectionModel().deselectAll(true);
+            var mainlayout = tree.up("basepanel[xtype=system.permisson.mainlayout]");
+            var mianGrid = mainlayout.down("basegrid[xtype=system.permission.maingrid]");
+            mianGrid.extParams = {
+                filter:""
+            };
         }
     }],
 
