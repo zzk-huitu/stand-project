@@ -68,7 +68,7 @@ Ext.define("core.baseset.room.controller.MainController", {
                     var proxy = store.getProxy();
                     proxy.extraParams.areaId= "";
                     proxy.extraParams.areaType= "";
-                        return false;
+                    return false;
                 }
             },
             //区域列表删除按钮事件

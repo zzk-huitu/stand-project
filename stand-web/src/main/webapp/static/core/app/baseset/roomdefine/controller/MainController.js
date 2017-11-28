@@ -55,6 +55,12 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                         excludes:"checked"
                     };
                     store.load(); //刷新父窗体的grid
+                    var mainlayout = btn.up("basepanel[xtype=baseset.roomdefine.mainlayout]");
+                    var mianGrid = mainlayout.down("basegrid[xtype=baseset.roomdefine.maingrid]");
+                    var store = mianGrid.getStore();
+                    var proxy = store.getProxy();
+                    proxy.extraParams.areaId= "";
+                    proxy.extraParams.areaType= "";
                     return false;
                 }
             },
@@ -441,7 +447,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
 
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams={};
+        //proxy.extraParams={};
         proxy.extraParams.filter = JSON.stringify(filter);
         store.loadPage(1);
 
