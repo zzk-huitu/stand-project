@@ -7,7 +7,7 @@ Ext.define("core.system.roleright.view.MainLayout", {
         "core.system.roleright.view.RoleGrid",
         'core.system.roleright.view.RoleRightGrid', 
         "core.system.roleright.view.SelectMenuGrid",
-        'core.system.roleright.view.SelectMenuLayout',
+        'core.system.roleright.view.DetailLayout',
     ],
     controller: 'system.roleright.maincontroller',
 

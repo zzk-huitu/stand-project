@@ -58,6 +58,11 @@ Ext.define("core.system.roleright.controller.MainController", {
 	                    self.msgbox("请选择功能权限!");
 	                    return false;
 	                }
+	                if(records[0].get('menuType')=="MENU"){
+	                	self.msgbox("请不要选择菜单!");
+	                    return false;
+
+	                }
 
 					var funCode = baseGrid.funCode;
 					var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");

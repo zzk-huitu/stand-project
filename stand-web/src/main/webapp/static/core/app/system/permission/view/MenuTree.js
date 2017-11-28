@@ -59,10 +59,13 @@ Ext.define("core.system.permission.view.MenuTree", {
             var mainGrid = mainLayout.down("panel[xtype=system.permission.maingrid]");
             var store = mainGrid.getStore();
             var proxy = store.getProxy();
-            var filterArry = new Array();
+            var filter = '[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]';
             proxy.extraParams = {
-                filter: '[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]'
+                filter:filter
             };
+            mainGrid.extParams = {
+               filter:filter 
+            }
             store.loadPage(1);       
         }
     }
