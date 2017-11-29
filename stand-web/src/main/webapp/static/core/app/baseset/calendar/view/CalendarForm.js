@@ -16,7 +16,8 @@ Ext.define("core.baseset.calendar.view.CalendarForm", {
 		name: "canderName",
 		xtype: "textfield",
 		beforeLabelTextTpl: comm.get('required'),
-		allowBlank: false
+		allowBlank: false,
+		maxLength: 64,
 	}, {
 		fieldLabel: "适用校区ID",
 		name: "campusId",

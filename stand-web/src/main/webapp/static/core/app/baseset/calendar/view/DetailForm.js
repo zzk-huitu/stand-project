@@ -69,7 +69,8 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
             name: "jcName",
             allowBlank: false,
             emptyText: '节次名称',
-            blankText: "节次名称不能为空"
+            blankText: "节次名称不能为空",
+            maxLength: 36,
         }]
     }, {
         xtype: "container",

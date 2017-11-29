@@ -52,18 +52,47 @@ Ext.define("core.system.roleright.controller.OtherController", {
         "baseformwin[funCode=roleright_selectmenu] button[ref=formSave]": {
             beforeclick: function(btn) {
                 var self=this;
-                
                 var win = btn.up("window");
                 var selectMenuLayout = win.down("panel[xtype=system.roleright.detaillayout]");
                 var selectMenuGrid = selectMenuLayout.down("panel[xtype=system.roleright.selectmenugrid]");
-                var records = selectMenuGrid.getSelectionModel().getSelection();
+                //var records = selectMenuGrid.getSelectionModel().getSelection();
+                var records =  selectMenuGrid.getView().getChecked();
                 if (records.length == 0) {
-                    self.Error("请选择要授权的菜单!");
+                    self.msgbox("请选择要授权的菜单!");
                     return false;
                 }
+                var record = "";
+                var MenuRecords = new Array();
+                var FuncRecords = new Array();
+                for (var i=0;i<records.length;i++){
+                    record = records[i];
+                    if(record.get('menuType')=="MENU"){ //菜单
+                        MenuRecords.push(record);
+
+                    }else{// 功能 FUNC
+                        FuncRecords.push(record);
+                    }
+                };
+                var FuncId="";
+                for(var j =0;j<FuncRecords.length;j++){
+                   FuncId = FuncRecords[j].get('parent');
+                   for(var m=0;m<MenuRecords.length;m++){
+                    if(MenuRecords[m].get('id')==FuncId){
+                        FuncRecords.splice(j--,1);
+                        break;
+                    }
+
+                 }
+              };
+              if(FuncRecords.length>0){
+                  self.msgbox("请选择要授权的功能的菜单!");
+                  return false;
+
+              }
+
                 var funData = win.funData;
                 var roleId = funData.roleId;
-                records = selectMenuGrid.getView().getChecked();
+               // records = selectMenuGrid.getView().getChecked();
                 var ids = new Array();
                 Ext.each(records, function(rec) {
                     var pkValue = rec.get("id");

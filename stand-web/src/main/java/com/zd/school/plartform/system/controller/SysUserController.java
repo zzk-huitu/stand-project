@@ -83,6 +83,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String deptId = request.getParameter("deptId");
 
 		deptId = deptId == null ? AdminType.ADMIN_ORG_ID : deptId;
+		if(deptId.equals("")){
+			deptId = AdminType.ADMIN_ORG_ID ;
+		}
 
 		// 若为学校部门，则查询出所有的用户
 		if (deptId.equals(AdminType.ADMIN_ORG_ID)) {

@@ -65,7 +65,8 @@ Ext.define("core.baseset.room.view.AreaForm", {
             name: "nodeText",
             allowBlank: false,
             emptyText: '区域名称',
-            blankText: "区域名称不能为空"
+            blankText: "区域名称不能为空",
+            maxLength: 255,
         }]
     }, {
         xtype: "container",

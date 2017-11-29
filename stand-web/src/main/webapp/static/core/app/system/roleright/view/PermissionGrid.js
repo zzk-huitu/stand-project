@@ -35,29 +35,36 @@ Ext.define("core.system.roleright.view.PermissionGrid", {
     viewConfig: {
         plugins: {
             ptype: 'gridviewdragdrop',
-            ddGroup: "DrapDropGroup",             //与下面的2行代码一样的效果        
-            //dragGroup: 'firstGridDDGroup',      //可拖拽
-            //dropGroup: 'secondGridDDGroup'      //可被放入
-            
-        },
+            ddGroup: "DrapDropGroup",               
+          },
         listeners: {
             drop: function(node, data, dropRec, dropPosition) {
                 //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
                 //Ext.example.msg("Drag from right to left", 'Dropped ' + data.records[0].get('name') + dropOn);
             },
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
-                selectStore = grid.getStore();
-                selectStore.removeAt(index);
-
-                var basePanel = grid.up("basepanel");
+                var basePanel = grid.up("panel[xtype=system.roleright.selectpmslayout]");
+                var data = record.data;
+                var selectStore = grid.getStore();
                 var isSelectGrid;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=system.roleright.selectedpermissiongrid]");
-                    var isSelectStore = isSelectGrid.getStore();
-                    isSelectStore.insert(0, [record]);
+                    if(isSelectGrid.isVisible()==true){
+                        var isSelectStore = isSelectGrid.getStore();
+                        for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.perName+"已存在!");
+                                return ;
+                            }
+                        };
+                      
+                        selectStore.removeAt(index);
+                        isSelectStore.insert(0, [record]);
+                    }
                 }
                 return false;
             }
+
         }
     },
 

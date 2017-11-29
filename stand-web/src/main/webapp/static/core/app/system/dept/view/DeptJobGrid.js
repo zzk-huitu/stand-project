@@ -13,8 +13,6 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 		direction: 'ASC'
 	}],
 	extParams: {
-		whereSql: "",
-		orderSql: "",
 	},
 	//title: "部门岗位",
 	panelTopBar:{

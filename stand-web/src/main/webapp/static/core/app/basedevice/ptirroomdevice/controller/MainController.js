@@ -23,9 +23,14 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
         //房间列表刷新按钮
     	"basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
-             btn.up('basetreegrid').getStore().load();
-             return false;
-            }
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=basedevice.ptirroomdevice.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=basedevice.ptirroomdevice.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                 return false;
+                }
         },
     },
     

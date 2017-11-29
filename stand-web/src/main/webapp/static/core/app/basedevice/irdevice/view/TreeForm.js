@@ -43,7 +43,8 @@ Ext.define("core.basedevice.irdevice.view.TreeForm", {
             name: "brandname",
             allowBlank: false,
             emptyText: '名称',
-            blankText: "名称不能为空"
+            blankText: "名称不能为空",
+            maxLength: 50,
         }]
     }]
 });

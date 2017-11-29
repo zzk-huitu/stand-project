@@ -29,6 +29,11 @@ Ext.define("core.system.permission.view.MenuTree", {
             var tree = header.ownerCt
             tree.getStore().load();
             tree.getSelectionModel().deselectAll(true);
+            var mainlayout = tree.up("basepanel[xtype=system.permisson.mainlayout]");
+            var mianGrid = mainlayout.down("basegrid[xtype=system.permission.maingrid]");
+            mianGrid.extParams = {
+                filter:""
+            };
         }
     }],
 
@@ -59,10 +64,13 @@ Ext.define("core.system.permission.view.MenuTree", {
             var mainGrid = mainLayout.down("panel[xtype=system.permission.maingrid]");
             var store = mainGrid.getStore();
             var proxy = store.getProxy();
-            var filterArry = new Array();
+            var filter = '[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]';
             proxy.extraParams = {
-                filter: '[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]'
+                filter:filter
             };
+            mainGrid.extParams = {
+               filter:filter 
+            }
             store.loadPage(1);       
         }
     }

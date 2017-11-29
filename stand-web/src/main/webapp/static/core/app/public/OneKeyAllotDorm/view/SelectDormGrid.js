@@ -25,16 +25,19 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
                 var isSelectGrid;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=pubonkeyallotdorm.isselectdormgrid]");
-                    var isSelectStore = isSelectGrid.getStore();
-                    console.log(isSelectStore);
-                    for (var i = 0; i < isSelectStore.getCount(); i++) {
+                    if(isSelectGrid.isVisible()==true){
+                       var isSelectStore = isSelectGrid.getStore();
+                       for (var i = 0; i < isSelectStore.getCount(); i++) {
                         if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
                             Ext.Msg.alert("提示", data.roomName+"已存在!");
                             return;
                         }
-                    };
+                     };
                     selectStore.removeAt(index);
                     isSelectStore.insert(0, [record]);
+
+                    }
+                   
                 }
                 return false;
             }

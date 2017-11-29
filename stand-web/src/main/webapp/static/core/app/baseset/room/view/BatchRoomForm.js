@@ -34,6 +34,7 @@ Ext.define("core.baseset.room.view.BatchRoomForm", {
         name: "roomCode",
         allowBlank: false,
         emptyText: '请输入一个还未被使用的房号前缀',
+        maxLength: 32,
         // regex: /^[A-Z].*\d$/,
         // regexText: '只能以大写字母开头数字结尾'
     }, {

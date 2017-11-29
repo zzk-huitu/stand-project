@@ -49,23 +49,31 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
            beforeclick: function(btn) {
                 var self=this;
                 var basepanel = btn.up("basepanel[xtype=basedevice.baserate.mainlayout]");
-                var funData=basepanel.funData;
-                if(funData.categroy==""){
-                    this.msgbox("请先选择类型!");
-                    return false;
+                var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
+                var store = categroygrid.getSelectionModel().getSelection();
+                if(store.length==0){
+                    self.msgbox("请选择类型！");
+                    return;
                 }
          },
+      },
+       "basegrid[xtype=basedevice.baserate.maingrid] field[funCode=girdFastSearchText]": {
+        specialkey: function (field, e) {
+            if (e.getKey() == e.ENTER) {
+                var self=this;
+                var basepanel = field.up("basepanel[xtype=basedevice.baserate.mainlayout]");
+                var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
+                var store = categroygrid.getSelectionModel().getSelection();
+                if(store.length==0){
+                    self.msgbox("请选择类型！");
+                    return;
+                }                
+            }
+        }
     },
+
          
-         //控制类型刷新按钮
-//         "grid[xtype=basedevice.baserate.categroygrid] button[ref=gridRefresh]": {
-//             beforeclick: function(btn) {
-//            	 var baseGrid = btn.up("grid");
-//                 var store = baseGrid.getStore().reload();
-//                 return false;
-//             }
-//         },
-         
+
          //费率列表操作列事件
          "basegrid  actioncolumn": {
              //操作列编辑

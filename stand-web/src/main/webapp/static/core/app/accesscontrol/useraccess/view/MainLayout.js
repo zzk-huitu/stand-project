@@ -37,12 +37,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.mjuserrightgrid",
         region: "center",
-    }/*, {
-    	split: true,//对模块分开的线条
-        xtype: "accesscontrol.useraccess.mjuserselectgrid",
-        width: 340,
-        region: "east",
-    }*/,{
+    },{
     	split: true,//对模块分开的线条
         xtype: "accesscontrol.useraccess.maingrid",
         width: 400,

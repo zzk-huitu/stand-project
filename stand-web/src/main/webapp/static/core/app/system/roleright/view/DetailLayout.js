@@ -1,4 +1,4 @@
-Ext.define("core.system.roleright.view.SelectMenuLayout", {
+Ext.define("core.system.roleright.view.DetailLayout", {
     extend: "core.base.view.BasePanel",
     alias: 'widget.system.roleright.detaillayout',
 

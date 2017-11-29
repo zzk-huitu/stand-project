@@ -11,6 +11,9 @@ Ext.define("core.baseset.room.view.AreaGrid", {
         excludes:"checked"
             //filter: "[{'type':'string','comparison':'=','value':'0','field':'isDelete'}]"
     },
+    selModel: {
+      
+    },
     title: "区域信息",
     tbar: [{
         xtype: 'button',

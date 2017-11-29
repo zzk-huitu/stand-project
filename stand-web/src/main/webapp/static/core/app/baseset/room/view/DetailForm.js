@@ -40,7 +40,8 @@ Ext.define("core.baseset.room.view.DetailForm", {
         name: "roomCode",
         allowBlank: false,
         emptyText: '请输入房间编号（建议格式：楼栋号­-楼层号 +2位房间序号）',
-        blankText: "房间编号不能为空"
+        blankText: "房间编号不能为空",
+        maxLength: 32,
     },{
         beforeLabelTextTpl: comm.get('required'),
         xtype: "textfield",
@@ -48,7 +49,8 @@ Ext.define("core.baseset.room.view.DetailForm", {
         name: "extField01",
         allowBlank: false,
         emptyText: '请输入门牌号1',
-        blankText: "门牌号1不能为空"
+        blankText: "门牌号1不能为空",
+        maxLength: 1000,
     }, {
         xtype: "textfield",
         fieldLabel: "门牌号2",

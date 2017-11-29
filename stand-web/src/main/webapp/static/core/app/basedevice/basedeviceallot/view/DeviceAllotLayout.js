@@ -26,7 +26,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotLayout", {
         //width:600,
     }, {
     	split: true,
-    	width: comm.get("clientWidth") * 0.29,
+    	width: comm.get("clientWidth") * 0.20,
     	xtype: "basedevice.basedeviceallot.devicesysgrid",
         region: "east",
     }]

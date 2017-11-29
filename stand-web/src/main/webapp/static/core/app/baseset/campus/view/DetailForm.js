@@ -31,7 +31,7 @@ Ext.define("core.baseset.campus.view.DetailForm", {
             formPanel: "baseset.campus.detailform",   //指定当前表单的别名，方便其他地方能找到这个表单组件
             funcTitle: "学校选择", //查询窗口的标题
             configInfo: {
-                width: 1200,
+                width: 1110,
                 height: 650,
                 fieldInfo: "schoolId~schoolName,uuid~schoolName",
                 whereSql: " and isDelete='0' and startUsing=1 ",

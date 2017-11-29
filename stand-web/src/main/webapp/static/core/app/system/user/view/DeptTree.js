@@ -31,7 +31,12 @@ Ext.define("core.system.user.view.DeptTree", {
             var tree = header.ownerCt
             tree.getStore().load();
             tree.getSelectionModel().deselectAll(true);
-        }
+            var mainlayout = tree.up("basepanel[xtype=system.user.mainlayout]");
+            var mianGrid = mainlayout.down("basegrid[xtype=system.user.usergrid]");
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams.deptId="";
+         }
     }],
 
     // columns: [{
@@ -64,6 +69,8 @@ Ext.define("core.system.user.view.DeptTree", {
                 deptId: record.get("id")
             };
             store.load();
+
+        
             // var mainLayout = view.up("panel[xtype=teachercourse.mainlayout]");
             // var treePanel = mainLayout.down("panel[xtype=classteacher.classtree]");
             // var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'claiId'}";

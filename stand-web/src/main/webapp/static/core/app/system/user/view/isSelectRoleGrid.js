@@ -11,13 +11,20 @@ Ext.define("core.system.user.view.isSelectRoleGrid", {
         stripeRows: false,
         plugins: {
             ptype: 'gridviewdragdrop',
-            dragGroup: 'secondGridDDGroup',
-            dropGroup: 'firstGridDDGroup'
+            ddGroup: "DrapDropGroup"
         },
         listeners: {
-            drop: function(node, data, dropRec, dropPosition) {
-                var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
-                //Ext.example.msg("Drag from right to left", 'Dropped ' + data.records[0].get('name') + dropOn);  
+            drop: function (node, data, dropRec, dropPosition) {
+            },
+            beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
+                var IsSelectStore = grid.getStore();
+                IsSelectStore.removeAt(index);
+
+                var basePanel = grid.up("panel[xtype=system.user.selectrolelayout]");
+                var selectGrid = basePanel.down("basegrid[xtype=system.user.selectrolegrid]");
+                var selectStore = selectGrid.getStore();
+                selectStore.insert(0, [record]);
+                return false;
             }
         }
     },

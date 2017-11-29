@@ -38,7 +38,8 @@ Ext.define("core.system.user.view.UserForm", {
             xtype: 'textfield',
             allowBlank: false,
             emptyText: '请输入用户名',
-            blankText: "用户名不能为空"
+            blankText: "用户名不能为空",
+            maxLength:36
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
@@ -47,7 +48,8 @@ Ext.define("core.system.user.view.UserForm", {
             xtype: 'textfield',
             allowBlank: false,
             emptyText: '请输入真实姓名',
-            blankText: "真实姓名不能为空"
+            blankText: "真实姓名不能为空",
+            maxLength:36
         }]
     }, {
         xtype: 'container',
@@ -81,7 +83,8 @@ Ext.define("core.system.user.view.UserForm", {
             fieldLabel: '工号/学号',
             name: "userNumb",
             xtype: 'textfield',
-            allowBlank: true
+            allowBlank: true,
+            maxLength:16
         },{
             columnWidth: .5,
             beforeLabelTextTpl: "",
