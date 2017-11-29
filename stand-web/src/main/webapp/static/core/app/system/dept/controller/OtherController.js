@@ -93,13 +93,64 @@ Ext.define("core.system.dept.controller.OtherController", {
                         case "setSuperJob":
                             self.setDeptJobSuperJob(grid, cmd, rowIndex);
                             break;
+                        case "setDeptJobUser":
+                            self.setDeptJobUser(null,grid, cmd, rowIndex);
+                            break;
                     }
 
                     return false;
                 }
             },
-    	       
 
+            /**
+             * 部门岗位用户列表删除按钮事件
+             */
+            "basegrid[xtype=system.dept.deptjobusergrid] button[ref=gridDelUser]": {
+                beforeclick: function (btn) {
+                    var self = this;
+                    self.doDeleteUerClick(btn);
+                    return false;
+                }
+            },
+            "basegrid[xtype=system.dept.deptjobusergrid] button[ref=gridAddUser]": {
+                beforeclick: function (btn) {
+                    this.openSelectUserDetail(btn);            
+                    return false;
+                }
+            },
+    	       
+             /**
+             * 快速搜索文本框回车事件
+             */
+            "basepanel basegrid[xtype=system.dept.selectusergrid] field[funCode=girdFastSearchText]": {
+                specialkey: function (field, e) {
+                    var self = this;
+                    if (e.getKey() == e.ENTER) {
+                        self.doFastSearch(field);
+                        //console.log(field);
+                        return false;
+                    }
+                }
+            },
+            /**
+             * 快速搜索按钮事件
+             */
+            "basepanel basegrid[xtype=system.dept.selectusergrid] button[ref=gridFastSearchBtn]": {
+                beforeclick: function (btn) {
+                    var self = this;
+                    self.doFastSearch(btn);
+                    return false;
+                }
+            },
+            /**
+             * 角色用户选择保存按钮事件
+             */
+            "baseformwin[funCode=selectuser_detail] button[ref=formSave]": {
+                beforeclick: function (btn) {
+                    this.doSaveDeptJobUser(btn);
+                    return false;
+                }
+            },
 
         });
     },
@@ -664,5 +715,330 @@ Ext.define("core.system.dept.controller.OtherController", {
             }]
         });
         win.show();  
+    },
+
+    /*打开部门岗位用户界面*/
+    setDeptJobUser:function(btn, grid,cmd,rowIndex) {
+        var self = this;
+        var baseGrid;
+        var recordData;
+
+        //根据点击的地方是按钮或者操作列，处理一些基本数据
+        if (btn) {
+            baseGrid = btn.up("basegrid");
+            var rescords = baseGrid.getSelectionModel().getSelection();
+            if (rescords.length != 1) {
+                self.msgbox("请选择一条数据！");
+                return;
+            }
+            recordData = rescords[0].getData();
+
+        } else {
+            baseGrid = grid;
+            recordData = baseGrid.getStore().getAt(rowIndex).getData();
+        }
+
+        var basePanel = baseGrid.up("basepanel");
+        var tabPanel=baseGrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
+
+        //得到配置信息
+        var funData = basePanel.funData;
+        var funCode =  "deptJobUser";
+        var detCode =  "deptJobUser";  
+        var detLayout = "system.dept.detaillayout";       
+        var defaultObj = funData.defaultObj;
+                
+        //关键：打开新的tab视图界面的控制器
+        var otherController = "system.dept.othercontroller";
+
+
+        
+        var popFunData = Ext.apply(funData, {
+            grid: baseGrid
+        });
+        var insertObj = recordData;;
+
+    
+        //设置tab页的itemId
+       
+        var pkValue=recordData["uuid"];
+        var operType = "detail";    // 只显示关闭按钮
+        var tabTitle = recordData["deptjobName"]+"-部门岗位用户";
+        var tabItemId=funCode+"_gridDeptJobUser"+pkValue;     //命名规则：funCode+'_ref名称',确保不重复
+        var xItemType=[{
+            xtype:detLayout,
+            items: [{
+                xtype: "system.dept.deptjobusergrid",                        
+            }]
+        }]
+        popFunData = Ext.apply(popFunData, {
+            deptJobId: pkValue
+        });
+
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem=tabPanel.getComponent(tabItemId);
+        if(!tabItem){
+            
+            //创建一个新的TAB
+            tabItem=Ext.create({
+                xtype:'container',
+                title: tabTitle,
+                //iconCls: 'x-fa fa-clipboard',
+                scrollable :true, 
+                itemId:tabItemId,
+                itemPKV:pkValue,      //保存主键值
+                layout:'fit', 
+            });
+            tabPanel.add(tabItem); 
+
+            //延迟放入到tab中
+            setTimeout(function(){
+                //创建组件
+                var item=Ext.widget("baseformtab",{
+                    operType:"noButton",                            
+                    controller:otherController,         //指定重写事件的控制器
+                    funCode:funCode,              //指定mainLayout的funcode
+                    detCode:detCode,              //指定detailLayout的funcode
+                    tabItemId:tabItemId,                //指定tab页的itemId
+                    insertObj:insertObj,                //保存一些需要默认值，提供给提交事件中使用
+                    funData: popFunData,                //保存funData数据，提供给提交事件中使用
+                    items:xItemType
+                }); 
+                tabItem.add(item);  
+
+                
+                var grid = item.down("grid[xtype=system.dept.deptjobusergrid]");
+                var store = grid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams = {
+                    deptJobId: pkValue
+                };
+                store.load();
+                
+                
+            },30);
+                           
+        }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
+            self.Warning("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab( tabItem);        
+    },
+    
+    /**
+     * 删除部门岗位用户
+     * @param btn
+     * @param cmd
+     * @param grid
+     * @param record
+     */
+    doDeleteUerClick: function (btn, cmd, grid, record) {        
+        var self = this;
+        var baseGrid;
+        var ids = new Array();
+        var funCode;
+        var basePanel;
+        var funData;
+        var pkName;
+        var title = "确定要删除所选的用户吗？";
+
+        if (btn) {
+            baseGrid = btn.up("basegrid");
+            funCode = baseGrid.funCode;
+            basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");        
+            var records = baseGrid.getSelectionModel().getSelection();
+            Ext.each(records, function (rec) {
+                var pkValue = rec.get("uuid");
+                ids.push(pkValue);
+            });
+            if (ids.length == 0) {
+                self.msgbox("没有选择要删除的部门岗位用户！");
+                return false;
+            }
+        } else {
+            baseGrid = grid;
+            funCode = baseGrid.funCode;
+            basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");            
+            ids.push(record.get("uuid"));
+        }
+        var basetab = btn.up('baseformtab');
+        var tabFunData = basetab.funData;
+
+        Ext.Msg.confirm('温馨提示', title, function (btnOper, text) {
+            if (btnOper == 'yes') {
+                //发送ajax请求
+                var loading = self.LoadMask(baseGrid);
+                self.asyncAjax({
+                    url:  "/SysUserdeptjob/doRmoveDeptJobFromUser",
+                    params: {                       
+                        delIds: ids.join(",")
+                    },            
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                
+                        if (data.success) {
+                            var store = baseGrid.getStore();
+                            store.load();
+                            self.msgbox(data.obj);                            
+                        } else {
+                            self.Error(data.obj);                                    
+                        }
+                        loading.hide();
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });
+            }
+        });
+    },
+
+    /**
+        打开选择用户的窗口
+    */
+    openSelectUserDetail:function(btn){
+        var self = this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" +funCode + "]");
+        var basetab = btn.up('baseformtab');
+        var tabFunData = basetab.funData;
+        //得到配置信息
+        var funData = basePanel.funData;
+        var detCode = "selectuser_detail"; 
+        var detLayout = "system.dept.selectuserlayout";
+        var defaultObj = funData.defaultObj;
+        //关键：window的视图控制器
+        var otherController = 'system.dept.othercontroller';
+        //处理特殊默认值
+        var insertObj =  {
+            deptJobId: tabFunData.deptJobId           
+        };
+        var popFunData = Ext.apply(funData, {
+            grid: baseGrid,
+            deptJobId: tabFunData.deptJobId
+        });
+        var width = 1200;
+        var height = 600;
+        var win = Ext.create('core.base.view.BaseFormWin', {
+            iconCls: 'x-fa fa-plus-circle',
+            operType: 'add',
+            width: width,
+            height: height,
+            controller: otherController, //指定视图控制器，从而能够使指定的控制器的事件生效
+            funData: popFunData,
+            funCode: detCode,
+            insertObj: insertObj,
+            items: [{
+                xtype: detLayout
+            }]
+        });
+        win.show();
+
+        // var selectGrid = win.down("basegrid[xtype=system.dept.selectusergrid]");
+        // var selectStore = selectGrid.getStore();
+        // var selectProxy = selectStore.getProxy();
+        // selectProxy.extraParams = {
+        //     roleId:tabFunData.roleId
+        // };
+        // selectStore.loadPage(1);
+    },
+    /**
+     * 执行快速搜索
+     * @param component
+     * @returns {boolean}
+     */
+    doFastSearch: function (component) {
+        //得到组件
+        var baseGrid = component.up("basegrid");
+        if (!baseGrid)
+            return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+            return false;
+
+        var win = baseGrid.up("window");
+        var winFunData = win.funData;
+        var roleId = winFunData.roleId;
+
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        //这里快速搜索就姓名与部门，固定写死查询的条件
+        var filter = new Array();
+        if (girdSearchTexts[0].getValue() != "")
+            filter.push("{'type': 'string', 'comparison': '', 'value':'" + girdSearchTexts[0].getValue() + "', 'field': 'xm'}");
+        if (girdSearchTexts[1].getValue() != "")
+            filter.push("{'type': 'string', 'comparison': '=', 'value':'" + girdSearchTexts[1].getValue() + "', 'field': 'deptId'}");
+        filter = "[" + filter.join(",") + "]";
+
+        var selectStore = baseGrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        selectProxy.extraParams = {
+            roleId: roleId,
+            filter: filter
+        };
+        selectStore.loadPage(1);
+    },
+
+    doSaveDeptJobUser:function(btn){
+
+        var self = this;
+        var win = btn.up('window');
+        var funCode = win.funCode;
+        var winFunData = win.funData;
+        var deptJobId = winFunData.deptJobId;
+        var baseGrid = winFunData.grid;
+        var basePanel = win.down("basepanel[funCode=" + funCode + "]");
+        var isSelectGrid = basePanel.down("grid[xtype=system.dept.isselectusergrid]");
+        var isSelectStore = isSelectGrid.getStore();
+        var storeCount = isSelectStore.getCount();
+        if (storeCount == 0) {
+            self.msgbox("没有要设置的用户，请重新选择");
+            return false;
+        }
+        var userIds = new Array();
+        for (var i = 0; i < storeCount; i++) {
+            var tempId=isSelectStore.getAt(i).get("uuid");
+            if(userIds.indexOf(tempId)==-1)
+                userIds.push(tempId);
+        }
+        var title = "确定设置这些用户吗？";
+        Ext.Msg.confirm('提示', title, function (btnOper, text) {
+            if (btnOper == 'yes') {
+                //发送ajax请求
+                var loading = self.LoadMask(win);
+                self.asyncAjax({
+                    url: "/SysUserdeptjob/doAddUserToDeptJob",
+                    params: {
+                        deptJobId: deptJobId,
+                        userIds: userIds.join(",")
+                    },            
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        
+                        if (data.success) {
+                            var store = baseGrid.getStore();
+                            store.load();
+                            self.msgbox(data.obj);
+                            loading.hide();
+                            win.close();
+                        } else {
+                            self.Error(data.obj); 
+                            loading.hide();                                
+                        }
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });
+            }
+        });
     }
 });

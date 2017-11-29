@@ -140,32 +140,45 @@ Ext.define("core.system.dept.controller.MainController", {
             },
             
             "panel[xtype=system.dept.maingrid] button[ref=sync]": {
-                beforeclick: function(btn) {                            
-                    var baseGrid=btn.up("panel[xtype=system.dept.maingrid]");
-                     //显示loadMask
-                    var myMask = self.LoadMask(baseGrid);
-                    //提交入库
-                    self.asyncAjax({
-                        url: "/usersync" + "/dept",
-                        //loadMask:true,
-                        //回调代码必须写在里面
-                        success: function(response) {
-                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                beforeclick: function(btn) {         
+                     //同步人员数据事件                        
+                    var baseGrid = btn.up("grid");
+                   
+                    Ext.MessageBox.confirm('同步部门数据到UP', '您确定要执行同步部门数据到UP操作吗？', function(btn, text) {                  
+                        if (btn == 'yes') {
+                            
+                            Ext.Msg.wait('正在同步部门数据，请等待...','提示');
+                            
+                            setTimeout(function(){
 
-                            if (data.success) { 
-                                baseGrid.getStore().load();
-                                self.msgbox("同步成功!");
+                                //异步ajax加载
+                                Ext.Ajax.request({
+                                    url: comm.get('baseUrl') + "/SysOrg/doSyncAllDeptInfoToUp",
+                                    params: { },
+                                    timeout:1000*60*60*10,     //10个小时
+                                    success: function(response){
+                                        var result=JSON.parse(response.responseText);
 
-                            }else{
-                                self.Error(data.obj);   
-                            }
-                            myMask.hide();
-                        },
-                        failure: function(response) {           
-                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
-                            myMask.hide();
+                                        if (result.success) {                                
+                                            self.msgbox(result.msg);
+                                            baseGrid.getStore().loadPage(1);
+
+                                            Ext.Msg.hide();                                        
+                                        } else {
+                                            self.Error(result.msg);
+                                            Ext.Msg.hide(); 
+                                        }
+                                       
+                                       
+                                    },
+                                    failure: function(response, opts) {
+                                        self.Error("请求失败，请联系管理员！");
+                                        Ext.Msg.hide(); 
+                                    }
+                                });                              
+                            },100);                           
                         }
-                    }); 
+                    });
 
                     return false;
                 }

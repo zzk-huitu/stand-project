@@ -1,10 +1,10 @@
-Ext.define("core.system.role.view.SelectUserGrid", {
+Ext.define("core.system.dept.view.SelectUserGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.system.role.selectusergrid",
-    al:false,
+    alias: "widget.system.dept.selectusergrid",
+    al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/SysUser/getUserNotInRoleId", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/SysUser/userList", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     pageDisplayInfo:false,
     /**
@@ -65,10 +65,10 @@ Ext.define("core.system.role.view.SelectUserGrid", {
                 selectStore = grid.getStore();
                 selectStore.removeAt(index);
 
-                var basePanel = grid.up("panel[xtype=system.role.selectuserlayout]");
+                var basePanel = grid.up("panel[xtype=system.dept.selectuserlayout]");
                 var isSelectGrid;
                 if(basePanel){
-                    isSelectGrid = basePanel.down("panel[xtype=system.role.isselectusergrid]");
+                    isSelectGrid = basePanel.down("panel[xtype=system.dept.isselectusergrid]");
                     var isSelectStore = isSelectGrid.getStore();
                     isSelectStore.insert(0, [record]);
                 }

@@ -170,5 +170,7 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	public void setDeptName(String deptName, String uuid);
 
 	public void setChildAllDeptName(BaseOrg dept, String parentAllDeptName);
+
+	public int syncAllDeptInfoToUP(List<BaseOrgToUP> deptInfo);
 	
 }

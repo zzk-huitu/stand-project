@@ -1,10 +1,10 @@
-Ext.define("core.system.role.view.RoleUserGrid", {
+Ext.define("core.system.dept.view.DeptJobUserGrid", {
 	extend: "core.base.view.BaseGrid",
-	alias: "widget.system.role.roleusergrid",
-	dataUrl: comm.get('baseUrl') + "/SysRole/getRoleUser",
+	alias: "widget.system.dept.deptjobusergrid",
+	dataUrl: comm.get('baseUrl') + "/SysUserdeptjob/getDeptJobUsers",
 	al:false,
 //	dataUrl: comm.get('baseUrl') + "/sysuser/list",
-	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysUser", "checked").modelName,
+	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseUserdeptjob", "checked").modelName,
     //selModel:null,	
 	//noPagging: true,
 	extParams: {
@@ -16,17 +16,23 @@ Ext.define("core.system.role.view.RoleUserGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'button',
-            text: '添加',
+            text: '添加部门岗位用户',
             ref: 'gridAddUser',
             funCode: 'girdFuntionBtn',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '删除',
+            text: '删除部门岗位用户',
             ref: 'gridDelUser',
             funCode: 'girdFuntionBtn',
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },/*{
+            xtype: 'button',
+            text: '设置主部门岗位',
+            ref: 'gridSetMainDeptJob',
+            funCode: 'girdFuntionBtn',
+            iconCls: 'x-fa fa-pencil-square'
+        },*/'->',{
             xtype: 'tbtext',
             html:'快速搜索：'
         },{
@@ -61,23 +67,13 @@ Ext.define("core.system.role.view.RoleUserGrid", {
 			dataIndex: "uuid",
 			hidden: true 
 		}, {
+            text: "姓名",
+            dataIndex: "xm",
+            width:150
+        },{
 			text: "编号",
 			dataIndex: "userNumb",
             width:150
-		}, {
-			text: "用户名",
-			dataIndex: "userName",
-            width:150
-		},{
-			text: "姓名",
-			dataIndex: "xm",
-            width:150
-		}, {
-			text: "性别",
-			dataIndex: "xbm",
-			columnType: "basecombobox",
-			ddCode: "XBM",
-            width:60
 		},{
             minWidth:150,
             flex:1,
@@ -88,9 +84,13 @@ Ext.define("core.system.role.view.RoleUserGrid", {
             dataIndex: "jobName",
             minWidth:150,
             flex:1,
-        }/*, {
-			text: "岗位",
-			dataIndex: "jobName"
-		}*/]
+        },{
+            text: "是否主部门",
+            width:150,
+            dataIndex: "masterDept",
+            renderer: function(value) {
+                return (value != 1) ? '<font color=red>否</font>' : '<font color=green>是</font>';
+            }
+        }]
 	}
 });

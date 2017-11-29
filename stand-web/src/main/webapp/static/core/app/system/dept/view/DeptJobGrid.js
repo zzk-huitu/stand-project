@@ -86,7 +86,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 			dataIndex: "parentjobName",
 			width:150,
 		}, {
-			width: 200,
+			width: 280,
 			fixed:true,
 			text: "操作",
 			xtype: "actiontextcolumn",
@@ -112,6 +112,14 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 				//ref: 'gridEdit',
 				handler: function(view, rowIndex, colIndex, item) {
 					this.fireEvent("detailClick", view, "setSuperJob", rowIndex);
+				}
+			},{
+				text: '部门岗位用户',
+				style: 'font-size:12px;',
+				tooltip: '设置此部门岗位的用户',
+				//ref: 'gridEdit',
+				handler: function(view, rowIndex, colIndex, item) {
+					this.fireEvent("detailClick", view, "setDeptJobUser", rowIndex);
 				}
 			}, {
 				text: '删除',

@@ -154,8 +154,6 @@ public interface SysUserService extends BaseService<SysUser> {
 
 	public int syncAllCardInfoFromUp(List<CardUserInfoToUP> cardUserInfos);
 
-	public int syncClassCardInfoFromUp(List<CardUserInfoToUP> upCardUserInfos, String classId);
-
 	public HashMap<String, Set<String>> getUserRoleMenuPermission(SysUser sysUser, Session session);
 
 	public void deleteUserMenuTreeRedis(SysPermission sysPermission);

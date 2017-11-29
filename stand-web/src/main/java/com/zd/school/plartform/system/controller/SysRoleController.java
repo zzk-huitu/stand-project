@@ -407,7 +407,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     @RequestMapping("/doAddRoleUser")
     public void doAddRoleUser(String ids, String userId,HttpServletRequest request, HttpServletResponse response) throws IOException{
         if(StringUtils.isEmpty(ids) || StringUtils.isEmpty(userId)){
-            writeJSON(response,jsonBuilder.returnFailureJson("\"没有传入相关的参数:角色标识或s要添加的用户标识\""));
+            writeJSON(response,jsonBuilder.returnFailureJson("\"没有传入相关的参数:角色标识或要添加的用户标识\""));
             return;
         }
         Boolean flag = thisService.doAddRoleUser(ids,userId);
@@ -416,5 +416,41 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         else
             writeJSON(response,jsonBuilder.returnFailureJson("\"角色用户添加失败，详情请见错误日志\""));
        
+    }
+    
+    
+    /**
+     * 获取指定角色的用户列表
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/getRoleUser")
+    public void  getRoleUser(HttpServletRequest request, HttpServletResponse response) throws  IOException{
+        String strData = "";
+        Integer start = super.start(request);
+        Integer limit = super.limit(request);
+        String sort = StringUtils.convertSortToSql(super.sort(request));
+        
+        String roleId = request.getParameter("roleId");
+        String xm = request.getParameter("xm");
+        xm=xm==null?"":xm;
+        //QueryResult<SysUser> qResult = thisService.getRoleUser(roleId, start, limit);
+        
+		String hql = "from SysUser as o inner join fetch o.sysRoles as r where r.uuid='" + roleId
+				+ "' and r.isDelete=0 and o.isDelete=0 and o.xm like '%"+xm+"%'";	
+		
+		 if(StringUtils.isNotEmpty(sort)){
+            hql += " order by ";
+            hql+= sort;
+        }
+		 
+		//List<SysUser> list = userSerive.doQuery(hql);
+
+		QueryResult<SysUser> qr = userSerive.queryResult(hql, start, limit);
+		  
+		
+        strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+        writeJSON(response, strData);// 返回数据
     }
 }

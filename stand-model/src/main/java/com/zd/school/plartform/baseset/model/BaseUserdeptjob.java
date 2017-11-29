@@ -154,6 +154,32 @@ public class BaseUserdeptjob extends BaseEntity implements Serializable {
 		this.treeIds = treeIds;
 	}
 	
+	@FieldInfo(name = "姓名")
+	@Formula("(SELECT a.XM FROM dbo.SYS_T_USER a WHERE a.USER_ID=USER_ID )")
+	private String xm;
+
+	public String getXm() {
+		return xm;
+	}
+
+	public void setXm(String xm) {
+		this.xm = xm;
+	}
+	
+	@FieldInfo(name = "用户编号")
+	@Formula("(SELECT a.USER_NUMB FROM dbo.SYS_T_USER a WHERE a.USER_ID=USER_ID )")
+	private String userNumb;
+
+	public String getUserNumb() {
+		return userNumb;
+	}
+
+	public void setUserNumb(String userNumb) {
+		this.userNumb = userNumb;
+	}
+	
+	
+	
 	public BaseUserdeptjob() {
 		super();
 		// TODO Auto-generated constructor stub

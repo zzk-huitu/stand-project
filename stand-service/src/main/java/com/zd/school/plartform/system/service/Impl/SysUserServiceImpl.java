@@ -455,9 +455,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 						if (currentUser.getIsDelete() == 1) {
 							// sqlDelete = "delete from Tc_Employee where
 							// UserId='" + UserId + "'"; 物理删除
-
+							// 现在每次同步都会更新这个值，理应判断之后就不同步的，但是影响不大。
 							sqlSb.append(" update Tc_Employee set EmployeeStatusID='26' where UserId='"
-									+ currentUser.getUserId() + "'");// 逻辑删除
+									+ currentUser.getUserId() + "';");// 逻辑删除
+
+							// 更改此人的卡片状态为2
+							sqlSb.append(" update TC_Card set CardStatusIDXF='2' where EmployeeID='"
+									+ upUser.getEmployeeId() + "';");// 逻辑删除
 
 						}
 						/*
@@ -473,7 +477,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 						 * upUser.getEmployeeId() + "'"; // 物理删除 // // sqlDelete
 						 * += " delete from Tc_Employee where EMPLOYEEID='" +
 						 * upUser.getEmployeeId() + "'"; // 物理删除 // //
-						 * this.getExecuteCountBySql(sqlDelete);
+						 * this.executeSql(sqlDelete);
 						 * 
 						 * sqlSb.append(
 						 * " delete from TC_Card_Bags where EMPLOYEEID='" +
@@ -486,13 +490,41 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 						 * }
 						 */
 						else if (!currentUser.equals(upUser)) { // 对比数据（一部分需要判断的数据）是否一致
-							String sqlUpdate = " update Tc_Employee set DepartmentID='" + currentUser.getDepartmentId()
-									+ "'," + "EmployeeName='" + currentUser.getEmployeeName() + "',EmployeeStrID='"
-									+ currentUser.getEmployeeStrId() + "'," + "SexID='" + currentUser.getSexId()
-									+ "',identifier='" + currentUser.getIdentifier()
-									+ "',EmployeeStatusID='24' where UserId='" + currentUser.getUserId() + "'";
+							// 更新卡片状态； 2017-11-3现在不更新卡类了（胡洋确定及肯定）
+							// int cardTypeId=1;
+							// if(currentUser.getJobName()!=null){
+							// if(currentUser.getJobName().contains("合同工"))
+							// cardTypeId=2;
+							// else if(currentUser.getJobName().equals("学员"))
+							// cardTypeId=3;
+							// }
 
-							// this.getExecuteCountBySql(sqlUpdate);
+							String sqlUpdate = " update Tc_Employee set DepartmentID='" + currentUser.getDepartmentId()
+									+ "'," + "EmployeeName='" + currentUser.getEmployeeName() + "'";
+
+							// update时不更新人员编号字段了，因为教职工发卡之后，会把印刷卡号绑定到EmployeeStrID字段。
+							// ,EmployeeStrID='" +
+							// currentUser.getEmployeeStrId() + "'";
+
+							if (currentUser.getSexId() == null)
+								sqlUpdate += ",SexID=NULL";
+							else
+								sqlUpdate += ",SexID='" + currentUser.getSexId() + "'";
+
+							if (currentUser.getIdentifier() == null)
+								sqlUpdate += ",identifier=NULL";
+							else
+								sqlUpdate += ",identifier='" + currentUser.getIdentifier() + "'";
+
+							if (currentUser.getEmployeeTel() == null)
+								sqlUpdate += ",employeeTel=NULL";
+							else
+								sqlUpdate += ",employeeTel='" + currentUser.getEmployeeTel() + "'";
+
+							sqlUpdate += ",EmployeeStatusID='24' " // ,CardTypeID="+cardTypeId+"现在不更新卡类了（胡洋确定及肯定）
+									+ " where UserId='" + currentUser.getUserId() + "';";
+
+							// this.executeSql(sqlUpdate);
 
 							sqlSb.append(sqlUpdate);
 						}
@@ -505,14 +537,38 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 				// 若上面的循环无法找到对应的人员，表明UP中不存在此用户
 				if (!isExist && currentUser.getIsDelete() != 1) {
-					String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,cardid,CardTypeID,EmployeeStatusID,PositionId) "
+					int cardTypeId = 1;
+					if (currentUser.getJobName() != null) {
+						if (currentUser.getJobName().contains("合同工"))
+							cardTypeId = 2;
+						else if (currentUser.getJobName().equals("学员"))
+							cardTypeId = 3;
+					}
+
+					String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,employeeTel,cardid,CardTypeID,EmployeeStatusID,PositionId) "
 							+ "values('" + currentUser.getUserId() + "','" + currentUser.getDepartmentId() + "','"
 							+ currentUser.getEmployeeName() + "'," + "'" + currentUser.getEmployeeStrId() + "','"
-							+ currentUser.getSid() + "','" + currentUser.getEmployeePwd() + "','"
-							+ currentUser.getSexId() + "','" + currentUser.getIdentifier() + "',0,1,24,19)";
+							+ currentUser.getSid() + "','" + currentUser.getEmployeePwd() + "'";
+
+					if (currentUser.getSexId() == null)
+						sqlInsert += ",NULL";
+					else
+						sqlInsert += ",'" + currentUser.getSexId() + "'";
+
+					if (currentUser.getIdentifier() == null)
+						sqlInsert += ",NULL";
+					else
+						sqlInsert += ",'" + currentUser.getIdentifier() + "'";
+
+					if (currentUser.getEmployeeTel() == null)
+						sqlInsert += ",NULL";
+					else
+						sqlInsert += ",'" + currentUser.getEmployeeTel() + "'";
+
+					sqlInsert += ",0," + cardTypeId + ",24,19);";
 
 					sqlSb.append(sqlInsert);
-					// this.getExecuteCountBySql(sqlInsert);
+					// this.executeSql(sqlInsert);
 				}
 
 				// 若积累的语句长度大于2000（大约50条语句左右），则执行
@@ -533,7 +589,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			 * 
 			 * //sqlDelete=
 			 * "update Tc_Employee set EmployeeStatusID='26' where UserId='" +
-			 * UserId + "'";//逻辑删除 //this.getExecuteCountBySql(sqlDelete);
+			 * UserId + "'";//逻辑删除 //this.executeSql(sqlDelete);
 			 * 
 			 * String sqlDelete = "delete from TC_Card_Bags where EMPLOYEEID='"
 			 * + upUser.getEmployeeId() + "'"; //物理删除
@@ -544,7 +600,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			 * sqlDelete += "delete from Tc_Employee where EMPLOYEEID='" +
 			 * upUser.getEmployeeId() + "'"; //物理删除
 			 * 
-			 * this.getExecuteCountBySql(sqlDelete);
+			 * this.executeSql(sqlDelete);
 			 * 
 			 * }
 			 */
@@ -558,6 +614,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		return row;
 	}
+	
 
 	@Override
 	public int syncAllCardInfoFromUp(List<CardUserInfoToUP> upCardUserInfos) {
@@ -665,105 +722,6 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		return row;
 	}
 
-	// 同步某个班级的发卡信息
-	@Override
-	public int syncClassCardInfoFromUp(List<CardUserInfoToUP> upCardUserInfos, String classId) {
-		int row = 0;
-		try {
-			// 1.查询web平台的发卡信息
-			String sql = "select convert(varchar,a.FACT_NUMB) as factNumb,a.USE_STATE as useState,"
-					+ " a.USER_ID as userId,convert(varchar,a.UP_CARD_ID) as upCardId "
-					+ " from CARD_T_USEINFO a join TRAIN_T_CLASSTRAINEE b on a.USER_ID=b.CLASS_TRAINEE_ID"
-					+ " where a.ISDELETE=0 and b.CLASS_ID='" + classId + "'" + " order by a.UP_CARD_ID asc";
-
-			List<CardUserInfoToUP> webCardUserInfos = this.queryEntityBySql(sql, CardUserInfoToUP.class);
-
-			String updateTime = null;
-
-			// 循环对比
-			CardUserInfoToUP webCardUser = null;
-			CardUserInfoToUP upCardUser = null;
-			boolean isExist = false;
-			StringBuffer sqlSb = new StringBuffer();
-			String sqlStr = "";
-
-			// 当参数为null或内容为空，则直接删除这个班级的发卡信息
-			if (upCardUserInfos == null || upCardUserInfos.size() == 0) {
-				sqlStr = "	delete from CARD_T_USEINFO where USER_ID in "
-						+ "(	select CLASS_TRAINEE_ID from TRAIN_T_CLASSTRAINEE where CLASS_ID='" + classId + "')";
-				this.doExecuteCountBySql(sqlSb.toString());
-
-			} else {// 否则循环判断。
-				for (int i = 0; i < upCardUserInfos.size(); i++) {
-					upCardUser = upCardUserInfos.get(i);
-					sqlStr = "";
-					isExist = false;
-
-					for (int j = 0; j < webCardUserInfos.size(); j++) {
-						webCardUser = webCardUserInfos.get(j);
-						// 若web库中存在此发卡信息
-						if (upCardUser.getUserId().equals(webCardUser.getUserId())) {
-							// 执行代码
-							isExist = true;
-							if (!upCardUser.equals(webCardUser)) { // 对比数据（一部分需要判断的数据）是否一致
-
-								if (upCardUser.getUpCardId() == null) { // 若发卡ID为null，表明没有发卡，所以物理删除卡片信息
-									sqlStr = "delete from CARD_T_USEINFO where USER_ID='" + upCardUser.getUserId()
-											+ "';";
-									sqlSb.append(sqlStr + "  ");
-								} else { // 否则更新数据
-									updateTime = DateUtil.formatDateTime(new Date());
-									sqlStr = "update CARD_T_USEINFO set " + "	FACT_NUMB='" + upCardUser.getFactNumb()
-											+ "',USE_STATE='" + upCardUser.getUseState() + "'," + "	UP_CARD_ID='"
-											+ upCardUser.getUpCardId() + "',UPDATE_TIME=CONVERT(datetime,'" + updateTime
-											+ "')" + " where USER_ID='" + upCardUser.getUserId() + "';";
-
-									sqlSb.append(sqlStr + "  ");
-								}
-							}
-
-							webCardUserInfos.remove(j);
-							break; // 跳出
-						}
-					}
-
-					// 若上面的循环无法找到对应的卡片信息，表明UP中不存在此卡片信息
-					// 并且发卡ID不为null，表明有新的发卡数据
-					if (!isExist && upCardUser.getUpCardId() != null) {
-
-						updateTime = DateUtil.formatDateTime(new Date());
-
-						sqlStr = "insert into CARD_T_USEINFO(CARD_ID,CREATE_TIME,CREATE_USER,"
-								+ "ISDELETE,FACT_NUMB,USE_STATE,USER_ID,UP_CARD_ID)" + " values ('"
-								+ UUID.randomUUID().toString() + "',CONVERT(datetime,'" + updateTime + "'),'超级管理员',"
-								+ "0,'" + upCardUser.getFactNumb() + "'," + upCardUser.getUseState() + "," + "'"
-								+ upCardUser.getUserId() + "','" + upCardUser.getUpCardId() + "');";
-
-						sqlSb.append(sqlStr + "  ");
-
-					}
-
-					// 若积累的语句长度大于3000（大约50条语句左右），则执行
-					if (sqlSb.length() > 3000) {
-						row += this.doExecuteCountBySql(sqlSb.toString());
-						sqlSb.setLength(0); // 清空
-					}
-				}
-
-				// 最后执行一次
-				if (sqlSb.length() > 0)
-					row += this.doExecuteCountBySql(sqlSb.toString());
-			}
-
-		} catch (Exception e) {
-			// 捕获了异常后，要手动进行回滚；
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-
-			row = -1;
-		}
-
-		return row;
-	}
 
 	@Override
 	public HashMap<String, Set<String>> getUserRoleMenuPermission(SysUser sysUser,Session session) {

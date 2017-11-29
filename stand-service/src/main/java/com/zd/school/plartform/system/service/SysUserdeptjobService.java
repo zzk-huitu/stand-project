@@ -3,6 +3,7 @@ package com.zd.school.plartform.system.service;
 import java.util.List;
 import java.util.Map;
 
+import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseService;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.model.SysUser;
@@ -86,5 +87,9 @@ public interface SysUserdeptjobService extends BaseService<BaseUserdeptjob> {
 	public boolean doAddUserToDeptJob(String deptJobId, String userId, SysUser currentUser);
 
 	public boolean doSetMasterDeptJob(String delIds, String userId, SysUser currentUser);
+
+	public QueryResult<BaseUserdeptjob> getUserByDeptJobId(String deptJobId, Integer start, Integer limit, String sort);
+
+	boolean doSetMasterDeptJobFromUser(String userIds, String deptJobId, SysUser currentUser);
 
 }

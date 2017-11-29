@@ -612,13 +612,15 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			// 1.查询最新的用户、部门信息
 			String sql = "select  u.USER_ID as userId,u.XM as employeeName, u.user_numb as employeeStrId,"
 					+ "'' as employeePwd,CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,u.isDelete as isDelete,"
-					+ "u.SFZJH AS identifier,'1' AS cardState, " // cardState
+					+ "u.SFZJH AS identifier,u.MOBILE as employeeTel,'1' AS cardState, " // cardState
 																	// 和 sid
 																	// 都置默认值，现在不做特定的处理
-					+ "'' as sid,org.EXT_FIELD04 as departmentId  " + " from SYS_T_USER u" + " join BASE_T_ORG org on "
+					+ "'' as sid,org.EXT_FIELD04 as departmentId,"
+					+ "job.JOB_NAME as jobName  "
+					+ " from SYS_T_USER u" + " join BASE_T_ORG org on "
 					+ "		(select top 1 DEPT_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
 					+ " join BASE_T_JOB job on "
-					+ "		(select top 1 JOB_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=job.JOB_ID "
+					+ "		(select top 1 JOB_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=job.JOB_ID "				
 					+ " order by userId asc";
 
 			List<SysUserToUP> userInfos = thisService.queryEntityBySql(sql, SysUserToUP.class);

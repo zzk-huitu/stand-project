@@ -236,4 +236,50 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	
 		writeAppJSON(response, returnJson.toString());
     }
+    
+    
+    /*
+     * 所有部门数据调用同步UP的方式
+     * */
+    @RequestMapping("/doSyncAllDeptInfoToUp")
+	public void doSyncAllDeptInfoToUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	StringBuffer returnJson = null;
+    	try{
+    		
+    		//String smallDeptId="12";
+    	
+    		// 1.查询这个smallDeptId的最新的部门信息
+			String sql = "select EXT_FIELD04 as departmentId,EXT_FIELD05 as parentDepartmentId,"
+					+ "	NODE_TEXT as departmentName,convert(varchar,NODE_LEVEL) as layer,"
+					+ " convert(varchar,ORDER_INDEX) as layerorder  "
+					+ " from BASE_T_ORG"
+					+ " where isdelete=0 and DEPT_ID!='ROOT' "
+					+ " order by DepartmentID asc";
+			
+			List<BaseOrgToUP> deptInfo = thisService.queryEntityBySql(sql, BaseOrgToUP.class);
+			
+			//2.进入事物之前切换数据源		
+			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
+			int row = 0;
+			if(deptInfo.size()!=0){			
+				row = thisService.syncAllDeptInfoToUP(deptInfo);
+			}
+    		
+			if(row==0){
+				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"未有部门数据需要同步！\"}");
+			}else if(row>0){
+				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"同步部门数据成功！\"}");
+			}else{
+				returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+			}
+				
+	    } catch (Exception e) {
+			returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+		} finally {
+			// 恢复数据源
+			DBContextHolder.clearDBType();
+		}
+	
+		writeAppJSON(response, returnJson.toString());
+    }
 }

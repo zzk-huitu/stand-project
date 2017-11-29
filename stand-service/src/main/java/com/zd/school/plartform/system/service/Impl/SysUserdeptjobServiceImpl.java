@@ -10,17 +10,18 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDeptjob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.dao.SysUserdeptjobDao;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysDeptjobService;
-import com.zd.school.plartform.system.service.SysUserdeptjobService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 
 /**
  * 
@@ -183,6 +184,49 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		String[] propertyName = { "masterDept", "updateTime", "updateUser" };
 		Object[] propertyValue = { 1, new Date(), currentUser.getUuid() };
 		this.updateByProperties("uuid", delIds, propertyName, propertyValue);
+		return true;
+	}
+	
+	/**
+	 * 获取部门岗位的用户信息
+	 * zzk
+	 */
+	@Override
+	public QueryResult<BaseUserdeptjob> getUserByDeptJobId(String deptJobId,Integer start, Integer limit, String sort) {
+		// TODO Auto-generated method stub
+		
+		String hql = "from BaseUserdeptjob o where o.deptjobId='" + deptJobId
+				+ "' and o.isDelete=0 ";					   
+		
+		 if(StringUtils.isNotEmpty(sort)){
+            hql += " order by ";
+            hql+= sort;
+        }
+
+		QueryResult<BaseUserdeptjob> qr = this.queryResult(hql, start, limit);
+		
+		return qr;
+		
+	}
+
+	@Override
+	public boolean doSetMasterDeptJobFromUser(String userIds, String deptJobId, SysUser currentUser) {
+
+		// 先将原来的主部门岗位设置成非主部门岗位
+		Object[] userArray = userIds.split(",");
+		String[] conditionName={"masterDept","userId"};
+		Object[] conditionValue = { 1, userArray };
+		String[] propertyName = { "masterDept", "updateTime", "updateUser" };
+		Object[] propertyValue = { 0, new Date(), currentUser.getUuid() };
+		this.updateByProperties(conditionName, conditionValue, propertyName, propertyValue);
+		
+
+		// 将新的部门岗位设置为主部门岗位
+		String[] conditionName2={"deptjobId","userId"};
+		Object[] conditionValue2 = { deptJobId, userArray };
+		String[] propertyName2 = { "masterDept", "updateTime", "updateUser" };
+		Object[] propertyValue2 = { 1, new Date(), currentUser.getUuid() };
+		this.updateByProperties(conditionName2, conditionValue2, propertyName2, propertyValue2);
 		return true;
 	}
 
