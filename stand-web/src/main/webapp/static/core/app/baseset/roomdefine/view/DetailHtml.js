@@ -20,7 +20,7 @@ Ext.define("core.baseset.roomdefine.view.DetailHtml", {
             '<li style="width:50%" title="{areaName}">所属楼层：{areaName}</li>',
             '<li style="width:50%" title="{areaUpName}">所属楼栋：{areaUpName}</li>',
             '<li style="width:50%" title="{createTime}">创建时间：{createTime}</li>',
-           '<li style="width:50%" title="{createUser}">创建人：{createUser}</li>',
+            '<li style="width:50%" title="{createUser}">创建人：{createUser}</li>',
             '<div style="clear:both"></div>',
             '</ul>',
             '</div>'

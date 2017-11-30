@@ -36,7 +36,8 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
         for (var i = 0; i < getCount; i++) {
         	 var record = isSelectStore.getAt(i);
         	 var pkValue = record.get("uuid");
-             uuid.push(pkValue);
+        	 if(uuid.indexOf(pkValue)==-1)
+                uuid.push(pkValue);
         };
        var roomId = win.roomId;
         if (uuid.length > 0) {

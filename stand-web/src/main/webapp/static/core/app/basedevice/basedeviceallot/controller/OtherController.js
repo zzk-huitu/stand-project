@@ -60,7 +60,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
           return;
         }
         var isSelectStore = baseGrid.getStore();
-        var  roomId = "";
+        var roomId = "";
         var uuid ="";
         for (var i = 0; i < rows; i++) {
             var record = isSelectStore.getAt(i);

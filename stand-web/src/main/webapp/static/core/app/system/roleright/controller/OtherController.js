@@ -157,7 +157,6 @@ Ext.define("core.system.roleright.controller.OtherController", {
                 var ids = new Array();
                 
                 var store=selectedPermissionGrid.getStore();
-
                 for(var i=0;i<store.getCount();i++){
                     var rec=store.getAt(i);
                     var pkValue = rec.get("uuid");

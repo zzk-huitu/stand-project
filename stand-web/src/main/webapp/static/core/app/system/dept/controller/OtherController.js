@@ -645,7 +645,9 @@ Ext.define("core.system.dept.controller.OtherController", {
         for (var i = 0; i < iCount; i++) {
             var record = isSelectStore.getAt(i);
             var pkValue = record.get("uuid");
-            ids.push(pkValue);
+            if(ids.indexOf(pkValue)==-1)
+                ids.push(pkValue);
+            
         }
         if (ids.length > 0) {
 

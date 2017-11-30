@@ -48,7 +48,7 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
         //var termName = win.termName;
 
         var employeeID = ""; //人员id
-        var stuId = "";
+        var stuId = new Array();
 
         var tabPanel = Ext.ComponentQuery.query("tabpanel[xtype=app-main]")[0];
         var mainlayout = tabPanel.getActiveTab(); 
@@ -75,13 +75,15 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
                     return ;
                 }
             };
-           stuId += employeeID + "," ;          
+            if(stuId.indexOf(employeeID)==-1)
+              stuId.push(employeeID);
+          // stuId += employeeID + "," ;          
         }
         var loading= self.LoadMask(win,"正在处理中...,请等待！");
         self.asyncAjax({
             url: comm.get('baseUrl') + "/BaseMjUserright/doAddMj",
             params: {
-              userId: stuId,
+              userId: stuId.join(","),
               termId: termId,
           },          
         //回调代码必须写在里面

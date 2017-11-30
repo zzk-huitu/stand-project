@@ -498,25 +498,40 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
               self.Warning("列表中已有相同的宿舍，请勿重复选择!");
               return;
             }
+            var dormArray = new Array();
+            var sameCount=0;
             if (identify == 1) {
               for (var k = 0; k < isselectdormgrid.getStore().getCount(); k++) {
                 getAt = isselectdormgrid.getStore().getAt(k);
-                data = getAt.data
-                baseGrid.getStore().insert(0, data);
+                var dormUUid = getAt.get('uuid');
+                if(dormArray.indexOf(dormUUid)==-1){
+                   dormArray.push(dormUUid);
+                   data = getAt.data
+                   baseGrid.getStore().insert(0, data);
+                }else{
+                  sameCount++;
+                }
+               
               };
               var boyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]');
-              var conutHtml="总数："+isselectdormgrid.getStore().getCount();
+              var conutHtml="总数："+(isselectdormgrid.getStore().getCount()+arr1.length-sameCount);
               boyDormGrid.down('panel[ref= boyTotalInfo]').setHtml(conutHtml);
 
               win.close();
             } else if (identify == 2) {
               for (var k = 0; k < isselectdormgrid.getStore().getCount(); k++) {
                 getAt = isselectdormgrid.getStore().getAt(k);
-                data = getAt.data
-                baseGrid.getStore().insert(0, data);
+                var dormUUid = getAt.get('uuid');
+                if(dormArray.indexOf(dormUUid)==-1){
+                   dormArray.push(dormUUid);
+                   data = getAt.data
+                   baseGrid.getStore().insert(0, data);
+                }else{
+                  sameCount++;
+                }
               };
               var girlyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.girldormgrid]');
-              var conutHtml="总数："+isselectdormgrid.getStore().getCount();
+              var conutHtml="总数："+(isselectdormgrid.getStore().getCount()+arr1.length-sameCount);
               girlyDormGrid.down('panel[ref= girlTotalInfo]').setHtml(conutHtml);
 
               win.close();
