@@ -109,21 +109,23 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         //得到组件
         var funCode = baseGrid.funCode; //creditrule_main
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");
-        var tabPanel=baseGrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");   //获取整个tabpanel
+        var treeGrid = basePanel.down("panel[xtype=basedevice.irdevice.irbrandtreegrid]");  //获取左侧品牌
         
-        //获取左侧品牌
-        var treeGrid = basePanel.down("panel[xtype=basedevice.irdevice.irbrandtreegrid]");
         var rows = treeGrid.getSelectionModel().getSelection();
-        if (rows.length <= 0) {
-            self.Error("请先选择品牌");
-            return false;
+        if(cmd=="add"){
+           if (rows.length <= 0) {
+            self.msgbox("请先选择品牌");
+            return ;
         } else if (rows[0].get('level') != 3) {
-            self.Error("只能选择品牌");
-            return false;
-        }
+            self.msgbox("只能选择品牌");
+            return ;
+          }
         var id = rows[0].get('id');
         var name = rows[0].get('text');
         var level = rows[0].get('level') + 1;
+
+       };
         
         //得到配置信息
         var funData = basePanel.funData;
@@ -140,7 +142,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         var insertObj = self.getDefaultValue(defaultObj);
         var popFunData = Ext.apply(funData, {
             grid: baseGrid,
-            filter: "[{'type':'string','comparison':'=','value':'" + id + "','field':'parentNode'}]"
+            //filter: "[{'type':'string','comparison':'=','value':'" + id + "','field':'parentNode'}]"
         });
 
         var pkValue= null;
@@ -161,6 +163,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                     recordData = rescords[0].getData();
                 }
                 
+
                 insertObj = recordData;
                 //获取主键值
                 var pkName = funData.pkName;
@@ -168,10 +171,10 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
 
                 //处理编辑事件表单返回页面的值
                 insertObj = Ext.apply(insertObj, {
-                    parentNode: id,
-                    level: level,
+                    parentNode: recordData.parentNode,
+                    level: recordData.level,
                     uuid: recordData.uuid,
-                    brandname: name,
+                    brandname: recordData.brandname,
                     productModel: recordData.productModel,
                     notes: recordData.notes,
                 });
@@ -191,16 +194,22 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
 
                 //处理编辑事件表单返回页面的值
                 insertObj = Ext.apply(insertObj, {
-                    parentNode: id,
-                    level: level,
+                    parentNode: recordData.parentNode,
+                    level: recordData.level,
                     uuid: recordData.uuid,
-                    brandname: name,
+                    brandname: recordData.brandname,
                     productModel: recordData.productModel,
                     notes: recordData.notes,
                 });
+                var itemXtype=[{
+                    xtype:"basedevice.irdevice.detailhtml",                        
+                    funCode: detCode             
+                }];
+
                 break;
             case "add":
                 if (btn) {
+                  
                 insertObj = Ext.apply(insertObj, {
                          parentNode: id,
                          level: level,
@@ -242,15 +251,14 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 }); 
                 tabItem.add(item);  
                
-                //将数据显示到表单中（或者通过请求ajax后台数据之后，再对应的处理相应的数据，显示到界面中） 
-                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
-                var formDeptObj = objDetForm.getForm();
-                self.setFormValue(formDeptObj, insertObj);
-                
                 if(cmd=="detail"){
-                	objDetForm.down("basetreefield[name=brandname]").setDisabled(true);
-                	self.setFuncReadOnly(funData, objDetForm, true);
-                }
+                	 var detailHtml = item.down("container[xtype=basedevice.irdevice.detailhtml]");
+                     detailHtml.setData(insertObj);
+                 }else{
+                    var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                    var formDeptObj = objDetForm.getForm();
+                    self.setFormValue(formDeptObj, insertObj);
+                 }
                 
             },30);
                            

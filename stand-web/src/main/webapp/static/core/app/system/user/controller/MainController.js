@@ -14,6 +14,12 @@ Ext.define("core.system.user.controller.MainController", {
         var self = this
             //事件注册
         this.control({
+             "basegrid[xtype=system.user.usergrid] actioncolumn": {
+                detailClick_Tab: function (data) {
+                    this.doDetail_Tab(null,"detail",data.view,data.record);
+                    return false;
+                }
+            },
             "panel[xtype=system.user.usergrid] actiontextcolumn": {
                 gridUserRoleClick:function(data){
                     var baseGrid = data.view;
@@ -776,6 +782,20 @@ Ext.define("core.system.user.controller.MainController", {
                     }]
                 }];
                 break;
+            case 'detail':
+                var tabTitle =insertObj.xm+"-部门岗位";
+                //设置tab页的itemId
+                var operType = "detail";    // 只显示关闭按钮
+                var tabItemId=funCode+"_gridDeptJob"+insertObj.uuid;    //详细界面可以打开多个
+                items=[{
+                    xtype:detLayout,
+                    defaults:null,
+                    items:[{
+                        xtype:'system.user.detailhtml',
+                        title:null
+                    }]
+                }];
+                break;
         }
 
         
@@ -831,6 +851,24 @@ Ext.define("core.system.user.controller.MainController", {
                         };
                         deptJobStore.load();
                         break;
+                    case 'detail':
+                        var userInfoContainer = tabItem.down("container[ref=userBaseInfo]");
+                        userInfoContainer.setData(insertObj);
+                        self.asyncAjax({
+                            url: comm.get('baseUrl') + "/SysUser/userRoleList",
+                            params: {
+                                page: 1,
+                                start: 0,
+                                limit: 0,
+                                userId: insertObj.uuid
+                            },
+                            success: function (response) {
+                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                                var roleUserContainer = tabItem.down("container[ref=userDetailInfo]");
+                                roleUserContainer.setData(data);
+                            }
+                        });
+                        break;
                 }
 
                 
@@ -845,6 +883,7 @@ Ext.define("core.system.user.controller.MainController", {
         tabPanel.setActiveTab( tabItem);
         
         
-    }
+    },
+     
 
 });

@@ -3,6 +3,10 @@ package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +20,12 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseJob;
+import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysDeptjobService;
 import com.zd.school.plartform.system.service.SysJobService;
 
 /**
@@ -35,6 +42,8 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 
 	@Resource
 	SysJobService thisService; // service层接口
+	@Resource
+	SysDeptjobService deptService; // service层接口
 
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
@@ -170,5 +179,15 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 
+	}
+	@RequestMapping(value = { "/doJobDept" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void doJobDept(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String strData="";
+		String jobId = request.getParameter("jobId"); // 获得传过来的roleId
+		String hql=" from BaseDeptjob a where  a.isDelete=0 and a.jobId = '"+jobId+"'";
+		List list = deptService.queryByHql(hql);
+	    strData = jsonBuilder.buildObjListToJson(new Long(list.size()), list, true);
+		writeJSON(response, strData);
 	}
 }

@@ -155,11 +155,11 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
           
           var selectGrid = baseGrid.getSelectionModel().getSelection();
           if (selectGrid <= 0) {
-              self.Warning("需选择要删除权限的角色!");
+              self.msgbox("需选择要删除权限的角色!");
               return false;
           };
           if(selectGrid.length>1){
-          	self.Warning("只能选择一个角色!");
+          	self.msgbox("只能选择一个角色!");
               return false;
           }
           var stuId = selectGrid[0].get('stuId');

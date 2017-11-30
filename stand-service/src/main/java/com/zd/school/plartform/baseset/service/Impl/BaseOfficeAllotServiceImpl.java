@@ -96,7 +96,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			String[] propName = { "termTypeID", "isDelete", "roomId" };
 			Object[] propValue = { "4", 0, roomId };
 			MjUserright userRight = null;
-			List<PtTerm> list = ptTermService.queryByProerties(propName, propValue);
+			List<PtTerm> list = ptTermService.queryByProerties(propName, propValue);//该房间是否有设备
 			if (uuid == null || uuid.equals("")) {
 				if (list.size() > 0) {//解除门禁权限
 					String[] uId = userId.split(","); //房间分配解除门禁设置
@@ -120,7 +120,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 					for (int i = 0; i < list.size(); i++) {
 						String[] name = { "termId", "stuId" };
 						String[] value = { list.get(i).getUuid(), uuid };
-						userRight = mjService.getByProerties(name, value);
+						userRight = mjService.getByProerties(name, value);//该学生或教师是否已经被分配了该房间的设备
 						if (userRight != null) {
 							userRight.setIsDelete(0);
 							userRight.setUpdateTime(new Date());

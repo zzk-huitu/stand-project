@@ -14,10 +14,17 @@ Ext.define("core.baseset.room.view.MainGrid", {
         direction: 'DESC'
     }],
     title: "区域房间",
-  
     panelTopBar:{
         xtype:'toolbar',
-        items: [{
+        items: [/*{
+            xtype: 'tbtext',
+            html: '区域房间',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',*/{
             xtype: 'button',
             text: '添加房间',
             ref: 'gridAdd_Tab',

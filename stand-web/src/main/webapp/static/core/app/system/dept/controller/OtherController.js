@@ -1050,7 +1050,7 @@ Ext.define("core.system.dept.controller.OtherController", {
                 });
             }
         });
-    }
+    },
 
   queryFastSearchForm:function(component){
         //得到组件                 

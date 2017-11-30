@@ -45,7 +45,7 @@ Ext.define("core.baseset.room.view.MainLayout", {
     scrollable:'x',
     
     items: [{
-        collapsible: true,
+        //collapsible: true,
         split: true,
         xtype: "baseset.room.areagrid",
         region: "west",

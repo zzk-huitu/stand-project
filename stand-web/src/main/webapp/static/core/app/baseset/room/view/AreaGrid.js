@@ -15,7 +15,15 @@ Ext.define("core.baseset.room.view.AreaGrid", {
       
     },
     title: "区域信息",
-    tbar: [{
+    tbar: [/*{
+            xtype: 'tbtext',
+            html: '区域信息',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        },'->',*/{
         xtype: 'button',
         text: '添加下级',
         ref: 'gridAdd',

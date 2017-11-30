@@ -83,10 +83,27 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 	public Boolean doOut(String outIds, SysUser currentUser) {
 		boolean flag = false;
 		DormTeacherDorm entity=null;
+		MjUserright userRight = null;
 		String[] outId = outIds.split(",");
 		for (String id : outId) {
 			entity = this.get(id);
-			entity.setOutTime(new Date());
+			List<PtTerm> list = ptTermService.queryByProerties("roomId", entity.getRoomId());
+			  if (list.size() > 0) {// 解除门禁权限
+					for (int i = 0; i < list.size(); i++) {
+	                    String[] name = { "termId","stuId"};
+					    String[] value = { list.get(i).getUuid(),entity.getGh()};
+						userRight = mjService.getByProerties(name, value);
+						if (userRight != null) {
+							userRight.setIsDelete(1);
+							userRight.setControlsegId(0);
+							userRight.setCardstatusId(0);
+							userRight.setUpdateTime(new Date());
+							mjService.merge(userRight);
+						}
+
+					}
+				}
+		 	entity.setOutTime(new Date());
 			entity.setInout(1);
 			entity.setCreateUser(currentUser.getXm());
 			entity.setUpdateTime(new Date());
@@ -94,7 +111,7 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 			flag = true;
 		}
 		return flag;
-	}
+		}
 
 	@Override
 	public Boolean doAddDormTea(DormTeacherDorm entity, Map hashMap, HttpServletRequest request, SysUser currentUser) throws IllegalAccessException, InvocationTargetException {
