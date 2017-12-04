@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,9 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
 import com.zd.school.plartform.system.model.SysDatapermission;
@@ -721,4 +724,6 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		
 		writeJSON(response, strData);// 返回数据
 	}
+	
+
 }

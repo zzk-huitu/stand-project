@@ -906,6 +906,5 @@ Ext.define("core.system.user.controller.MainController", {
         
         
     },
-     
 
 });
