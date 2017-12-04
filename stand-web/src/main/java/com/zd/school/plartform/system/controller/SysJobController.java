@@ -3,9 +3,12 @@ package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -21,6 +24,7 @@ import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.system.model.SysRole;
@@ -190,4 +194,65 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	    strData = jsonBuilder.buildObjListToJson(new Long(list.size()), list, true);
 		writeJSON(response, strData);
 	}
+	
+	@RequestMapping("/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.getSession().setAttribute("exportJobinfoIsEnd", "0");
+        request.getSession().removeAttribute("exportJobinfoIsState");
+        
+        //先获取数据
+        String hql = " from BaseJob where (isDelete=0 or isDelete=2) ";
+        List<BaseJob> baseJobList = thisService.queryByHql(hql);
+          
+        List<Map<String, Object>> allList = new ArrayList<>();//存处理后的数据，有的一个sheet里面可能有多张表，所以用list
+  		Integer[] columnWidth = new Integer[] { 15, 15, 15};//每个列宽
+        
+  		//处理数据，选择我们要导出的字段
+  		List<Map<String, String>> jobInfoList = new ArrayList<>();//多条数据
+		Map<String, String> jobInfoMap = null;//用map去存每一个数据
+		for (BaseJob baseJob : baseJobList) {
+			jobInfoMap = new LinkedHashMap<>();
+			jobInfoMap.put("jobName", baseJob.getJobName());
+			jobInfoMap.put("jobCode", baseJob.getJobCode());
+			jobInfoMap.put("remark", baseJob.getRemark());
+			jobInfoList.add(jobInfoMap);
+		}
+        
+		Map<String, Object> jobInfoAllMap = new LinkedHashMap<>();//一个MAP代表一张表的信息，最后放入allList中
+		jobInfoAllMap.put("data", jobInfoList);//数据
+		jobInfoAllMap.put("title", "岗位信息表");//标题
+		jobInfoAllMap.put("head", new String[] { "岗位名称","岗位编码","备注" }); //列名，规定名字相同的，设定为合并
+		jobInfoAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		jobInfoAllMap.put("columnAlignment", new Integer[] { 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
+		jobInfoAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(jobInfoAllMap);
+
+		String sheetTitle = null;
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "岗位信息表", sheetTitle, allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportJobinfoIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportJobinfoIsEnd", "0");
+			request.getSession().setAttribute("exportJobinfoIsState", "0");
+		}
+    } 
+    
+    @RequestMapping("/checkExportEnd")
+    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        Object isEnd = request.getSession().getAttribute("exportJobinfoIsEnd");
+        Object state = request.getSession().getAttribute("exportJobinfoIsState");
+        if (isEnd != null) {
+            if ("1".equals(isEnd.toString())) {
+                writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+            } else if (state != null && state.equals("0")) {
+                writeJSON(response, jsonBuilder.returnFailureJson("0"));
+            } else {
+                writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+            }
+        } else {
+            writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+        }
+    }
 }
