@@ -200,8 +200,13 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
         request.getSession().setAttribute("exportJobinfoIsEnd", "0");
         request.getSession().removeAttribute("exportJobinfoIsState");
         
+        String jobName = request.getParameter("jobName");
+        
         //先获取数据
-        String hql = " from BaseJob where (isDelete=0 or isDelete=2) ";
+        String hql = " from BaseJob where isDelete=0 ";
+        if(StringUtils.isNotEmpty(jobName)){
+        	hql=hql+"and jobName like '%"+jobName+"%'";
+        }
         List<BaseJob> baseJobList = thisService.queryByHql(hql);
           
         List<Map<String, Object>> allList = new ArrayList<>();//存处理后的数据，有的一个sheet里面可能有多张表，所以用list
@@ -220,14 +225,14 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
         
 		Map<String, Object> jobInfoAllMap = new LinkedHashMap<>();//一个MAP代表一张表的信息，最后放入allList中
 		jobInfoAllMap.put("data", jobInfoList);//数据
-		jobInfoAllMap.put("title", "岗位信息表");//标题
+//		jobInfoAllMap.put("title", "岗位信息表");//标题
 		jobInfoAllMap.put("head", new String[] { "岗位名称","岗位编码","备注" }); //列名，规定名字相同的，设定为合并
 		jobInfoAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
 		jobInfoAllMap.put("columnAlignment", new Integer[] { 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		jobInfoAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(jobInfoAllMap);
 
-		String sheetTitle = null;
+		String sheetTitle = "岗位信息表";
 		// 在导出方法中进行解析
 		boolean result = PoiExportExcel.exportExcel(response, "岗位信息表", sheetTitle, allList);
 		if (result == true) {

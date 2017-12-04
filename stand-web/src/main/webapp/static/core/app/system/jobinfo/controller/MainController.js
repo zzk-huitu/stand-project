@@ -308,6 +308,14 @@ Ext.define("core.system.jobinfo.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid");
         var title = "确定要导出岗位管理的信息吗？";
+        
+        var toolBar = btn.up("toolbar");
+        if (!toolBar)
+            return false;
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var name = girdSearchTexts[0].getName();
+        var value = girdSearchTexts[0].getValue();
+        
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
                 Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
@@ -316,7 +324,7 @@ Ext.define("core.system.jobinfo.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysJob/exportExcel"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysJob/exportExcel?jobName='+value+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 
