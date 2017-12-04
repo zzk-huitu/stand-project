@@ -913,6 +913,8 @@ Ext.define("core.system.user.controller.MainController", {
         
         
     },
+<<<<<<< HEAD
+=======
     doExport:function(btn){
         var self = this;
         var baseGrid = btn.up("basegrid");
@@ -974,5 +976,6 @@ Ext.define("core.system.user.controller.MainController", {
         });
        return false;
  	}
+>>>>>>> a948a04b298c9c7298aa227ec26639fd6624f4d5
 
 });

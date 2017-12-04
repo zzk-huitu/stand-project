@@ -37,7 +37,10 @@ import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+<<<<<<< HEAD
+=======
 import com.zd.school.plartform.baseset.model.BaseDicitem;
+>>>>>>> a948a04b298c9c7298aa227ec26639fd6624f4d5
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
@@ -730,6 +733,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 	
+
 	@RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");
@@ -823,4 +827,5 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
+
 }
