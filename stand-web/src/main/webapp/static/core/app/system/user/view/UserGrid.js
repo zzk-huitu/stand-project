@@ -55,6 +55,12 @@ Ext.define("core.system.user.view.UserGrid", {
             ref: 'gridSetPwd',
             funCode:'girdFuntionBtn',         
             iconCls: 'x-fa fa-key'
+        },{
+            xtype: 'button',
+            text: '导出',
+            ref: 'gridExport',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-file'
         },/*{
             xtype: 'button',
             text: '同步数据',

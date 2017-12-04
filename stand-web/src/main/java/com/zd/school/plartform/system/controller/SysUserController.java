@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,8 +35,12 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+import com.zd.school.plartform.baseset.model.BaseDicitem;
+import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
+import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
 import com.zd.school.plartform.system.model.SysDatapermission;
 import com.zd.school.plartform.system.model.SysMenuTree;
@@ -67,6 +72,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	@Resource
 	SysUserdeptjobService userDeptjobService;
+	
+	@Resource
+	BaseDicitemService dicitemService;
 
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
@@ -720,5 +728,99 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		strData = jsonBuilder.buildObjListToJson(new Long(qr.getTotalCount()), qr.getResultList(), true);// 处理数据
 		
 		writeJSON(response, strData);// 返回数据
+	}
+	
+	@RequestMapping("/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");
+		request.getSession().removeAttribute("exportTrainClassTraineeCardIIsState");
+
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10,15, 15, 20,20, 20, 20, 15, 15 };
+
+		// 1.班级信息
+		String deptId = request.getParameter("deptId"); // 程序中限定每次只能导出一个班级
+		
+		//数据字典项
+		String mapKey = null;
+		String[] propValue = { "XBM", "CATEGORY","ZXXBZLB","ACCOUNTSTATE","CARDSTATE"};
+		Map<String, String> mapDicItem = new HashMap<>();
+		List<BaseDicitem> listDicItem = dicitemService.queryByProerties("dicCode", propValue);
+		for (BaseDicitem baseDicitem : listDicItem) {
+				mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
+				mapDicItem.put(mapKey, baseDicitem.getItemName());
+			}
+
+		// 2.班级学员信息
+		List<SysUser> sysUserList = null;
+		String hql = " from SysUser where (isDelete=0 or isDelete=2) ";
+		if (StringUtils.isNotEmpty(deptId)) {
+			hql += " and deptId ='" + deptId + "'";
+		}
+		hql += " order by jobId asc";
+		sysUserList = thisService.queryByHql(hql);
+
+		// 处理班级基本数据
+		List<Map<String, String>> traineeList = new ArrayList<>();
+		Map<String, String> traineeMap = null;
+		String ClassName="";
+		int i=1;
+		for (SysUser sysUser : sysUserList) {
+			traineeMap = new LinkedHashMap<>();
+			ClassName = sysUser.getDeptName();
+			traineeMap.put("xh",i+"");
+			traineeMap.put("userName", sysUser.getUserName());
+			traineeMap.put("name", sysUser.getXm());
+			traineeMap.put("xb",  mapDicItem.get(sysUser.getXbm()+"XBM"));
+			traineeMap.put("category", mapDicItem.get(sysUser.getCategory()+"CATEGORY"));
+			traineeMap.put("zxxbzlb", mapDicItem.get(sysUser.getZxxbzlb()+"ZXXBZLB"));
+			traineeMap.put("stustatus", mapDicItem.get(sysUser.getState()+"ACCOUNTSTATE"));
+			traineeMap.put("cardNo", String.valueOf((sysUser.getUpCardId()==null)?0:sysUser.getUpCardId()));
+			String useState = "";
+			if(sysUser.getUseState()==null){
+				useState="未发卡";
+			}else{
+				useState=mapDicItem.get(sysUser.getUseState()+"CARDSTATE");
+			}
+			traineeMap.put("useState", useState);
+			i++;
+			traineeList.add(traineeMap);
+		}
+		// --------2.组装课程表格数据
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", traineeList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "序号","用户名","姓名", "性别","身份","编制","账户状态","卡片编号","发卡状态" }); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0,0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, ClassName+"用户详细", ClassName+"用户信息", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportTrainClassTraineeCardIIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportTrainClassTraineeCardIIsEnd", "0");
+			request.getSession().setAttribute("exportTrainClassTraineeCardIIsState", "0");
+		}
+	} 
+    
+    @RequestMapping("/checkExportEnd")
+    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportTrainClassTraineeCardIIsEnd");
+		Object state = request.getSession().getAttribute("exportTrainClassTraineeCardIIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
 	}
 }
