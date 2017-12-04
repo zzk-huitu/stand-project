@@ -10,6 +10,7 @@ Ext.define("core.baseset.dictionary.view.DicGrid", {
         orderSql: ""
         //filter: "[{'type':'string','comparison':'=','value':'0','field':'isDelete'}]"
     },
+    menuCode:"DICTIONARY",
     sortableColumns:false,
     title: "数据字典目录",
     tbar: [{
@@ -33,7 +34,7 @@ Ext.define("core.baseset.dictionary.view.DicGrid", {
     }, {
         xtype: 'button',
         text: '删除',
-        ref: 'gridDelete',
+        ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle',
         //disabled:true
     }, {

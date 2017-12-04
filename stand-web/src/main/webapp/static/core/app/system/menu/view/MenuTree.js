@@ -4,6 +4,7 @@ Ext.define("core.system.menu.view.MenuTree", {
 	dataUrl: comm.get('baseUrl') + "/SysMenu/treeList",
 	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysMenuTree", "checked").modelName,
 	al: true,
+	menuCode:"MENUMANAGE",
 	extParams: {
 		whereSql: " and isDelete='0' ",
 		orderSql: " order by parentNode,isHidden,orderIndex asc"

@@ -99,7 +99,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      *         实体类 @param @param request @param @param response @param @throws
      *         IOException 设定参数 @return void 返回类型 @throws
      */
-    @Auth("ROLE_add")
+    @Auth("SYSROLE_add")
     @RequestMapping("/doAdd")
     public void doAdd(SysRole entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -137,6 +137,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * request @param @param response @param @throws IOException 设定参数 @return
      * void 返回类型 @throws
      */
+    @Auth("SYSROLE_delete")
     @RequestMapping("/doDelete")
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
@@ -190,6 +191,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * BaseTRole @param @param request @param @param response @param @throws
      * IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("SYSROLE_update")
     @RequestMapping("/doUpdate")
     public void doUpdate(SysRole entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -283,6 +285,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * @throws @since
      *             JDK 1.8
      */
+    @Auth("ROLERIGHT_update")
     @RequestMapping("/doDeleteRight")
     public void cancelRoleRightMenu(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");
@@ -313,6 +316,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * @throws @since
      *             JDK 1.8
      */
+    @Auth("ROLERIGHT_add")
     @RequestMapping("/doAddRight")
     public void addRoleRightMenu(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");
@@ -335,6 +339,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * 
      * 修改指定角色菜单的功能权限. 
      */
+    @Auth("ROLERIGHT_permission")
     @RequestMapping("/doSetRoleMenuPermission")
     public void doSetRoleMenuPermission(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String roleId = request.getParameter("roleId");	//角色ID
@@ -404,6 +409,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
      * @param response
      * @throws IOException
      */
+    @Auth("SYSROLE_AddRoleUser")
     @RequestMapping("/doAddRoleUser")
     public void doAddRoleUser(String ids, String userId,HttpServletRequest request, HttpServletResponse response) throws IOException{
         if(StringUtils.isEmpty(ids) || StringUtils.isEmpty(userId)){

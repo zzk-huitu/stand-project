@@ -12,7 +12,20 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
     },
     init: function () {
          this.control({
-
+         "basepanel basegrid[xtype=basedevice.basegateway.miangrid]": {
+              afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="BASEGATEWAY";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridSetFront")==-1){
+                        var btnSetFront = grid.down("button[ref=gridSetFront]");
+                        btnSetFront.setHidden(true);
+                        
+                     }
+                 }
+            },
+        },
+    
               //区域列表刷新按钮事件
             "basetreegrid[xtype=basedevice.basegateway.ptgatewaytree] button[ref=gridRefresh]": {
                 click: function(btn) {

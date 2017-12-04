@@ -6,6 +6,7 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     selModel: {
       
     },
+    menuCode:"IRDEVICE",
     sortableColumns:false,
     extParams: {
         excludes:"checked"
@@ -32,7 +33,7 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
     }, {
         xtype: 'button',
         text: '删除',
-        ref: 'gridDelete',
+        ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle'
         //disabled: true
     }, {

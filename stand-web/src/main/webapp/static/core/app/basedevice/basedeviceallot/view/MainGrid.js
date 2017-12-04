@@ -4,6 +4,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
     al:false,
+    menuCode:"DEVICEALLOT",
     extParams: {
     },
     panelTopBar:{
@@ -19,7 +20,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
         },'->',{
             xtype: 'button',
             text: '分配设备',
-            ref: 'gridAllot',
+            ref: 'gridAdd_Tab',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',

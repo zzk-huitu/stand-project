@@ -12,7 +12,31 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     init: function() {
     },
     control: {
-    	
+    	     "basepanel basegrid": {
+              afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="USERACCESS";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_selectPersonnel")==-1){
+                        var btnSelPer = grid.down("button[ref=selectPersonnel]");
+                          if(btnSelPer){
+                          btnSelPer.setHidden(true);
+                         }
+                     }
+                    if(userBtn.indexOf(menuCode+"_gridDeleteAll")==-1){
+                        var btnDelALL = grid.down("button[ref=gridDeleteAll]");
+                        if(btnDelALL){
+                          btnDelALL.setHidden(true);
+                        }
+                      }
+                    /*if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                        var btnDel = grid.down("button[ref=gridDelete]");
+                         btnDel.setHidden(true);
+                      }*/
+                 }
+            },
+        },
+    
     	//房间列表刷新按钮
     	"basetreegrid[xtype=accesscontrol.useraccess.roominfotree] button[ref=gridRefresh]": {
           beforeclick: function(btn) {

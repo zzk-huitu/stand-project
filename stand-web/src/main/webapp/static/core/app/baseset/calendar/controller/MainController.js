@@ -14,6 +14,19 @@ Ext.define("core.baseset.calendar.controller.MainController", {
         var self = this;
             //事件注册
         this.control({
+            "basepanel basegrid[xtype=baseset.calendar.calendargrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SCHOOLCALENDAR";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridUse")==-1){
+                            var btnUse = grid.down("button[ref=gridUse]");
+                            btnUse.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
 
             //增加作息时间目录事件
             "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridAdd]": {

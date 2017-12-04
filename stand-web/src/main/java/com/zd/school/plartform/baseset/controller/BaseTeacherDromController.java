@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -108,7 +109,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		String dormId = request.getParameter("dormId");
 		return dormService.get(dormId);
 	}
-
+    @Auth("BASETEACHERDORM_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(DormTeacherDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -129,7 +130,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		}
 
 	}
-
+    @Auth("BASETEACHERDORM_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -155,6 +156,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	}
 
 	// 退住
+	@Auth("BASETEACHERDORM_out")
 	@RequestMapping("/out")
 	public void out(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		boolean flag = false;

@@ -14,6 +14,28 @@ Ext.define("core.system.user.controller.MainController", {
         var self = this
             //事件注册
         this.control({
+            "basepanel basegrid[xtype=system.user.usergrid]": {
+             afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="SYSUSER";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                        var btnlock = grid.down("button[ref=gridLock]");
+                         btnlock.setHidden(true);
+                         
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                        var btnUnlock = grid.down("button[ref=gridUnLock]");
+                         btnUnlock.setHidden(true);
+                      }
+                    if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
+                        var btnPwd = grid.down("button[ref=gridSetPwd]");
+                         btnPwd.setHidden(true);
+                      }
+                  }
+                },
+              
+            },
              "basegrid[xtype=system.user.usergrid] actioncolumn": {
                 detailClick_Tab: function (data) {
                     this.doDetail_Tab(null,"detail",data.view,data.record);

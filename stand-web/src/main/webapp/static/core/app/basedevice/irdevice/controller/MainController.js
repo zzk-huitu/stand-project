@@ -12,7 +12,34 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
     init: function() {
     },
     control: {
-    	
+          "basepanel basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="IRDEVICE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd]");
+                            btnAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                            btnBorAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                            var btnEdit = grid.down("button[ref=gridEdit]");
+                            btnEdit.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                            var btnDel = grid.down("button[ref=gridDel]");
+                            btnDel.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
     	 //品牌列表增加下级按钮事件
         "panel[xtype=basedevice.irdevice.irbrandtreegrid] button[ref=gridAdd]": {
             click: function (btn) {
@@ -35,7 +62,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
         },
     	
         //品牌列表删除按钮事件
-        "panel[xtype=basedevice.irdevice.irbrandtreegrid] button[ref=gridDelete]": {
+        "panel[xtype=basedevice.irdevice.irbrandtreegrid] button[ref=gridDel]": {
             click: function (btn) {
             	this.doDelete(btn, "delete");
             }

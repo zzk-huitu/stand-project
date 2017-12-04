@@ -18,6 +18,29 @@ Ext.define("core.system.roleright.controller.MainController", {
 
 		//事件注册
 		this.control({	
+		  "basepanel basetreegrid[xtype=system.roleright.rolgerightgrid]": {
+             afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="ROLERIGHT";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                        var btnAdd = grid.down("button[ref=gridAdd]");
+                         btnAdd.setHidden(true);
+                         
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                        var btnEdit = grid.down("button[ref=gridEdit]");
+                         btnEdit.setHidden(true);
+                      }
+                    if(userBtn.indexOf(menuCode+"_gridSetPermission")==-1){
+                        var btnSetPerm = grid.down("button[ref=gridSetPermission]");
+                         btnSetPerm.setHidden(true);
+                      }
+                  }
+                  return false;
+                },
+              
+            },
 			
 			/**
 			 *  角色grid的单击事件

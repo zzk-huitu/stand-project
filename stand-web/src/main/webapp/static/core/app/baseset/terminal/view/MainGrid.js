@@ -6,6 +6,7 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
     fileName:"信息终端",//导出Excel文件名称
     exWhereSql:" and isUse=1", //导出Excel 过滤
     tbar:[],
+    menuCode:"INFOTERM",
     panelTopBar:{
         xtype:'toolbar',
         items: [{

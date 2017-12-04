@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.zd.school.control.device.model.MjUserright;
 import com.zd.school.plartform.basedevice.service.MjUserrightService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -84,6 +85,7 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("USERACCESS_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids=request.getParameter("ids");
@@ -110,6 +112,7 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
+	@Auth("USERACCESS_add")
 	@RequestMapping("/doAddMj")
 	public void doAddMj(@RequestParam("userId") String userId,@RequestParam("termId") String termId, 
 			HttpServletRequest request, HttpServletResponse response)

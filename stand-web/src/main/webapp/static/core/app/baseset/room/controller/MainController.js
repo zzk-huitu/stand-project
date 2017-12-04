@@ -13,8 +13,48 @@ Ext.define("core.baseset.room.controller.MainController", {
         var self = this;
         // 事件注册
         this.control({
-        	
-        	"basegrid[xtype=baseset.room.maingrid] button[ref=roomAdd_Tab]": {
+        	  "basepanel basetreegrid[xtype=baseset.room.areagrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="JWTROOMINFO";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd]");
+                            btnAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                            btnBorAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                            var btnEdit = grid.down("button[ref=gridEdit]");
+                            btnEdit.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                            var btnDel = grid.down("button[ref=gridDel]");
+                            btnDel.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
+             "basepanel basegrid[xtype=baseset.room.maingrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="JWTROOMINFO";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridBatchAdd_Tab")==-1){
+                            var btnAdd = grid.down("button[ref=gridBatchAdd_Tab]");
+                            btnAdd.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
+        	"basegrid[xtype=baseset.room.maingrid] button[ref=gridBatchAdd_Tab]": {
                 beforeclick: function(btn) {
                     this.dobatch_Tab(btn,"add");
                     return false;
@@ -72,7 +112,7 @@ Ext.define("core.baseset.room.controller.MainController", {
                 }
             },
             //区域列表删除按钮事件
-            "panel[xtype=baseset.room.areagrid] button[ref=gridDelete]": {
+            "panel[xtype=baseset.room.areagrid] button[ref=gridDel]": {
                 beforeclick: function (btn) {
                     var baseGrid = btn.up("basetreegrid");
                     var funCode = baseGrid.funCode;

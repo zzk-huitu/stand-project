@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -65,6 +66,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
      *         实体类 @param @param request @param @param response @param @throws
      *         IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("BASECAMPUS_add")
     @RequestMapping("/doAdd")
     public void doAdd(BaseCampus entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -112,6 +114,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
+    @Auth("BASECAMPUS_delete")
     @RequestMapping("/doDelete")
     public void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -158,6 +161,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
      * BaseCampus @param @param request @param @param response @param @throws
      * IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("BASECAMPUS_update")
     @RequestMapping("/doUpdate")
     public void doUpdates(BaseCampus entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {

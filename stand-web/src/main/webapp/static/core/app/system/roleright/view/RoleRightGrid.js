@@ -9,6 +9,7 @@ Ext.define("core.system.roleright.view.RoleRightGrid", {
 		whereSql: " and isDelete='0' ",
 		orderSql: " order by parentNode,orderIndex asc"
 	},
+	menuCode:"ROLERIGHT",
 	tbar: [{
 		xtype: 'button',
 		text: '授权',

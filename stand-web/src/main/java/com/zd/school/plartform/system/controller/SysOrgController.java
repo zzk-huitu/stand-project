@@ -3,7 +3,6 @@ package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
@@ -86,6 +85,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
+	@Auth("DEPARTMENT_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(BaseOrg entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -123,6 +123,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
      * @param response
      * @throws IOException
      */
+	@Auth("DEPARTMENT_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String deptId = request.getParameter("ids");
@@ -154,6 +155,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	 * @throws @since
 	 *             JDK 1.8
 	 */
+	@Auth("DEPARTMENT_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BaseOrg entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -241,6 +243,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
     /*
      * 所有部门数据调用同步UP的方式
      * */
+    @Auth("DEPARTMENT_sync")
     @RequestMapping("/doSyncAllDeptInfoToUp")
 	public void doSyncAllDeptInfoToUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	StringBuffer returnJson = null;

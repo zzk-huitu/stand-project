@@ -5,7 +5,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
     model: factory.ModelFactory.getModelByName("com.zd.school.jw.eduresources.model.JwCalender", "checked").modelName,
     
    
-   // menuCode:"SCHOOLCALENDAR", //new：此表格与权限相关的菜单编码
+    menuCode:"SCHOOLCALENDAR", //new：此表格与权限相关的菜单编码
 
     //title: "作息时间目录",
     panelTopBar:{

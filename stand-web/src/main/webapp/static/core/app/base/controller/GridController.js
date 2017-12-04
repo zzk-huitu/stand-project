@@ -344,28 +344,49 @@ Ext.define("core.base.controller.GridController", {
     hideBtn:function(grid){
         //如果此值为1，则表明此人是超级管理员，不需要进行验证
         if(comm.get("isAdmin")!="1"){
-            var menuCode=grid.meunCode;     // 此菜单的前缀
+            var menuCode=grid.menuCode;     // 此菜单的前缀
             if(menuCode){
                 var userBtn=comm.get("userBtn");
                 if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
                     var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                    btnAdd.setHidden(true);
+                   if(btnAdd){
+                       btnAdd.setHidden(true);
+                     } 
                 }
                 if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
                     var btnEdit = grid.down("button[ref=gridEdit_Tab]");
-                    btnEdit.setHidden(true);
+                    if(btnEdit){
+                        btnEdit.setHidden(true);
+                    }
+                   
                 }
                 if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
                     var btnDelete = grid.down("button[ref=gridDelete]");
-                    btnDelete.setHidden(true);
+                    if(btnDelete){
+                        btnDelete.setHidden(true);
+                    }
+                  
                 }
                 if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
                     var btnAdd = grid.down("button[ref=gridAdd]");
-                    btnAdd.setHidden(true);
+                     if(btnAdd){
+                       btnAdd.setHidden(true);
+                    }
+                    
                 }
                 if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
                     var btnEdit = grid.down("button[ref=gridEdit]");
-                    btnEdit.setHidden(true);
+                    if(btnEdit){
+                       btnEdit.setHidden(true);  
+                    }
+                    
+                }
+                if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                    var btnDel = grid.down("button[ref=gridDel]");
+                    if(btnDel){
+                        btnDel.setHidden(true);
+                    }
+                  
                 }
             }
         }           

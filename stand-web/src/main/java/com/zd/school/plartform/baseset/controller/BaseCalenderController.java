@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -90,6 +91,7 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("SCHOOLCALENDAR_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(JwCalender entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -111,6 +113,7 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("SCHOOLCALENDAR_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -160,6 +163,7 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	 * JwTCander @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("SCHOOLCALENDAR_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(JwCalender entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -182,7 +186,8 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
 	 * JwTCander @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
-	 */
+	 */	
+	@Auth("SCHOOLCALENDAR_use")
 	@RequestMapping("/doUpdateState")
 	public void doUpdateState(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

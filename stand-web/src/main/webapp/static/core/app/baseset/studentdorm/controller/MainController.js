@@ -12,6 +12,30 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
         var self = this
         // 事件注册
         this.control({
+            "basepanel basegrid[xtype=baseset.studentdorm.maingrid]": {
+                afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASESTUDENTDORM";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_onKeyallotDorm")==-1){
+                            var btnOnKeyAllot = grid.down("button[ref=onKeyallotDorm]");
+                            btnOnKeyAllot.setHidden(true);
+                        }
+                        if(userBtn.indexOf(menuCode+"_dormAlllot")==-1){
+                            var btnDormAlllot = grid.down("button[ref=dormAlllot]");
+                            btnDormAlllot.setHidden(true);
+                         }
+                        if(userBtn.indexOf(menuCode+"_dormAdjust")==-1){
+                            var btnDormAdjust = grid.down("button[ref=dormAdjust]");
+                            btnDormAdjust.setHidden(true);
+                        }
+                        if(userBtn.indexOf(menuCode+"_dormTs")==-1){
+                            var btnDormTs = grid.down("button[ref=dormTs]");
+                            btnDormTs.setHidden(true);
+                         }
+                     }
+                 },
+            },
             //区域列表刷新按钮事件
             "panel[xtype=baseset.studentdorm.studentdormtree] button[ref=gridRefresh]": {
                 click: function(btn) {

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -59,6 +60,7 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("BASEFRONTSERVER_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(SysFrontServer entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -78,6 +80,7 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("BASEFRONTSERVER_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -138,6 +141,7 @@ public class BaseFrontServerController extends FrameWorkController<SysFrontServe
 	 * MjUserright @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("BASEFRONTSERVER_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(SysFrontServer entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

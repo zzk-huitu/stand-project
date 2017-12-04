@@ -12,6 +12,19 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
     init: function () {
         var self=this;
         this.control({
+            "basepanel basegrid[xtype=baseset.teacherdorm.maingrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASETEACHERDORM";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridOut")==-1){
+                            var btnOut = grid.down("button[ref=gridOut]");
+                            btnOut.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
              //区域列表刷新按钮事件
             "panel[xtype=baseset.teacherdorm.teacherdormtree] button[ref=gridRefresh]": {
                 click: function(btn) {

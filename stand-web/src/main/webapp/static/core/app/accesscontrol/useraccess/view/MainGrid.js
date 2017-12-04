@@ -5,6 +5,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
     model: "com.zd.school.control.device.model.MjUserright",
     al:false,
     pageDisplayInfo:false,
+    menuCode:"USERACCESS",
     panelTopBar:{
         xtype:'toolbar',
         items: [{

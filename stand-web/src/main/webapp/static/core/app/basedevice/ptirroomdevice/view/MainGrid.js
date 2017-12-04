@@ -6,6 +6,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
     al: false,
     extParams: {
     },
+    menuCode:"PTIRROOMDEVICE",
     panelTopBar:{
         xtype:'toolbar',
         items: [{

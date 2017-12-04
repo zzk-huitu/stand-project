@@ -16,6 +16,34 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 		
 
 		this.control({
+			  "basepanel basetreegrid[xtype=baseset.dictionary.dicgrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="DICTIONARY";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd]");
+                            btnAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                            btnBorAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                            var btnEdit = grid.down("button[ref=gridEdit]");
+                            btnEdit.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                            var btnDel = grid.down("button[ref=gridDel]");
+                            btnDel.setHidden(true);
+                            
+                         }
+                     }
+                 },
+            },
 			/**
 			 * 树形节点点击事件
 			 * 1.展开树 2.刷新右边的字典项 3.显示按钮
@@ -75,7 +103,7 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 				}
 			},
 			//删除按钮事件
-			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridDelete]": {
+			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridDel]": {
 				beforeclick: function(btn) {
 					var baseGrid = btn.up("basetreegrid");
 					var funCode = baseGrid.funCode;

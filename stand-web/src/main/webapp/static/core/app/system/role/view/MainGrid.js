@@ -5,6 +5,7 @@ Ext.define("core.system.role.view.MainGrid", {
     model: 'com.zd.school.plartform.system.model.SysRole',
     frame: false,
     tbar:[],
+    menuCode:"SYSROLE",
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -156,10 +157,16 @@ Ext.define("core.system.role.view.MainGrid", {
                 tooltip: '删除',
                 ref: 'gridDelete',
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){
-                    if(record.get("issystem")==1)
+                    if(record.get("issystem")==1){
                         return 'x-hidden-display';
-                    else
-                        return null;
+                    }else if(comm.get("isAdmin")!="1"){
+                         var menuCode="SYSROLE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");   
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null;
                 },  
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);

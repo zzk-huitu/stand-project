@@ -4,6 +4,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/BasePriceDefine/list",
     model: 'com.zd.school.build.define.model.SkPriceDefine',
     al:false,
+    menuCode:"BASERATE",
     panelTopBar:{
         xtype:'toolbar',
         items: [{

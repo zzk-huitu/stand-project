@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
@@ -138,6 +139,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
      *         实体类 @param @param request @param @param response @param @throws
      *         IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("MENUMANAGE_add")
     @RequestMapping("/doAdd")
     public void doAdd(SysMenu entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -187,6 +189,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
      * BaseTMenu @param @param request @param @param response @param @throws
      * IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("MENUMANAGE_update")
     @RequestMapping("/doUpdate")
     public void doUpdate(SysMenu entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -235,6 +238,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
      * @throws @since
      *             JDK 1.8
      */
+    @Auth("MENUMANAGE_lockFlag")
     @RequestMapping("/doSetLockFlag")
     public void doSetLockFlag(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");

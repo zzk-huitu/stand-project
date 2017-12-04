@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -58,6 +59,7 @@ public class BasePtSkMeterController extends FrameWorkController<PtSkMeter> impl
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("JLCS_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(
 			PtSkMeter entity, HttpServletRequest request, HttpServletResponse response)
@@ -78,6 +80,7 @@ public class BasePtSkMeterController extends FrameWorkController<PtSkMeter> impl
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("JLCS_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids = request.getParameter("ids");
@@ -100,6 +103,7 @@ public class BasePtSkMeterController extends FrameWorkController<PtSkMeter> impl
 	 * MjUserright @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("JLCS_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(PtSkMeter entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

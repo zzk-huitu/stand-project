@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.AuthorType;
 import com.zd.core.constant.Constant;
@@ -126,6 +127,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+    @Auth("SYSUSER_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String userName = entity.getUserName();
@@ -149,6 +151,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+   
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -174,6 +177,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * 
 	 * @throws Exception
 	 */
+    @Auth("SYSUSER_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -363,7 +367,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 		}
 	}
-
+	@Auth("SYSUSER_lock")
 	@RequestMapping("/doLock")
 	public void doLock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -376,7 +380,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'锁定成功'"));
 		}
 	}
-
+    @Auth("SYSUSER_unlock")
 	@RequestMapping("/doUnlock")
 	public void doUnlock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -389,7 +393,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'解锁成功'"));
 		}
 	}
-
+    @Auth("SYSUSER_setPwd")
 	@RequestMapping("/doSetPwd")
 	public void doSetpwd(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");

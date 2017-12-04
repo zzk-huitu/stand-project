@@ -4,6 +4,7 @@ Ext.define("core.baseset.room.view.AreaGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
+    menuCode:"JWTROOMINFO",
     sortableColumns:false,
     extParams: {
         whereSql: " and isDelete='0' ",
@@ -44,7 +45,7 @@ Ext.define("core.baseset.room.view.AreaGrid", {
     }, {
         xtype: 'button',
         text: '删除',
-        ref: 'gridDelete',
+        ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle'
         //disabled: true
     }, {

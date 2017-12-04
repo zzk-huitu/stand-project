@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -75,6 +76,7 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
+	@Auth("BASERATE_add")
 	@RequestMapping("/doAdd")
     public void doAdd(SkPriceDefine entity,DkPriceDefine entitys,HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -106,6 +108,7 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
+	@Auth("BASERATE_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(SkPriceDefine entity,DkPriceDefine entitys, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -133,6 +136,7 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("BASERATE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids=request.getParameter("ids");

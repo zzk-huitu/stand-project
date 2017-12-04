@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -57,6 +58,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("BASERATE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(String[] termId,String[] termSn, String meterId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

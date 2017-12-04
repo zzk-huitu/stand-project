@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -140,6 +141,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
+	@Auth("DEVICEALLOT_add")
 	@RequestMapping("/doSetPtTerm")
 	public void doSetPtTerm(String roomId, String uuid, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -179,6 +181,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * MjUserright @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("DEVICEALLOT_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(PtTerm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -197,6 +200,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("DEVICEALLOT_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(String uuid, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

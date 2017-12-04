@@ -5,6 +5,7 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
     dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
     pageDisplayInfo:false,
+    menuCode:"USERACCESS",
     selModel: {
         selType: "checkboxmodel",
         width: 10,

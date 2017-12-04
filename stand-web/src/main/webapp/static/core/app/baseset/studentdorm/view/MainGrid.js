@@ -7,7 +7,7 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
         filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'claiId'}]"
     },
     al:false,
-   // menuCode:"BASEROOMALLOT", //new：此表格与权限相关的菜单编码
+    menuCode:"BASESTUDENTDORM", //new：此表格与权限相关的菜单编码
     panelTopBar:{
         xtype:'toolbar',
         items: [{

@@ -12,6 +12,24 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
         var self = this
         // 事件注册
         this.control({
+            "basepanel basegrid[xtype=baseset.roomallot.maingrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASEROOMALLOT";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_allotOffRoom")==-1){
+                            var btnAllotOff = grid.down("button[ref=allotOffRoom]");
+                            btnAllotOff.setHidden(true);
+                            
+                        }
+                        if(userBtn.indexOf(menuCode+"_officeTs")==-1){
+                            var btnOfficeTs = grid.down("button[ref=officeTs]");
+                            btnOfficeTs.setHidden(true);
+                            
+                        }
+                    }
+                },
+             },
             //区域列表刷新按钮事件
             "panel[xtype=baseset.roomallot.roomallottree] button[ref=gridRefresh]": {
                 click: function(btn) {

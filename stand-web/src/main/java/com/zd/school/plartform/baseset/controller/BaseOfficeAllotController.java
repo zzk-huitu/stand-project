@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -112,6 +113,7 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("BASEROOMALLOT_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(JwOfficeAllot entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -151,6 +153,7 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("BASEROOMALLOT_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(String uuid, String roomId, String tteacId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
@@ -191,6 +194,7 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 		writeJSON(response, strData);// 返回数据
 	}
 	//推送消息
+	@Auth("BASEROOMALLOT_officeTs")
 	@RequestMapping("/pushMessage")
 	public void pushMessage(String roomId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Boolean flag=false;

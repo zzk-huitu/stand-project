@@ -5,7 +5,7 @@ Ext.define("core.baseset.dictionary.view.ItemGrid", {
 	dataUrl: comm.get('baseUrl') + "/BaseDicitem/list",
 	model: 'com.zd.school.plartform.baseset.model.BaseDicitem',
 	al: true,
-	//排序字段及模式定义
+	menuCode:"DICTIONARY",
 	defSort: [{
 		property: 'orderIndex',
 		direction: 'ASC'
@@ -27,7 +27,7 @@ Ext.define("core.baseset.dictionary.view.ItemGrid", {
 		text: '编辑',
 		ref: 'gridEdit_Tab',
         iconCls: 'x-fa fa-pencil-square',
-		disabled: true
+		//disabled: true
 	}, {
 		xtype: 'button',
 		text: '删除',

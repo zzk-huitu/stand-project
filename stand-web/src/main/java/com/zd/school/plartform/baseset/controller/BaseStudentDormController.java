@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -155,6 +156,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	 * @param girlId
 	 *            女宿舍id
 	*/
+	@Auth("BASESTUDENTDORM_oneKeyAllot")
 	@RequestMapping("/onKeyAllotDorm")
 	public void onKeyAllotDorm(String gradId, String boyId, String girlId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
@@ -221,6 +223,8 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	}
 	
 	// 手动分配宿舍 （学生分配宿舍）
+	
+	@Auth("BASESTUDENTDORM_dormAllot,BASESTUDENTDORM_dormAdjust")
 	@RequestMapping("/dormHandAllot")
 	public void dormHandAllot(DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -250,6 +254,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	/**
 	 * 自动分配宿舍
 	 */
+	@Auth("BASESTUDENTDORM_dormAllot")
 	@RequestMapping("/dormAutoAllot")
 	public void dormAutoAllot(String classId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
@@ -289,6 +294,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	/**
 	 * 删除宿舍
 	*/
+	@Auth("BASESTUDENTDORM_dormAdjust")
 	@RequestMapping("/dormDoDelete")
 	public void dormDoDelete(String uuid, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		int count = 0;
@@ -326,6 +332,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	}
 
 	//推送消息
+	@Auth("BASESTUDENTDORM_dormTs")
 	@RequestMapping("/pushMessage")
 	public void pushMessage(String classId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Boolean flag=false;

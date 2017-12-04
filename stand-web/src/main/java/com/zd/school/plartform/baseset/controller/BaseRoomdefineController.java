@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -43,7 +44,8 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 	BaseOfficeDefineService offRoomService; // 办公室service层接口
 	@Resource
 	BaseFuncRoomDefineService funRoomService; // 功能室service层接口
-
+	
+    @Auth("BASEROOMDEFINE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(BuildRoominfo entity, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IllegalAccessException, InvocationTargetException {
@@ -136,7 +138,7 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 		}
 
 	}
-
+    @Auth("BASEROOMDEFINE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int count = 0;

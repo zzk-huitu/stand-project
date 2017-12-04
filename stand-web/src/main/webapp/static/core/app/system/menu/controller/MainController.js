@@ -15,7 +15,37 @@ Ext.define("core.system.menu.controller.MainController", {
 		var self = this;
 
         this.control({
-        	
+          "basepanel basetreegrid[xtype=system.menu.menutree]": {
+             afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="MENUMANAGE";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                        var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                         btnAdd.setHidden(true);
+                         
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridAddBrother_Tab")==-1){
+                        var btnAddBro = grid.down("button[ref=gridAddBrother_Tab]");
+                         btnAddBro.setHidden(true);
+                      }
+                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                        var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                         btnEdit.setHidden(true);
+                      }
+                    if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                        var btnUnLock = grid.down("button[ref=gridUnLock]");
+                         btnUnLock.setHidden(true);
+                      }
+                    if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                        var btnLock = grid.down("button[ref=gridLock]");
+                         btnLock.setHidden(true);
+                      }
+                  }
+                  return false;
+                },
+              
+            },
         	//刷新按钮事件
 			"panel[xtype=system.menu.menutree] button[ref=gridRefresh]": {
 				beforeclick: function(btn) {

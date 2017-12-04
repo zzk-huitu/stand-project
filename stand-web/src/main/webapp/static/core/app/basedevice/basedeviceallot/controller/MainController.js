@@ -28,7 +28,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
         },
     	
         //分配设备按钮
-    	"basegrid[xtype=basedevice.basedeviceallot.maingrid] button[ref=gridAllot]": {
+    	"basegrid[xtype=basedevice.basedeviceallot.maingrid] button[ref=gridAdd_Tab]": {
             beforeclick: function(btn) {
            	    this.doAllot(btn);
                 return false;

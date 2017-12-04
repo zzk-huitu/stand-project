@@ -1,6 +1,7 @@
 
 package com.zd.school.plartform.baseset.controller;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -71,6 +72,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("DICTIONARY_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(BaseDicitem entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -105,6 +107,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("DICTIONARY_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -151,6 +154,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	 * BaseDicitem @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("DICTIONARY_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BaseDicitem entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

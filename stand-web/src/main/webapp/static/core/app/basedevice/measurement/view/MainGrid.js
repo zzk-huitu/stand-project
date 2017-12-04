@@ -3,6 +3,7 @@ Ext.define("core.basedevice.measurement.view.MainGrid", {
     alias: "widget.basedevice.measurement.maingrid",
     dataUrl: comm.get('baseUrl') + "/BasePtSkMeter/list",
     model: "com.zd.school.control.device.model.PtSkMeter",
+    menuCode:"JLCS",
     panelTopBar:{
         xtype:'toolbar',
         items: [{

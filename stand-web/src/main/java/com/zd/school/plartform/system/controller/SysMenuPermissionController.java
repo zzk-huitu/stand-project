@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -80,6 +81,7 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("SYSPERIMISSON_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(SysMenuPermission entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -127,6 +129,7 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("SYSPERIMISSON_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -149,6 +152,7 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 	 * SysDatapermission @param @param request @param @param
 	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("SYSPERIMISSON_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdate(SysMenuPermission entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

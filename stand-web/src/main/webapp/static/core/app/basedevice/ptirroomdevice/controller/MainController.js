@@ -12,7 +12,19 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
     init: function() {
     },
     control: {
-    	
+       "basepanel basegrid[xtype=basedevice.ptirroomdevice.maingrid]": {
+              afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="PTIRROOMDEVICE";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridBinDing")==-1){
+                        var btnBinDing = grid.down("button[ref=gridBinDing]");
+                        btnBinDing.setHidden(true);
+                        
+                     }
+                 }
+            },
+        },
     	//绑定品牌列表事件
     	"basegrid[xtype=basedevice.ptirroomdevice.maingrid] button[ref=gridBinDing]": {
             beforeclick: function(btn) {

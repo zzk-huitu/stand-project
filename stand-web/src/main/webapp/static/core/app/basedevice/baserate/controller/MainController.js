@@ -11,7 +11,19 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
     init: function() {
     },
     control: {
-    	
+    	"basepanel basegrid[xtype=basedevice.baserate.maingrid]": {
+              afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="BASERATE";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridBinding")==-1){
+                        var btnBinding = grid.down("button[ref=gridBinding]");
+                        btnBinding.setHidden(true);
+                        
+                     }
+                 }
+            },
+        },
     	 //费率列表添加按钮
     	 "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridAdd_Tab]": {
              beforeclick: function(btn) {

@@ -4,6 +4,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseRoominfo/list",
     model: "com.zd.school.build.define.model.BuildRoominfo",
     al:false,
+    menuCode:"JWTROOMINFO",
     extParams: {
         whereSql: " and isDelete='0' ",
         orderSql: " order by roomName ",
@@ -33,7 +34,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
         },{
             xtype: 'button',
             text: '批量添加房间',
-            ref: 'roomAdd_Tab',
+            ref: 'gridBatchAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
         }, {

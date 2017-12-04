@@ -1,6 +1,7 @@
 
 package com.zd.school.plartform.baseset.controller;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -138,6 +139,7 @@ public class BaseSchoolController extends FrameWorkController<BaseSchool> implem
 	 * BaseSchool @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("SCHOOLINFO_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(BaseSchool entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

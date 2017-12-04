@@ -5,7 +5,6 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
     model: 'com.zd.school.plartform.baseset.model.BaseJob',
 
     menuCode:"JOBINFO", //new：此表格与权限相关的菜单编码
-
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -122,7 +121,7 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                     if(comm.get("isAdmin")!="1"){
                         var menuCode="JOBINFO";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");                 
+                        var userBtn=comm.get("userBtn");   
                         if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
                             return 'x-hidden-display';
                         }

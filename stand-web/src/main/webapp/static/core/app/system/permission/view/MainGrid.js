@@ -9,7 +9,7 @@ Ext.define("core.system.permission.view.MainGrid", {
     columnLines: false,
     dataUrl: comm.get("baseUrl") + "/SysMenuPermission/list", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysMenuPermission", //对应的数据模型
-    
+    menuCode:"SYSPERIMISSON",
     /**
      * 工具栏操作按钮
      * 继承自core.base.view.BaseGrid可以在此覆盖重写
@@ -134,6 +134,16 @@ Ext.define("core.system.permission.view.MainGrid", {
                 style:'font-size:12px;',
                 tooltip: '删除',
                 ref: 'gridDelete',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSPERIMISSON";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                }, 
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {

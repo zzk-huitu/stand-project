@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -80,6 +81,7 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
+    @Auth("INFOTERM_add")
     @RequestMapping("/doAdd")
     public void doAdd(OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
