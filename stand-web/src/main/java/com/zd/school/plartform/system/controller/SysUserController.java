@@ -37,11 +37,7 @@ import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-<<<<<<< HEAD
-=======
 import com.zd.school.plartform.baseset.model.BaseDicitem;
->>>>>>> a948a04b298c9c7298aa227ec26639fd6624f4d5
-import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
@@ -742,8 +738,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Integer[] columnWidth = new Integer[] { 10,15, 15, 20,20, 20, 20, 15, 15 };
 
-		// 1.班级信息
-		String deptId = request.getParameter("deptId"); // 程序中限定每次只能导出一个班级
+		String deptId = request.getParameter("deptId"); 
+		String userName = request.getParameter("userName"); 
+		String xm = request.getParameter("xm");
 		
 		//数据字典项
 		String mapKey = null;
@@ -755,16 +752,20 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				mapDicItem.put(mapKey, baseDicitem.getItemName());
 			}
 
-		// 2.班级学员信息
 		List<SysUser> sysUserList = null;
-		String hql = " from SysUser where (isDelete=0 or isDelete=2) ";
+		String hql = " from SysUser a where a.isDelete=0 ";
 		if (StringUtils.isNotEmpty(deptId)) {
-			hql += " and deptId ='" + deptId + "'";
+			hql = " select a from SysUser a inner join BaseUserdeptjob b on a.uuid=b.userId where a.isDelete=0 and b.isDelete=0 and b.deptId='"+deptId+"'";
 		}
-		hql += " order by jobId asc";
+		if (StringUtils.isNotEmpty(userName)) {
+			hql += " and a.userName like '%"+userName+"%'";
+		}
+		if (StringUtils.isNotEmpty(xm)) {
+			hql += " and a.xm like '%"+xm+"%'";
+		}
 		sysUserList = thisService.queryByHql(hql);
 
-		// 处理班级基本数据
+		
 		List<Map<String, String>> traineeList = new ArrayList<>();
 		Map<String, String> traineeMap = null;
 		String ClassName="";
@@ -790,7 +791,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			i++;
 			traineeList.add(traineeMap);
 		}
-		// --------2.组装课程表格数据
+		
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", traineeList);
 		courseAllMap.put("title", null);
@@ -801,7 +802,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		allList.add(courseAllMap);
 
 		// 在导出方法中进行解析
-		boolean result = PoiExportExcel.exportExcel(response, ClassName+"用户详细", ClassName+"用户信息", allList);
+		boolean result = PoiExportExcel.exportExcel(response, ClassName==null?"所有部门用户详细":ClassName+"用户详细", ClassName==null?"所有部门用户详细":ClassName+"用户信息", allList);
 		if (result == true) {
 			request.getSession().setAttribute("exportTrainClassTraineeCardIIsEnd", "1");
 		} else {

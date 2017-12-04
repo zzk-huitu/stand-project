@@ -64,7 +64,6 @@ Ext.define("core.system.user.view.DeptTree", {
             var userGrid = mainLayout.down("panel[xtype=system.user.usergrid]");
             var store = userGrid.getStore();
             var proxy = store.getProxy();
-            var filterArry = new Array();
             proxy.extraParams = {
                 deptId: record.get("id")
             };
