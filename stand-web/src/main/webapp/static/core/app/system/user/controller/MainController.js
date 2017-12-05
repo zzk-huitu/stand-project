@@ -940,6 +940,7 @@ Ext.define("core.system.user.controller.MainController", {
          if(girdSearchTexts[1]!=null){
            xm = girdSearchTexts[1].getValue();
         }
+        console.log(userName);
         var title = "确定要导出用户管理的信息吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
@@ -949,7 +950,7 @@ Ext.define("core.system.user.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel?deptId=' +deptId+ ' &userName='+userName+' &xm='+xm+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel?deptId='+deptId+'&userName='+userName+'&xm='+xm+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

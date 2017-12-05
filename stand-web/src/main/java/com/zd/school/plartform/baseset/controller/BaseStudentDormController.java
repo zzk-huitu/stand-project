@@ -2,8 +2,11 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.EntityUtil;
 import com.zd.core.util.ExportExcelAnnoUtil;
 import com.zd.core.util.JsonBuilder;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
@@ -345,41 +349,68 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		
 	}
 
-		@RequestMapping("/exportExcel")
-	    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	        request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-	        request.getSession().removeAttribute("exportTerinfoIsState");
-	        String claiId = request.getParameter("claiId");
-	        try {
-	        Class<?> clazz = EntityUtil.getClassByName("com.zd.school.build.allot.model.DormStudentDorm");//根据实体类名获取类
-	        List<DormStudentDorm> list  =  thisService.queryByHql("from " + clazz.getSimpleName()
-	        					+" where isDelete=0 and claiId='"+claiId+"' order by inTime");//获取数据
-	        Map<Integer, String> headMap =ExportExcelAnnoUtil.getHeadMap(clazz);//获取表头信息MAP<排序，列名>
-	        Map<Integer, Integer> widthMap = ExportExcelAnnoUtil.getWidthMap(clazz);//获取表头列宽MAP<排序，列宽>
-	        ExportExcelAnnoUtil.exportExcel(response, "学生宿舍分配信息", headMap, widthMap, list);
-	        request.getSession().setAttribute("exportTerinfoIsEnd", "1");
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-	            request.getSession().setAttribute("exportTerinfoIsState", "0");
-	        }
-	    } 
-	    
-	    @RequestMapping("/checkExportEnd")
-	    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping("/exportExcel")
+	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportStuDormIsEnd", "0");
+		request.getSession().removeAttribute("exportStuDormIsState");
+		String claiId = request.getParameter("claiId");
 
-	        Object isEnd = request.getSession().getAttribute("exportTerinfoIsEnd");
-	        Object state = request.getSession().getAttribute("exportTerinfoIsState");
-	        if (isEnd != null) {
-	            if ("1".equals(isEnd.toString())) {
-	                writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
-	            } else if (state != null && state.equals("0")) {
-	                writeJSON(response, jsonBuilder.returnFailureJson("0"));
-	            } else {
-	                writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
-	            }
-	        } else {
-	            writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
-	        }
-	    }
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 20 };
+		List<DormStudentDorm> stuDormList = null;
+		String hql = " from DormStudentDorm where isDelete=0 and claiId='" + claiId + "' order by inTime ";
+		stuDormList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> stuDormExpList = new ArrayList<>();
+		Map<String, String> stuDormMap = null;
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for (DormStudentDorm stuDorm : stuDormList) {
+			stuDormMap = new LinkedHashMap<>();
+			stuDormMap.put("claiName", stuDorm.getClaiName());
+			stuDormMap.put("xm", stuDorm.getXm());
+			stuDormMap.put("userNumb", stuDorm.getUserNumb());
+			stuDormMap.put("roomName", stuDorm.getRoomName());
+			stuDormMap.put("bedNum", stuDorm.getBedNum().toString());
+			stuDormMap.put("arkNum", stuDorm.getArkNum().toString());
+			stuDormMap.put("inTime", format.format(stuDorm.getInTime()));
+			stuDormExpList.add(stuDormMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", stuDormExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "班级名称", "学生名称", "学号", "宿舍名称", "床号", "柜号", "入住时间" }); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "学生宿舍分配信息", "学生宿舍分配信息", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportStuDormIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportStuDormIsEnd", "0");
+			request.getSession().setAttribute("exportStuDormIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportStuDormIsEnd");
+		Object state = request.getSession().getAttribute("exportStuDormIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 }

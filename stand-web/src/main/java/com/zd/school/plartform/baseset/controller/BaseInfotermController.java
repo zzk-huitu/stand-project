@@ -3,24 +3,22 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.EntityUtil;
-import com.zd.core.util.ExportExcelAnnoUtil;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.oa.terminal.model.OaRoomTerm;
@@ -190,54 +188,59 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
       
     }
 
- /*  @RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-        request.getSession().removeAttribute("exportTerinfoIsState");
-        String ids = request.getParameter("ids");
-
-        List<OaInfoterm> list = null;
-        try {
-            list = null;
-            String hql = " from OaInfoterm where isDelete=0 and isUse=1 ";
-            if (StringUtils.isNotEmpty(ids)) {
-                hql += " and uuid in ('" + ids.replace(",", "','") + "')";
-            }
-            hql += " order by termCode";
-            list = thisService.queryByHql(hql);
-            FastExcel.exportExcel(response, "终端分配信息", list);
-            request.getSession().setAttribute("exportTerinfoIsEnd", "1");
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-            request.getSession().setAttribute("exportTerinfoIsState", "0");
-        }
-    }
-*/
     @RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-        request.getSession().removeAttribute("exportTerinfoIsState");
-        try {
-        Class<?> clazz = EntityUtil.getClassByName("com.zd.school.oa.terminal.model.OaInfoterm");//根据实体类名获取类
-        List<OaInfoterm> list  =  thisService.queryByHql("from " + clazz.getSimpleName()
-        					+" where isDelete=0 and isUse=1  order by termCode");//获取数据
-        Map<Integer, String> headMap =ExportExcelAnnoUtil.getHeadMap(clazz);//获取表头信息MAP<排序，列名>
-        Map<Integer, Integer> widthMap = ExportExcelAnnoUtil.getWidthMap(clazz);//获取表头列宽MAP<排序，列宽>
-        ExportExcelAnnoUtil.exportExcel(response, "信息终端数据", headMap, widthMap, list);
-        request.getSession().setAttribute("exportTerinfoIsEnd", "1");
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.getSession().setAttribute("exportTerinfoIsEnd", "0");
-            request.getSession().setAttribute("exportTerinfoIsState", "0");
-        }
+        request.getSession().setAttribute("exportTerminfoIsEnd", "0");
+        request.getSession().removeAttribute("exportTerminfoIsState");
+        String roomName = request.getParameter("roomName");
+
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 35,};
+		List<OaInfoterm> terminfoList = null;
+		String hql = " from OaInfoterm where isDelete=0 and isUse=1 ";
+		if(StringUtils.isNotEmpty(roomName)){
+			hql +=" and roomName = '"+roomName+"' ";
+		}
+		hql += " order by termCode";
+		terminfoList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> terminfoExpList = new ArrayList<>();
+		Map<String, String> terminfoMap = null;
+		for (OaInfoterm terminfo : terminfoList) {
+			terminfoMap = new LinkedHashMap<>();
+			terminfoMap.put("termCode", terminfo.getTermCode());
+			terminfoMap.put("termType", terminfo.getTermType());
+			terminfoMap.put("termSpec", terminfo.getTermSpec());
+			terminfoMap.put("isUse", terminfo.getIsUse()==0?"未使用":"已使用");
+			terminfoMap.put("roomName", terminfo.getRoomName());
+			terminfoExpList.add(terminfoMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", terminfoExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "终端号", "类型", "规格", "使用状态", "房间名称"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "信息终端数据", "信息终端数据", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportTerminfoIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportTerminfoIsEnd", "0");
+			request.getSession().setAttribute("exportTerminfoIsState", "0");
+		}
+     
     } 
     
     @RequestMapping("/checkExportEnd")
     public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Object isEnd = request.getSession().getAttribute("exportTerinfoIsEnd");
-        Object state = request.getSession().getAttribute("exportTerinfoIsState");
+        Object isEnd = request.getSession().getAttribute("exportTerminfoIsEnd");
+        Object state = request.getSession().getAttribute("exportTerminfoIsState");
         if (isEnd != null) {
             if ("1".equals(isEnd.toString())) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));

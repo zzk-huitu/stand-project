@@ -262,6 +262,14 @@ Ext.define("core.baseset.terminal.controller.MainController", {
         doExportExcel:function(btn) {
             var self = this;
             var baseGrid = btn.up("basegrid");
+            var toolBar = btn.up("toolbar");
+            if (!toolBar)
+            return false;
+            var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+            var roomName = "";
+            if(girdSearchTexts[0].getValue()!=null){
+                roomName = girdSearchTexts[0].getValue();
+            }
             var title = "确定要导出信息终端的信息吗？";
             Ext.Msg.confirm('提示', title, function (btn, text) {
                 if (btn == "yes") {
@@ -271,7 +279,7 @@ Ext.define("core.baseset.terminal.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/exportExcel"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/exportExcel?roomName='+roomName+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

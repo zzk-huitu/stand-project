@@ -20,7 +20,7 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             text: '导出Excel',
             ref: 'exportExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-minus-circle'
+            iconCls: 'x-fa fa-file'
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
