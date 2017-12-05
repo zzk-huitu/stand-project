@@ -940,7 +940,6 @@ Ext.define("core.system.user.controller.MainController", {
          if(girdSearchTexts[1]!=null){
            xm = girdSearchTexts[1].getValue();
         }
-        console.log(userName);
         var title = "确定要导出用户管理的信息吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
