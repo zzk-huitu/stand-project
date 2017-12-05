@@ -37,10 +37,7 @@ import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-<<<<<<< HEAD
-=======
 import com.zd.school.plartform.baseset.model.BaseDicitem;
->>>>>>> a948a04b298c9c7298aa227ec26639fd6624f4d5
 import com.zd.school.plartform.baseset.model.BaseJob;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;

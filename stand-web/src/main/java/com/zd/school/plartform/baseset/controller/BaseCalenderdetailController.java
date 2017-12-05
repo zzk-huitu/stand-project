@@ -2,8 +2,10 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +20,10 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
+import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.jw.eduresources.model.JwCalender;
 import com.zd.school.jw.eduresources.model.JwCalenderdetail ;
 import com.zd.school.plartform.baseset.service.BaseCalenderdetailService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -197,7 +199,88 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
-		
+	}
+	
+	@RequestMapping("/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportBaseCalenderdetailIsEnd", "0");
+		request.getSession().removeAttribute("exportBaseCalenderdetailIsState");
 
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 22, 22, 22,22 };
+
+		String canderId = request.getParameter("canderId"); // 程序中限定每次只能导出一个班级
+		String sheetTitle = request.getParameter("canderName");
+		String title = request.getParameter("campusName");
+
+		List<JwCalenderdetail> jwCalenderdetailList = null;
+		String hql = " from JwCalenderdetail where isDelete=0 ";
+		if (StringUtils.isNotEmpty(canderId)) {
+			hql +="and canderId ='" + canderId+"'";
+		}
+		hql=hql+ " order by beginTime";
+		jwCalenderdetailList = thisService.queryByHql(hql);
+
+		// 处理班级基本数据
+		List<Map<String, String>> jwCalenderList = new ArrayList<>();
+		Map<String, String> jwCalenderMap = null;
+		String ClassName="";
+		int i=1;
+		for (JwCalenderdetail jwCalenderdetail : jwCalenderdetailList) {
+			jwCalenderMap = new LinkedHashMap<>();
+			jwCalenderMap.put("xh",i+"");
+			int isAfgernoon = jwCalenderdetail.getIsafgernoon();
+			String timeQuantum = "";
+			if(isAfgernoon==0){
+				timeQuantum= "上午";
+			}else if(isAfgernoon==1){
+				timeQuantum= "下午";
+			}else if(isAfgernoon==2){
+				timeQuantum= "晚上";
+			}
+			jwCalenderMap.put("timeQuantum", timeQuantum);
+			jwCalenderMap.put("jcName", jwCalenderdetail.getJcName());
+//			String beginTime = DateUtil.formatDateTime(jwCalenderdetail.getBeginTime());
+			jwCalenderMap.put("beginTime", (jwCalenderdetail.getBeginTime()==null)?"":DateUtil.formatDateTime(jwCalenderdetail.getBeginTime()).substring(11,16));
+			jwCalenderMap.put("endTime", (jwCalenderdetail.getEndTime()==null)?"":DateUtil.formatDateTime(jwCalenderdetail.getEndTime()).substring(11,16));
+			i++;
+			jwCalenderList.add(jwCalenderMap);
+		}
+		// --------2.组装课程表格数据
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", jwCalenderList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "序号","时段","节次名称", "开始时间","结束时间"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, title, sheetTitle, allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportBaseCalenderdetailIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportBaseCalenderdetailIsEnd", "0");
+			request.getSession().setAttribute("exportBaseCalenderdetailIsState", "0");
+		}
+	} 
+    
+    @RequestMapping("/checkExportEnd")
+    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportBaseCalenderdetailIsEnd");
+		Object state = request.getSession().getAttribute("exportBaseCalenderdetailIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
 	}
 }
