@@ -30,6 +30,12 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
+        },{
+            xtype: 'button',
+            text: '导出',
+            ref: 'exportExcel',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-file',
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'

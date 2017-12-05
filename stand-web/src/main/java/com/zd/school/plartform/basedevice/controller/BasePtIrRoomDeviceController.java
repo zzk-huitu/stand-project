@@ -2,9 +2,13 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +25,9 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.control.device.model.PtIrRoomDevice ;
 import com.zd.school.plartform.basedevice.service.PtIrRoomDeviceService;
@@ -210,5 +216,88 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 			}
         }
     }
-    
+	@RequestMapping("/exportExcel")
+	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportRoomDeviceIsEnd", "0");
+		request.getSession().removeAttribute("exporRoomDeviceIsState");
+		String deviceTypeCode = request.getParameter("deviceTypeCode");
+		String roomId = request.getParameter("roomId");
+		
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 25, 20, 45};
+		List<PtIrRoomDevice> roomDeviceList = null;
+		String hql = " from PtIrRoomDevice a where a.isDelete=0 ";
+	    if(StringUtils.isNotEmpty(roomId)){
+		String	roomHql=" select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%"
+					+ roomId + "%'";
+		List<String> roomLists = thisService.queryEntityByHql(roomHql);
+		if(roomLists.size()>0){
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < roomLists.size(); i++) {
+				sb.append(roomLists.get(i) + ",");
+			}
+			hql+=" and a.roomId in ('" + sb.substring(0, sb.length() - 1) .replace(",", "','") + "') ";
+		}else{
+			hql+=" and a.roomId ='"+roomId+"' ";
+		}
+		
+	    }else{
+	    	 hql = " select a from PtIrRoomDevice a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
+	    }
+		if(StringUtils.isNotEmpty(deviceTypeCode)){
+			hql+=" and a.deviceTypeCode like '%"+deviceTypeCode+"%' ";
+		}
+		roomDeviceList = thisService.queryByHql(hql);
+		
+		List<Map<String, String>>roomDeviceExpList = new ArrayList<>();
+		Map<String, String> roomDeviceMap = null;
+	    int i=1;
+		for (PtIrRoomDevice roomDevice : roomDeviceList) {
+			roomDeviceMap = new LinkedHashMap<>();
+			roomDeviceMap.put("xh",i+"");
+			roomDeviceMap.put("roomName", roomDevice.getRoomName());
+			roomDeviceMap.put("deviceTypeCode", roomDevice.getDeviceTypeCode());
+			roomDeviceMap.put("notes", roomDevice.getNotes());
+			i++;
+			roomDeviceExpList.add(roomDeviceMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", roomDeviceExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "序号", "房间名称", "型号名称", "备注"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "房间红外设备", "房间红外设备", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportRoomDeviceIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportRoomDeviceIsEnd", "0");
+			request.getSession().setAttribute("exporRoomDeviceIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportRoomDeviceIsEnd");
+		Object state = request.getSession().getAttribute("exporRoomDeviceIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}  
 }

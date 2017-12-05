@@ -356,7 +356,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String claiId = request.getParameter("claiId");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 20 };
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 35 };
 		List<DormStudentDorm> stuDormList = null;
 		String hql = " from DormStudentDorm where isDelete=0 and claiId='" + claiId + "' order by inTime ";
 		stuDormList = thisService.queryByHql(hql);
