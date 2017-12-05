@@ -101,6 +101,12 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                 }
             },
            
+            "basegrid[xtype=baseset.calendar.maingrid] button[ref=gridExport]": {
+                beforeclick: function(btn) {
+                    this.doExport(btn);
+                    return false;
+                }
+            },
 
               // 作息时间目录表格节点击事件
             "panel[xtype=baseset.calendar.calendargrid]": {
@@ -634,6 +640,70 @@ Ext.define("core.baseset.calendar.controller.MainController", {
             self.msgbox("请选择一条需要生效的日历!");
         }
 
-    }
+    },
+    
+    doExport:function(btn){
+        var self = this;
+        var baseGrid = btn.up("basegrid[xtype=baseset.calendar.maingrid]");
+        var basepanel = baseGrid.up('basepanel');
+        var calendargrid = basepanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
+        var records = calendargrid.getSelectionModel().getSelection();
+        if(records.length==0){
+        	self.Warning("请选择一个作息时间表!");
+            return;
+        }
+        var canderId = records[0].data.uuid;
+        var canderName = records[0].data.canderName;
+        var campusName = records[0].data.campusName;
+        var title = "确定要导出作息时间吗？";
+        Ext.Msg.confirm('提示', title, function (btn, text) {
+            if (btn == "yes") {
+                Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+                var component = Ext.create('Ext.Component', {
+                    title: 'HelloWorld',
+                    width: 0,
+                    height: 0,
+                    hidden: true,
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseCalenderdetail/exportExcel?canderId='+canderId+"&canderName="+canderName+"&campusName="+campusName+'"></iframe>',
+                    renderTo: Ext.getBody()
+                });
+
+                var time = function () {
+                    self.syncAjax({
+                        url: comm.get('baseUrl') + '/BaseCalenderdetail/checkExportEnd',
+                        timeout: 1000 * 60 * 30,        //半个小时
+                        //回调代码必须写在里面
+                        success: function (response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if (data.success) {
+                                Ext.Msg.hide();
+                                self.msgbox(data.obj);
+                                component.destroy();
+                            } else {
+                                if (data.obj == 0) {    //当为此值，则表明导出失败
+                                    Ext.Msg.hide();
+                                    self.Error("导出失败，请重试或联系管理员！");
+                                    component.destroy();
+                                } else {
+                                    setTimeout(function () {
+                                        time()
+                                    }, 1000);
+                                }
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.Msg.hide();
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            component.destroy();
+                        }
+                    });
+                };
+                setTimeout(function () {
+                    time()
+                }, 1000);    //延迟1秒执行
+            }
+        });
+       return false;
+ 	}
 
 });
