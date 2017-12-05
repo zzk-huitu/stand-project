@@ -913,17 +913,33 @@ Ext.define("core.system.user.controller.MainController", {
         
         
     },
+
     doExport:function(btn){
         var self = this;
         var baseGrid = btn.up("basegrid");
         var mainlayout=baseGrid.up("panel[xtype=system.user.mainlayout]");
-        var treeGrid=mainlayout.down("panel[xtype=system.user.depttree]");
+     /*   var treeGrid=mainlayout.down("panel[xtype=system.user.depttree]");
         var treeRecords = treeGrid.getSelectionModel().getSelection();
         if(treeRecords.length==0){
-       	 self.Warning("请选择一个班级!");
+       	    self.msgbox("请选择一个班级!");
             return;
        }
-        var deptId = treeRecords[0].get("id");
+       var deptId = treeRecords[0].get("id");*/
+        var userGrid = mainlayout.down("basegrid[xtype=system.user.usergrid]");
+        var proxy = userGrid.getStore().getProxy();
+        var deptId = proxy.extraParams.deptId;
+        if(deptId==undefined){
+            deptId="";
+        }
+        var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
+        var userName ="";
+        var xm = "";
+        if(girdSearchTexts[0]!=null){
+           userName = girdSearchTexts[0].getValue();
+        }
+         if(girdSearchTexts[1]!=null){
+           xm = girdSearchTexts[1].getValue();
+        }
         var title = "确定要导出用户管理的信息吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
@@ -933,7 +949,7 @@ Ext.define("core.system.user.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel?deptId=' +deptId+ ' &userName='+userName+' &xm='+xm+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 
