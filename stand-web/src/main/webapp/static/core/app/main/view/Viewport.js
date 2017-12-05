@@ -56,6 +56,8 @@ Ext.define('core.main.view.Viewport', {
                     }else{
                         me.getViewModel().set('systemMenu' , result);
 
+                        
+
                         //以下方法，用来判断，用户是否拥有默认的桌面菜单权限，有则显示（自定义桌面：暂未用到）
                         // function searchChild(childObj,code){
                         //     for(var i=0;i<childObj.length;i++){

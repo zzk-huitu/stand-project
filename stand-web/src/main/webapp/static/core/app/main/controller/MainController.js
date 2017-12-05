@@ -46,8 +46,122 @@ Ext.define('core.main.controller.MainController', {
         }
     },
 
+    onChangeHeadMenu:function(btn){
+        
+        //若当前按钮，是FUNC和Frame，则打开窗口. 否则切换左侧的子菜单
+        var viewport=this.getView();    
+        var tabPanel=viewport.down("tabpanel[xtype=app-main]");
+        var tabItem=tabPanel.getComponent(btn.menuCode);
+        if(!tabItem){
+            if(btn.menuType=="MENU"){
+                var menuPanelItems=viewport.down("panel[xtype=main.mainmenupanel] menu");
+                          
+                var menusItems=[];  
+                var children=btn.children;
+                for(var j in children){
+                    var menuChild = children[j];    
+                    //小图标 
+                    var smallIconCls=menuChild.smallIcon;
+                    if (!smallIconCls) {
+                        smallIconCls="x-fa fa-bars";
+                    }
+
+                    var menusItem={
+                        //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
+                        text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
+                        textBase:menuChild.text,
+                        //iconCls: "x-fa fa-link mainMenu-iconCls",
+                        menuCode:menuChild.menuCode,
+                        menuType: menuChild.menuType,  
+                        children: children,
+                        smallIcon:menuChild.smallIcon,
+                        bigIcon: menuChild.bigIcon,
+                        menuTarget:menuChild.menuTarget,
+                        menuParent:menuChild["parent"]
+                    };
+
+                    menusItems.push(menusItem);            
+                }
+
+                if(menusItems.length!=0){
+                    menuPanelItems.removeAll();
+                    menuPanelItems.add( menusItems); 
+                }else{
+                    Ext.Msg.alert('温馨提示', '此模块功能暂无子菜单！');
+                }
+                    
+        
+            }
+            else  if(btn.menuType=="FUNC"){    
+                
+                //小图标 
+                var smallIconCls=btn.smallIcon;
+                if (!smallIconCls) {
+                    smallIconCls="x-fa fa-bars";
+                }
+          
+                var targetStr=btn.menuTarget.split(',');
+                if(targetStr.length==2){                
+                    try{           
+                       
+                        tabItem=Ext.create({
+                            xtype:'container',
+                            title: btn.menuText,
+                            //iconCls: smallIconCls,
+                            scrollable :true, 
+                            itemId:btn.menuCode,
+                            layout:'fit', 
+                        });
+                        tabPanel.add(tabItem);
+
+                        //延迟放入到tab中
+                        setTimeout(function(){
+                            //创建组件
+                            var item=Ext.widget(targetStr[0]); 
+                            tabItem.add(item);
+
+                            //tabPanel.getComponent(data.menuCode).add(tabItem);    //原始写法，不太好    
+                        },30);
+                                        
+
+
+                    }catch(e){
+                        Ext.Msg.alert('温馨提示', '此模块功能待开发中！');
+                        console.log(e);
+                        return false;
+                    }
+                }else{
+                    Ext.Msg.alert('温馨提示', '加载失败，请联系管理员！');
+                }
+            }
+            else if(btn.menuType=="IFRAME"){
+                //小图标 
+                var smallIconCls=btn.smallIcon;
+                if (!smallIconCls) {
+                    smallIconCls="x-fa fa-link";
+                }
+
+                tabPanel.add({
+                    title: btn.menuText,
+                    //iconCls: smallIconCls,
+                    scrollable :true, 
+                    itemId:btn.menuCode,
+                    layout:'fit',    
+                    items: [{
+                        xtype: 'container',                                                  
+                        html:'<iframe src="http://www.baidu.com" width="100%" height="100%"   frameborder=0  ></iframe>'
+                    }]
+                });
+            }
+           
+            tabPanel.setActiveTab( tabPanel.items.length-1);
+        }else{
+            tabPanel.setActiveTab( tabItem);
+        }   
+    },
+
     onExitSystem:function(){
-        Ext.Msg.confirm('提示', '确定要退出系统么?', function(btn, text) {
+        Ext.Msg.confirm('温馨提示', '确定要退出系统么?', function(btn, text) {
             if (btn == 'yes') {
                 window.location.href = comm.get("baseUrl") + "/login/logout";
             }
@@ -55,7 +169,7 @@ Ext.define('core.main.controller.MainController', {
     },
 
     onWipeCache:function(btn){
-        Ext.Msg.confirm('提示', '确定要清除缓存么?', function(btn, text) {
+        Ext.Msg.confirm('温馨提示', '确定要清除缓存么?', function(btn, text) {
             if (btn == 'yes') {
                 //前台清理
                 factory.DDCache.clearAll();
@@ -177,12 +291,12 @@ Ext.define('core.main.controller.MainController', {
 
 
                     }catch(e){
-                        Ext.Msg.alert('提示', '此模块功能待开发中！');
+                        Ext.Msg.alert('温馨提示', '此模块功能待开发中！');
                         console.log(e);
                         return false;
                     }
                 }else{
-                    Ext.Msg.alert('提示', '加载失败，请联系管理员！');
+                    Ext.Msg.alert('温馨提示', '加载失败，请联系管理员！');
                 }
             }
             else if(data.menuType=="IFRAME"){
@@ -290,12 +404,12 @@ Ext.define('core.main.controller.MainController', {
                         },30);
 
                     }catch(e){
-                        Ext.Msg.alert('提示', '此模块功能待开发中！');
+                        Ext.Msg.alert('温馨提示', '此模块功能待开发中！');
                         console.log(e);
                         return false;
                     }
                 }else{
-                    Ext.Msg.alert('提示', '加载失败，请联系管理员！');
+                    Ext.Msg.alert('温馨提示', '加载失败，请联系管理员！');
                 }
             }
             else if(data.menuType=="IFRAME"){
@@ -420,13 +534,13 @@ Ext.define('core.main.controller.MainController', {
                         },30);
 
                     }catch(e){
-                        Ext.Msg.alert('提示', '此模块功能待开发中！！');
+                        Ext.Msg.alert('温馨提示', '此模块功能待开发中！！');
                         console.log(e);
                         return false;
                     }
 
                 }else{
-                    Ext.Msg.alert('提示', '加载失败，请联系管理员！');
+                    Ext.Msg.alert('温馨提示', '加载失败，请联系管理员！');
                 }
             }
             else if(item.menuType=="IFRAME"){

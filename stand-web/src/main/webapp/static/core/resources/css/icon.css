@@ -40,7 +40,6 @@
     background-size: cover;
 }
 
-
 .icon_huiyidaoru
 {
     background-image: url(../images/icon/index_huiyidaoru.png) !important;
@@ -333,5 +332,17 @@
 }
 .icon_kaoqin{
     background-image: url(../images/icon/kaoqin_icon.png) !important;
+    background-size: cover;
+}
+
+
+.icon_xitong
+{
+    background-image: url(../images/icon/xitong_icon.png) !important;
+    background-size: cover;
+}
+.icon_jichu
+{
+    background-image: url(../images/icon/jichu_icon.png) !important;
     background-size: cover;
 }

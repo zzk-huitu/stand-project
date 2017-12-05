@@ -80,12 +80,13 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
    
     initComponent : function() { 
 
-                
+               
        
         var datas = []; 
         var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
         var menus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
         
+        /* 2017/12/5 去除了全部显示的方式
         var menusItems=[];
         //组装第一层菜单
         for (var i in menus) {  
@@ -143,49 +144,39 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
                     }
                 }
             }
-/*
-            datas.push({                  
-                text :menugroup.text,                               
-                iconCls : '',   //使用系统自定义几种，即可，在显示tab时判断来设置此值
-                menuCode:menugroup.menuCode,
-                menuType: menugroup.menuType,  
-                children: menugroup.children,
-                bigIcon: menugroup.bigIcon,
-                menuTarget:menugroup.menuTarget
-            });  
-*/
             menusItems.push(menusItem);
-        }  
+        }*/ 
+
+        // 2017/12/5 只显示第一个菜单的子项
+        var menusItems=[];  
+        var children=menus[0].children;
+
+        for(var j in children){
+            var menuChild = children[j];    
+            //小图标 
+            var smallIconCls=menuChild.smallIcon;
+            if (!smallIconCls) {
+                smallIconCls="x-fa fa-bars";
+            }
+
+            var menusItem={
+                //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
+                text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
+                textBase:menuChild.text,
+                //iconCls: "x-fa fa-link mainMenu-iconCls",
+                menuCode:menuChild.menuCode,
+                menuType: menuChild.menuType,  
+                children: children,
+                smallIcon:menuChild.smallIcon,
+                bigIcon: menuChild.bigIcon,
+                menuTarget:menuChild.menuTarget,
+                menuParent:menuChild["parent"]
+            };
+
+            menusItems.push(menusItem);            
+        }
 
         this.items[0].items=menusItems;
-
-        /*之前使用button的做法
-        this.items = []; 
-        var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
-        var menus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
-        
-        //组装第一层菜单
-        for (var i in menus) {  
-            var menugroup = menus[i];  
-
-            if(!menugroup.iconCls)  //若没有图标，使用一个默认的
-                menugroup.iconCls='x-fa fa-bars';
-
-            this.items.push({  
-                xtype : 'buttontransparent',  
-                text : "<span style='color:red;font-size:14px'>"+this.addSpace(menugroup.text, 12)+"</span>",   
-                textValue:menugroup.text,                               
-                iconCls : menugroup.iconCls+' mainmenu-button-icon-color',
-                iconClsValue:menugroup.iconCls,
-                handler : 'onMainMenuClick',
-                menuCode:menugroup.menuCode,
-                width: '100%', 
-                cls: 'main-mainmenu-button', 
-                menuType: menugroup.menuType,  
-                children: menugroup.children                        
-            });  
-        }  */
-
         this.callParent(arguments);  
     },  
 

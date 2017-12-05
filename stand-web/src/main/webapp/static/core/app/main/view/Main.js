@@ -88,7 +88,7 @@ Ext.define('core.main.view.Main', {
             text : '可关闭',
             checked : true,
             hideOnClick : true,
-            handler : function(item) {                
+            handler : function(item) {   
                 currentItem.tab.setClosable(item.checked);
             }
         }],
@@ -96,10 +96,18 @@ Ext.define('core.main.view.Main', {
             aftermenu : function() {
 
             },
-            beforemenu : function(menu, item) {
+            beforemenu : function(menu, item) {        
                 var menuitem = menu.child('*[text="可关闭"]');
                 currentItem = item;
                 menuitem.setChecked(item.closable);
+                    
+                //禁用我的桌面的关闭功能
+                if(currentItem.itemId=='myHome'){
+                    menuitem.setDisabled (true);
+                }else{
+                    menuitem.setDisabled (false);
+                }
+                
             }
         }
     },
