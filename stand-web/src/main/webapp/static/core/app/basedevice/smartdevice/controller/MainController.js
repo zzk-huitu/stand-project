@@ -39,8 +39,87 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                 this.openBaseParamDetail(data.view,data.record,"edit");        
             }
         },
+        
+        "basegrid[xtype=basedevice.smartdevice.maingrid] button[ref=gridExport]": {
+            beforeclick: function(btn) {
+                this.doExport(btn);
+                return false;
+            }
+        },
                
     },
+    doExport:function(btn){
+        var self = this;
+        var baseGrid = btn.up("basegrid");
+        var mainlayout=baseGrid.up("panel[xtype=basedevice.smartdevice.mainlayout]");
+        var treeGrid=mainlayout.down("panel[xtype=basedevice.smartdevice.roominfotree]");
+        /*var treeRecords = treeGrid.getSelectionModel().getSelection();
+        if(treeRecords.length==0){
+       	    self.msgbox("请选择一个班级!");
+            return;
+       }
+       var deptId = treeRecords[0].get("id");*/
+        var userGrid = mainlayout.down("basegrid[xtype=basedevice.smartdevice.maingrid]");
+        var proxy = userGrid.getStore().getProxy();
+        var roomId = proxy.extraParams.roomId;
+        if(roomId==undefined){
+        	roomId="";
+        }
+        var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
+        var termName ="";
+        if(girdSearchTexts[0]!=null){
+        	termName = girdSearchTexts[0].getValue();
+        }
+        var title = "确定要导出智能设备管理的信息吗？";
+        Ext.Msg.confirm('提示', title, function (btn, text) {
+            if (btn == "yes") {
+                Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+                var component = Ext.create('Ext.Component', {
+                    title: 'HelloWorld',
+                    width: 0,
+                    height: 0,
+                    hidden: true,
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/exportExcel?termName='+termName+'&roomId='+roomId+'"></iframe>',
+                    renderTo: Ext.getBody()
+                });
+
+                var time = function () {
+                    self.syncAjax({
+                        url: comm.get('baseUrl') + '/BasePtTerm/checkExportEnd',
+                        timeout: 1000 * 60 * 30,        //半个小时
+                        //回调代码必须写在里面
+                        success: function (response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if (data.success) {
+                                Ext.Msg.hide();
+                                self.msgbox(data.obj);
+                                component.destroy();
+                            } else {
+                                if (data.obj == 0) {    //当为此值，则表明导出失败
+                                    Ext.Msg.hide();
+                                    self.Error("导出失败，请重试或联系管理员！");
+                                    component.destroy();
+                                } else {
+                                    setTimeout(function () {
+                                        time()
+                                    }, 1000);
+                                }
+                            }
+                        },
+                        failure: function (response) {
+                            Ext.Msg.hide();
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            component.destroy();
+                        }
+                    });
+                };
+                setTimeout(function () {
+                    time()
+                }, 1000);    //延迟1秒执行
+            }
+        });
+       return false;
+ 	},
     
     openHighParamDetail:function(grid,record,cmd){
         var self = this;
