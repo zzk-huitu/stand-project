@@ -98,7 +98,12 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 return false;
             }
         },
-    	
+    	"basegrid[xtype=basedevice.irdevice.maingrid] button[ref=exportExcel]": {
+                beforeclick: function(btn) {
+                    this.doExportExcel(btn);
+                    return false;
+                }
+         },
        
         //红外设备列表操作列事件
         "basegrid  actioncolumn": {
@@ -470,6 +475,78 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
             btn.callback();
         }
         return false;
-    }
+    },
+     doExportExcel:function(btn) {
+            var self = this;
+            var baseGrid = btn.up("basegrid");
+            var toolBar = btn.up("toolbar");
+            if (!toolBar)
+            return false;
+            var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+            var productModel = "";
+            if(girdSearchTexts[0].getValue()!=null){
+                productModel = girdSearchTexts[0].getValue();
+            }
+            var mainLayout = baseGrid.up("basepanel[xtype=basedevice.irdevice.mainlayout]")
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
+            var proxy = mianGrid.getStore().getProxy();
+            var brandId = proxy.extraParams.brandId;
+            var level =  proxy.extraParams.level;
+            if(brandId==undefined){
+               brandId="";
+            }
+            if(level==undefined){
+               level="";
+            }
+            var title = "确定要导出红外设备的信息吗？";
+            Ext.Msg.confirm('提示', title, function (btn, text) {
+                if (btn == "yes") {
+                    Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+                    var component = Ext.create('Ext.Component', {
+                        title: 'HelloWorld',
+                        width: 0,
+                        height: 0,
+                        hidden: true,
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrDeviceBrand/exportExcel?productModel='+productModel+'&brandId='+brandId+'&level='+level+'"></iframe>',
+                        renderTo: Ext.getBody()
+                    });
+
+                    var time = function () {
+                        self.syncAjax({
+                            url: comm.get('baseUrl') + '/BasePtIrDeviceBrand/checkExportEnd',
+                            timeout: 1000 * 60 * 30,        //半个小时
+                            //回调代码必须写在里面
+                            success: function (response) {
+                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                                if (data.success) {
+                                    Ext.Msg.hide();
+                                    self.msgbox(data.obj);
+                                    component.destroy();
+                                } else {
+                                    if (data.obj == 0) {    //当为此值，则表明导出失败
+                                        Ext.Msg.hide();
+                                        self.Error("导出失败，请重试或联系管理员！");
+                                        component.destroy();
+                                    } else {
+                                        setTimeout(function () {
+                                            time()
+                                        }, 1000);
+                                    }
+                                }
+                            },
+                            failure: function (response) {
+                                Ext.Msg.hide();
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                component.destroy();
+                            }
+                        });
+                    };
+                    setTimeout(function () {
+                        time()
+                    }, 1000);    //延迟1秒执行
+                }
+            });
+           return false;
+        }
     
 });

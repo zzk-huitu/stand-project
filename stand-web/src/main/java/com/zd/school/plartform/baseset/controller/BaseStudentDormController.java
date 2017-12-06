@@ -356,7 +356,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String claiId = request.getParameter("claiId");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 20 };
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 35 };
 		List<DormStudentDorm> stuDormList = null;
 		String hql = " from DormStudentDorm where isDelete=0 and claiId='" + claiId + "' order by inTime ";
 		stuDormList = thisService.queryByHql(hql);
@@ -378,7 +378,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", stuDormExpList);
-		courseAllMap.put("title", null);
+		courseAllMap.put("title",null);
 		courseAllMap.put("head", new String[] { "班级名称", "学生名称", "学号", "宿舍名称", "床号", "柜号", "入住时间" }); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
 		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右

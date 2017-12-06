@@ -30,6 +30,12 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             funCode:'girdFuntionBtn',         
             iconCls: 'x-fa fa-rss'
         },*/'->',{
+            xtype: 'button',
+            text: '导出',
+            ref: 'gridExport',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-file'
+        },{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{

@@ -199,7 +199,7 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 		List<OaInfoterm> terminfoList = null;
 		String hql = " from OaInfoterm where isDelete=0 and isUse=1 ";
 		if(StringUtils.isNotEmpty(roomName)){
-			hql +=" and roomName = '"+roomName+"' ";
+			hql +=" and roomName like '%"+roomName+"%' ";
 		}
 		hql += " order by termCode";
 		terminfoList = thisService.queryByHql(hql);

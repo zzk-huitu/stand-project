@@ -2,8 +2,13 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +23,9 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.control.device.model.PtIrDeviceBrand;
 import com.zd.school.plartform.basedevice.service.PtIrDeviceBrandService;
 import com.zd.school.plartform.basedevice.service.PtIrRoomDeviceService;
@@ -235,5 +242,86 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 
 		}
 	}
+
+	@RequestMapping("/exportExcel")
+	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportDeviceBrandIsEnd", "0");
+		request.getSession().removeAttribute("exportDeviceBrandIsState");
+		String productModel = request.getParameter("productModel");
+		String brandId = request.getParameter("brandId");
+        String level = request.getParameter("level");
+
+
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 25, 15, 40};
+		List<PtIrDeviceBrand> deviceBrandList = null;
+		String hql = " from PtIrDeviceBrand a where a.isDelete=0 ";
 	
+		if(StringUtils.isNotEmpty(level)&&level.equals("3")){
+			hql+=" and a.parentNode = '"+brandId+"' ";
+		}else{
+			if(brandId.equals("d9012b05-e85e-449d-82fc-4a424dee9b00")){//所有品牌
+				hql =" select a from PtIrDeviceBrand a left join PtIrDeviceBrand b on a.parentNode = b.uuid where a.isDelete=0 "
+						+ " and b.isDelete=0 and b.level=3";
+			}else{
+				hql =" select a from PtIrDeviceBrand a left join PtIrDeviceBrand b on a.parentNode = b.uuid where a.isDelete=0 "
+						+ " and b.isDelete=0 and b.level=3 and b.parentNode like '%"+brandId+"%'";
+			}
+		}
+		
+		if(StringUtils.isNotEmpty(productModel)){
+			hql+=" and a.productModel like '%"+productModel+"%' ";
+		}
+		deviceBrandList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> deviceBrandExpList = new ArrayList<>();
+		Map<String, String> deviceBrandMap = null;
+		int i=1;
+		for (PtIrDeviceBrand deviceBrand : deviceBrandList) {
+			deviceBrandMap = new LinkedHashMap<>();
+			deviceBrandMap.put("xh", i+"");
+			deviceBrandMap.put("productModel", deviceBrand.getProductModel());
+			deviceBrandMap.put("brandname", deviceBrand.getBrandname());
+			deviceBrandMap.put("notes", deviceBrand.getNotes());
+			i++;
+			deviceBrandExpList.add(deviceBrandMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", deviceBrandExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "序号", "型号", "品牌", "备注"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "红外设备", "红外设备", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportDeviceBrandIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportDeviceBrandIsEnd", "0");
+			request.getSession().setAttribute("exportDeviceBrandIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportDeviceBrandIsEnd");
+		Object state = request.getSession().getAttribute("exportDeviceBrandIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 }
