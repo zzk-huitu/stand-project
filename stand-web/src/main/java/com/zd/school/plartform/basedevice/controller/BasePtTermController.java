@@ -478,7 +478,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 
 		List<PtTerm> ptTermList = null;
-		if (StringUtils.isNotEmpty(roomId)) {
+		if (StringUtils.isEmpty(roomId)) {
 			hql1 = " from PtTerm where isDelete=0";
 		}
 		if (StringUtils.isNotEmpty(termSN)) {
