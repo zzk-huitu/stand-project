@@ -173,22 +173,24 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
         //获取快速搜索栏数据
         var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
         var termSN ="";
+        var termSN1 ="";
         if(girdSearchTexts[0]!=null){
-        	termSN = girdSearchTexts[0].getValue();
+        	termSN1 = girdSearchTexts[0].getValue();
         }
         
         //获取高级搜索栏数据
         var queryPanel = userGrid.down("basequeryform[xtype=basedevice.basedeviceallot.mainquerypanel]"); 
         var queryFields=queryPanel.query("basequeryfield");
-        var termName ="";
+        var termSN2="";
         var termNo="";
+        var termName ="";
         Ext.each(queryFields,function(queryField){
 			var fieldName=queryField.name;
 			var type=queryField.operationType;
 			var valueField=queryField.down("field[name="+fieldName+"_field]");
 			var value=valueField.getValue();
 			if(fieldName=="termSN"){
-				termSN=value;
+				termSN2=value;
 			}
 			if(fieldName=="termNo"){
 				termNo=value;
@@ -197,6 +199,12 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
 				termName=value;
 			}
         });
+        
+        if(termSN2!=""){
+        	termSN=termSN2
+        }else{
+        	termSN=termSN1
+        }
         
         var title = "确定要导出智能设备管理的信息吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {

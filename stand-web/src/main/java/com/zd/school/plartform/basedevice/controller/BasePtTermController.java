@@ -478,6 +478,9 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 
 		List<PtTerm> ptTermList = null;
+		if (StringUtils.isNotEmpty(roomId)) {
+			hql1 = " from PtTerm where isDelete=0";
+		}
 		if (StringUtils.isNotEmpty(termSN)) {
 			hql1 +=" and termSN like'%" + termSN+"%'";
 		}
@@ -498,7 +501,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			ptTermExporMap = new LinkedHashMap<>();
 			ptTermExporMap.put("xh",i+"");
 			ptTermExporMap.put("termSN", ptTermdetail.getTermSN());
-			ptTermExporMap.put("termNo", String.valueOf(ptTermdetail.getTermNo()));
+			ptTermExporMap.put("termNo", (String.valueOf(ptTermdetail.getTermNo()).equals("null")?"":String.valueOf(ptTermdetail.getTermNo())));
 			ptTermExporMap.put("termName",ptTermdetail.getTermName());
 			ptTermExporMap.put("gatewayName",ptTermdetail.getGatewayName());
 			ptTermExporMap.put("termTypeID", mapDicItem.get(ptTermdetail.getTermTypeID()+"PTTERMTYPE"));
