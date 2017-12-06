@@ -13,7 +13,8 @@ Ext.define('core.main.view.Main', {
         'Ext.plugin.Viewport',
         'Ext.window.MessageBox',
         'Ext.ux.TabCloseMenu',
-        'core.main.view.menu.MainMenuIcon'
+        //'core.main.view.menu.MainMenuIcon'
+        'core.main.view.index.IndexMenuIcon'
     ],
 
     //controller: 'main.mainController',    //将其放入主视图viewport.js中
@@ -88,7 +89,7 @@ Ext.define('core.main.view.Main', {
             text : '可关闭',
             checked : true,
             hideOnClick : true,
-            handler : function(item) {   
+            handler : function(item) {    
                 currentItem.tab.setClosable(item.checked);
             }
         }],
@@ -167,10 +168,119 @@ Ext.define('core.main.view.Main', {
             iconCls: 'fa-home',
             scrollable :true, 
             itemId:'myHome',
+            bodyStyle :{
+                background: '#f0f0f0'
+            },
+            layout:'vbox',
             // The following grid shares a store with the classic version's grid as well!
             items: [{
-                xtype: 'main.mainmenuicon',
-                datas: menus
+                xtype:'container',
+                height:200,
+                width:'100%',
+                layout:'vbox',
+                style :{
+                    background: '#fff',
+                    margin:'10px 5px',
+                    borderRadius: '5px',
+                    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)'
+                },
+                items:[{
+                    width:'100%',                
+                    xtype:'container',
+                    html:'常用功能',
+                    style :{
+                        background: '#fff',
+                        padding:'20px',
+                        fontSize:'18px',
+                        fontWeight:'400',
+                        color:'#333'
+                    }
+                },{
+                    //flex:1,      
+                    height:125,          
+                    width:'100%',
+                    //xtype: 'main.mainmenuicon',
+                    xtype: 'main.indexmenuicon', //加入新的界面
+                    datas: menus,                
+                    style :{
+                        background: '#fff'
+                    }
+                }]
+            },{
+                xtype:'container',
+                flex:1,
+                width:'100%',
+                minHeight:200,
+                layout:'hbox',
+                style :{
+                    margin:'5px 0px 10px 0px',
+                },
+                items:[{
+                    flex:1,
+                    height:'100%',
+                    xtype:'container',
+                    layout:'vbox',
+                    style :{
+                        margin:'5px 10px 5px 5px',
+                        padding:'0px 0px 10px 0px',
+                        background: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)'
+                    },
+                    items:[{
+                        width:'100%',                
+                        xtype:'container',
+                        html:'通知公告',
+                        style :{
+                            background: '#fff',
+                            padding:'20px',
+                            fontSize:'18px',
+                            fontWeight:'400',
+                            color:'#333',
+                            borderBottom: '1px solid #deded9'
+                        }
+                    },{
+                        flex:1,             
+                        width:'100%',                        
+                        xtype: 'main.indexnotice',                                        
+                        style :{
+                            background: '#fff'
+                        }
+                    }]
+
+                },{ 
+                    flex:1,
+                    height:'100%',
+                    xtype:'container',
+                    layout:'vbox',
+                    style :{
+                        margin:'5px 5px 5px 10px',
+                        padding:'0px 0px 10px 0px',
+                        background: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)'
+                    },
+                    items:[{
+                        width:'100%',
+                        xtype:'container',
+                        html:'待办申请 / <span style="color:#3ca2c2">公文</span>',
+                        style :{
+                            background: '#fff',
+                            padding:'20px',
+                            fontSize:'18px',
+                            fontWeight:'400',
+                            color:'#333',
+                            borderBottom: '1px solid #deded9'
+                        }
+                    },{
+                        flex:1,              
+                        width:'100%',
+                        xtype: 'main.indexnotice',                         
+                        style :{
+                            background: '#fff'
+                        }
+                    }]
+                }]
             }]
         }];
         

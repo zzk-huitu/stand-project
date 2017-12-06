@@ -1,0 +1,28 @@
+.mainIndexNoticeUl{
+	padding:10px 0px 0px 0px;
+	margin:0px;
+}
+.mainIndexNoticeLi{
+	padding: 5px 5px 5px 20px;
+	list-style:none;
+	cursor: pointer;
+	font-weight: 400;
+	color:#666666;
+}
+.mainIndexNoticeLi a{
+	width:80%;
+	display:inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.mainIndexNoticeLi span{
+	width:20%;
+	display: inline-block;
+	overflow: hidden; 
+	text-align: center;
+}
+
+.mainIndexNoticeLi:hover{
+	color:#03a9f4;
+}
