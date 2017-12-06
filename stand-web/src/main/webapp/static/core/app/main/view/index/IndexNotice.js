@@ -13,13 +13,13 @@ Ext.define('core.main.view.index.IndexNotice', {
     
     tpl:new Ext.XTemplate(
         '<ul class="mainIndexNoticeUl">',  
-      
+         '<li class="mainIndexNoticeLi"><a>sdsa</a><span>2017-12-06<span></li>',
         '<tpl for=".">',
-            '<li class="mainIndexNoticeLi"><a>{name}</a><span>2017/12/06<span></li>',
+            '<li class="mainIndexNoticeLi"><a>{name}</a><span>2017-12-06<span></li>',
         '</tpl>',
         '</ul>'
     ),
-    itemSelector: 'li',
+    itemSelector: 'li.mainIndexNoticeLi',
 
     emptyText: '暂无数据！',
     
