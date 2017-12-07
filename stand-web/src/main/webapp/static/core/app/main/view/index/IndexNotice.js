@@ -14,7 +14,7 @@ Ext.define('core.main.view.index.IndexNotice', {
     tpl:new Ext.XTemplate(
         '<ul class="mainIndexNoticeUl">',          
         '<tpl for=".">',
-            '<li class="mainIndexNoticeLi"><a>{name}</a><span>2017-12-06<span></li>',
+            '<li class="mainIndexNoticeLi"><a>{name}</a><span>{date}</span></li>',
         '</tpl>',
         '</ul>'
     ),
@@ -25,15 +25,22 @@ Ext.define('core.main.view.index.IndexNotice', {
     scrollable :true,
 
     store: {
-        fields: ['name'],
+        fields: ['name','date'],
         data:[{
-            name:'您好1，有申请需要您审批'
+            name:'您好1，有申请需要您审批',
+            date:'2017-12-07'
         },{
-            name:'您好1，有申请需要您审批'
+            name:'您好1，有申请需要您审批',
+            date:'2017-12-07'
         },{
-            name:'您好1，有申请需要您审批'
+            name:'您好1，有申请需要您审批',
+            date:'2017-12-07'
         },{
-            name:'您好1，有申请需要您审批'
+            name:'您好1，有申请需要您审批',
+            date:'2017-12-07'
+        },{
+            name:'您好1，有申请需要您审批',
+            date:'2017-12-07'
         }],
     },
     
@@ -84,11 +91,11 @@ Ext.define('core.main.view.index.IndexNotice', {
 
     listeners: {
         itemclick:function(){
-            console.log(1111111);
+            alert("待实现功能！");
         }, 
 
         afterrender:function(){ 
-              console.log(11111111);
+            console.log(11111111);
         }
 
     }

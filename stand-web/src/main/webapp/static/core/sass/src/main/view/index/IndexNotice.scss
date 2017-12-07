@@ -10,19 +10,21 @@
 	color:#666666;
 	outline: none !important;
     outline-offset: 0px !important;
+    display: -webkit-flex; /* Safari */
+  	display: flex;
 }
+
 .mainIndexNoticeLi a{
-	width:80%;
 	display:inline-block;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	flex-grow: 1; 
+	width: 80%;
 }
 .mainIndexNoticeLi span{
-	width:20%;
-	display: inline-block;
-	overflow: hidden; 
-	text-align: center;
+	width: 100px;
+    text-align: center;
 }
 
 .mainIndexNoticeLi:hover{
