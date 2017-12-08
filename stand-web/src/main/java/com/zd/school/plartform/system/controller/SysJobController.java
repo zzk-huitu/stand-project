@@ -205,7 +205,7 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
         List<BaseJob> baseJobList = thisService.queryByHql(hql);
           
         List<Map<String, Object>> allList = new ArrayList<>();//存处理后的数据，有的一个sheet里面可能有多张表，所以用list
-  		Integer[] columnWidth = new Integer[] { 15, 15, 15};//每个列宽
+  		Integer[] columnWidth = new Integer[] { 20, 20, 20};//每个列宽
         
   		//处理数据，选择我们要导出的字段
   		List<Map<String, String>> jobInfoList = new ArrayList<>();//多条数据
@@ -214,14 +214,14 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 			jobInfoMap = new LinkedHashMap<>();
 			jobInfoMap.put("jobName", baseJob.getJobName());
 			jobInfoMap.put("jobCode", baseJob.getJobCode());
-			jobInfoMap.put("remark", baseJob.getRemark());
+			jobInfoMap.put("orderIndex", String.valueOf(baseJob.getOrderIndex()));
 			jobInfoList.add(jobInfoMap);
 		}
         
 		Map<String, Object> jobInfoAllMap = new LinkedHashMap<>();//一个MAP代表一张表的信息，最后放入allList中
 		jobInfoAllMap.put("data", jobInfoList);//数据
 //		jobInfoAllMap.put("title", "岗位信息表");//标题
-		jobInfoAllMap.put("head", new String[] { "岗位名称","岗位编码","备注" }); //列名，规定名字相同的，设定为合并
+		jobInfoAllMap.put("head", new String[] { "岗位名称","岗位编码","级别" }); //列名，规定名字相同的，设定为合并
 		jobInfoAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
 		jobInfoAllMap.put("columnAlignment", new Integer[] { 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		jobInfoAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
