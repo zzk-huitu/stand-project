@@ -166,12 +166,51 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
                 //iconCls: "x-fa fa-link mainMenu-iconCls",
                 menuCode:menuChild.menuCode,
                 menuType: menuChild.menuType,  
-                children: children,
+                children: menuChild.children,
                 smallIcon:menuChild.smallIcon,
                 bigIcon: menuChild.bigIcon,
                 menuTarget:menuChild.menuTarget,
                 menuParent:menuChild["parent"]
             };
+
+            var menuSecondItem=[];
+            var secondChildren=menuChild.children;
+            for(var k in  secondChildren){
+                var secondChild = secondChildren[k];    
+                //小图标 
+                var smallIconCls=secondChild.smallIcon;
+                if (!smallIconCls) {
+                    smallIconCls="x-fa fa-bars";
+                }
+
+                menuSecondItem.push({
+                    //text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img" style="width:20px;height:20px;margin-top: 5px;"/> '+menuChild.text,
+                    text:secondChild.text,
+                    textBase:secondChild.text,
+                    //iconCls: "x-fa fa-bars",
+                    iconCls:smallIconCls+" mainMenuIconCls",
+                    menuCode:secondChild.menuCode,
+                    menuType: secondChild.menuType,  
+                    children: secondChild.children,
+                    smallIcon:secondChild.smallIcon,
+                    bigIcon: secondChild.bigIcon,
+                    menuTarget:secondChild.menuTarget,
+                    menuParent:secondChild["parent"]
+                });
+            }
+
+            if(menuSecondItem.length>0){
+                menusItem.menu={
+                    defaults:{
+                        padding:'3',
+                        cls:'mainMenuSecondItemCls',              
+                    },
+                    items:menuSecondItem,                
+                    listeners:{
+                        click:'onMenuItemClick'
+                    }
+                }
+            }
 
             menusItems.push(menusItem);            
         }
