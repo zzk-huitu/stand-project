@@ -3,7 +3,6 @@ package com.zd.school.plartform.basedevice.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.DateUtil;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
@@ -29,7 +27,6 @@ import com.zd.core.util.StringUtils;
 import com.zd.core.util.TLVUtils;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.control.device.model.TLVModel;
-import com.zd.school.jw.eduresources.model.JwCalenderdetail;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
 import com.zd.school.plartform.baseset.model.BaseDicitem;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
@@ -37,27 +34,25 @@ import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
 
-
 /**
  * 房间设备
  *
  */
 @Controller
 @RequestMapping("/BasePtTerm")
-public class BasePtTermController extends FrameWorkController<PtTerm> implements Constant  {
+public class BasePtTermController extends FrameWorkController<PtTerm> implements Constant {
 	@Resource
 	BasePtTermService thisService; // service层接口
-	
+
 	@Resource
 	BaseOfficeAllotService baseOfficeAllotService; // service层接口
-	
+
 	@Resource
-    BaseRoominfoService baseRoominfoService ;
-	
+	BaseRoominfoService baseRoominfoService;
+
 	@Resource
 	BaseDicitemService dicitemService;
-	
-	
+
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
@@ -70,12 +65,12 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
-		
-		if(filter!=null && filter.equals("[]")){
+
+		if (filter != null && filter.equals("[]")) {
 			filter = null;
 		}
-		if(roomId==null){
-			 roomId=""; 
+		if (roomId == null) {
+			roomId = "";
 		}
 		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
 				+ roomId + "%'";
@@ -123,28 +118,29 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-		
+
 	/**
 	 * 获取未分配的设备
 	 */
 	@RequestMapping(value = { "/getNoAllotList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void getNoAllotList(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+	public void getNoAllotList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		
-		String hql="from PtTerm g where g.isDelete=0 and (g.roomId = '' or g.roomId is null) ";
-		
-		//QueryResult<PtTerm> qResult = thisService.queryResult(hql, super.start(request), super.limit(request));
-		QueryResult<PtTerm> qResult =thisService.queryCountToHql(super.start(request), 
-				super.limit(request), super.sort(request), super.filter(request), hql, null, null);
-		
+
+		String hql = "from PtTerm g where g.isDelete=0 and (g.roomId = '' or g.roomId is null) ";
+
+		// QueryResult<PtTerm> qResult = thisService.queryResult(hql,
+		// super.start(request), super.limit(request));
+		QueryResult<PtTerm> qResult = thisService.queryCountToHql(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), hql, null, null);
+
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	
+
 	/**
 	 * 设置设备的房间绑定关系
+	 * 
 	 * @param roomId
 	 * @param uuid
 	 * @param request
@@ -157,16 +153,16 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	@RequestMapping("/doSetPtTerm")
 	public void doSetPtTerm(String roomId, String uuid, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		//String uuids[] = uuid.split(",");
-		//String roomIds[] = roomId.split(",");
-		//PtTerm entity = null;
+		// String uuids[] = uuid.split(",");
+		// String roomIds[] = roomId.split(",");
+		// PtTerm entity = null;
 		SysUser currentUser = getCurrentSysUser();
-		thisService.doSetPtTerm(roomId,uuid,currentUser);// 执行修改方法
-       
+		thisService.doSetPtTerm(roomId, uuid, currentUser);// 执行修改方法
+
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"分配成功!\""));
-		
-	}	
-	
+
+	}
+
 	/**
 	 * 
 	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
@@ -183,11 +179,12 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			entity = thisService.get(uuids[i]);
 			entity.setRoomId(roomIds[i]);
 			thisService.merge(entity);
-			//thisService.updateByProperties("uuid", uuids[i], "roomId", roomId);
+			// thisService.updateByProperties("uuid", uuids[i], "roomId",
+			// roomId);
 		}
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"分配成功!\""));
-	}		
-	
+	}
+
 	/**
 	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
 	 * MjUserright @param @param request @param @param response @param @throws
@@ -197,14 +194,13 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	@RequestMapping("/doUpdate")
 	public void doUpdates(PtTerm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		 SysUser currentUser = getCurrentSysUser();
-		 entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
-	        if (ModelUtil.isNotNull(entity))
-	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-	        else
-	            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
-		
-		
+		SysUser currentUser = getCurrentSysUser();
+		entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
+
 	}
 
 	/**
@@ -220,172 +216,169 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		for (int i = 0; i < uuids.length; i++) {
 			thisService.updateByProperties("uuid", uuids[i], "roomId", "");
 		}
-			writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
-	}	
-	
-	
-	//获取高级参数
+		writeJSON(response, jsonBuilder.returnSuccessJson("'成功。'"));
+	}
+
+	// 获取高级参数
 	@RequestMapping("/highParam_read")
 	public void highParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		PtTerm perEntity = thisService.get(tlvs.getUuid());
-		String strData ="";
-		if(perEntity.getAdvParam()!=null){
+		String strData = "";
+		if (perEntity.getAdvParam() != null) {
 			TLVUtils.decode(perEntity.getAdvParam(), tlvs.getTlvs());
 			strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
 		}
 		writeJSON(response, strData);// 返回数据
 	}
+
 	@RequestMapping("/doSetHighParam")
 	public void doSetHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		SysUser currentUser = getCurrentSysUser();
-		String termTypeID=request.getParameter("termTypeID");
-		
-		//1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
-		String termRadio=request.getParameter("termRadio");
-		if("1".equals(termRadio)){
-			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"1",currentUser.getXm());
-		}else if("2".equals(termRadio)){
-			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"2",currentUser.getXm());
-		}else if("3".equals(termRadio)){
-			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"3",currentUser.getXm());
-		}else if("4".equals(termRadio)){
-			thisService.doBatchUpdateHighParam(tlvs, termTypeID,"4",currentUser.getXm());
-		}/*else if("5".equals(termRadio)){
-			String termIds=request.getParameter("termIds");
-			thisService.doUpdatHighParamToIds(tlvs, termIds , currentUser.getXm());
-		}*/else{	//默认为0，只设置当前自己
+		String termTypeID = request.getParameter("termTypeID");
+
+		// 1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
+		String termRadio = request.getParameter("termRadio");
+		if ("1".equals(termRadio)) {
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID, "1", currentUser.getXm());
+		} else if ("2".equals(termRadio)) {
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID, "2", currentUser.getXm());
+		} else if ("3".equals(termRadio)) {
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID, "3", currentUser.getXm());
+		} else if ("4".equals(termRadio)) {
+			thisService.doBatchUpdateHighParam(tlvs, termTypeID, "4", currentUser.getXm());
+		} /*
+			 * else if("5".equals(termRadio)){ String
+			 * termIds=request.getParameter("termIds");
+			 * thisService.doUpdatHighParamToIds(tlvs, termIds ,
+			 * currentUser.getXm()); }
+			 */else { // 默认为0，只设置当前自己
 			thisService.doUpdateHighParam(tlvs, currentUser.getXm());
 		}
-		
+
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
-		
-//		byte[] result = null;
-//		PtTerm perEntity = thisService.get(tlvs.getUuid());
-//		SysUser currentUser = getCurrentSysUser();
-//		result=TLVUtils.encode(tlvs.getTlvs());
-//		perEntity.setAdvParam(result);
-//		perEntity.setUpdateUser(currentUser.getXm());
-//		perEntity.setUpdateTime(new Date());
-//		thisService.merge(perEntity);// 执行修改方法
-//		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+
+		// byte[] result = null;
+		// PtTerm perEntity = thisService.get(tlvs.getUuid());
+		// SysUser currentUser = getCurrentSysUser();
+		// result=TLVUtils.encode(tlvs.getTlvs());
+		// perEntity.setAdvParam(result);
+		// perEntity.setUpdateUser(currentUser.getXm());
+		// perEntity.setUpdateTime(new Date());
+		// thisService.merge(perEntity);// 执行修改方法
+		// writeJSON(response,
+		// jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
 	}
-	
-	
-	//获取基础参数
+
+	// 获取基础参数
 	@RequestMapping("/baseParam_read")
-	public void baseParam_read(TLVModel tlvs, HttpServletRequest request, 
-			HttpServletResponse response) throws IOException{
+	public void baseParam_read(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
 		PtTerm perEntity = thisService.get(tlvs.getUuid());
 		// 将entity中不为空的字段动态加入到perEntity中去。
-		String strData ="";
-		if(perEntity.getBaseParam()!=null){
+		String strData = "";
+		if (perEntity.getBaseParam() != null) {
 			TLVUtils.decode(perEntity.getBaseParam(), tlvs.getTlvs());
-			if("11".equals(perEntity.getTermTypeID())||"17".equals(perEntity.getTermTypeID())){
+			if ("11".equals(perEntity.getTermTypeID()) || "17".equals(perEntity.getTermTypeID())) {
 				tlvs.setNotes(perEntity.getNotes());
-				strData=JsonBuilder.getInstance().toJson(tlvs);
-			}else{
+				strData = JsonBuilder.getInstance().toJson(tlvs);
+			} else {
 				strData = JsonBuilder.getInstance().buildList(tlvs.getTlvs(), "");// 处理数据
 			}
 		}
 		writeJSON(response, strData);// 返回数据
-		
+
 	}
+
 	@RequestMapping("/doSetBaseParam")
 	public void doSetBaseParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		SysUser currentUser = getCurrentSysUser();
-		String termTypeID=request.getParameter("termTypeID");
-		String notes=request.getParameter("notes");
-		
-		//1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
-		String termRadio=request.getParameter("termRadio");
-		if("1".equals(termRadio)){
-			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"1",currentUser.getXm());
-		}else if("2".equals(termRadio)){
-			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"2",currentUser.getXm());
-		}else if("3".equals(termRadio)){
-			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"3",currentUser.getXm());
-		}else if("4".equals(termRadio)){
-			thisService.doBatchUpdateBaseParam(tlvs, termTypeID,notes,"4",currentUser.getXm());
-		}/*else if("5".equals(termRadio)){
-			String termIds=request.getParameter("termIds");
-			thisService.doUpdatHighParamToIds(tlvs, termIds , currentUser.getXm());
-		}*/else{	//默认为0，只设置当前自己
-			thisService.doUpdateBaseParam(tlvs, notes,currentUser.getXm());
+		String termTypeID = request.getParameter("termTypeID");
+		String notes = request.getParameter("notes");
+
+		// 1.判断，是否批量设置(0-不批量，4-本楼层，3-本楼栋，2-本校区，1-本学校，5-选择批量)
+		String termRadio = request.getParameter("termRadio");
+		if ("1".equals(termRadio)) {
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID, notes, "1", currentUser.getXm());
+		} else if ("2".equals(termRadio)) {
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID, notes, "2", currentUser.getXm());
+		} else if ("3".equals(termRadio)) {
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID, notes, "3", currentUser.getXm());
+		} else if ("4".equals(termRadio)) {
+			thisService.doBatchUpdateBaseParam(tlvs, termTypeID, notes, "4", currentUser.getXm());
+		} /*
+			 * else if("5".equals(termRadio)){ String
+			 * termIds=request.getParameter("termIds");
+			 * thisService.doUpdatHighParamToIds(tlvs, termIds ,
+			 * currentUser.getXm()); }
+			 */else { // 默认为0，只设置当前自己
+			thisService.doUpdateBaseParam(tlvs, notes, currentUser.getXm());
 		}
-		
+
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
-		
+
 	}
+
 	@RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermIsEnd", "0");
 		request.getSession().removeAttribute("exportPtTermIsState");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10, 15, 15, 15, 15};
-		
-		//数据字典项
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 15, 15 };
+
+		// 数据字典项
 		String mapKey = null;
-		String[] propValue = { "PTTERMTYPE"};
+		String[] propValue = { "PTTERMTYPE" };
 		Map<String, String> mapDicItem = new HashMap<>();
 		List<BaseDicitem> listDicItem = dicitemService.queryByProerties("dicCode", propValue);
 		for (BaseDicitem baseDicitem : listDicItem) {
-				mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
-				mapDicItem.put(mapKey, baseDicitem.getItemName());
-			}
+			mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
+			mapDicItem.put(mapKey, baseDicitem.getItemName());
+		}
 
 		String roomId = request.getParameter("roomId");
 		String termName = request.getParameter("termName");
-		
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
-		String hql1 = " from PtTerm where isDelete=0 ";
-		List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
-		StringBuffer areasb = new StringBuffer();
-		for (int i = 0; i < areaIdlists.size(); i++) {
-			areasb.append("'" + areaIdlists.get(i) + "'" + ",");
-		}
-		
-		if (areasb.length() > 0) {
-			List<String> roomIdLists = new ArrayList<>();
-			hql = "select a.uuid from BuildRoominfo a where a.areaId in (" + areasb.substring(0, areasb.length() - 1)
-					+ ")";
-			roomIdLists = baseRoominfoService.queryEntityByHql(hql);
-			areasb.setLength(0);
-			for (int i = 0; i < roomIdLists.size(); i++) {
-				areasb.append("'"+roomIdLists.get(i)+"'"+ ",");
-			}
-			if (areasb.length() > 0) {
-				hql1 +=" and roomId in (" + areasb.substring(0, areasb.length() - 1)+")";
-			} else {
-				hql1 +=" and roomId ='" + roomId+"'";
-			}
-		}else {
-			hql1 +=" and roomId ='" + roomId+"'";
-		}
 
+		String hql = " from PtTerm a where a.isDelete=0 ";
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {// 传进来的roomId 就是房间id
+				hql += " and a.roomId ='" + roomId + "' ";
+			}
+
+		} else {
+			hql = " select a from PtTerm a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
+		}
 		List<PtTerm> ptTermList = null;
 		if (StringUtils.isNotEmpty(termName)) {
-			hql1 +=" and termName like'%" + termName+"%'";
+			hql += " and termName like'%" + termName + "%'";
 		}
-		hql1=hql1+ " order by createTime desc";
-		ptTermList = thisService.queryByHql(hql1);
+		hql += " order by a.createTime desc";
+		ptTermList = thisService.queryByHql(hql);
 
 		// 处理班级基本数据
 		List<Map<String, String>> ptTermExportList = new ArrayList<>();
 		Map<String, String> ptTermExporMap = null;
-		String ClassName="";
-		int i=1;
+		String ClassName = "";
+		int i = 1;
 		for (PtTerm ptTermdetail : ptTermList) {
 			ptTermExporMap = new LinkedHashMap<>();
-			ptTermExporMap.put("xh",i+"");
+			ptTermExporMap.put("xh", i + "");
 			ptTermExporMap.put("termName", ptTermdetail.getTermName());
 			ptTermExporMap.put("gatewayName", ptTermdetail.getGatewayName());
 			ptTermExporMap.put("roomName", ptTermdetail.getRoomName());
-			ptTermExporMap.put("termTypeID", mapDicItem.get(ptTermdetail.getTermTypeID()+"PTTERMTYPE"));
+			ptTermExporMap.put("termTypeID", mapDicItem.get(ptTermdetail.getTermTypeID() + "PTTERMTYPE"));
 			i++;
 			ptTermExportList.add(ptTermExporMap);
 		}
@@ -393,9 +386,9 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", ptTermExportList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "序号","设备名称","网关名称", "房间名称","设备类型"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] { "序号", "设备名称", "网关名称", "房间名称", "设备类型" }); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 
@@ -407,10 +400,10 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			request.getSession().setAttribute("exportPtTermIsEnd", "0");
 			request.getSession().setAttribute("exportPtTermIsState", "0");
 		}
-	} 
-    
-    @RequestMapping("/checkExportEnd")
-    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Object isEnd = request.getSession().getAttribute("exportPtTermIsEnd");
 		Object state = request.getSession().getAttribute("exportPtTermIsState");
@@ -426,94 +419,83 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-    
-    @RequestMapping("/exportPtTermAllotExcel")
-    public void exportPtTermAllotExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+	@RequestMapping("/exportPtTermAllotExcel")
+	public void exportPtTermAllotExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermAllotIsEnd", "0");
 		request.getSession().removeAttribute("exportPtTermAllotIsState");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10, 15, 15, 15, 15, 15, 15};
-		
-		//数据字典项
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 15, 15, 15, 15 };
+
+		// 数据字典项
 		String mapKey = null;
-		String[] propValue = { "PTTERMTYPE"};
+		String[] propValue = { "PTTERMTYPE" };
 		Map<String, String> mapDicItem = new HashMap<>();
 		List<BaseDicitem> listDicItem = dicitemService.queryByProerties("dicCode", propValue);
 		for (BaseDicitem baseDicitem : listDicItem) {
-				mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
-				mapDicItem.put(mapKey, baseDicitem.getItemName());
-			}
-
+			mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
+			mapDicItem.put(mapKey, baseDicitem.getItemName());
+		}
+		List<PtTerm> ptTermList = null;
 		String roomId = request.getParameter("roomId");
 		String termSN = request.getParameter("termSN");
 		String termNo = request.getParameter("termNo");
 		String termName = request.getParameter("termName");
-		
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
-		String hql1 = " from PtTerm where isDelete=0 ";
-		List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
-		StringBuffer areasb = new StringBuffer();
-		for (int i = 0; i < areaIdlists.size(); i++) {
-			areasb.append("'" + areaIdlists.get(i) + "'" + ",");
-		}
-		
-		if (areasb.length() > 0) {
-			List<String> roomIdLists = new ArrayList<>();
-			hql = "select a.uuid from BuildRoominfo a where a.areaId in (" + areasb.substring(0, areasb.length() - 1)
-					+ ")";
-			roomIdLists = baseRoominfoService.queryEntityByHql(hql);
-			areasb.setLength(0);
-			for (int i = 0; i < roomIdLists.size(); i++) {
-				areasb.append("'"+roomIdLists.get(i)+"'"+ ",");
+
+		String hql = " from PtTerm a where a.isDelete=0 ";
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {// 传进来的roomId 就是房间id
+				hql += " and a.roomId ='" + roomId + "' ";
 			}
-			if (areasb.length() > 0) {
-				hql1 +=" and roomId in (" + areasb.substring(0, areasb.length() - 1)+")";
-			} else {
-				hql1 +=" and roomId ='" + roomId+"'";
-			}
-		}else {
-			hql1 +=" and roomId ='" + roomId+"'";
+
+		} else {
+			hql = " select a from PtTerm a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
 		}
 
-		List<PtTerm> ptTermList = null;
-		if (StringUtils.isEmpty(roomId)) {
-			hql1 = " from PtTerm where isDelete=0";
-		}
 		if (StringUtils.isNotEmpty(termSN)) {
-			hql1 +=" and termSN like'%" + termSN+"%'";
+			hql += " and a.termSN like'%" + termSN + "%'";
 		}
 		if (StringUtils.isNotEmpty(termNo)) {
-			hql1 +=" and termNo like'%" + termNo+"%'";
+			hql += " and a.termNo like'%" + termNo + "%'";
 		}
 		if (StringUtils.isNotEmpty(termName)) {
-			hql1 +=" and termName like'%" + termName+"%'";
+			hql += " and a.termName like'%" + termName + "%'";
 		}
-		hql1=hql1+ " order by createTime desc";
-		ptTermList = thisService.queryByHql(hql1);
+		hql += " order by a.createTime desc";
+		ptTermList = thisService.queryByHql(hql);
 
 		// 处理基本数据
 		List<Map<String, String>> ptTermExportList = new ArrayList<>();
 		Map<String, String> ptTermExporMap = null;
-		int i=1;
+		int i = 1;
 		for (PtTerm ptTermdetail : ptTermList) {
 			ptTermExporMap = new LinkedHashMap<>();
-			ptTermExporMap.put("xh",i+"");
+			ptTermExporMap.put("xh", i + "");
 			ptTermExporMap.put("termSN", ptTermdetail.getTermSN());
-			ptTermExporMap.put("termNo", (String.valueOf(ptTermdetail.getTermNo()).equals("null")?"":String.valueOf(ptTermdetail.getTermNo())));
-			ptTermExporMap.put("termName",ptTermdetail.getTermName());
-			ptTermExporMap.put("gatewayName",ptTermdetail.getGatewayName());
-			ptTermExporMap.put("termTypeID", mapDicItem.get(ptTermdetail.getTermTypeID()+"PTTERMTYPE"));
-			String termStatus="禁用";
-			if(ptTermdetail.getTermStatus()!=null){
-				if(ptTermdetail.getTermStatus()==0){
-					termStatus="禁用";
-				}else{
-					termStatus="启用";
+			ptTermExporMap.put("termNo", (String.valueOf(ptTermdetail.getTermNo()).equals("null") ? ""
+					: String.valueOf(ptTermdetail.getTermNo())));
+			ptTermExporMap.put("termName", ptTermdetail.getTermName());
+			ptTermExporMap.put("gatewayName", ptTermdetail.getGatewayName());
+			ptTermExporMap.put("termTypeID", mapDicItem.get(ptTermdetail.getTermTypeID() + "PTTERMTYPE"));
+			String termStatus = "禁用";
+			if (ptTermdetail.getTermStatus() != null) {
+				if (ptTermdetail.getTermStatus() == 0) {
+					termStatus = "禁用";
+				} else {
+					termStatus = "启用";
 				}
 			}
-			ptTermExporMap.put("termStatus",termStatus);
+			ptTermExporMap.put("termStatus", termStatus);
 			i++;
 			ptTermExportList.add(ptTermExporMap);
 		}
@@ -521,9 +503,9 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", ptTermExportList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "序号","序列号","机号", "设备名称", "网关名称","设备类型","设备状态"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] { "序号", "序列号", "机号", "设备名称", "网关名称", "设备类型", "设备状态" }); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 
@@ -535,10 +517,10 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			request.getSession().setAttribute("exportPtTermAllotIsEnd", "0");
 			request.getSession().setAttribute("exportPtTermAllotIsState", "0");
 		}
-	} 
-    
-    @RequestMapping("/checkPtTermAllotExportEnd")
-    public void checkPtTermAllotExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	}
+
+	@RequestMapping("/checkPtTermAllotExportEnd")
+	public void checkPtTermAllotExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Object isEnd = request.getSession().getAttribute("exportPtTermAllotIsEnd");
 		Object state = request.getSession().getAttribute("exportPtTermAllotIsState");
