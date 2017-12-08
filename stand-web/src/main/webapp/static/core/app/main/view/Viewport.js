@@ -178,7 +178,10 @@ Ext.define('core.main.view.Viewport', {
         }, {  
             region : 'center', // 中间面版  
             xtype: 'app-main',
-            minWidth:800
+            minWidth:800,
+            style:{
+                paddingLeft:'5px'
+            }
         }, {  
             region : 'south', // 中间面版  
             xtype: 'app-footer',

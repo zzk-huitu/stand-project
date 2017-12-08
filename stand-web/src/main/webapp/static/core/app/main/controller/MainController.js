@@ -79,45 +79,10 @@ Ext.define('core.main.controller.MainController', {
                         menuTarget:menuChild.menuTarget,
                         menuParent:menuChild["parent"]
                     };
-
-                    var menuSecondItem=[];
-                    var secondChildren=menuChild.children;
-                    for(var k in  secondChildren){
-                        var secondChild = secondChildren[k];    
-                        //小图标 
-                        var smallIconCls=secondChild.smallIcon;
-                        if (!smallIconCls) {
-                            smallIconCls="x-fa fa-bars";
-                        }
-
-                        menuSecondItem.push({
-                            //text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img" style="width:20px;height:20px;margin-top: 5px;"/> '+menuChild.text,
-                            text:secondChild.text,
-                            textBase:secondChild.text,
-                            //iconCls: "x-fa fa-bars",
-                            iconCls:smallIconCls+" mainMenuIconCls",
-                            menuCode:secondChild.menuCode,
-                            menuType: secondChild.menuType,  
-                            children: secondChild.children,
-                            smallIcon:secondChild.smallIcon,
-                            bigIcon: secondChild.bigIcon,
-                            menuTarget:secondChild.menuTarget,
-                            menuParent:secondChild["parent"]
-                        });
-                    }
-
-                    if(menuSecondItem.length>0){
-                        menusItem.menu={
-                            defaults:{
-                                padding:'3',
-                                cls:'mainMenuSecondItemCls',              
-                            },
-                            items:menuSecondItem,                
-                            listeners:{
-                                click:'onMenuItemClick'
-                            }
-                        }
-                    }
+                    
+                    //生成子项
+                    if(menuChild.children.length!=0)
+                        this.createMenu(menusItem,menuChild.children);                  
 
                     menusItems.push(menusItem);            
                 }
@@ -248,7 +213,7 @@ Ext.define('core.main.controller.MainController', {
         this.getView().getViewModel().set("headerType.value",btn.changeType);
     },
 
-
+    
     /*
     *菜单栏显示子菜单
     */
@@ -610,6 +575,52 @@ Ext.define('core.main.controller.MainController', {
         }else{
              tabPanel.setActiveTab( tabItem);
         }   
-    }
+    },
+
+    //递归创建下级menu
+    createMenu:function(currentMenuItem,currentChild){
+        var menuSecondItem=[];
+        for(var k in  currentChild){
+            var secondChild = currentChild[k];    
+             //小图标 
+            var smallIconCls=secondChild.smallIcon;
+            if (!smallIconCls) {
+                smallIconCls="x-fa fa-bars";
+            }
+
+            var menuItem={
+                //text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img" style="width:20px;height:20px;margin-top: 5px;"/> '+menuChild.text,
+                text:secondChild.text,
+                textBase:secondChild.text,
+                //iconCls: "x-fa fa-bars",
+                iconCls:smallIconCls+" mainMenuIconCls",
+                menuCode:secondChild.menuCode,
+                menuType: secondChild.menuType,  
+                children: secondChild.children,
+                smallIcon:secondChild.smallIcon,
+                bigIcon: secondChild.bigIcon,
+                menuTarget:secondChild.menuTarget,
+                menuParent:secondChild["parent"]
+            };
+
+            if(secondChild.children.length!=0)
+                this.createMenu(menuItem,secondChild.children);   
+
+            menuSecondItem.push(menuItem);
+        }
+
+        if(menuSecondItem.length>0){
+            currentMenuItem.menu={
+                defaults:{
+                    padding:'3',
+                    cls:'mainMenuSecondItemCls',              
+                },
+                items:menuSecondItem,                
+                listeners:{
+                    click:'onMenuItemClick'
+                }
+            }
+        }    
+    },
 
 }); 
