@@ -1,6 +1,7 @@
 package com.zd.school.plartform.system.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import com.zd.school.plartform.baseset.model.BaseOrgToUP;
 import com.zd.school.plartform.baseset.model.BaseOrgTree;
 import com.zd.school.plartform.system.dao.SysOrgDao;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.model.SysUserToUP;
 import com.zd.school.plartform.system.service.SysDatapermissionService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
@@ -367,10 +369,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		
 		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
 		saveEntity.setLeaf(true);
-		saveEntity.setIssystem(1);
+		saveEntity.setIssystem(0);
 		saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
-		
-		
+				
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			BaseOrg parEntity = this.get(parentNode);
 			parEntity.setLeaf(false);
@@ -379,9 +380,18 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			saveEntity.setAllDeptName(parEntity.getAllDeptName() + "/" + nodeText);			
 		} else
 			saveEntity.BuildNode(null);
-
+		
+		
+		//添加副ID
+		//查询当前部门下最大的副ID,以及父Id
+		//暂时不编写了，因为比较麻烦，还是让用户手动点击同步比较可靠
+//		BaseOrg fuIds=this.getCurrentFuId(parentNode);
+//		saveEntity.setExtField04(fuIds.getExtField04());
+//		saveEntity.setExtField05(fuIds.getExtField05());
+		
 		// 持久化到数据库
 		entity = this.merge(saveEntity);
+		
 		
 		// 插入年级数据或班级数据
 		String orgId = entity.getUuid();
@@ -699,6 +709,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		BaseOrg perEntity = this.get(uuid);
 		Boolean isLeaf = perEntity.getLeaf();
 		String oldDeptName = perEntity.getNodeText();
+		//String OldParentNode=perEntity.getParentNode();
 		
 		// 将entity中不为空的字段动态加入到perEntity中去。
 		try {
@@ -725,6 +736,14 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			perEntity.setAllDeptName(parentOrg.getAllDeptName()+"/"+nodeText);
 		}
 		
+		//当父部门发生变化时,就更新副ID
+		//查询当前部门下最大的副ID,以及父Id
+		//暂时不编写了，因为比较麻烦，还是让用户手动点击同步比较可靠
+//		if(!OldParentNode.equals(parentNode)){
+//			BaseOrg fuIds=this.getCurrentFuId(parentNode);
+//			perEntity.setExtField04(fuIds.getExtField04());
+//			perEntity.setExtField05(fuIds.getExtField05());
+//		}				
 		entity = this.merge(perEntity);// 执行修改方法
 		
 		if (deptType.equals("04")) { // 年级
@@ -877,4 +896,95 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		return row;
 		
 	}
+
+	
+	
+	/*临时弃用
+	//获取当前的副Id
+	private BaseOrg getCurrentFuId(String parentNode){
+		BaseOrg result=new BaseOrg();
+		
+		//1.先查询此同级部门下是否存在部门
+		String hql="from BaseOrg where parentNode='"+parentNode+"' and isDelete=0 order by EXT_FIELD04 desc";
+		List<BaseOrg> baseOrgs=this.queryByHql(hql, 0, 1);
+		
+		//2.若不存在，则直接查询副部门，
+		if(baseOrgs.size()==0){
+			BaseOrg baseOrg=this.get(parentNode);	
+			result.setExtField05(baseOrg.getExtField04());
+			result.setExtField04(baseOrg.getExtField04()+"001");
+		}else{
+			result.setExtField05(baseOrgs.get(0).getExtField05());
+			Long temp=Long.parseLong(baseOrgs.get(0).getExtField04())+1;
+			result.setExtField04(temp.toString());
+		}
+		
+		return result;
+	}
+	*/
+	
+	@Override
+	public void doCreateFuId() {
+		// TODO Auto-generated method stub
+		//1.查询第一层的部门
+		String hql="from BaseOrg where nodeLevel=1 and isDelete=0 order by orderIndex asc,nodeText asc";
+		List<BaseOrg>  lists = this.queryByHql(hql);
+		BaseOrg temp=null;
+		long initValue=100;
+		for(int i=0;i<lists.size();i++){
+			temp=lists.get(i);
+			temp.setExtField05("001");
+			
+			long fuId=initValue+i+1;
+			temp.setExtField04(String.valueOf(fuId));
+			this.merge(temp);
+			
+			//递归查询子部门
+			this.createChildFuId(temp.getUuid(), fuId*1000, String.valueOf(fuId));
+			
+		}
+		
+	}
+	
+	private void createChildFuId(String parentNodeId,long initValue,String parentFuId){
+		String hql="from BaseOrg where parentNode='"+parentNodeId+"' and isDelete=0 order by orderIndex asc,nodeText asc";
+		List<BaseOrg>  lists = this.queryByHql(hql);
+		BaseOrg temp=null;
+		for(int i=0;i<lists.size();i++){
+			temp=lists.get(i);
+			temp.setExtField05(parentFuId);
+			
+			long fuId=initValue+i+1;
+			temp.setExtField04(String.valueOf(fuId));
+			this.merge(temp);
+			
+			//递归查询子部门
+			this.createChildFuId(temp.getUuid(), fuId*1000, String.valueOf(fuId));		
+		}
+	}
+	
+	//只用于更新当前UP库中用户的部门ID
+	@Override
+	public void syncAllUserDeptInfoToUP(List<SysUserToUP> userInfos) {
+		// TODO Auto-generated method stub
+		this.getSession().doWork((x)->{
+			SysUserToUP sut=null;
+			String sqlUpdate = " update Tc_Employee set DepartmentID=? where UserId=?";
+			PreparedStatement ps=x.prepareStatement(sqlUpdate);
+			for(int i=0;i<userInfos.size();i++){
+				sut=userInfos.get(i);
+				ps.setString(1, sut.getEmployeeId());
+				ps.setString(2, sut.getUserId());
+				
+				ps.addBatch();
+				
+				if((i+1)%30==0){
+					ps.executeBatch();
+				}
+			}
+			ps.executeBatch();
+		});
+	}
+	
+	
 }
