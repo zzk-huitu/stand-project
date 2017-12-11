@@ -165,7 +165,9 @@ Ext.define('core.main.view.Viewport', {
             hidden:true,
             bind:{
                 hidden:'{!isMainMenuTree}'
-            },           
+            }, style:{
+                paddingRight:'3px'
+            }          
         },{  
             xtype : 'main.mainmenupanel',  
             region : 'west', // 左边面板  
@@ -174,13 +176,15 @@ Ext.define('core.main.view.Viewport', {
             collapsible:true,
             bind:{
                 hidden:'{!isMainMenu}'
-            },           
+            },  style:{
+                paddingRight:'3px'
+            }         
         }, {  
             region : 'center', // 中间面版  
             xtype: 'app-main',
             minWidth:800,
             style:{
-                paddingLeft:'5px'
+                paddingLeft:'2px'
             }
         }, {  
             region : 'south', // 中间面版  

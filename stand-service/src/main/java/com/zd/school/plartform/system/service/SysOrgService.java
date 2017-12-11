@@ -21,6 +21,7 @@ import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseOrgToUP;
 import com.zd.school.plartform.baseset.model.BaseOrgTree;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.model.SysUserToUP;
 
 /**
  * ClassName:BaseOrgService Function: TODO ADD FUNCTION. Reason: TODO ADD
@@ -172,5 +173,9 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	public void setChildAllDeptName(BaseOrg dept, String parentAllDeptName);
 
 	public int syncAllDeptInfoToUP(List<BaseOrgToUP> deptInfo);
+
+	public void doCreateFuId();
+
+	public void syncAllUserDeptInfoToUP(List<SysUserToUP> userInfos);
 	
 }

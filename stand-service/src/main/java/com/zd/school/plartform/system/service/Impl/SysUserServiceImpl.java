@@ -1,6 +1,7 @@
 package com.zd.school.plartform.system.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
 import org.springframework.data.redis.core.HashOperations;
@@ -54,6 +56,8 @@ import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
 @Transactional
 public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysUserService {
 
+	private static Logger logger = Logger.getLogger(SysUserServiceImpl.class);
+
 	@Resource
 	public void setBaseTUserDao(SysUserDao dao) {
 		this.dao = dao;
@@ -79,7 +83,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		String userPwd = entity.getUserPwd();
 		userPwd = new Sha256Hash(userPwd).toHex();
-		
+
 		// 根据身份来做不同的处理
 		SysUser saveEntity = null;
 		String category = entity.getCategory();
@@ -90,16 +94,16 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		} else if (category.equals("2")) { // 学生
 			StuBaseinfo t = new StuBaseinfo();
 			// t.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
-			//t.setClassId(entity.getDeptId());
+			// t.setClassId(entity.getDeptId());
 
 			saveEntity = t;
 
 		} else {
 			saveEntity = new SysUser();
 		}
-		
+
 		entity.setUuid(null);
-		BeanUtils.copyPropertiesExceptNull(saveEntity,entity );
+		BeanUtils.copyPropertiesExceptNull(saveEntity, entity);
 
 		// 处理用户所属的角色
 		/*
@@ -150,19 +154,23 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		 */
 		// 持久化到数据库
 		entity = this.merge(perEntity);
-		
-//		//切换数据源
-//		DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
-//		
-//		String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,cardid,CardTypeID,EmployeeStatusID,PositionId) "
-//				+ "values('" + entity.getUuid() + "','1','"
-//				+ currentUser.getXm() + "'," + "'" + currentUser.getJobId() + "','','','"
-//				+ currentUser.getXbm() + "','" + currentUser.getSfzjh() + "',0,1,24,19)";
-//		
-//		int row=this.doExecuteCountBySql(sqlInsert.toString());
-//		
-//		DBContextHolder.clearDBType();
-					
+
+		// //切换数据源
+		// DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
+		//
+		// String sqlInsert = "insert into
+		// Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,cardid,CardTypeID,EmployeeStatusID,PositionId)
+		// "
+		// + "values('" + entity.getUuid() + "','1','"
+		// + currentUser.getXm() + "'," + "'" + currentUser.getJobId() +
+		// "','','','"
+		// + currentUser.getXbm() + "','" + currentUser.getSfzjh() +
+		// "',0,1,24,19)";
+		//
+		// int row=this.doExecuteCountBySql(sqlInsert.toString());
+		//
+		// DBContextHolder.clearDBType();
+
 		return entity;
 	}
 
@@ -425,13 +433,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			// 1.查询该数据源中的此用户的信息
 			String sql = "select UserId as userId,convert(varchar,EmployeeID) as employeeId,DepartmentID as departmentId,"
 					+ " convert(varchar(36),EmployeeName) as employeeName,"
-					+ " employeeStrId,sid,convert(varchar(1),sexId) sexId,identifier " + " from Tc_Employee ";
+					+ " employeeStrId,sid,convert(varchar(1),sexId) sexId,identifier, convert(varchar(36),employeeTel) as employeeTel "
+					+ " from Tc_Employee ";
 			// + " where DepartmentID='"+departmentId+"'"
 			// + " order by userId asc";
 
-			if (departmentId == null) // 当此值为null，表明同步的是系统的教师人员数据
-				sql += " where DepartmentID not like '%Train%' ";
-			else // 当此值为具体的值的时候，表明同步的是某个班级的学员
+			if (departmentId != null) // 当此值为具体的值的时候，表明同步的是某个班级、部门的人员
 				sql += " where DepartmentID='" + departmentId + "'";
 
 			sql += " order by userId asc";
@@ -523,8 +530,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 							sqlUpdate += ",EmployeeStatusID='24' " // ,CardTypeID="+cardTypeId+"现在不更新卡类了（胡洋确定及肯定）
 									+ " where UserId='" + currentUser.getUserId() + "';";
-
-							// this.executeSql(sqlUpdate);
+				
 
 							sqlSb.append(sqlUpdate);
 						}
@@ -538,12 +544,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 				// 若上面的循环无法找到对应的人员，表明UP中不存在此用户
 				if (!isExist && currentUser.getIsDelete() != 1) {
 					int cardTypeId = 1;
-					if (currentUser.getJobName() != null) {
-						if (currentUser.getJobName().contains("合同工"))
-							cardTypeId = 2;
-						else if (currentUser.getJobName().equals("学员"))
-							cardTypeId = 3;
-					}
+					// if (currentUser.getJobName() != null) {
+					// if (currentUser.getJobName().contains("合同工"))
+					// cardTypeId = 2;
+					// else if (currentUser.getJobName().equals("学员"))
+					// cardTypeId = 3;
+					// }
 
 					String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,employeeTel,cardid,CardTypeID,EmployeeStatusID,PositionId) "
 							+ "values('" + currentUser.getUserId() + "','" + currentUser.getDepartmentId() + "','"
@@ -567,8 +573,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 					sqlInsert += ",0," + cardTypeId + ",24,19);";
 
-					sqlSb.append(sqlInsert);
-					// this.executeSql(sqlInsert);
+					sqlSb.append(sqlInsert);	
 				}
 
 				// 若积累的语句长度大于2000（大约50条语句左右），则执行
@@ -583,38 +588,30 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 				row += this.doExecuteCountBySql(sqlSb.toString());
 
 			// 剩下的，表明不存在平台的库中，进行删除
-			/*
-			 * 暂时不开放 for (int k = 0; k < upUserInfos.size(); k++) { upUser =
-			 * userInfos.get(k);
-			 * 
-			 * //sqlDelete=
-			 * "update Tc_Employee set EmployeeStatusID='26' where UserId='" +
-			 * UserId + "'";//逻辑删除 //this.executeSql(sqlDelete);
-			 * 
-			 * String sqlDelete = "delete from TC_Card_Bags where EMPLOYEEID='"
-			 * + upUser.getEmployeeId() + "'"; //物理删除
-			 * 
-			 * sqlDelete += " delete from TC_Card where EMPLOYEEID='" +
-			 * upUser.getEmployeeId() + "'"; //物理删除
-			 * 
-			 * sqlDelete += "delete from Tc_Employee where EMPLOYEEID='" +
-			 * upUser.getEmployeeId() + "'"; //物理删除
-			 * 
-			 * this.executeSql(sqlDelete);
-			 * 
-			 * }
-			 */
+			String sqlDelete = "";
+			for (int k = 0; k < upUserInfos.size(); k++) {
+				upUser = upUserInfos.get(k);
+				if(StringUtils.isNotEmpty(upUser.getEmployeeId())){
+					sqlDelete = "delete from TC_Card_Bags where EMPLOYEEID=" + upUser.getEmployeeId() + ";"; // 物理删除
+					sqlDelete += "delete from TC_Card where EMPLOYEEID=" + upUser.getEmployeeId() + ";"; // 物理删除
+					sqlDelete += "delete from Tc_Employee where EMPLOYEEID=" + upUser.getEmployeeId() + ";"; // 物理删除
+	
+					this.doExecuteCountBySql(sqlDelete);
+				}
+			}
 
 		} catch (Exception e) {
 			// 捕获了异常后，要手动进行回滚； 还需要进行验证测试是否完全正确。
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
 			row = -1;
+
+			logger.error(e.getMessage());
+			logger.error("同步人员数据到UP失败！错误信息：->" + Arrays.toString(e.getStackTrace()));
 		}
 
 		return row;
 	}
-	
 
 	@Override
 	public int syncAllCardInfoFromUp(List<CardUserInfoToUP> upCardUserInfos) {
@@ -717,15 +714,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
 			row = -1;
+
+			logger.error(e.getMessage());
+			logger.error("同步UP发卡数据到Q1失败！错误信息：->" + Arrays.toString(e.getStackTrace()));
 		}
 
 		return row;
 	}
 
-
 	@Override
-	public HashMap<String, Set<String>> getUserRoleMenuPermission(SysUser sysUser,Session session) {
-		// TODO Auto-generated method stub	
+	public HashMap<String, Set<String>> getUserRoleMenuPermission(SysUser sysUser, Session session) {
+		// TODO Auto-generated method stub
 		HashMap<String, Set<String>> map = new HashMap<>();
 
 		// 若redis中不存在此人员的数据，就去查库（redis的相关数据，在用户被修改角色的时候，会删除）
@@ -733,15 +732,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		Object userAuth = hashOper.get("userAuth", sysUser.getUuid());
 		Object userBtn = hashOper.get("userBtn", sysUser.getUuid());
 		if (userAuth != null && userBtn != null) { // 若存在，表明，没有更新更新redis，则不需要设置
-			//如果session为空，表明是初次登录进来，所以设置
-			if(session.getAttribute(Constant.SESSION_SYS_AUTH)==null||session.getAttribute(Constant.SESSION_SYS_BTN)==null){
-				session.setAttribute(Constant.SESSION_SYS_AUTH,userAuth );	
-				session.setAttribute(Constant.SESSION_SYS_BTN,userBtn );	
+			// 如果session为空，表明是初次登录进来，所以设置
+			if (session.getAttribute(Constant.SESSION_SYS_AUTH) == null
+					|| session.getAttribute(Constant.SESSION_SYS_BTN) == null) {
+				session.setAttribute(Constant.SESSION_SYS_AUTH, userAuth);
+				session.setAttribute(Constant.SESSION_SYS_BTN, userBtn);
 			}
-			return null;	//返回空，不在调用处处理
+			return null; // 返回空，不在调用处处理
 		}
 
-	
 		Set<String> userRMP_AUTH = new HashSet<>(); // 接口
 		Set<String> userRMP_BTN = new HashSet<>(); // 按钮
 
@@ -822,33 +821,33 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 	@Override
 	public QueryResult<SysUser> getUserNotInRoleId(String roleId, int start, int limit, String sort, String filter) {
-		String hql = "from SysUser as o where o.isDelete=0  and state='0' "; //只列出状态正常的用户
-        if(StringUtils.isNotEmpty(roleId)){
-            String hql1=  " from SysUser as u inner join fetch u.sysRoles as k where k.uuid='" + roleId
-                    + "' and k.isDelete=0 and u.isDelete=0 ";
-            List<SysUser> tempList = this.queryByHql(hql1);
-            if(tempList.size()>0){
-                StringBuilder sb = new StringBuilder();
-                for (SysUser sysUser : tempList) {
-                    sb.append(sysUser.getUuid());
-                    sb.append(",");
-                }
-                sb = sb.deleteCharAt(sb.length()-1);
-                String str = sb.toString().replace(",", "','");
-                hql += " and o.uuid not in ('" + str + "')";
-            }
-        }
-        if(StringUtils.isNotEmpty(filter)){
-            hql += filter;
-        }
-        if(StringUtils.isNotEmpty(sort)){
-            hql += " order by ";
-            hql+= sort;
-        }
-        QueryResult<SysUser> qr = this.queryResult(hql, start, limit);
-        return qr;
+		String hql = "from SysUser as o where o.isDelete=0  and state='0' "; // 只列出状态正常的用户
+		if (StringUtils.isNotEmpty(roleId)) {
+			String hql1 = " from SysUser as u inner join fetch u.sysRoles as k where k.uuid='" + roleId
+					+ "' and k.isDelete=0 and u.isDelete=0 ";
+			List<SysUser> tempList = this.queryByHql(hql1);
+			if (tempList.size() > 0) {
+				StringBuilder sb = new StringBuilder();
+				for (SysUser sysUser : tempList) {
+					sb.append(sysUser.getUuid());
+					sb.append(",");
+				}
+				sb = sb.deleteCharAt(sb.length() - 1);
+				String str = sb.toString().replace(",", "','");
+				hql += " and o.uuid not in ('" + str + "')";
+			}
+		}
+		if (StringUtils.isNotEmpty(filter)) {
+			hql += filter;
+		}
+		if (StringUtils.isNotEmpty(sort)) {
+			hql += " order by ";
+			hql += sort;
+		}
+		QueryResult<SysUser> qr = this.queryResult(hql, start, limit);
+		return qr;
 	}
-	
+
 	/**
 	 * 根据部门ID获取部门下的人员
 	 * 
@@ -858,8 +857,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	 */
 	@Override
 	public List<SysUser> getUserByDeptId(String deptId) {
-		String hql = "select u.uuid from SysUser as u,BaseUserdeptjob as r where u.uuid=r.userId and r.deptId='" + deptId
-				+ "' and r.isDelete=0 and u.isDelete=0";
+		String hql = "select u.uuid from SysUser as u,BaseUserdeptjob as r where u.uuid=r.userId and r.deptId='"
+				+ deptId + "' and r.isDelete=0 and u.isDelete=0";
 		return this.queryByHql(hql);
 	}
 
