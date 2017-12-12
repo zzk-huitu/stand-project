@@ -104,7 +104,7 @@ Ext.define("core.system.role.view.MainGrid", {
             xtype:'actiontextcolumn',
             ref: "roledetail",
             text: "操作",
-            width:130,
+            width:200,
             resizable :false,
             align:'center',
             items: [{

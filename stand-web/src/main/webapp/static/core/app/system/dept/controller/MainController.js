@@ -17,7 +17,7 @@ Ext.define("core.system.dept.controller.MainController", {
             "basepanel basetreegrid[xtype=system.dept.maingrid]": {
               afterrender : function(grid) {
                 if(comm.get("isAdmin")!="1"){
-                    var menuCode="ROLERIGHT";     // 此菜单的前缀
+                    var menuCode="DEPARTMENT";     // 此菜单的前缀
                     var userBtn=comm.get("userBtn");
                     if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
                         var btnAdd = grid.down("button[ref=gridAdd_Tab]");

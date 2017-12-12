@@ -4,7 +4,7 @@ Ext.define("core.system.dept.view.MainGrid", {
     dataUrl: comm.get('baseUrl') + "/SysOrg/chkTreeList",
     model: "com.zd.school.plartform.baseset.model.BaseOrgChkTree",
     al: true,
-    menuCode:"ROLERIGHT",
+    menuCode:"DEPARTMENT",
     //selModel: null,    
     extParams: {
         whereSql: " and isDelete='0' ",

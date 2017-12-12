@@ -147,42 +147,42 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
             menusItems.push(menusItem);
         }*/ 
 
-       
-        
-
         // 2017/12/5 只显示第一个菜单的子项
-        var menusItems=[];  
-        var children=menus[0].children;
+        if(menus.length!=0){
+            var menusItems=[];  
+            var children=menus[0].children;
 
-        for(var j in children){
-            var menuChild = children[j];    
-            //小图标 
-            var smallIconCls=menuChild.smallIcon;
-            if (!smallIconCls) {
-                smallIconCls="x-fa fa-bars";
+            for(var j in children){
+                var menuChild = children[j];    
+                //小图标 
+                var smallIconCls=menuChild.smallIcon;
+                if (!smallIconCls) {
+                    smallIconCls="x-fa fa-bars";
+                }
+
+                var menusItem={
+                    //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
+                    text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
+                    textBase:menuChild.text,
+                    //iconCls: "x-fa fa-link mainMenu-iconCls",
+                    menuCode:menuChild.menuCode,
+                    menuType: menuChild.menuType,  
+                    children: menuChild.children,
+                    smallIcon:menuChild.smallIcon,
+                    bigIcon: menuChild.bigIcon,
+                    menuTarget:menuChild.menuTarget,
+                    menuParent:menuChild["parent"]
+                };
+                
+                if(menuChild.children.length!=0)
+                    this.createMenu(menusItem,menuChild.children);
+
+                menusItems.push(menusItem);            
             }
 
-            var menusItem={
-                //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
-                text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
-                textBase:menuChild.text,
-                //iconCls: "x-fa fa-link mainMenu-iconCls",
-                menuCode:menuChild.menuCode,
-                menuType: menuChild.menuType,  
-                children: menuChild.children,
-                smallIcon:menuChild.smallIcon,
-                bigIcon: menuChild.bigIcon,
-                menuTarget:menuChild.menuTarget,
-                menuParent:menuChild["parent"]
-            };
-            
-            if(menuChild.children.length!=0)
-                this.createMenu(menusItem,menuChild.children);
-
-            menusItems.push(menusItem);            
+            this.items[0].items=menusItems;
         }
-
-        this.items[0].items=menusItems;
+                
         this.callParent(arguments);  
     },  
 

@@ -776,20 +776,10 @@ Ext.define("core.system.user.controller.MainController", {
         //设置tab页的itemId
         var pkValue= null;
         var operType = "detail";    // 只显示关闭按钮
-        var tabItemId=funCode+"_gridUserRole"+insertObj.classNumb;    //详细界面可以打开多个
-        items=[{
-            xtype:detLayout,
-            defaults:null,
-            items:[{
-                xtype:'system.user.userrolegrid',
-                title:null
-            }]
-        }];
         switch(cmd){
             case 'userRole':
                 var tabTitle =insertObj.xm+"-角色管理";
                 //设置tab页的itemId
-                var operType = "detail";    // 只显示关闭按钮
                 var tabItemId=funCode+"_gridUserRole"+insertObj.uuid;    //详细界面可以打开多个
                 items=[{
                     xtype:detLayout,
@@ -803,7 +793,6 @@ Ext.define("core.system.user.controller.MainController", {
             case 'deptJob':
                 var tabTitle =insertObj.xm+"-部门岗位";
                 //设置tab页的itemId
-                var operType = "detail";    // 只显示关闭按钮
                 var tabItemId=funCode+"_gridDeptJob"+insertObj.uuid;    //详细界面可以打开多个
                 items=[{
                     xtype:detLayout,
@@ -815,10 +804,9 @@ Ext.define("core.system.user.controller.MainController", {
                 }];
                 break;
             case 'detail':
-                var tabTitle =insertObj.xm+"-部门岗位";
+                var tabTitle =insertObj.xm+"-用户详情";
                 //设置tab页的itemId
-                var operType = "detail";    // 只显示关闭按钮
-                var tabItemId=funCode+"_gridDeptJob"+insertObj.uuid;    //详细界面可以打开多个
+                var tabItemId=funCode+"_gridDetail"+insertObj.uuid;    //详细界面可以打开多个
                 items=[{
                     xtype:detLayout,
                     defaults:null,
@@ -921,13 +909,6 @@ Ext.define("core.system.user.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid");
         var mainlayout=baseGrid.up("panel[xtype=system.user.mainlayout]");
-     /*   var treeGrid=mainlayout.down("panel[xtype=system.user.depttree]");
-        var treeRecords = treeGrid.getSelectionModel().getSelection();
-        if(treeRecords.length==0){
-       	    self.msgbox("请选择一个班级!");
-            return;
-       }
-       var deptId = treeRecords[0].get("id");*/
         var userGrid = mainlayout.down("basegrid[xtype=system.user.usergrid]");
         var proxy = userGrid.getStore().getProxy();
         var deptId = proxy.extraParams.deptId;

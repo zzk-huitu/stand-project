@@ -42,7 +42,7 @@ Ext.define("core.basedevice.basefrontserver.view.DetailForm", {
             blankText: "服务IP不能为空",
             allowBlank: false,
             regex: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/,
-            regexText: 'IP格式为：xxx.xxx.xxx.xxx',
+            regexText: 'IP合法值为：0.0.0.0~255.255.255.255',
             columnWidth:0.5
         }]
     }, { 
@@ -54,9 +54,10 @@ Ext.define("core.basedevice.basefrontserver.view.DetailForm", {
             fieldLabel: "服务端口",
             name: "frontServerPort",
             allowBlank: false,
-            emptyText: '服务IP',
+            emptyText: '服务端口',
             blankText: "服务端口不能为空",
-            columnWidth:0.5
+            columnWidth:0.5,
+            maxValue:2147483647
         }, {
             fieldLabel: "请求的URL",
             name: "frontServerUrl",

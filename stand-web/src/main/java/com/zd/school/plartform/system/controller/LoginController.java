@@ -204,7 +204,10 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		String newUserPwd = request.getParameter("newPwd");
 		String[] propName = { "userName", "userPwd" };
 		String[] propValue = { userName, new Sha256Hash(userPwd).toHex() };
-
+		if (userPwd.equals(newUserPwd)) {
+			writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			return;
+        }
 		SysUser sysUser = sysUserService.getByProerties(propName, propValue);
 		if (ModelUtil.isNotNull(sysUser)) {
 			// 更新到数据库

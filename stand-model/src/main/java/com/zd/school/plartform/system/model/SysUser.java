@@ -45,7 +45,7 @@ public class SysUser extends BaseEntity implements Serializable {
     }*/
 
     @FieldInfo(name = "账号")
-    @Column(name = "USER_NAME", length = 16, nullable = false)
+    @Column(name = "USER_NAME", length = 36, nullable = false)
     private String userName;
 
     public void setUserName(String userName) {

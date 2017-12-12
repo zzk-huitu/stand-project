@@ -1,6 +1,6 @@
-Ext.define("core.system.user.view.UserForm", {
+Ext.define("core.baseset.studentmanager.view.DetailForm", {
     extend: "core.base.view.BaseForm",
-    alias: "widget.system.user.userform",
+    alias: "widget.baseset.studentmanager.detailform",
     layout: "form",
     autoHeight: true,
     frame: false,
@@ -74,7 +74,7 @@ Ext.define("core.system.user.view.UserForm", {
             ddCode: "CATEGORY",
             allowBlank: false,
             blankText: "身份不能为空",
-            value:"1"
+           // readOnly:true
         }]
     }, {
         xtype: 'container',

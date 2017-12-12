@@ -758,6 +758,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String deptId = request.getParameter("deptId"); 
 		String userName = request.getParameter("userName"); 
 		String xm = request.getParameter("xm");
+		String category = request.getParameter("category");
 		
 		//数据字典项
 		String mapKey = null;
@@ -772,13 +773,18 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		List<SysUser> sysUserList = null;
 		String hql = " from SysUser a where a.isDelete=0 ";
 		if (StringUtils.isNotEmpty(deptId)) {
-			hql = " select a from SysUser a inner join BaseUserdeptjob b on a.uuid=b.userId where a.isDelete=0 and b.isDelete=0 and b.deptId='"+deptId+"'";
+			if(!deptId.equals(AdminType.ADMIN_ORG_ID)){
+				hql = " select a from SysUser a inner join BaseUserdeptjob b on a.uuid=b.userId where a.isDelete=0 and b.isDelete=0 and b.deptId='"+deptId+"'";	
+			}
 		}
 		if (StringUtils.isNotEmpty(userName)) {
 			hql += " and a.userName like '%"+userName+"%'";
 		}
 		if (StringUtils.isNotEmpty(xm)) {
 			hql += " and a.xm like '%"+xm+"%'";
+		}
+		if (StringUtils.isNotEmpty(category)) {
+			hql += " and a.category = '"+category+"'";
 		}
 		sysUserList = thisService.queryByHql(hql);
 
