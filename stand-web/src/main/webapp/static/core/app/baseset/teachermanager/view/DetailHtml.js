@@ -1,22 +1,22 @@
-Ext.define("core.system.user.view.DetailHtml", {
+Ext.define("core.baseset.teachermanager.view.DetailHtml", {
     extend: "Ext.Container",
-    alias: "widget.system.user.detailhtml",
+    alias: "widget.baseset.teachermanager.detailhtml",
     layout: "form", 
     margin: '0 0 0 10',
     scrollable: true,
     width: '100%',
     items: [{
         xtype: 'container',
-        ref: 'userBaseInfo',
+        ref: 'teacherBaseInfo',
         tpl: new Ext.XTemplate(
             '<div class="trainClass_classInfo">',
-            '<div class="trainClass_title">用户基本信息：</div>',
+            '<div class="trainClass_title">学生用户基本信息：</div>',
             '<ul>' ,
             '<li style="width:50%" title="{userName}">用户名：{userName}</li>',
-            '<li style="width:50%" title="{xm}">真实姓名：{xm}</li>',
+            '<li style="width:50%" title="{xm}">教师姓名：{xm}</li>',
             '<li style="width:50%">性别：',
             '<tpl if="xbm==1">男<tpl elseif="xbm==2">女</tpl></li>',
-            '<li style="width:50%" title="{category}">身份：',
+            '<li style="width:50%"  title="{category}">身份：',
             '<tpl if="category == 1">教职工<tpl elseif="category == 2">学生',
             '<tpl elseif="category == 3">家长<tpl elseif="category == 0">内部用户<tpl else></tpl>',
             '</li>',
@@ -38,16 +38,16 @@ Ext.define("core.system.user.view.DetailHtml", {
         data: {}
     }, {
         xtype: 'container',
-        ref: "userDetailInfo",
+        ref: "teacherDetailInfo",
         tpl: new Ext.XTemplate(
             '<div class="trainClass_classTraineeInfo">',
-            '<div class="trainClass_title">用户角色管理：</div>',
+            '<div class="trainClass_title">学生用户角色管理：</div>',
             '<ul class="trainClass_gridUl" style="max-height: 400px;">',
             '<li>',
             '<span style="width:20%" data-align="center">角色编码</span><span style="width:20%" data-align="center">角色名称</span>' ,
             '<span style="width:10%" data-align="center">是否系统角色</span><span style="width:30%" data-align="center">角色说明</span>' ,
             '{% if (values.rows.length == 0) %}',
-            '<li style="width:100%;font-size: 14px;font-weight: 400;text-align: center;line-height: 100px;">此用户暂无角色...</li>',
+            '<li style="width:100%;font-size: 14px;font-weight: 400;text-align: center;line-height: 100px;">此学生用户暂无角色...</li>',
             '{% if (values.rows.length == 0 ) return  %}',   //reutrun 表示不执行下面的了，在for里面可以使用break、continue
             '<tpl for="rows">',
             '<li>' ,

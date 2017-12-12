@@ -85,7 +85,7 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
         var datas = []; 
         var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
         var menus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
-        
+       
         /* 2017/12/5 去除了全部显示的方式
         var menusItems=[];
         //组装第一层菜单
@@ -147,36 +147,44 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
             menusItems.push(menusItem);
         }*/ 
 
-        // 2017/12/5 只显示第一个菜单的子项
-        var menusItems=[];  
-        var children=menus[0].children;
 
-        for(var j in children){
-            var menuChild = children[j];    
-            //小图标 
-            var smallIconCls=menuChild.smallIcon;
-            if (!smallIconCls) {
-                smallIconCls="x-fa fa-bars";
+        // 2017/12/5 只显示第一个菜单的子项
+        // if(menus.length<=0){
+        //     window.location.href = comm.get("baseUrl") + "/noAuth.jsp";
+        // }
+        if(menus.length!=0){
+
+            var menusItems=[];  
+            var children=menus[0].children;
+
+            for(var j in children){
+                var menuChild = children[j];    
+                //小图标 
+                var smallIconCls=menuChild.smallIcon;
+                if (!smallIconCls) {
+                    smallIconCls="x-fa fa-bars";
+                }
+
+                var menusItem={
+                    //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
+                    text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
+                    textBase:menuChild.text,
+                    //iconCls: "x-fa fa-link mainMenu-iconCls",
+                    menuCode:menuChild.menuCode,
+                    menuType: menuChild.menuType,  
+                    children: children,
+                    smallIcon:menuChild.smallIcon,
+                    bigIcon: menuChild.bigIcon,
+                    menuTarget:menuChild.menuTarget,
+                    menuParent:menuChild["parent"]
+                };
+
+                menusItems.push(menusItem);            
             }
 
-            var menusItem={
-                //text:'<img src="/static/core/resources/images/icon/index_zhiwuguanli.png" class="mainMenu-img"/><span style="font-size:15px;font-family:微软雅黑">'+menugroup.text+'</span>',               
-                text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img"/> '+menuChild.text,
-                textBase:menuChild.text,
-                //iconCls: "x-fa fa-link mainMenu-iconCls",
-                menuCode:menuChild.menuCode,
-                menuType: menuChild.menuType,  
-                children: children,
-                smallIcon:menuChild.smallIcon,
-                bigIcon: menuChild.bigIcon,
-                menuTarget:menuChild.menuTarget,
-                menuParent:menuChild["parent"]
-            };
-
-            menusItems.push(menusItem);            
+            this.items[0].items=menusItems;
         }
-
-        this.items[0].items=menusItems;
+        
         this.callParent(arguments);  
     },  
 

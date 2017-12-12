@@ -78,7 +78,8 @@ Ext.define('core.main.view.ChangePwd', {
 				vtype: 'password',
 				initialPassField: 'newConfirmPwd',
 				minLength: '6',
-				minLengthText: '密码最少要6位'
+				minLengthText: '密码最少要6位',
+				maxLength:128
 			}, {
 				xtype: 'textfield',
 				inputType: 'password',
@@ -88,7 +89,8 @@ Ext.define('core.main.view.ChangePwd', {
 				vtype: 'password',
 				initialPassField: 'newPwd',
 				minLength: '6',
-				minLengthText: '密码最少要6位'
+				minLengthText: '密码最少要6位',
+				maxLength:128
 			}]
 		});
 		return form;
@@ -103,27 +105,52 @@ Ext.define('core.main.view.ChangePwd', {
 			icon: Ext.MessageBox.OK
 		});*/
 
-		
-		me.form.getForm().submit({
-			url: comm.get('baseUrl') + '/login/changepwd',
-			success: function(form, action) {
-				Ext.MessageBox.show({
-					title: '密码修改',
-					msg: '密码修改成功，请重新登录',
-					buttons: Ext.MessageBox.OK,
-					icon: Ext.MessageBox.OK
-				});
-				window.location.href = comm.get("baseUrl") + "/login/loginout";
-			},
-			failure: function(form, action) {
-				Ext.MessageBox.show({
-					title: '密码修改',
-					msg: '原密码错误，无法重设密码',
-					buttons: Ext.MessageBox.OK,
-					icon: Ext.MessageBox.ERROR
-				})
-			}
-		});
+		var formObj = me.form.getForm();
+        if (formObj.isValid()) { 
+        	formObj.submit({
+        		url: comm.get('baseUrl') + '/login/changepwd',
+        		success: function(form, action) {
+        			Ext.MessageBox.show({
+        				title: '密码修改',
+        				//msg: '密码修改成功，请重新登录',
+        				msg: '密码修改成功，下次登录请使用新密码',
+        				buttons: Ext.MessageBox.OK,
+        				icon: Ext.MessageBox.INFO
+        			});
+                    me.close();
+        			//window.location.href = comm.get("baseUrl") + "/login/logout";
+        		},
+
+        		failure: function(form, action) {
+        			var obj = action.result.obj;
+        			if(obj==0){
+        				Ext.MessageBox.show({
+        					title: '密码修改',
+        					msg: '原密码与新密码一样,请重新修改',
+        					buttons: Ext.MessageBox.OK,
+        					icon: Ext.MessageBox.INFO
+        				})
+
+        			}else{
+        				Ext.MessageBox.show({
+        					title: '密码修改',
+        					msg: '原密码错误，无法重设密码',
+        					buttons: Ext.MessageBox.OK,
+        					icon: Ext.MessageBox.ERROR
+        				})
+        			}
+        		}
+        	});
+        }else{
+            var errors = ["前台验证失败，错误信息："];
+            formObj.getFields().each(function (f) {
+                if (!f.isValid()) {
+                    errors.push("<font color=red>" + f.fieldLabel + "</font>：" + f.getErrors().join(","));
+                }
+            });
+            Ext.example.msg("提示", errors.join("<br/>"));
+        }
+	
 	},
 	onReset: function() {
 		var me = this;

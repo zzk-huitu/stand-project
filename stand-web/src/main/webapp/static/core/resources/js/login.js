@@ -50,7 +50,10 @@ window.onload = function() {
     document.getElementById("name").value = userName;
     var userPwd = getCookieValue("userPwd");
     document.getElementById("psw").value = userPwd;
-}
+    if(userName!="" && userPwd!=""){
+     document.getElementById("rememberMe").checked = true;
+    }
+ }
 
 
 //全局验证码变量
