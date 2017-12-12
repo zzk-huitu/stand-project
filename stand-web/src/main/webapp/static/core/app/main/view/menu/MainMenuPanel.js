@@ -178,7 +178,6 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
                     menuTarget:menuChild.menuTarget,
                     menuParent:menuChild["parent"]
                 };
-
                 menusItems.push(menusItem);            
             }
 
