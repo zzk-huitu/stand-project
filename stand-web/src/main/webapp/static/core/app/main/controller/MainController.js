@@ -8,7 +8,10 @@ Ext.define('core.main.controller.MainController', {
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.main.mainController',
-    
+    mixins: {
+        suppleUtil: "core.util.SuppleUtil",
+        messageUtil: "core.util.MessageUtil",    
+    },
    
     init: function() {
         var self = this;
@@ -46,6 +49,8 @@ Ext.define('core.main.controller.MainController', {
         }
     },
 
+
+    //顶部head中的菜单按钮事件
     onChangeHeadMenu:function(btn){
         
         //若当前按钮，是FUNC和Frame，则打开窗口. 否则切换左侧的子菜单
@@ -213,7 +218,15 @@ Ext.define('core.main.controller.MainController', {
         this.getView().getViewModel().set("headerType.value",btn.changeType);
     },
 
-    
+    onSetDeskFunction:function(btn){
+        //Ext.widget("main.deskfunction").show();
+        var cmp=Ext.getCmp("app-deskfunction");
+        if(!cmp)
+            Ext.widget("main.deskfunction").show();
+        else
+            cmp.show();
+    },
+
     /*
     *菜单栏显示子菜单
     */

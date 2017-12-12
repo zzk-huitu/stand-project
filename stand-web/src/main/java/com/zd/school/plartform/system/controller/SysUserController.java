@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
@@ -677,7 +680,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/*
-	 * 一键同步UP的方式（待定；或者先使用数据库定时脚本，进行发卡测试）
+	 * 一键同步UP的方式（待定；目前使用数据库定时脚本，进行发卡信息同步）
 	 */
 	@RequestMapping("/doSyncAllCardInfoFromUp")
 	public void doSyncAllCardInfoFromUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -842,5 +845,85 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-
+    
+    /**
+     * 设置用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/setUserDeskFunc")
+    public void setUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	    	String[] strs=menuCodes.split(",");
+	    	
+	    	Set<String> set= null;
+	    	if (userDeskFunc != null){
+	    		set= (Set<String>) userDeskFunc;        	
+	    	}else{
+	    		set= new HashSet<>();    		
+	    	}	    	
+	    	set.addAll(Arrays.asList(strs));	
+			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功！\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败！\""));
+    	}	
+    }
+    /**
+     * 取消用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/cancelUserDeskFunc")
+    public void cancelUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	    	String[] strs=menuCodes.split(",");
+	    	
+	    	Set<String> set= null;
+	    	if (userDeskFunc != null){
+	    		set= (Set<String>) userDeskFunc;        	
+	    	}else{
+	    		set= new HashSet<>();    		
+	    	}	    	
+	    	set.removeAll(Arrays.asList(strs));	
+			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功！\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+    	}	
+    }
+    
+    /**
+     * 获取用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/getUserDeskFunc")
+    public void getUserDeskFunc(HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	   	    
+	    	Set<String> set= (Set<String>) userDeskFunc;        	
+	    	String returnStr=set.stream().collect(Collectors.joining(","));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\""+returnStr+"\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+    	}	
+    }
 }

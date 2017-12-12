@@ -114,11 +114,12 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             renderer: function(value) {
                 switch (value) {
                     case 0:
-                        return '<font color=green>启用</font>';
-                        break;
-                    case 1:
                         return '<font color=red>禁用</font>';
                         break;
+                    case 1:
+                        return '<font color=green>启用</font>';
+                        break;
+                   
                 }
             }
         }, {
@@ -137,15 +138,15 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             }
         }, {
             width: 80,
-            text: "是否启用",
+            text: "前置状态",
             dataIndex: "frontServerStatus",
             renderer: function(value) {
                 switch (value) {
                     case 0:
-                        return '<font color=green>启用</font>';
+                        return '<font color=red>禁用</font>';                    
                         break;
                     case 1:
-                        return '<font color=red>禁用</font>';
+                        return '<font color=green>启用</font>';
                         break;
                 }
             }

@@ -61,9 +61,9 @@ public class PtTerm extends BaseEntity implements Serializable {
 	@Column(name = "TERMTYPEID")
 	private String termTypeID;
 
-	@FieldInfo(name = "设备状态(0是启用 1是禁用)")
+	@FieldInfo(name = "设备状态(1是启用 0是禁用)")
 	@Column(name = "TERM_STATUS")
-	private Integer termStatus = 0;
+	private Integer termStatus = 1;
 
 	@FieldInfo(name = "是否允许脱机使用")
 	@Column(name = "OFFLINEUSE")

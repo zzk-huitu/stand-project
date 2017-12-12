@@ -1,0 +1,39 @@
+// .x-view-selector {
+//     position: absolute;
+//     border: 1px dotted #3399BB;
+// }
+
+.allFunction.thumb-wrap{
+	float: left;
+    margin:10px 5px 0px 5px;
+    padding: 5px;
+    border: 1px solid #dfe9f6;
+    //width: 284px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.allFunction.thumb-wrap.x-item-selected {
+    background: #cae4ff;
+    border: 1px solid #95c3ff;  
+    padding: 5px;
+}
+
+.allFunction.thumb-wrap.x-item-hover {
+    background: #cae4ff;    
+    padding: 5px;
+     border: 1px solid #95c3ff;  
+}
+
+.x-view-selector{
+	position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    background: #c3daf9;
+    border: 1px dotted #39b;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter: alpha(opacity=50);
+    zoom: 1;
+}

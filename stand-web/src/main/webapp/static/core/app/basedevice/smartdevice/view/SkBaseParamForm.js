@@ -1,8 +1,9 @@
 var combostore = new Ext.data.ArrayStore({
     fields: ['id', 'name'],
     data: [
-        ['1', '启用'],
-        ['0', '禁用']
+        ['0', '禁用'],
+        ['1', '启用']
+       
     ]
 });
 

@@ -80,7 +80,7 @@ public class PtGateway extends BaseEntity implements Serializable {
 		this.netgatewayIp = netgatewayIp;
 	}
 	
-	@FieldInfo(name = "网关状态(0是启用 1是禁用)")
+	@FieldInfo(name = "网关状态(1是启用 0是禁用)")//修正，数据弄反
 	@Column(name = "GATEWAYSTATUS")
 	private Integer gatewayStatus;
 
@@ -96,7 +96,7 @@ public class PtGateway extends BaseEntity implements Serializable {
 	@Formula("(SELECT A.FRONTSERVER_PORT FROM dbo.SYS_FRONTSERVER A WHERE A.FRONTSERVER_ID=FRONTSERVER_ID)")
 	private Integer frontServerPort;
 	
-	@FieldInfo(name = "前置状态(0是启用 1是禁用)")
+	@FieldInfo(name = "前置状态(1是启用 0是禁用)")//修正，数据弄反
 	@Formula("(SELECT A.FRONTSERVER_STATUS FROM dbo.SYS_FRONTSERVER A WHERE A.FRONTSERVER_ID=FRONTSERVER_ID)")
 	private Integer frontServerStatus;
 	

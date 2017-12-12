@@ -1,8 +1,8 @@
 var combostore = new Ext.data.ArrayStore({
     fields: ['id', 'gatewayStatus'],
     data: [
-        [0, '启用'],
-        [1, '禁用']
+        [0, '禁用'],
+        [1, '启用']
     ]
 });
 Ext.define("core.basedevice.basegateway.view.DetailForm", {

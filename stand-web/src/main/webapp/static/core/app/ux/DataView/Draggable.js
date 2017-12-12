@@ -1,24 +1,52 @@
 /**
- * @author Ed Spencer
+ * ## Basic DataView with Draggable mixin.
  *
-<pre><code>
-Ext.create('Ext.view.View', {
-    mixins: {
-        draggable: 'Ext.ux.DataView.Draggable'
-    },
-
-    initComponent: function() {
-        this.mixins.draggable.init(this, {
-            ddConfig: {
-                ddGroup: 'someGroup'
-            }
-        });
-
-        this.callParent(arguments);
-    }
-});
-</code></pre>
+ *     Ext.Loader.setPath('Ext.ux', '../../../SDK/extjs/examples/ux');
  *
+ *     Ext.define('My.cool.View', {
+ *         extend: 'Ext.view.View',
+ *
+ *         mixins: {
+ *             draggable: 'Ext.ux.DataView.Draggable'
+ *         },
+ *
+ *         initComponent: function() {
+ *             this.mixins.draggable.init(this, {
+ *                 ddConfig: {
+ *                     ddGroup: 'someGroup'
+ *                 }
+ *             });
+ * 
+ *             this.callParent(arguments);
+ *         }
+ *     });
+ *
+ *     Ext.onReady(function () {
+ *         Ext.create('Ext.data.Store', {
+ *             storeId: 'baseball',
+ *             fields: ['team', 'established'],
+ *             data: [
+ *                 { team: 'Atlanta Braves', established: '1871' },
+ *                 { team: 'Miami Marlins', established: '1993' },
+ *                 { team: 'New York Mets', established: '1962' },
+ *                 { team: 'Philadelphia Phillies', established: '1883' },
+ *                 { team: 'Washington Nationals', established: '1969' }
+ *             ]
+ *          });
+ *
+ *          Ext.create('My.cool.View', {
+ *              store: Ext.StoreMgr.get('baseball'),
+ *              tpl: [
+ *                  '<tpl for=".">', 
+ *                      '<p class="team">', 
+ *                          'The {team} were founded in {established}.',
+ *                      '</p>', 
+ *                  '</tpl>'
+ *              ],
+ *              itemSelector: 'p.team',
+ *              renderTo: Ext.getBody()
+ *          });
+ *      });
  */
 Ext.define('Ext.ux.DataView.Draggable', {
     requires: 'Ext.dd.DragZone',
@@ -73,13 +101,14 @@ Ext.define('Ext.ux.DataView.Draggable', {
      * Called when the attached DataView is rendered. Sets up the internal DragZone
      */
     onRender: function() {
-        var config = Ext.apply({}, this.ddConfig || {}, {
-            dvDraggable: this,
-            dataview   : this.dataview,
-            getDragData: this.getDragData,
-            getTreeNode: this.getTreeNode,
-            afterRepair: this.afterRepair,
-            getRepairXY: this.getRepairXY
+        var me = this,
+            config = Ext.apply({}, me.ddConfig || {}, {
+            dvDraggable: me,
+            dataview   : me.dataview,
+            getDragData: me.getDragData,
+            getTreeNode: me.getTreeNode,
+            afterRepair: me.afterRepair,
+            getRepairXY: me.getRepairXY
         });
 
         /**
@@ -87,7 +116,15 @@ Ext.define('Ext.ux.DataView.Draggable', {
          * @type Ext.dd.DragZone
          * The attached DragZone instane
          */
-        this.dragZone = Ext.create('Ext.dd.DragZone', this.dataview.getEl(), config);
+        me.dragZone = Ext.create('Ext.dd.DragZone', me.dataview.getEl(), config);
+
+        // This is for https://www.w3.org/TR/pointerevents/ platforms.
+        // On these platforms, the pointerdown event (single touchstart) is reserved for
+        // initiating a scroll gesture. Setting the items draggable defeats that and
+        // enables the touchstart event to trigger a drag.
+        //
+        // Two finger dragging will still scroll on these platforms.
+        me.dataview.setItemsDraggable(true);
     },
 
     getDragData: function(e) {
@@ -98,6 +135,10 @@ Ext.define('Ext.ux.DataView.Draggable', {
             selected, dragData;
 
         if (target) {
+            // preventDefault is needed here to avoid the browser dragging the image
+            // instead of dragging the container like it's supposed to
+            e.preventDefault();
+            
             if (!dataview.isSelected(target)) {
                 selModel.select(dataview.getRecord(target));
             }
@@ -110,12 +151,12 @@ Ext.define('Ext.ux.DataView.Draggable', {
                 item: true
             };
 
-            if (selected.length == 1) {
+            if (selected.length === 1) {
                 dragData.single = true;
                 dragData.ddel = target;
             } else {
                 dragData.multi = true;
-                dragData.ddel = draggable.prepareGhost(selModel.getSelection()).dom;
+                dragData.ddel = draggable.prepareGhost(selModel.getSelection());
             }
 
             return dragData;
@@ -165,16 +206,10 @@ Ext.define('Ext.ux.DataView.Draggable', {
     /**
      * Updates the internal ghost DataView by ensuring it is rendered and contains the correct records
      * @param {Array} records The set of records that is currently selected in the parent DataView
-     * @return {Ext.view.View} The Ghost DataView
+     * @return {HTMLElement} The Ghost DataView's encapsulating HTMLElement.
      */
     prepareGhost: function(records) {
-        var ghost = this.createGhost(records),
-            store = ghost.store;
-
-        store.removeAll();
-        store.add(records);
-
-        return ghost.getEl();
+        return this.createGhost(records).getEl().dom;
     },
 
     /**
@@ -183,18 +218,35 @@ Ext.define('Ext.ux.DataView.Draggable', {
      * lighter-weight representation of just the nodes that are selected in the parent DataView.
      */
     createGhost: function(records) {
-        if (!this.ghost) {
-            var ghostConfig = Ext.apply({}, this.ghostConfig, {
-                store: Ext.create('Ext.data.Store', {
-                    model: records[0].modelName
-                })
+        var me = this,
+            store;
+
+        if (me.ghost) {
+            (store = me.ghost.store).loadRecords(records);
+        } else {
+            store = Ext.create('Ext.data.Store', {
+                model: records[0].self
             });
 
-            this.ghost = Ext.create('Ext.view.View', ghostConfig);
-
-            this.ghost.render(document.createElement('div'));
+            store.loadRecords(records);
+            me.ghost = Ext.create('Ext.view.View', Ext.apply({
+                renderTo: document.createElement('div'),
+                store: store
+            }, me.ghostConfig));
+            me.ghost.container.skipGarbageCollection = me.ghost.el.skipGarbageCollection = true;
         }
+        store.clearData();
 
-        return this.ghost;
+        return me.ghost;
+    },
+
+    destroy: function() {
+        var ghost = this.ghost;
+
+        if (ghost) {
+            ghost.container.destroy();
+            ghost.destroy();
+        }
+        this.callParent();
     }
 });
