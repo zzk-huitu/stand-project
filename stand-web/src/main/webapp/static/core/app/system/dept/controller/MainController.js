@@ -100,20 +100,22 @@ Ext.define("core.system.dept.controller.MainController", {
                     Ext.each(records, function(rec) {
                         var pkValue = rec.get("id");
                         var deptType = rec.get("deptType");
+                        var isSystem = rec.get("isSystem"); //系统内置
                         var child = rec.childNodes.length;
-                        if (child == 0 && deptType != "01" && deptType != "02") {
+                        if (child == 0 && deptType != "01" && deptType != "02" && isSystem!="1") {
                             //仅能删除无子部门而且类型不为学校的部门
                             ids.push(pkValue);
                         }
                     });
                     var title = "确定要删除所选的部门吗？";
                     if (ids.length == 0) {
-                        self.msgbox("所选部门都有子部门或是类别为学校，不能删除");
+                        self.msgbox("所选部门不符合要求，不能删除！<br/>不能删除的部门为：存在子部门、类别为学校/校区、系统内置");
                         return;
                     }
                     if (ids.length < records.length) {
-                        title = "有些部门有子部门，仅删除不含子部门的部门。确定吗？";
+                        title = "有些部门有子部门，仅删除不含子部门的部门，确定执行吗？";
                     }
+
                     Ext.Msg.confirm('警告', title, function(btn, text) {
                         if (btn == 'yes') {                                                    
 
@@ -164,13 +166,15 @@ Ext.define("core.system.dept.controller.MainController", {
                     var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
                     var funData = basePanel.funData;
                     var store = baseGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        whereSql: funData.whereSql,
-                        orderSql: funData.orderSql
-                    };
-                    store.load(); //刷新父窗体的grid
-
+                    //var proxy = store.getProxy();
+                    // proxy.extraParams = {
+                    //     whereSql: funData.whereSql,
+                    //     orderSql: funData.orderSql
+                    // };
+                    // store.load(); //刷新父窗体的grid
+                    store.load(function(records, operation, success) {                    
+                        baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
+                    });
                     return false;
                 }
             },
@@ -197,7 +201,7 @@ Ext.define("core.system.dept.controller.MainController", {
 
                                         if (result.success) {                                
                                             self.msgbox(result.msg);
-                                            baseGrid.getStore().loadPage(1);
+                                            //baseGrid.getStore().loadPage(1);
 
                                             Ext.Msg.hide();                                        
                                         } else {
@@ -347,6 +351,10 @@ Ext.define("core.system.dept.controller.MainController", {
                 }else{  //点击操作列的方式
                     recordData=record.getData();
                 }     
+                if(recordData["isSystem"]=="1"){
+                    self.Error("此部门为系统内置部门，不能修改");
+                    return;
+                }
 
                 //修改字段名
                 var just = recordData["id"];
@@ -354,7 +362,7 @@ Ext.define("core.system.dept.controller.MainController", {
                 var justType = recordData["deptType"];
 
                 if (justType == "01" || justType == "02") {
-                    self.Error("部门类型为学校或校区，此处不能修改");
+                    self.Error("不能修改部门类型为学校、校区的部门");
                     return;
                 } else if (justType == '04') { //年级部门
                     //2017-10-20 年级的数据，直接保存到了部门表里面，不用去请求数据了

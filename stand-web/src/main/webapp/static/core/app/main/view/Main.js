@@ -145,6 +145,7 @@ Ext.define('core.main.view.Main', {
 */
     initComponent : function() { 
 
+        /*2017-12-12 【我的桌面的菜单数据，不在设置读取】
         //此代码用于在【我的桌面】放入图标按钮，现在隐藏
         var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
         
@@ -161,7 +162,8 @@ Ext.define('core.main.view.Main', {
         }
         //2017-9-19 暂时关闭自定义桌面
         //var menus = viweport.getViewModel().get('myDeskMenu'); （自定义桌面：暂未用到）
-        
+        */
+
         this.items=[{
             title: '我的桌面',
             closable : false,
@@ -187,21 +189,40 @@ Ext.define('core.main.view.Main', {
                 items:[{
                     width:'100%',                
                     xtype:'container',
-                    html:'常用功能',
-                    style :{
-                        background: '#fff',
-                        padding:'20px',
-                        fontSize:'18px',
-                        fontWeight:'400',
-                        color:'#333'
-                    }
+                    layout:'hbox',
+                    items:[{
+                        flex:1,
+                        xtype:'container',
+                        html:'常用功能',
+                        style :{
+                            background: '#fff',
+                            padding:'20px',
+                            fontSize:'18px',
+                            fontWeight:'400',
+                            color:'#333'
+                        }
+                    },{
+                        //width:100,
+                        xtype:'button',
+                        tooltip: '设置常用功能', 
+                        //text: '<span style="font-size: 14px;">设置</span>',
+                        iconCls: 'x-fa fa-cog', 
+                        //cls: 'core-header-button',                        
+                        //overCls: '', 
+                        focusCls : '', 
+                        listeners:{
+                            click:'onSetDeskFunction'
+                        },
+                
+                    }]
+                    
                 },{
                     //flex:1,      
                     height:125,          
                     width:'100%',
                     //xtype: 'main.mainmenuicon',
-                    xtype: 'main.indexmenuicon', //加入新的界面
-                    datas: menus,                
+                    //datas: menus, 
+                    xtype: 'main.indexmenuicon', //加入新的界面                        
                     style :{
                         background: '#fff'
                     }

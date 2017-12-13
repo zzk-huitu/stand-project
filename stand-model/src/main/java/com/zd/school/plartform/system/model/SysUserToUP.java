@@ -13,11 +13,11 @@ public class SysUserToUP implements Serializable {
 	private String employeeStrId;
 	private String sexId;
 	private String identifier;
-	private String sid;	//尚未明确SID的用处，此字段原本用于存放发卡后的卡片uuid，与CardInfo表对应，现在不使用了
+	private String sid;	//#尚未明确SID的用处，此字段原本用于存放发卡后的卡片uuid，与CardInfo表对应，现在暂时不使用了
 	private String departmentId;
 	private String jobName;	//用于获取用户的编制、或者是否为学员，然后便于初始化卡片类型
 	private String employeePwd;
-	private String cardState;
+	private String cardState;	//#web平台中不再维护卡片信息，之前用来在Q1端进行解绑卡片操作，使用此字段作为同步标识，现在暂时不使用了
 	
 	private Integer isDelete=0;
 	private String employeeTel;
@@ -174,6 +174,13 @@ public class SysUserToUP implements Serializable {
 				return false;
 		} else if (!sexId.equals(other.sexId))
 			return false;
+		
+		if (employeeTel == null) {
+			if (other.employeeTel != null)
+				return false;
+		} else if (!employeeTel.equals(other.employeeTel))
+			return false;
+		
 		
 		/*尚未明确SID的用处，故注释
 		if (sid == null) {

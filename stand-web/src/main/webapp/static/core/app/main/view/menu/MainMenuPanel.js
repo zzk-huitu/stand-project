@@ -85,7 +85,7 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
         var datas = []; 
         var viweport=this.up("container[xtype=app-viewport]");  //获取主视图，然后再去取得它的viewport，
         var menus = viweport.getViewModel().get('systemMenu');  //而不能直接 this.getViewModel().get('systemMenu')，因为这个view没有声明viewModel
-       
+        
         /* 2017/12/5 去除了全部显示的方式
         var menusItems=[];
         //组装第一层菜单
@@ -147,13 +147,8 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
             menusItems.push(menusItem);
         }*/ 
 
-
         // 2017/12/5 只显示第一个菜单的子项
-        // if(menus.length<=0){
-        //     window.location.href = comm.get("baseUrl") + "/noAuth.jsp";
-        // }
         if(menus.length!=0){
-
             var menusItems=[];  
             var children=menus[0].children;
 
@@ -172,18 +167,22 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
                     //iconCls: "x-fa fa-link mainMenu-iconCls",
                     menuCode:menuChild.menuCode,
                     menuType: menuChild.menuType,  
-                    children: children,
+                    children: menuChild.children,
                     smallIcon:menuChild.smallIcon,
                     bigIcon: menuChild.bigIcon,
                     menuTarget:menuChild.menuTarget,
                     menuParent:menuChild["parent"]
                 };
+                
+                if(menuChild.children.length!=0)
+                    this.createMenu(menusItem,menuChild.children);
+
                 menusItems.push(menusItem);            
             }
 
             this.items[0].items=menusItems;
         }
-        
+                
         this.callParent(arguments);  
     },  
 
@@ -193,5 +192,51 @@ Ext.define('core.main.view.menu.MainMenuPanel', {
             result += '　';  
         }  
         return result;  
-    }  
+    },
+
+    //递归创建下级menu
+    createMenu:function(currentMenuItem,currentChild){
+        var menuSecondItem=[];
+        for(var k in  currentChild){
+            var secondChild = currentChild[k];    
+             //小图标 
+            var smallIconCls=secondChild.smallIcon;
+            if (!smallIconCls) {
+                smallIconCls="x-fa fa-bars";
+            }
+
+            var menuItem={
+                //text:'<img src="'+menuChild.bigIcon+'" class="mainMenuPanel-img" style="width:20px;height:20px;margin-top: 5px;"/> '+menuChild.text,
+                text:secondChild.text,
+                textBase:secondChild.text,
+                //iconCls: "x-fa fa-bars",
+                iconCls:smallIconCls+" mainMenuIconCls",
+                menuCode:secondChild.menuCode,
+                menuType: secondChild.menuType,  
+                children: secondChild.children,
+                smallIcon:secondChild.smallIcon,
+                bigIcon: secondChild.bigIcon,
+                menuTarget:secondChild.menuTarget,
+                menuParent:secondChild["parent"]
+            };
+
+            if(secondChild.children.length!=0)
+                this.createMenu(menuItem,secondChild.children);   
+
+            menuSecondItem.push(menuItem);
+        }
+
+        if(menuSecondItem.length>0){
+            currentMenuItem.menu={
+                defaults:{
+                    padding:'3',
+                    cls:'mainMenuSecondItemCls',              
+                },
+                items:menuSecondItem,                
+                listeners:{
+                    click:'onMenuItemClick'
+                }
+            }
+        }    
+    }
 }) 

@@ -44,8 +44,11 @@ Ext.define('core.main.view.menu.MainMenuIcon', {
             ],
         });
         
+        iconStore.loadData(me.datas);   //显示菜单
+        me.store=iconStore;
+        /*
         Ext.Ajax.request({
-            url: comm.get('baseUrl')+'/sysuser/getUserMenuTask',
+            url: comm.get('baseUrl')+'/SysUser/getUserMenuTask',
             method: "POST",
             async: false,
             timeout: 60000,                
@@ -73,7 +76,8 @@ Ext.define('core.main.view.menu.MainMenuIcon', {
                 iconStore.loadData(me.datas);   //显示菜单
                 me.store=iconStore;
             }
-        });            
+        }); 
+        */           
 
 
         this.callParent(arguments);  

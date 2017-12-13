@@ -268,21 +268,24 @@ Ext.define("core.system.user.controller.MainController", {
                                     success: function(response){
                                         var result=JSON.parse(response.responseText);
 
-                                        if (result.success) {                                
+                                        if (result.success) {      
+
+                                            self.Error(result.msg);                          
                                             self.msgbox(result.msg);
                                             baseGrid.getStore().loadPage(1);
 
                                             Ext.Msg.hide();                                        
                                         } else {
-                                            self.Error(result.msg);
                                             Ext.Msg.hide(); 
+                                            self.Error(result.msg);
+                                          
                                         }
                                        
                                        
                                     },
                                     failure: function(response, opts) {
-                                        self.Error("请求失败，请联系管理员！");
                                         Ext.Msg.hide(); 
+                                        self.Error("请求失败，请联系管理员！");                                  
                                     }
                                 });                              
                             },100);                           
@@ -319,15 +322,15 @@ Ext.define("core.system.user.controller.MainController", {
 
                                             Ext.Msg.hide();                                        
                                         } else {
-                                            self.Error(result.msg);
                                             Ext.Msg.hide(); 
+                                            self.Error(result.msg);                                        
                                         }
                                         
                                         
                                     },
                                     failure: function(response, opts) {
-                                        self.Error("请求失败，请联系管理员！");
                                         Ext.Msg.hide(); 
+                                        self.Error("请求失败，请联系管理员！");                                
                                     }
                                 });                              
                             },100);                           

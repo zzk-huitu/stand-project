@@ -16,7 +16,9 @@ import com.zd.core.model.TreeNodeEntity;
  * 
  * ClassName: BaseOrg Function: TODO ADD FUNCTION. Reason: TODO ADD REASON(可选).
  * Description: BASE_T_ORG实体类. date: 2016-07-26
- * 
+ * saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
+ * ExtField04	副ID
+ * ExtField05	父级副ID
  * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8
@@ -52,7 +54,7 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         return inPhone;
     }
 
-    @FieldInfo(name = "是否系统内置 0-系统内置 1-非系统内置")
+    @FieldInfo(name = "是否系统内置 1-系统内置 0-非系统内置")
     @Column(name = "ISSYSTEM", length = 10, nullable = true)
     private Integer issystem;
 

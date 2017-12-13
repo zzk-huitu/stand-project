@@ -1,3 +1,10 @@
+var combostore = new Ext.data.ArrayStore({
+    fields: ['id', 'termStatus'],
+    data: [
+        [0, '禁用'],
+        [1, '启用']
+    ]
+});
 Ext.define("core.basedevice.basedeviceallot.view.DetailForm", {
 	extend: "core.base.view.BaseForm",
     alias: "widget.basedevice.basedeviceallot.detailform",
@@ -35,5 +42,19 @@ Ext.define("core.basedevice.basedeviceallot.view.DetailForm", {
         xtype: "textfield",
         name: "roomId",
         hidden: true
+    },{
+        columnWidth:0.5,
+        xtype: "combobox",
+        store: combostore,
+        fieldLabel: "设备状态",
+        displayField: 'termStatus',
+        valueField: 'id',
+        name: "termStatus",
+        value: "0",
+        triggerAction: 'all',
+        emptyText: '请选择...',
+        blankText: '请选择设备状态',
+        editable: false,
+        mode: 'local'
     }]
 });

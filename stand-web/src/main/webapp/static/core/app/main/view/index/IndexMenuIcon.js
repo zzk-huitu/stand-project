@@ -30,60 +30,35 @@ Ext.define('core.main.view.index.IndexMenuIcon', {
     ),
     itemSelector: 'div.mainMenuIcon-wrap',
 
-    emptyText: '没有下级菜单了',
+    emptyText: '<span style="width: 100%;text-align: center;display: inline-block;line-height: 100px;">当前没有可显示的子菜单！</span>',
     
     scrollable :true,
     datas:[],   //菜单项
     
     initComponent : function() {  
         var me =this;
-
+        /*
         //加入读取任务数值的数据
         var iconStore=Ext.create('Ext.data.Store', {
             fields: [
                 'id','text', 'iconCls', 'leaf','children','menuCode','menuType','bigIcon','smallIcon','taskNumber'
             ],
         });
+
         
-        Ext.Ajax.request({
-            url: comm.get('baseUrl')+'/sysuser/getUserMenuTask',
-            method: "POST",
-            async: false,
-            timeout: 60000,                
-            success: function(response, opts) {
-                var result = Ext.decode(response.responseText);
-                //console.log(result);
-                if(result.success){
-                    var objList=result.obj;
-                    var iconDatas=me.datas;
-                    for(var i=0;i<objList.length;i++){
-                        var obj=objList[i];
-                        for(var j=0;j<iconDatas.length;j++){
-                            if(obj.name==iconDatas[j].menuCode){
-                                iconDatas[j].taskNumber=obj.value;
-                                break;
-                            }
-                        }
-                    }                
-                }
-                iconStore.loadData(me.datas);   //显示菜单
-                me.store=iconStore;
-            },
-
-            failure: function(response, opts) {
-                iconStore.loadData(me.datas);   //显示菜单
-                me.store=iconStore;
-            }
-        });            
-
-
+        iconStore.loadData(me.datas);   //显示菜单
+        me.store=iconStore;
+        */
         this.callParent(arguments);  
     },
 
     listeners: {
         itemclick:'onViewIconItemClick',  //会去控制器里找到对应的方法
 
-        afterrender:function(){ 
+        afterrender:function(component){ 
+
+            this.showDeskFuntion();
+
             //统一设置滚动的高度
             $("#app-indexmenuicon").on("mousewheel DOMMouseScroll", function (e) {
         
@@ -119,5 +94,56 @@ Ext.define('core.main.view.index.IndexMenuIcon', {
             });
         }
 
+    },
+
+    showDeskFuntion:function(){
+        //读取当前常用功能
+        var deskFunc="";
+        Ext.Ajax.request({
+            url: comm.get('baseUrl')+'/SysUser/getUserDeskFunc',
+            method: "GET",
+            async: false,
+            timeout: 60000,                
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText);          
+                if(result.success){
+                    deskFunc=result.obj;
+                }                
+            }
+        });       
+
+        //加入读取任务数值的数据
+        var iconStore=Ext.create('Ext.data.Store', {
+            fields: [
+                'id','text', 'iconCls', 'leaf','children','menuCode','menuType','bigIcon','smallIcon','taskNumber'
+            ],
+        });
+
+        var viweport=Ext.ComponentQuery.query("container[xtype=app-viewport]")[0];  //获取主视图，然后再去取得它的viewport，           
+        var systemMenus = viweport.getViewModel().get('systemMenu'); 
+
+        var datas=[];   
+        //组装所有子菜单
+        function selectChild(menus){
+            for (var i in menus) {  
+                var childs = menus[i].children;      
+                if(childs.length>0){
+                    selectChild(childs); 
+                }
+                else{
+                    //只显示功能型子菜单    
+                    if(menus[i].menuType=="FUNC"){
+                        if(deskFunc.indexOf(menus[i].menuCode)!=-1)
+                            datas.push(menus[i]);
+                    }
+                }
+            }
+        }
+        selectChild(systemMenus);
+        
+        iconStore.loadData(datas);   //显示菜单
+
+        this.setStore(iconStore);    
+        
     }
 }) 

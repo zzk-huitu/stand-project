@@ -1,8 +1,8 @@
 var combostore = new Ext.data.ArrayStore({
     fields: ['id', 'dhcp'],
     data: [
-        [0, '启用'],
-        [1, '禁用']
+        [0, '禁用'],
+        [1, '启用']
     ]
 });
 Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
@@ -53,7 +53,7 @@ Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
                 xtype: 'textfield',
                 name: 'tlvs[6].valStr',
                 vtype:'macCode'           
-            },, {
+            }, {
                 columnWidth: 0.4,
                 xtype: "label",
                 html: "  <font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>（MAC格式为：FF-FF-FF-FF-FF-FF，第一组必须为偶数）</font>",

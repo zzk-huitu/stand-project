@@ -31,12 +31,6 @@ Ext.define("core.system.dept.view.MainGrid", {
         disabled:true
     }*/, {
         xtype: 'button',
-        text: '同步部门数据到UP',
-        ref: 'sync',
-        funCode:'girdFuntionBtn',         
-        iconCls: 'x-fa fa-rss'
-    }, {
-        xtype: 'button',
         text: '修改',
         ref: 'gridEdit_Tab',
         funCode: 'girdFuntionBtn',
@@ -63,6 +57,12 @@ Ext.define("core.system.dept.view.MainGrid", {
         ref: 'gridSetMainJob',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-pencil-square'
+    }, {
+        xtype: 'button',
+        text: '同步部门数据到UP',
+        ref: 'sync',
+        funCode:'girdFuntionBtn',         
+        iconCls: 'x-fa fa-rss'
     }],
     
     columns:  {        
@@ -77,14 +77,16 @@ Ext.define("core.system.dept.view.MainGrid", {
             xtype: 'treecolumn',
             //flex:false,
             align:'left',
-            width: 300
+            minWidth: 100,
+            flex:2
         },/* {
             header: '排序号',
             width:80,
             dataIndex: 'orderIndex'
         }, */{
             header: '部门类型',
-            width:100,
+            minWidth:80,
+            flex:1,
             dataIndex: 'deptType',
             columnType: "basecombobox", //列类型
             ddCode: "DEPTTYPE" //字典代码
@@ -105,10 +107,22 @@ Ext.define("core.system.dept.view.MainGrid", {
             header: '外线电话',
             dataIndex: 'inPhone',
             flex:1,
+        },{
+            text: "是否系统内置",
+            dataIndex: "isSystem",
+            flex:1,
+            renderer: function(value) {
+                return value=="1"?"<font color=green>是</font>":"<font color=red>否</font>"
+            }
         }, {
             header: '备注',
             dataIndex: 'remark',
-            flex:1,
+            flex:1.5,
+            renderer: function(value, metaData) {
+                var title = "备注";
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                return value;
+            }
         }]
     }
 });

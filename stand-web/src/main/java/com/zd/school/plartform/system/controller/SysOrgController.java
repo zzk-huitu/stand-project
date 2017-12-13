@@ -24,6 +24,7 @@ import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseOrgToUP;
 import com.zd.school.plartform.baseset.model.BaseOrgTree;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.model.SysUserToUP;
 import com.zd.school.plartform.system.service.SysOrgService;
 
 /**
@@ -108,11 +109,10 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		SysUser sysuser = getCurrentSysUser();
 		
 		entity = thisService.addOrg(entity, sysuser);
-		
 		entity.setParentName(parentName);
 		entity.setParentNode(parentNode);
 		entity.setParentType(parentType);
-
+		
 		// 返回的是实体前端界面
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
@@ -222,15 +222,15 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			}
     		
 			if(row==0){
-				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"未有部门数据需要同步！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"未有部门数据需要同步！\"}");
 			}else if(row>0){
-				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"同步部门数据成功！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"同步部门数据成功！\"}");
 			}else{
-				returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+				returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
 			}
 				
 	    } catch (Exception e) {
-			returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
 		} finally {
 			// 恢复数据源
 			DBContextHolder.clearDBType();
@@ -250,7 +250,9 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
     	try{
     		
     		//String smallDeptId="12";
-    	
+    		// 0.重新生成副ID
+    		thisService.doCreateFuId();
+    		
     		// 1.查询这个smallDeptId的最新的部门信息
 			String sql = "select EXT_FIELD04 as departmentId,EXT_FIELD05 as parentDepartmentId,"
 					+ "	NODE_TEXT as departmentName,convert(varchar,NODE_LEVEL) as layer,"
@@ -267,17 +269,31 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			if(deptInfo.size()!=0){			
 				row = thisService.syncAllDeptInfoToUP(deptInfo);
 			}
-    		
+			
+			//3.当部门数据同步更新了之后，再去更新up中用户的部门数据
+			//查询最新的用户、部门信息（若人员没有指定部门岗位，则设置为临时部门）
+			sql = "select  u.USER_ID as userId,isnull(org.EXT_FIELD04,("
+					+ "select top 1 EXT_FIELD04 from BASE_T_ORG where ISDELETE=0 and NODE_TEXT='临时部门'"
+					+ "))as departmentId "
+					+ " from SYS_T_USER u  left join BASE_T_ORG org on "
+					+ " (select top 1 DEPT_ID from BASE_T_UserDeptJOB "
+					+ " where USER_ID=u.USER_ID and ISDELETE=0 "
+					+ " order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
+					+ " order by userId asc";
+			List<SysUserToUP> userInfos = thisService.queryEntityBySql(sql, SysUserToUP.class);
+			thisService.syncAllUserDeptInfoToUP(userInfos);	//执行
+			
+			
 			if(row==0){
-				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"未有部门数据需要同步！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"未有部门数据需要同步！\"}");
 			}else if(row>0){
-				returnJson = new StringBuffer("{ \"succes\" : true, \"msg\":\"同步部门数据成功！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"同步部门数据成功！\"}");
 			}else{
-				returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+				returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
 			}
 				
 	    } catch (Exception e) {
-			returnJson = new StringBuffer("{ \"succes\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
+			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步部门数据到UP失败，请联系管理员！\"}");
 		} finally {
 			// 恢复数据源
 			DBContextHolder.clearDBType();

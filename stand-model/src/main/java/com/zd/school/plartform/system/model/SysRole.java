@@ -58,7 +58,7 @@ public class SysRole extends BaseEntity implements Serializable {
         return roleName;
     }
 
-    @FieldInfo(name = "是否系统角色")
+    @FieldInfo(name = "是否系统角色  1-系统内置 0-非系统内置")
     @Column(name = "ISSYSTEM", length = 10, nullable = false)
     private Integer issystem;
 

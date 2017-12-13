@@ -2,6 +2,7 @@ package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,11 +10,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
@@ -24,6 +27,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
@@ -32,6 +37,7 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.security.MyExceptionHandler;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
@@ -62,6 +68,8 @@ import com.zd.school.plartform.system.service.SysUserdeptjobService;
 @RequestMapping("/SysUser")
 public class SysUserController extends FrameWorkController<SysUser> implements Constant {
 
+	private static Logger logger = Logger.getLogger(SysUserController.class);
+	
 	@Resource
 	SysUserService thisService; // service层接口
 
@@ -562,10 +570,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	/*
 	 * 单条数据调用同步UP的方式 用于修改单条人员数据的时候进行同步（貌似目前暂时未使用到）
+	 * 弃用
 	 */
 	@RequestMapping("/doSyncUserInfoToUp/{userId}")
 	public void doSyncUserInfoToUp(@PathVariable("userId") String userId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
+		/*
 		StringBuffer returnJson = null;
 		try {
 
@@ -610,6 +620,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		}
 
 		writeAppJSON(response, returnJson.toString());
+		*/
 	}
 
 	/*
@@ -624,17 +635,18 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 			// 1.查询最新的用户、部门信息
 			String sql = "select  u.USER_ID as userId,u.XM as employeeName, u.user_numb as employeeStrId,"
-					+ "'' as employeePwd,CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,u.isDelete as isDelete,"
-					+ "u.SFZJH AS identifier,u.MOBILE as employeeTel,'1' AS cardState, " // cardState
-																	// 和 sid
-																	// 都置默认值，现在不做特定的处理
-					+ "'' as sid,org.EXT_FIELD04 as departmentId,"
-					+ "job.JOB_NAME as jobName  "
-					+ " from SYS_T_USER u" + " join BASE_T_ORG org on "
-					+ "		(select top 1 DEPT_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
-					+ " join BASE_T_JOB job on "
-					+ "		(select top 1 JOB_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=job.JOB_ID "				
-					+ " order by userId asc";
+					+ "CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,u.isDelete as isDelete,"
+					+ "u.SFZJH AS identifier,u.MOBILE as employeeTel,'1' AS cardState,"
+					+ "'' as sid,job.JOB_NAME as jobName,'' as employeePwd,"
+					+ "isnull(org.EXT_FIELD04,("
+					+ "		select top 1 EXT_FIELD04 from BASE_T_ORG where ISDELETE=0 and NODE_TEXT='临时部门'"
+					+ "))as departmentId "
+					+ "from SYS_T_USER u "
+					+ " LEFT join BASE_T_ORG org on "
+					+ " 	(select top 1 DEPT_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
+					+ " LEFT join BASE_T_JOB job on "
+					+ "		(select top 1 JOB_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=job.JOB_ID "
+					+ "order by userId asc";
 
 			List<SysUserToUP> userInfos = thisService.queryEntityBySql(sql, SysUserToUP.class);
 
@@ -656,6 +668,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 
 		} catch (Exception e) {
+			logger.error(e.getMessage());
+			logger.error("同步人员数据到UP失败！错误信息：->"+Arrays.toString(e.getStackTrace()));
 			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}");
 		} finally {
 			// 恢复数据源
@@ -666,7 +680,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/*
-	 * 一键同步UP的方式
+	 * 一键同步UP的方式（待定；目前使用数据库定时脚本，进行发卡信息同步）
 	 */
 	@RequestMapping("/doSyncAllCardInfoFromUp")
 	public void doSyncAllCardInfoFromUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -676,12 +690,14 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			// 1.切换数据源
 			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
 
-			// 2.查询UP中所有的发卡信息
-			String sql = "select convert(varchar,a.CardID) as upCardId,convert(varchar,a.FactoryFixID) as factNumb,b.UserId as userId,"
-					+ " convert(int,a.CardStatusIDXF) as useState,"
-					+ " b.SID as sid,b.EmployeeStatusID as employeeStatusID "
-					+ " from Tc_Employee b left join TC_Card a on b.CardID=a.CardID" + " where b.UserId is not null "
-					+ "	order by a.CardID asc,a.ModifyDate asc";
+			//(2017-10-11:使用人员表和卡片表，双向关联查出最精确的发卡数据)
+			String sql="select B.UserId as userId,replace(B.EmployeeStrID,'NO','') as sid,B.EmployeeStatusID as employeeStatusID,"
+					+ "	convert(varchar,A.CardID) as upCardId,convert(varchar,A.FactoryFixID) as factNumb,"
+					+ "	convert(int,A.CardStatusIDXF) as useState, convert(int,A.CardTypeID) as cardTypeId "
+					+ " from TC_Card A left join Tc_Employee B"
+					+ " on A.CardID=B.CardID and A.EmployeeID=B.EmployeeID "
+					+ " where A.EmployeeID=B.EmployeeID or A.EmployeeID=0"
+					+ " order by A.CardID asc";
 
 			List<CardUserInfoToUP> upCardUserInfos = thisService.queryEntityBySql(sql, CardUserInfoToUP.class);
 
@@ -704,6 +720,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 
 		} catch (Exception e) {
+			logger.error(e.getMessage());
+			logger.error("同步UP发卡数据到Q1失败！错误信息：->"+Arrays.toString(e.getStackTrace()));
 			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员发卡数据失败，请联系管理员！\"}");
 		}
 
@@ -833,5 +851,85 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-
+    
+    /**
+     * 设置用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/setUserDeskFunc")
+    public void setUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	    	String[] strs=menuCodes.split(",");
+	    	
+	    	Set<String> set= null;
+	    	if (userDeskFunc != null){
+	    		set= (Set<String>) userDeskFunc;        	
+	    	}else{
+	    		set= new HashSet<>();    		
+	    	}	    	
+	    	set.addAll(Arrays.asList(strs));	
+			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功！\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败！\""));
+    	}	
+    }
+    /**
+     * 取消用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/cancelUserDeskFunc")
+    public void cancelUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	    	String[] strs=menuCodes.split(",");
+	    	
+	    	Set<String> set= null;
+	    	if (userDeskFunc != null){
+	    		set= (Set<String>) userDeskFunc;        	
+	    	}else{
+	    		set= new HashSet<>();    		
+	    	}	    	
+	    	set.removeAll(Arrays.asList(strs));	
+			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功！\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+    	}	
+    }
+    
+    /**
+     * 获取用户的常用桌面功能菜单
+     * @param menuCodes
+     * @throws IOException 
+     */
+    @RequestMapping("/getUserDeskFunc")
+    public void getUserDeskFunc(HttpServletResponse response) throws IOException{
+    	try{
+	    	SysUser sysUser=getCurrentSysUser();
+	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+	   	    
+	    	Set<String> set= (Set<String>) userDeskFunc;        	
+	    	String returnStr=set.stream().collect(Collectors.joining(","));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\""+returnStr+"\""));
+			
+    	}catch(Exception e){
+    		
+    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+    	}	
+    }
 }
