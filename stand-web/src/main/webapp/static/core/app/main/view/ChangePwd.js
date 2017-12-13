@@ -79,7 +79,7 @@ Ext.define('core.main.view.ChangePwd', {
 				initialPassField: 'newConfirmPwd',
 				minLength: '6',
 				minLengthText: '密码最少要6位',
-				maxLength:128
+				maxLength:40
 			}, {
 				xtype: 'textfield',
 				inputType: 'password',
@@ -90,7 +90,7 @@ Ext.define('core.main.view.ChangePwd', {
 				initialPassField: 'newPwd',
 				minLength: '6',
 				minLengthText: '密码最少要6位',
-				maxLength:128
+				maxLength:40
 			}]
 		});
 		return form;

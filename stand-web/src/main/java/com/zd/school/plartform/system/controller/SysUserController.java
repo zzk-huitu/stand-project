@@ -133,7 +133,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
-    @Auth("SYSUSER_add")
+    @Auth("SYSUSER_add,TEACHERMANAGER_add,STUDENTMANAGER_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String userName = entity.getUserName();
@@ -183,7 +183,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * 
 	 * @throws Exception
 	 */
-    @Auth("SYSUSER_update")
+    @Auth("SYSUSER_update,TEACHERMANAGER_update,STUDENTMANAGER_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -373,7 +373,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 		}
 	}
-	@Auth("SYSUSER_lock")
+	@Auth("SYSUSER_lock,TEACHERMANAGER_lock,STUDENTMANAGER_lock")
 	@RequestMapping("/doLock")
 	public void doLock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -386,7 +386,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'锁定成功'"));
 		}
 	}
-    @Auth("SYSUSER_unlock")
+    @Auth("SYSUSER_unlock,TEACHERMANAGER_unlock,STUDENTMANAGER_unlock")
 	@RequestMapping("/doUnlock")
 	public void doUnlock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -399,7 +399,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'解锁成功'"));
 		}
 	}
-    @Auth("SYSUSER_setPwd")
+    @Auth("SYSUSER_setPwd,TEACHERMANAGER_setPwd,STUDENTMANAGER_setPwd")
 	@RequestMapping("/doSetPwd")
 	public void doSetpwd(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -728,7 +728,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 	
-
+  //  @Auth("SYSUSER_export,TEACHERMANAGER_export,STUDENTMANAGER_export")
 	@RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");
