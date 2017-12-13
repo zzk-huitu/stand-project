@@ -32,6 +32,24 @@ Ext.define("core.system.user.controller.MainController", {
                         var btnPwd = grid.down("button[ref=gridSetPwd]");
                          btnPwd.setHidden(true);
                       }
+                    if(userBtn.indexOf(menuCode+"_export")==-1){
+                        var btnExport = grid.down("button[ref=gridExport]");
+                        btnExport.setHidden(true);                    
+                    }
+                    if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
+                        var btnSync = grid.down("button[ref=syncToUP]");
+                        btnSync.setHidden(true);                    
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                        var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
+                        btnUpdate.setHidden(true);                    
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                        var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                        btnAdd.setHidden(true);                    
+                    }
+
+
                   }
                 },
               
@@ -269,12 +287,9 @@ Ext.define("core.system.user.controller.MainController", {
                                         var result=JSON.parse(response.responseText);
 
                                         if (result.success) {      
-
-                                            self.Error(result.msg);                          
+                                            Ext.Msg.hide();               
                                             self.msgbox(result.msg);
-                                            baseGrid.getStore().loadPage(1);
-
-                                            Ext.Msg.hide();                                        
+                                            baseGrid.getStore().loadPage(1);                                                                    
                                         } else {
                                             Ext.Msg.hide(); 
                                             self.Error(result.msg);

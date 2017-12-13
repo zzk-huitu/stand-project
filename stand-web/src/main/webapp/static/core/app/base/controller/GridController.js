@@ -327,7 +327,6 @@ Ext.define("core.base.controller.GridController", {
                             // }else{
                             //     store.load();
                             // }
-                            Ext.Msg.hide();
                         }else {
                             self.Error(data.obj);
                         }

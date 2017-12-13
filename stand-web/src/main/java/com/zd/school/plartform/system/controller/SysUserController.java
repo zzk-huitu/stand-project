@@ -626,6 +626,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	/*
 	 * 一键同步UP的方式
 	 */
+	@Auth("SYSUSER_sycnToUp")
 	@RequestMapping("/doSyncAllUserInfoToUp")
 	public void doSyncAllUserInfoToUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		StringBuffer returnJson = null;
@@ -746,7 +747,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 	
-
+	@Auth("SYSUSER_export")
 	@RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");

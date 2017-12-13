@@ -262,16 +262,8 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 					+ " order by DepartmentID asc";
 			
 			List<BaseOrgToUP> deptInfo = thisService.queryEntityBySql(sql, BaseOrgToUP.class);
-			
-			//2.进入事物之前切换数据源		
-			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
-			int row = 0;
-			if(deptInfo.size()!=0){			
-				row = thisService.syncAllDeptInfoToUP(deptInfo);
-			}
-			
-			//3.当部门数据同步更新了之后，再去更新up中用户的部门数据
-			//查询最新的用户、部门信息（若人员没有指定部门岗位，则设置为临时部门）
+				
+			//2.查询最新的用户、部门信息（若人员没有指定部门岗位，则设置为临时部门）
 			sql = "select  u.USER_ID as userId,isnull(org.EXT_FIELD04,("
 					+ "select top 1 EXT_FIELD04 from BASE_T_ORG where ISDELETE=0 and NODE_TEXT='临时部门'"
 					+ "))as departmentId "
@@ -281,6 +273,15 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 					+ " order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
 					+ " order by userId asc";
 			List<SysUserToUP> userInfos = thisService.queryEntityBySql(sql, SysUserToUP.class);
+			
+			//3.进入事物之前切换数据源		
+			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
+			int row = 0;
+			if(deptInfo.size()!=0){			
+				row = thisService.syncAllDeptInfoToUP(deptInfo);
+			}
+			
+			//4.当部门数据同步更新了之后，再去更新up中用户的部门数据
 			thisService.syncAllUserDeptInfoToUP(userInfos);	//执行
 			
 			
