@@ -22,6 +22,16 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                         btnSetFront.setHidden(true);
                         
                      }
+                     if(userBtn.indexOf(menuCode+"_buttonBaseAndHigh")==-1){
+                        var btnBaseAndHigh = grid.down("button[ref=buttonBaseAndHigh]");
+                        btnBaseAndHigh.setHidden(true);
+                        
+                     }
+                     if(userBtn.indexOf(menuCode+"_buttonNetWork")==-1){
+                        var btnNetWork = grid.down("button[ref=buttonNetWork]");
+                        btnNetWork.setHidden(true);
+                        
+                     }
                  }
             },
         },

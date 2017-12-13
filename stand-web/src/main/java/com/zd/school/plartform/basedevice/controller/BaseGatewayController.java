@@ -248,7 +248,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			writeJSON(response, jsonBuilder.returnSuccessJson("'基础参数批量设置成功。'"));
 	}
 	
-	
+	@Auth("BASEGATEWAY_baseAndHigh")
 	@RequestMapping("/doBaseAndHighParam")
 	public void baseAndHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -352,7 +352,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			}
 			writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数批量设置成功。'"));
 	}
-	
+	@Auth("BASEGATEWAY_gatewayParam")
 	@RequestMapping("/doGatewayParam")
 	public void gatewayParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

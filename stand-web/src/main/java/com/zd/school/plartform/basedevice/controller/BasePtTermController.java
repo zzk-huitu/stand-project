@@ -231,7 +231,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 		writeJSON(response, strData);// 返回数据
 	}
-
+    @Auth("BASESMARTDEVICE_setHigh")
 	@RequestMapping("/doSetHighParam")
 	public void doSetHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -290,7 +290,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		writeJSON(response, strData);// 返回数据
 
 	}
-
+    @Auth("BASESMARTDEVICE_setBase")
 	@RequestMapping("/doSetBaseParam")
 	public void doSetBaseParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -320,9 +320,9 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
 
 	}
-
-	@RequestMapping("/exportExcel")
-	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Auth("BASESMARTDEVICE_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermIsEnd", "0");
 		request.getSession().removeAttribute("exportPtTermIsState");
 
@@ -419,9 +419,9 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-
-	@RequestMapping("/exportPtTermAllotExcel")
-	public void exportPtTermAllotExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Auth("DEVICEALLOT_export")
+	@RequestMapping("/doExportPtTermAllotExcel")
+	public void doExportPtTermAllotExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermAllotIsEnd", "0");
 		request.getSession().removeAttribute("exportPtTermAllotIsState");
 

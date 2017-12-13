@@ -80,7 +80,7 @@ Ext.define("core.baseset.terminal.controller.MainController", {
                 }
             },
 
-            "basegrid button[ref=exportExcel]": {
+            "basegrid button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExportExcel(btn);
                     return false;
@@ -279,7 +279,7 @@ Ext.define("core.baseset.terminal.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/exportExcel?roomName='+roomName+'"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/doExportExcel?roomName='+roomName+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

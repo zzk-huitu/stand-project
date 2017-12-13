@@ -242,9 +242,9 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 
 		}
 	}
-
-	@RequestMapping("/exportExcel")
-	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Auth("IRDEVICE_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportDeviceBrandIsEnd", "0");
 		request.getSession().removeAttribute("exportDeviceBrandIsState");
 		String productModel = request.getParameter("productModel");

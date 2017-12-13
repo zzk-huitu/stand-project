@@ -48,7 +48,14 @@ Ext.define("core.system.user.controller.MainController", {
                         var btnAdd = grid.down("button[ref=gridAdd_Tab]");
                         btnAdd.setHidden(true);                    
                     }
-
+                    if(userBtn.indexOf(menuCode+"_gridDeptJob")==-1){
+                        var btnUpdate = grid.down("button[ref=gridDeptJob]");
+                        btnUpdate.setHidden(true);                    
+                    }
+                    if(userBtn.indexOf(menuCode+"_gridRole")==-1){
+                        var btnAdd = grid.down("button[ref=gridRole]");
+                        btnAdd.setHidden(true);                    
+                    }
 
                   }
                 },
@@ -948,7 +955,7 @@ Ext.define("core.system.user.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel?deptId='+deptId+'&userName='+userName+'&xm='+xm+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/doExportExcel?deptId='+deptId+'&userName='+userName+'&xm='+xm+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

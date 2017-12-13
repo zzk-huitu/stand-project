@@ -33,7 +33,7 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
         },{
             xtype: 'button',
             text: '导出',
-            ref: 'exportExcel',
+            ref: 'gridExport', 
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-file',
         },'->',{
@@ -95,6 +95,16 @@ Ext.define("core.basedevice.irdevice.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '编辑',
                 ref: 'gridEdit',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="IRDEVICE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('editClick_Tab', {

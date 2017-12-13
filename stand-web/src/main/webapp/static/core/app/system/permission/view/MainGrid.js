@@ -120,7 +120,17 @@ Ext.define("core.system.permission.view.MainGrid", {
                 text:'编辑',  
                 style:'font-size:12px;',         
                 tooltip: '编辑',
-                ref: 'gridEdit_Tab',
+                ref: 'gridEdit_Tab', 
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSPERIMISSON";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                }, 
                 handler: function(view, rowIndex, colIndex, item) {                 
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('editClick_Tab', {

@@ -324,7 +324,7 @@ Ext.define("core.system.jobinfo.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysJob/exportExcel?jobName='+value+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysJob/doExportExcel?jobName='+value+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

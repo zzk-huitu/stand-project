@@ -664,7 +664,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseCalenderdetail/exportExcel?canderId='+canderId+"&canderName="+canderName+"&campusName="+campusName+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseCalenderdetail/doExportExcel?canderId='+canderId+"&canderName="+canderName+"&campusName="+campusName+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

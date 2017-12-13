@@ -200,9 +200,9 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 	}
-	
-	@RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@Auth("SCHOOLCALENDAR_export")
+	@RequestMapping("/doExportExcel")
+    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportBaseCalenderdetailIsEnd", "0");
 		request.getSession().removeAttribute("exportBaseCalenderdetailIsState");
 

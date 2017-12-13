@@ -168,6 +168,16 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '设备参数',
                 ref: 'buttonBaseAndHigh',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASEGATEWAY";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_buttonBaseAndHigh")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('baseAndHighClick_Tab', {
@@ -180,6 +190,16 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '网络参数',
                 ref: 'buttonNetWork',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASEGATEWAY";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_buttonNetWork")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('netWorkClick_Tab', {

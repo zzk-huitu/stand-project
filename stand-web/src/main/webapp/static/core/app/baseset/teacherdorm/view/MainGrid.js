@@ -169,7 +169,16 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                     if(record.get("inout")=="1"){
                          return 'x-hidden-display';
-                     }
+                     }else{
+                        if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASETEACHERDORM";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridOut")==-1){
+                            return 'x-hidden-display';
+                        }
+                      }
+
+                    }
                     return null; 
                 },
                 handler: function(view, rowIndex, colIndex, item) {
