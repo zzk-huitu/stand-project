@@ -747,7 +747,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 	
-	@Auth("SYSUSER_export")
+    @Auth("SYSUSER_export")
 	@RequestMapping("/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");

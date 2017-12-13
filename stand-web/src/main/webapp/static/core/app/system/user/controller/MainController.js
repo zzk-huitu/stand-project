@@ -32,7 +32,7 @@ Ext.define("core.system.user.controller.MainController", {
                         var btnPwd = grid.down("button[ref=gridSetPwd]");
                          btnPwd.setHidden(true);
                       }
-                    if(userBtn.indexOf(menuCode+"_export")==-1){
+                    if(userBtn.indexOf(menuCode+"_gridExport")==-1){
                         var btnExport = grid.down("button[ref=gridExport]");
                         btnExport.setHidden(true);                    
                     }

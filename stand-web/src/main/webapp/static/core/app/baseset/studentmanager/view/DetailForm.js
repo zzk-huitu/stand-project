@@ -37,9 +37,9 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             name: "userName",
             xtype: 'textfield',
             allowBlank: false,
-            emptyText: '请输入用户名(最大36个字符)',
+            emptyText: '请输入用户名(最大16个字符)',
             blankText: "用户名不能为空",
-            maxLength:36,
+            maxLength:16,
            // regex: /^[\s\S]{0,16}$/,
            // regexText: '该用户名的最大长度是16个字符',
         }, {
@@ -74,6 +74,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             ddCode: "CATEGORY",
             allowBlank: false,
             blankText: "身份不能为空",
+           //  value: "2"
            // readOnly:true
         }]
     }, {

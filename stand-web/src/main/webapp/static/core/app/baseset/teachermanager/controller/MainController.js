@@ -12,6 +12,40 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
    init: function () {
     },
    control: {
+            "basepanel basegrid[xtype=baseset.teachermanager.teachergrid]": {
+               afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="TEACHERMANAGER";    
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                            var btnlock = grid.down("button[ref=gridLock]");
+                            btnlock.setHidden(true);
+
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                            var btnUnlock = grid.down("button[ref=gridUnLock]");
+                            btnUnlock.setHidden(true);
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
+                            var btnPwd = grid.down("button[ref=gridSetPwd]");
+                            btnPwd.setHidden(true);
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridExport")==-1){
+                            var btnExport = grid.down("button[ref=gridExport]");
+                            btnExport.setHidden(true);                    
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
+                            btnUpdate.setHidden(true);                    
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                            btnAdd.setHidden(true);                    
+                        }
+                    }
+               },
+
+            },
             //锁定账户事件
             "basegrid[xtype=baseset.teachermanager.teachergrid] button[ref=gridLock]": {
                 click: function(btn) {
