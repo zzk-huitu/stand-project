@@ -74,7 +74,7 @@
 						<!-- <input class="check" type="checkbox" name="rememberMe" id="rememberMe" /><label>记住帐号</label>
 						-->
 						</div>
-						<label class="fr"><a  href="javascript:void(0)" style="color:red" onclick="yz();">换一张</a></label>
+						<label class="fr"><a  href="javascript:void(0)" style="color:#0f3879" onclick="yz();">换一张</a></label>
 					</div>
 					
 					<div class="but_box">
