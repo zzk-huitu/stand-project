@@ -59,6 +59,8 @@ Ext.define('core.main.controller.MainController', {
         var tabItem=tabPanel.getComponent(btn.menuCode);
         if(!tabItem){
             if(btn.menuType=="MENU"){
+                
+                /*------处理普通导航栏的显示-------*/
                 var menuPanelItems=viewport.down("panel[xtype=main.mainmenupanel] menu");
                           
                 var menusItems=[];  
@@ -99,8 +101,120 @@ Ext.define('core.main.controller.MainController', {
                 }else{
                     Ext.Msg.alert('温馨提示', '此模块功能暂无子菜单！');
                 }
-                    
-        
+
+                /*--------------处理手风琴导航栏的显示------------------
+    
+                var menuPanelItems=viewport.down("panel[xtype=main.mainmenuaccordion]");            
+                var menusItems=[{
+                    hidden:true     //加入一个隐藏的panel，以致于下面的面板不会默认打开
+                }];  
+                var children=btn.children;
+                for(var j in children){
+                    var menuChild = children[j];    
+                    var menuNextChild = menuChild.children;
+
+                    //小图标 
+                    var smallIconCls=menuChild.smallIcon;
+                    if (!smallIconCls) {
+                        smallIconCls="x-fa fa-bars";
+                    }
+                    //标题
+                    var header={
+                        cls:'accordHeader',       
+                        title : '<span style="color:#fff;font-size:14px;font-weight:400;">'+menuChild.text+'</span>', 
+                        iconCls:smallIconCls,            
+                        style:{
+                            background:'#354d8b',
+                            border:'none',
+                            borderTop:'1px solid #4d5e8b',
+                            borderBottom:'1px solid #4d5e8b',
+                            cursor: 'pointer',
+                            paddingLeft: '15px',
+                        }                
+                    };
+                              
+                    //整个panel面板              
+                    var accpanel = { 
+                        xtype : 'panel',                                              
+                        header: header,
+                        width:'100%',
+                        //scrollable:'y',
+                        bodyStyle:{
+                            background: 'none',
+                            overflow: 'overlay'
+                        },
+                        items:[]                                
+                    };  
+
+                    //判断是否为功能按钮
+                    if( menuChild.menuType=="FUNC"){
+                        var item={
+                            textBase:menuChild.text,                                    
+                            menuCode:menuChild.menuCode,
+                            menuType: menuChild.menuType,  
+                            children: menuChild.children,
+                            smallIcon:menuChild.smallIcon,
+                            bigIcon: menuChild.bigIcon,
+                            menuTarget:menuChild.menuTarget,
+                            menuParent:menuChild["parent"],
+                        }
+                        Ext.apply(header,item);                    
+
+                        header.listeners={
+                            click:function(header){                        
+                                viewport.controller.onMenuItemClick(null,header);
+                            }
+                        };
+                        accpanel.hideCollapseTool=true; 
+                    }
+
+                    if(menuNextChild.length>0){
+                        for (var j in menuNextChild) {  
+                            var menumodule = menuNextChild[j];  
+                            accpanel.items.push({  
+                                xtype : 'button',
+                                height: 40,
+                                width: '100%',
+                                padding:'0 0 0 20',
+                                text : this.addSpace(menumodule.text, 12),                                  
+                                iconCls : menumodule.smallIcon,
+
+                                textBase:menumodule.text,                                    
+                                menuCode:menumodule.menuCode,
+                                menuType: menumodule.menuType,  
+                                children: menumodule.children,
+                                smallIcon:menumodule.smallIcon,
+                                bigIcon: menumodule.bigIcon,
+                                menuTarget:menumodule.menuTarget,
+                                menuParent:menumodule["parent"],
+                                listeners:{
+                                    click:function(button){
+                                        viewport.controller.onMenuItemClick(null,button);
+                                    }                            
+                                }
+                            });  
+                        }  
+                    }else if(menuChild.menuType=="MENU"){
+                        accpanel.items.push({
+                            xtype:'container',
+                            padding:10,
+                            style:{
+                                color:'#fff'
+                            },
+                            html:'没有子菜单了'
+                        });
+                    }
+                   
+                    menusItems.push(accpanel);                      
+                }     
+
+                if(menusItems.length!=0){
+                    menuPanelItems.removeAll();
+                    menuPanelItems.add( menusItems); 
+                }else{
+                    Ext.Msg.alert('温馨提示', '此模块功能暂无子菜单！');
+                }
+                */
             }
             else  if(btn.menuType=="FUNC"){    
                 
@@ -143,6 +257,8 @@ Ext.define('core.main.controller.MainController', {
                 }else{
                     Ext.Msg.alert('温馨提示', '加载失败，请联系管理员！');
                 }
+
+                tabPanel.setActiveTab( tabPanel.items.length-1);
             }
             else if(btn.menuType=="IFRAME"){
                 //小图标 
@@ -162,9 +278,11 @@ Ext.define('core.main.controller.MainController', {
                         html:'<iframe src="http://www.baidu.com" width="100%" height="100%"   frameborder=0  ></iframe>'
                     }]
                 });
+
+                tabPanel.setActiveTab( tabPanel.items.length-1);
             }
            
-            tabPanel.setActiveTab( tabPanel.items.length-1);
+           
         }else{
             tabPanel.setActiveTab( tabItem);
         }   
@@ -461,6 +579,7 @@ Ext.define('core.main.controller.MainController', {
     },
     
     onMenuItemClick:function(menu,item){
+            
         if(!item){
             return false;
         }
@@ -634,6 +753,13 @@ Ext.define('core.main.controller.MainController', {
                 }
             }
         }    
+    },
+    addSpace : function(text, len) {                  
+        var result = text;  
+        for (var i = text.length; i < len; i++) {  
+            result += '　';  
+        }  
+        return result;  
     },
 
 }); 

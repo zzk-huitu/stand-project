@@ -10,11 +10,9 @@ Ext.define('core.main.view.Viewport', {
         'Ext.plugin.Viewport',
         "core.main.view.Main",
         "core.main.view.Header",  
-        "core.main.view.HeaderSmall",            
+        "core.main.view.HeaderSmall",        
         //"core.main.view.Footer",
-        //"core.main.view.menu.MainMenu",
-        "core.main.view.menu.MainMenuTree",
-        "core.main.view.menu.MainMenuPanel",
+        //"core.main.view.menu.MainMenu",       
         "core.main.view.ChangePwd",
 
         //"core.train.teacher.view.DetailHtmlPanel" //若要使在sass-src目录下定义的样式生效，则必须要将文件加载。
@@ -165,7 +163,8 @@ Ext.define('core.main.view.Viewport', {
             hidden:true,
             bind:{
                 hidden:'{!isMainMenuTree}'
-            }, style:{
+            }, 
+            style:{
                 paddingRight:'3px'
             }          
         },{  
@@ -176,7 +175,8 @@ Ext.define('core.main.view.Viewport', {
             collapsible:true,
             bind:{
                 hidden:'{!isMainMenu}'
-            },  style:{
+            }, 
+            style:{
                 paddingRight:'3px'
             }         
         }, {  

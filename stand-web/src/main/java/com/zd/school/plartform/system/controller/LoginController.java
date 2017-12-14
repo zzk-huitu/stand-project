@@ -163,8 +163,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			}
 			session.setAttribute(SESSION_SYS_ISADMIN,0);
 		}
-			
-			
+		
 		result.put("result", 1);
 		writeJSON(response, jsonBuilder.toJson(result));
 	}
