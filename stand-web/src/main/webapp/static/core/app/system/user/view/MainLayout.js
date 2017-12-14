@@ -50,7 +50,7 @@ Ext.define("core.system.user.view.MainLayout", {
 	layout: 'border',
 
 	/*设置最小宽度，并且自动滚动*/
-    minWidth: 1000,
+    minWidth: 1400,
     scrollable: 'x',
 
 

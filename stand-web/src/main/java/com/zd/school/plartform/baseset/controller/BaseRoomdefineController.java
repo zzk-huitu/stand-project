@@ -206,7 +206,7 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 		}
 
 	}
-
+    @Auth("BASEROOMDEFINE_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BuildDormDefine entity, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IOException, IllegalAccessException, InvocationTargetException {

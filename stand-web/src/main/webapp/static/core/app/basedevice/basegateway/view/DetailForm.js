@@ -61,6 +61,8 @@ Ext.define("core.basedevice.basegateway.view.DetailForm", {
             name: "frontserverId",
             displayField: 'frontServerName',
             valueField: 'uuid',
+            allowBlank: false,
+            blankText: "综合前置为空",
            
         }, {
             columnWidth:0.5,

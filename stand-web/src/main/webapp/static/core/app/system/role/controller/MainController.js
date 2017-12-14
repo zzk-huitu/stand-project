@@ -16,6 +16,20 @@ Ext.define("core.system.role.controller.MainController", {
         var self = this
             //事件注册
         this.control({ 
+             "basepanel basegrid[xtype=system.role.maingrid]": {
+               afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="SYSROLE";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridJobUser_Tab")==-1){
+                        var btnlock = grid.down("button[ref=gridJobUser_Tab]");
+                        btnlock.setHidden(true);
+
+                    }
+                 }
+                },
+
+             },
             "basegrid button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     this.doDetail_Tab(btn,"add");

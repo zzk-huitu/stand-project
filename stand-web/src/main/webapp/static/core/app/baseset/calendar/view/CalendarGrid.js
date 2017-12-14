@@ -34,7 +34,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
         }, {
             xtype: 'button',
             text: '删除',
-            ref: 'gridDel',
+            ref: 'gridDelTime',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
            // disabled:true,
             iconCls: 'x-fa fa-minus-circle'

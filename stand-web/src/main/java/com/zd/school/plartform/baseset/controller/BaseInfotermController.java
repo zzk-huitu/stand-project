@@ -187,9 +187,9 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
         }
       
     }
-
-    @RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Auth("INFOTERM_export")
+    @RequestMapping("/doExportExcel")
+    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().setAttribute("exportTerminfoIsEnd", "0");
         request.getSession().removeAttribute("exportTerminfoIsState");
         String roomName = request.getParameter("roomName");

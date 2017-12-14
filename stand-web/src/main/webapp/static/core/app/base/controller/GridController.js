@@ -385,7 +385,14 @@ Ext.define("core.base.controller.GridController", {
                     if(btnDel){
                         btnDel.setHidden(true);
                     }
-                  
+
+                }//增加一个导出的按钮权限设置
+                if(userBtn.indexOf(menuCode+"_gridExport")==-1){
+                    var btnExport = grid.down("button[ref=gridExport]");
+                    if(btnExport){
+                        btnExport.setHidden(true);
+                    }
+
                 }
             }
         }           

@@ -59,6 +59,12 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-file'
+        },{
+            xtype: 'button',
+            text: '同步人员数据到UP',
+            ref: 'syncToUP',
+            funCode:'girdFuntionBtn',
+            iconCls: 'x-fa fa-rss'
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
@@ -168,6 +174,16 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
                 style:'font-size:12px;',
                 tooltip: '部门岗位',
                 ref: 'gridDeptJob',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="TEACHERMANAGER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDeptJob")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('gridDeptJobClick', {
@@ -181,6 +197,16 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
                 style:'font-size:12px;',
                 tooltip: '角色管理',
                 ref: 'gridRole',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="TEACHERMANAGER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridRole")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('gridUserRoleClick', {
@@ -194,6 +220,16 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
                 style:'font-size:12px;',         
                 tooltip: '编辑',
                 ref: 'gridEdit',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="TEACHERMANAGER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {                 
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('editClick_Tab', {

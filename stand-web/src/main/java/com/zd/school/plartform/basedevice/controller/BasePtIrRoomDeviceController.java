@@ -211,8 +211,9 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 			}
         }
     }
-	@RequestMapping("/exportExcel")
-	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Auth("PTIRROOMDEVICE_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportRoomDeviceIsEnd", "0");
 		request.getSession().removeAttribute("exporRoomDeviceIsState");
 		String deviceTypeCode = request.getParameter("deviceTypeCode");

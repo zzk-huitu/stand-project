@@ -137,7 +137,7 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@Auth("JOBINFO_restore")
+	//@Auth("JOBINFO_restore")
 	@RequestMapping("/doRestore")
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -190,8 +190,8 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 		writeJSON(response, strData);
 	}
 	
-	@RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping("/doExportExcel")
+    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().setAttribute("exportJobinfoIsEnd", "0");
         request.getSession().removeAttribute("exportJobinfoIsState");
         

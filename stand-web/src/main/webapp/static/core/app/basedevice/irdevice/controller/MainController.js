@@ -98,7 +98,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 return false;
             }
         },
-    	"basegrid[xtype=basedevice.irdevice.maingrid] button[ref=exportExcel]": {
+    	"basegrid[xtype=basedevice.irdevice.maingrid] button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExportExcel(btn);
                     return false;
@@ -507,7 +507,7 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrDeviceBrand/exportExcel?productModel='+productModel+'&brandId='+brandId+'&level='+level+'"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrDeviceBrand/doExportExcel?productModel='+productModel+'&brandId='+brandId+'&level='+level+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

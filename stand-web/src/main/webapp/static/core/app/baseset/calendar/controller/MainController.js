@@ -24,6 +24,11 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                             btnUse.setHidden(true);
                             
                          }
+                         if(userBtn.indexOf(menuCode+"_gridDelTime")==-1){
+                            var btnUse = grid.down("button[ref=gridDelTime]");
+                            btnUse.setHidden(true);
+                            
+                        }
                      }
                  },
             },
@@ -50,7 +55,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                 }
             },
              //删除作息时间事件
-            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridDel]": {
+            "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridDelTime]": {
                 beforeclick: function(btn) {
                     self.doDeleteCaleRecords(btn);
                     return false;
@@ -664,7 +669,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseCalenderdetail/exportExcel?canderId='+canderId+"&canderName="+canderName+"&campusName="+campusName+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseCalenderdetail/doExportExcel?canderId='+canderId+"&canderName="+canderName+"&campusName="+campusName+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

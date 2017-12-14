@@ -32,7 +32,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
         },{
             xtype: 'button',
             text: '导出',
-            ref: 'exportExcel',
+            ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-file',
         },{
@@ -94,6 +94,16 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '删除',
                 ref: 'gridDelete',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="PTIRROOMDEVICE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {

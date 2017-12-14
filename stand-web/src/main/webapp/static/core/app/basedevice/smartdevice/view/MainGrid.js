@@ -102,6 +102,16 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '设置高级参数',
                 ref: 'gridSetHigh',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASESMARTDEVICE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridSetHigh")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('setHighParamClick_Tab', {
@@ -114,6 +124,16 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '设置基础参数',
                 ref: 'gridSetBase',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASESMARTDEVICE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridSetBase")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('setBaseParamClick_Tab', {

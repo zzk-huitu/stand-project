@@ -31,7 +31,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
            	 this.dobinding(btn);
             }
         },
-        "basegrid[xtype=basedevice.ptirroomdevice.maingrid] button[ref=exportExcel]": {
+        "basegrid[xtype=basedevice.ptirroomdevice.maingrid] button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExportExcel(btn);
                     return false;
@@ -135,7 +135,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrRoomDevice/exportExcel?deviceTypeCode='+deviceTypeCode+'&roomId='+roomId+'"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrRoomDevice/doExportExcel?deviceTypeCode='+deviceTypeCode+'&roomId='+roomId+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

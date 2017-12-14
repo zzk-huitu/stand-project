@@ -12,7 +12,6 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
     init: function() {
     },
     control: {
-    	
         //区域列表刷新按钮事件
         "basetreegrid[xtype=basedevice.smartdevice.roominfotree] button[ref=gridRefresh]": {
             click: function(btn) {
@@ -79,7 +78,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/exportExcel?termName='+termName+'&roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/doExportExcel?termName='+termName+'&roomId='+roomId+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

@@ -12,7 +12,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     init: function() {
     },
     control: {
-    	     "basepanel basegrid": {
+    	     "basepanel basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid]": {
               afterrender : function(grid) {
                 if(comm.get("isAdmin")!="1"){
                     var menuCode="USERACCESS";     // 此菜单的前缀
@@ -23,18 +23,36 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
                           btnSelPer.setHidden(true);
                          }
                      }
+                 }
+                  return false;
+            },
+
+          },
+
+
+          "basepanel basegrid[xtype=accesscontrol.useraccess.maingrid]": {
+            afterrender : function(grid) {
+              if(comm.get("isAdmin")!="1"){
+                    var menuCode="USERACCESS";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");
+                    if(userBtn.indexOf(menuCode+"_gridDeletePer")==-1){
+                      var btnDel = grid.down("button[ref=gridDeletePer]");
+                      if(btnDel){
+                        btnDel.setHidden(true);
+                      }
+
+                    }
                     if(userBtn.indexOf(menuCode+"_gridDeleteAll")==-1){
                         var btnDelALL = grid.down("button[ref=gridDeleteAll]");
                         if(btnDelALL){
                           btnDelALL.setHidden(true);
                         }
                       }
-                    /*if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                        var btnDel = grid.down("button[ref=gridDelete]");
-                         btnDel.setHidden(true);
-                      }*/
+
                  }
+                return false;
             },
+
         },
     
     	//房间列表刷新按钮
@@ -68,9 +86,15 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     	
         //删除人员权限
         "panel[xtype=accesscontrol.useraccess.maingrid] button[ref=gridDeleteAll]": {
-        	beforeclick: function(btn) {
-                this.deleteUserAccess(btn);
-                return false;
+          	beforeclick: function(btn) {
+              this.deleteUserAccess(btn);
+              return false;
+            }
+        },
+        "basegrid[xtype=accesscontrol.useraccess.maingrid] button[ref=gridDeletePer]": {
+            beforeclick: function (btn) {
+              this.doDeleteRecords(btn);
+              return false; 
             }
         },
         "basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid] actioncolumn": {
@@ -227,7 +251,74 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
             }).show();
   	
     } ,
-      
+    doDeleteRecords:function(btn){
+        var self=this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        //得到选中数据
+        var records = baseGrid.getSelectionModel().getSelection();
+        if (records.length > 0) {
+            var msg='是否删除数据?';
+            if(btn.msg)
+                msg=btn.msg;
+            
+            //封装ids数组
+            Ext.Msg.confirm('提示', msg, function (btn, text) {
+                if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
+
+                    var ids = new Array();
+                    Ext.each(records, function (rec) {
+                        var pkValue = rec.get(pkName);
+                        ids.push(pkValue);
+                    });
+
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete",
+                        params: {
+                            ids: ids.join(","),
+                            pkName: pkName
+                        },                       
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                            if(data.success){
+                                var store=baseGrid.getStore();
+                                //如果当前页的数据量和删除的数据量一致，则翻到上一页
+                                if(store.getData().length==records.length&&store.currentPage>1){    
+                                    store.loadPage(store.currentPage-1);
+                                }else{
+                                    //store.load();
+                                    store.remove(records); //不刷新的方式
+                                }
+                            
+                                self.msgbox(data.obj);                               
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
+    },  
       
       
 });

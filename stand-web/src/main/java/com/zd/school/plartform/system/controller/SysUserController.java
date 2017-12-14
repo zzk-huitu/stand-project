@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
@@ -37,7 +36,6 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.security.MyExceptionHandler;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
@@ -285,6 +283,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
+	
 	@RequestMapping(value = { "/userRoleList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void getUserRolelist(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -358,6 +357,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
+	@Auth("SYSUSER_role")
 	@RequestMapping(value = { "/doAddUserRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void addUserRole(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -479,7 +479,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		strData = jsonBuilder.buildObjListToJson((long) userList.size(), userList, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+   
 	@RequestMapping(value = { "/userDeptJobList" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -504,6 +504,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @param response
 	 * @throws IOException
 	 */
+	@Auth("SYSUSER_deptJob")
 	@RequestMapping("/doAddUserToDeptJob")
 	public void addUserToDeptJob(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String deptJobId = request.getParameter("ids");
@@ -626,7 +627,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	/*
 	 * 一键同步UP的方式
 	 */
-	@Auth("SYSUSER_sycnToUp")
+	@Auth("SYSUSER_syncToUP")
 	@RequestMapping("/doSyncAllUserInfoToUp")
 	public void doSyncAllUserInfoToUp(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		StringBuffer returnJson = null;
@@ -748,8 +749,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 	
     @Auth("SYSUSER_export")
-	@RequestMapping("/exportExcel")
-    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping("/doExportExcel")
+    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");
 		request.getSession().removeAttribute("exportTrainClassTraineeCardIIsState");
 

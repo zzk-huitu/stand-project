@@ -445,6 +445,10 @@ Ext.define("core.system.user.controller.OtherController", {
                 var userId = insertObj.uuid;
     
                 var records = deptJobGrid.getSelectionModel().getSelection();
+                if (records.length == 0) {
+                    self.msgbox("请选择要设置的部门岗位");
+                    return false;
+                }
                 if (records.length != 1) {
                     self.msgbox("只能设置一个主部门岗位，请重新选择");
                     return false;

@@ -113,11 +113,17 @@ Ext.define("core.system.role.view.MainGrid", {
                 tooltip: '编辑',      
                 ref: 'gridEdit',
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){
-                    if(record.get("issystem")==1)
+                    if(record.get("issystem")==1){
                         return 'x-hidden-display';
-                    else
-                        return null;
-                },  
+                    }else if(comm.get("isAdmin")!="1"){
+                         var menuCode="SYSROLE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");   
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null;
+                },   
                 handler: function(view, rowIndex, colIndex, item) {                 
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('editClick_Tab', {
@@ -142,8 +148,18 @@ Ext.define("core.system.role.view.MainGrid", {
                 text:'角色用户',
                 style:'font-size:12px;',
                 tooltip: '角色用户',
-                ref: 'gridDetail',
-                //hidden:true,            
+                ref: 'gridjobUser',
+                //hidden:true,   
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSROLE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridJobUser_Tab")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },        
                 handler: function(view, rowIndex, colIndex, item) {             
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('jobUserClick_Tab', {

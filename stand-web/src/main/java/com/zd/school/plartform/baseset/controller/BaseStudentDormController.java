@@ -348,9 +348,9 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		}
 		
 	}
-
-	@RequestMapping("/exportExcel")
-	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@Auth("BASESTUDENTDORM_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportStuDormIsEnd", "0");
 		request.getSession().removeAttribute("exportStuDormIsState");
 		String claiId = request.getParameter("claiId");

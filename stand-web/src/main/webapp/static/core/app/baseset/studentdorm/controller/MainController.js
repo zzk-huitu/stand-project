@@ -73,7 +73,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                     return false;
                 }
             },
-            "basegrid[xtype=baseset.studentdorm.maingrid] button[ref=exportExcel]": {
+            "basegrid[xtype=baseset.studentdorm.maingrid] button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExportExcel(btn);
                     return false;
@@ -281,7 +281,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseStudentDorm/exportExcel?claiId='+classId+'"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseStudentDorm/doExportExcel?claiId='+classId+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

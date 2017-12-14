@@ -35,6 +35,10 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                             var btnExport = grid.down("button[ref=gridExport]");
                             btnExport.setHidden(true);                    
                         }
+                        if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
+                            var btnSync = grid.down("button[ref=syncToUP]");
+                            btnSync.setHidden(true);                    
+                        }
                         if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
                             var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
                             btnUpdate.setHidden(true);                    
@@ -75,6 +79,13 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                 beforeclick: function(btn) {
                     this.doExport(btn);
                     return false;
+                }
+            },
+             //同步人员数据到UP
+            "panel[xtype=baseset.studentmanager.studentgrid] button[ref=syncToUP]": {
+                beforeclick: function(btn) {   
+                    this.doSyncToUP(btn); 
+                    return false;     
                 }
             },
             //操作列
@@ -214,7 +225,7 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/exportExcel?deptId='+deptId+'&userName='+userName+'&xm='+xm+'&category='+2+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/SysUser/doExportExcel?deptId='+deptId+'&userName='+userName+'&xm='+xm+'&category='+2+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 
@@ -424,5 +435,41 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
         
         
     },
+    doSyncToUP:function(btn){
+        //同步人员数据事件    
+        var self = this;                    
+        var baseGrid = btn.up("grid");
+
+        Ext.MessageBox.confirm('同步人员数据到UP', '您确定要执行同步人员数据到UP操作吗？', function(btn, text) {                  
+            if (btn == 'yes') {
+                Ext.Msg.wait('正在同步人员数据，请等待...','提示');
+                setTimeout(function(){
+                //异步ajax加载
+                Ext.Ajax.request({
+                    url: comm.get('baseUrl') + "/SysUser/doSyncAllUserInfoToUp",
+                    params: { },
+                    timeout:1000*60*60*10,     //10个小时
+                    success: function(response){
+                        var result=JSON.parse(response.responseText);
+                       if (result.success) {      
+                            Ext.Msg.hide();               
+                            self.msgbox(result.msg);
+                            baseGrid.getStore().loadPage(1);                                                                    
+                        } else {
+                            Ext.Msg.hide(); 
+                            self.Error(result.msg);
+
+                        }
+                    },
+                    failure: function(response, opts) {
+                        Ext.Msg.hide(); 
+                        self.Error("请求失败，请联系管理员！");                                  
+                    }
+                });                              
+            },100);                           
+        }
+     });
+
+   },
 
 });
