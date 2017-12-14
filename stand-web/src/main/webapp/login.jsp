@@ -49,7 +49,7 @@
 <div class="body_bg">
 	<div class="mg">
 		<div class="top_title">
-			<img class="fl logo" src="${contextPath}/static/core/resources/images/login/index_logo.png">		
+			<img class="logo" src="${contextPath}/static/core/resources/images/login/index_logo.png">		
 		</div>
 	</div>
 	<div class="contian_box">
