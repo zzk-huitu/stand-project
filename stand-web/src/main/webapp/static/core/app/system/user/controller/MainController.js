@@ -932,7 +932,6 @@ Ext.define("core.system.user.controller.MainController", {
         var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
         var userName ="";
         var xm = "";
-        debugger;
         if(girdSearchTexts[0]!=null){
            userName = girdSearchTexts[0].getValue();
         }
