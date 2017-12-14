@@ -12,25 +12,6 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
     init: function() {
     },
     control: {
-          "basepanel basegrid[xtype=basedevice.smartdevice.maingrid]": {
-              afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                        var menuCode="BASESMARTDEVICE";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridSetHigh")==-1){
-                            var btnSetHigh = grid.down("button[ref=gridSetHigh]");
-                            btnSetHigh.setHidden(true);
-                            
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridSetBase")==-1){
-                            var btnSetBase = grid.down("button[ref=gridSetBase]");
-                            btnSetBase.setHidden(true);
-                            
-                        }
-
-                    }
-                },
-            },
         //区域列表刷新按钮事件
         "basetreegrid[xtype=basedevice.smartdevice.roominfotree] button[ref=gridRefresh]": {
             click: function(btn) {

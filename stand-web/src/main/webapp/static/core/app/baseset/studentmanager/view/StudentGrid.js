@@ -62,7 +62,7 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
         },{
             xtype: 'button',
             text: '同步人员数据到UP',
-            ref: 'syncToUP',
+            ref: 'syncToUP', 
             funCode:'girdFuntionBtn',
             iconCls: 'x-fa fa-rss'
         },'->',{

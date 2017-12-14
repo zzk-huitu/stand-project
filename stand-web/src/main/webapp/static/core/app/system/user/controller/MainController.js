@@ -48,14 +48,6 @@ Ext.define("core.system.user.controller.MainController", {
                         var btnAdd = grid.down("button[ref=gridAdd_Tab]");
                         btnAdd.setHidden(true);                    
                     }
-                    if(userBtn.indexOf(menuCode+"_gridDeptJob")==-1){
-                        var btnUpdate = grid.down("button[ref=gridDeptJob]");
-                        btnUpdate.setHidden(true);                    
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridRole")==-1){
-                        var btnAdd = grid.down("button[ref=gridRole]");
-                        btnAdd.setHidden(true);                    
-                    }
 
                   }
                 },

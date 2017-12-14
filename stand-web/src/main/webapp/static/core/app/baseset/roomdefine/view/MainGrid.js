@@ -122,7 +122,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){   
                     if(record.get("roomType")!="1"){                    
                         return 'x-hidden-display';                    
-                    }else{
+                    }/*else{
                        if(comm.get("isAdmin")!="1"){
                         var menuCode="BASEROOMDEFINE";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
@@ -130,7 +130,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
                             return 'x-hidden-display';
                         }
                     } 
-                }
+                }*/
                     return null; 
                 }, 
                 handler: function(view, rowIndex, colIndex, item) {

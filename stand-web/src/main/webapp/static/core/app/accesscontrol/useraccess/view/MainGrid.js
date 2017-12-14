@@ -19,7 +19,7 @@ Ext.define("core.accesscontrol.useraccess.view.MainGrid", {
         },'->',{
             xtype: 'button',
             text: '删除权限',
-            ref: 'gridDelete',
+            ref: 'gridDeletePer',
             iconCls: 'x-fa fa-minus-circle'
         },{
             xtype: 'button',

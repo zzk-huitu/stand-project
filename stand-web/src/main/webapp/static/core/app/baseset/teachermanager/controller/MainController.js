@@ -46,14 +46,6 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                             var btnAdd = grid.down("button[ref=gridAdd_Tab]");
                             btnAdd.setHidden(true);                    
                         }
-                        if(userBtn.indexOf(menuCode+"_gridDeptJob")==-1){
-                            var btnUpdate = grid.down("button[ref=gridDeptJob]");
-                            btnUpdate.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridRole")==-1){
-                            var btnAdd = grid.down("button[ref=gridRole]");
-                            btnAdd.setHidden(true);                    
-                        }
                     }
                },
 
@@ -89,7 +81,7 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 }
             },
             //同步人员数据到UP
-            "panel[xtype=baseset.studentmanager.studentgrid] button[ref=syncToUP]": {
+            "panel[xtype=baseset.teachermanager.teachergrid] button[ref=syncToUP]": {
                 beforeclick: function(btn) {   
                     this.doSyncToUP(btn); 
                     return false;     
@@ -443,7 +435,8 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
         
     },
     doSyncToUP:function(btn){
-        //同步人员数据事件                        
+        //同步人员数据事件       
+        var self = this;                 
         var baseGrid = btn.up("grid");
 
         Ext.MessageBox.confirm('同步人员数据到UP', '您确定要执行同步人员数据到UP操作吗？', function(btn, text) {                  
