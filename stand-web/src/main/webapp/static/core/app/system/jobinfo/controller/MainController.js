@@ -103,7 +103,7 @@ Ext.define("core.system.jobinfo.controller.MainController", {
             }
             recordData = rescords[0].getData();
         }else{
-         recordData =  record.getData();
+            recordData =  record.getData();
         }
         var funCode = baseGrid.funCode;                 //主界面的funCode
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");

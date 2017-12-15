@@ -168,7 +168,7 @@ Ext.define('core.main.view.Viewport', {
                 paddingRight:'3px'
             }          
         },{  
-            xtype : 'main.mainmenupanel',  
+            xtype : 'main.mainmenupanel',   
             region : 'west', // 左边面板  
             width : 200,          
             split : true,
