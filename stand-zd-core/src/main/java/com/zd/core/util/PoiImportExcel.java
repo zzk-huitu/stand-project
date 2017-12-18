@@ -1,5 +1,13 @@
 package com.zd.core.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -9,15 +17,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-public class ImportExcelUtil {
+public class PoiImportExcel {
 
 	private final static String excel2003L = ".xls"; // 2003- 版本的excel
 	private final static String excel2007U = ".xlsx"; // 2007+ 版本的excel
@@ -29,7 +29,7 @@ public class ImportExcelUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<List<Object>> getBankListByExcel(InputStream in, String fileName) throws Exception {
+	public List<List<Object>> getListByExcel(InputStream in, String fileName) throws Exception {
 		List<List<Object>> list = null;
 
 		// 创建Excel工作薄
@@ -42,42 +42,54 @@ public class ImportExcelUtil {
 		Cell cell = null;
 
 		list = new ArrayList<List<Object>>();
-		// 遍历Excel中所有的sheet
-		//for (int i = 0; i < work.getNumberOfSheets(); i++) {
-		for (int i = 0; i < 1; i++) {
-			sheet = work.getSheetAt(i);
-			if (sheet == null) {
+		// 直接获取第一个sheet
+		sheet = work.getSheetAt(0);
+		if (sheet == null) {
+			return list;
+		}
+		// 取得Excel的总列数,总行数
+		int columns = sheet.getRow((short) 0).getPhysicalNumberOfCells();
+		int rows = sheet.getPhysicalNumberOfRows();
+		List<Object> dataRow = null;
+
+		// 首行为定义标题的行，数据从第2行开始
+		for (int i = 1; i < rows; i++) {
+			dataRow = new ArrayList<Object>();
+			// 获取行
+			row = sheet.getRow(i);
+
+			for (int j = 0; j < columns; j++) {
+				// 获取某行某列的某一个单元格
+				cell = row.getCell(j);
+				// 往dataRow存值
+				dataRow.add(getCellValue(cell));
+			}
+			list.add(dataRow);
+		}
+
+		// 遍历当前sheet中的所有行
+		/*
+		int countCellNum = 0;
+		for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
+			row = sheet.getRow(j);
+			if (row == null || row.getFirstCellNum() == j) {
+				if (row != null)
+					countCellNum = row.getLastCellNum();
 				continue;
 			}
 
-			// 遍历当前sheet中的所有行
-			int countCellNum = 0;
-			for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
-				row = sheet.getRow(j);
-				if (row == null || row.getFirstCellNum() == j) {
-					if (row != null)
-						countCellNum = row.getLastCellNum();
-					continue;
-				}
+			// 遍历所有的列
+			List<Object> li = new ArrayList<Object>();
+			for (int y = row
+					.getFirstCellNum(); y <= countCellNum; y++) {
+				cell = row.getCell(y);
+				li.add(this.getCellValue(cell));
 
-				// 遍历所有的列
-				List<Object> li = new ArrayList<Object>();
-				for (int y = row.getFirstCellNum(); y <= countCellNum /*
-																		 * row.
-																		 * getLastCellNum
-																		 * ()
-																		 */; y++) {
-					cell = row.getCell(y);
-					li.add(this.getCellValue(cell));
-
-				}
-				/*
-				 * if(li.size()<countCellNum){ int num=countCellNum-li.size();
-				 * for(int z=0;z<num;z++){ li.add(""); } }
-				 */
-				list.add(li);
 			}
+			list.add(li);
 		}
+		*/
+
 		work.close();
 		return list;
 	}

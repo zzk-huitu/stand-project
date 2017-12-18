@@ -16,40 +16,56 @@ Ext.define("core.system.dept.controller.MainController", {
         this.control({
             "basepanel basetreegrid[xtype=system.dept.maingrid]": {
               afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="DEPARTMENT";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                        var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                         btnAdd.setHidden(true);
-                         
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="DEPARTMENT";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                             btnAdd.setHidden(true);
+                             
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                             btnEdit.setHidden(true);
+                          }
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            var btnDel = grid.down("button[ref=gridDelete]");
+                             btnDel.setHidden(true);
+                          }
+                        if(userBtn.indexOf(menuCode+"_sync")==-1){
+                            var btnSync = grid.down("button[ref=sync]");
+                             btnSync.setHidden(true);
+                             
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridSetJob")==-1){
+                            var btnSetJob = grid.down("button[ref=gridSetJob]");
+                             btnSetJob.setHidden(true);
+                          }
+                        if(userBtn.indexOf(menuCode+"_gridSetMainJob")==-1){
+                            var btnSetMainJob = grid.down("button[ref=gridSetMainJob]");
+                             btnSetMainJob.setHidden(true);
+                          }
                     }
-                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                        var btnEdit = grid.down("button[ref=gridEdit_Tab]");
-                         btnEdit.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                        var btnDel = grid.down("button[ref=gridDelete]");
-                         btnDel.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_sync")==-1){
-                        var btnSync = grid.down("button[ref=sync]");
-                         btnSync.setHidden(true);
-                         
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridSetJob")==-1){
-                        var btnSetJob = grid.down("button[ref=gridSetJob]");
-                         btnSetJob.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridSetMainJob")==-1){
-                        var btnSetMainJob = grid.down("button[ref=gridSetMainJob]");
-                         btnSetMainJob.setHidden(true);
-                      }
-                  }
-                  return false;
+
+                    //给表格的store添加load事件，并展开第一层
+                    /*
+                    grid.getStore().setListeners ({
+                        load:function( store , records , successful , operation , eOpts ){   
+                            if(successful==true)              
+                                grid.getRootNode().childNodes[0].expand();   //展开第一层
+
+                            return true;    //继续去执行base层的load事件
+                        }
+                    });
+                    grid.getStore().load();
+                    */
+
+                    return false;
                 },
               
             },
+            
+
             //修改按钮事件
             "basetreegrid button[ref=gridEdit_Tab]": {
                 beforeclick: function(btn) {

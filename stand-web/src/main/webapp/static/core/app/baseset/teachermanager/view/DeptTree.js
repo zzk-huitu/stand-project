@@ -4,6 +4,7 @@ Ext.define("core.baseset.teachermanager.view.DeptTree", {
     dataUrl: comm.get('baseUrl') + "/SysOrg/treeList",
     model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgTree", "checked").modelName,
     al: true,
+    expandFirst:true,
     scrollable:true,
     title: "部门列表",
     selModel: {

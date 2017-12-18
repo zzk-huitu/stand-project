@@ -7,6 +7,7 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
       
     },
     menuCode:"IRDEVICE",
+    expandFirst:true,
     sortableColumns:false,
     extParams: {
         excludes:"checked"

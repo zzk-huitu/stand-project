@@ -4,6 +4,7 @@ Ext.define("core.baseset.room.view.AreaGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
+    expandFirst:true,
     menuCode:"JWTROOMINFO",
     sortableColumns:false,
     extParams: {

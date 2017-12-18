@@ -51,9 +51,9 @@ public class PoiExportExcel {
 				//创建基本的样式
 				CellStyle titleStyle = getCellStyle(workbook, "", (short) 26, true, HorizontalAlignment.CENTER,VerticalAlignment.CENTER,true);
 				CellStyle headStyle = getCellStyle(workbook, "", (short) 11, true, HorizontalAlignment.CENTER,VerticalAlignment.CENTER,true);
-				CellStyle textStyleCenter = getCellStyle(workbook, "", (short) 11, true, HorizontalAlignment.CENTER,VerticalAlignment.CENTER,true);
-				CellStyle textStyleLeft = getCellStyle(workbook, "", (short) 11, true, HorizontalAlignment.LEFT,VerticalAlignment.CENTER,true);
-				CellStyle textStyleRight = getCellStyle(workbook, "", (short) 11, true, HorizontalAlignment.RIGHT,VerticalAlignment.CENTER,true);
+				CellStyle textStyleCenter = getCellStyle(workbook, "", (short) 11, false, HorizontalAlignment.CENTER,VerticalAlignment.CENTER,true);
+				CellStyle textStyleLeft = getCellStyle(workbook, "", (short) 11, false, HorizontalAlignment.LEFT,VerticalAlignment.CENTER,true);
+				CellStyle textStyleRight = getCellStyle(workbook, "", (short) 11, false, HorizontalAlignment.RIGHT,VerticalAlignment.CENTER,true);
 				
 				int rowNum = 0; //初始化第一行为0开始计数
 				int colCount = ((String[]) listContent.get(0).get("head")).length;//表头的列数

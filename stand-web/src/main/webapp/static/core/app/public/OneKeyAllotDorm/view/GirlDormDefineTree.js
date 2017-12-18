@@ -4,6 +4,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.GirlDormDefineTree", {
     dataUrl: comm.get('baseUrl') + "/BaseStudentDorm/getTree",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
+    expandFirst:true,
     extParams: {
          whereSql: "",
          excludes:"checked",
