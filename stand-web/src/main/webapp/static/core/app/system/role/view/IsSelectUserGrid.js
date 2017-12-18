@@ -10,8 +10,11 @@ Ext.define("ccore.system.role.view.IsSelectUserGrid", {
     loadMask: true,
     multiSelect: true,
     selModel: {
-        selType: "checkboxmodel",
-        width: 10
+        type: "checkboxmodel",   
+        headerWidth:30,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        //mode:'single',  //multi,simple,single；默认为多选multi
+        checkOnly:true,    //如果值为true，则只用点击checkbox列才能选中此条记录
+        //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
     },
     viewConfig: {
         stripeRows: true
@@ -74,6 +77,33 @@ Ext.define("ccore.system.role.view.IsSelectUserGrid", {
             drop: function (node, data, dropRec, dropPosition) {
                 //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
                 //Ext.example.msg("Drag from right to left", 'Dropped ' + data.records[0].get('name') + dropOn);
+            },
+            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){             
+                var newRec=data.records;
+                var arrays=new Array();
+                
+                var isSelectStore = this.grid.getStore();
+                var oldRec=isSelectStore.getData().items;
+                var isExist=null;
+                for(var i in newRec){
+                    isExist=false;
+                    for(var j in oldRec){
+                        if(newRec[i].get("uuid")==oldRec[j].get("uuid")){
+                            //isSelectStore.remove(oldRec[j]);   //方式一：移除右边的原有数据
+                            //this.refresh();
+                            isExist=true;
+                            break;
+                        }                  
+                    }
+                    if(isExist==false)
+                        arrays.push(newRec[i]);                        
+                }
+                
+                if(arrays.length==0)
+                    return false;
+                else if(newRec.length==arrays.length)
+                    data.records=arrays;    //方式二：移除左边的数据
+                //return false;
             },
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
                 IsSelectStore = grid.getStore();

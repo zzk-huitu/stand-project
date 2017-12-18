@@ -189,13 +189,13 @@ Ext.define("core.system.roleright.controller.OtherController", {
                                  myMask.hide();
 
                                 if (data.success) { 
-                                    var baseGrid = funData.grid;
+                        /*            var baseGrid = funData.grid;
                                     var store = baseGrid.getStore();
                                     var proxy = store.getProxy();
                                     proxy.extraParams = {
                                         roleId: roleId
                                     };
-                                    store.load();
+                                    store.load();*/
                                     self.msgbox(data.obj);
                                     win.close();
 

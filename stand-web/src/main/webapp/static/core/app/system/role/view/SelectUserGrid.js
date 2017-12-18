@@ -7,6 +7,13 @@ Ext.define("core.system.role.view.SelectUserGrid", {
     dataUrl: comm.get("baseUrl") + "/SysUser/getUserNotInRoleId", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     pageDisplayInfo:false,
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:30,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        //mode:'single',  //multi,simple,single；默认为多选multi
+        checkOnly:true,    //如果值为true，则只用点击checkbox列才能选中此条记录
+        //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
+    },
     /**
      * 工具栏操作按E钮
      * 继承自core.base.view.BaseGrid可以在此覆盖重写
@@ -62,17 +69,25 @@ Ext.define("core.system.role.view.SelectUserGrid", {
             drop: function(node, data, dropRec, dropPosition) {
             },
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
-                selectStore = grid.getStore();
-                selectStore.removeAt(index);
-
+                var selectStore = grid.getStore();
                 var basePanel = grid.up("panel[xtype=system.role.selectuserlayout]");
+                var data = record.data;
                 var isSelectGrid;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=system.role.isselectusergrid]");
-                    var isSelectStore = isSelectGrid.getStore();
-                    isSelectStore.insert(0, [record]);
+                    if(isSelectGrid.isVisible()==true){
+                        var isSelectStore = isSelectGrid.getStore();
+                        for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.userName+"已存在!");
+                                return ;
+                            }
+                        };
+
+                        isSelectStore.insert(0, [record]);
+                        selectStore.removeAt(index);
+                    }
                 }
-                
                 return false;
             }
         }

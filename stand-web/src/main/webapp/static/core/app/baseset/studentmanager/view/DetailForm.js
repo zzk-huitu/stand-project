@@ -169,7 +169,8 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             xtype: "datetimefield",
             dateType:'date',
             fieldLabel: "出生日期",
-            name: "csrq"
+            name: "csrq",
+            maxValue:new Date()
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: "",
