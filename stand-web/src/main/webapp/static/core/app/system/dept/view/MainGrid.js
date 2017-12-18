@@ -52,7 +52,7 @@ Ext.define("core.system.dept.view.MainGrid", {
         disabled:true
     },{
         xtype: 'button',
-        text: '设置部门上级主管',
+        text: '设置上级岗位',
         ref: 'gridSetMainJob',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-pencil-square',
@@ -101,7 +101,7 @@ Ext.define("core.system.dept.view.MainGrid", {
             dataIndex: 'mainLeaderName',
             flex:1,
         }, {
-            header: '上级主管岗位',
+            header: '设置上级岗位',
             dataIndex: 'superjobName',
             flex:1,
         }, {

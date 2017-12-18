@@ -69,7 +69,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 			dataIndex: "jobName",
 			width:100,
 		}, {
-			text: "是否部门主负责岗位",
+			text: "是否部门主管岗位",
 			width:150,
 			dataIndex: "jobType",
 			renderer: function(value) {
@@ -91,7 +91,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 			ref: "deptJobDetail",
 			align: "center",
 			items: [{
-				text: '部门负责岗位',
+				text: '设置主管岗位',
 				style: 'font-size:12px;',
 				tooltip: '设置本岗位为部门负责岗位',
 				getClass: function(view, metadata, record, rowIndex, colIndex, store) {
@@ -112,7 +112,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 					this.fireEvent("detailClick", view, "setSuperJob", rowIndex);
 				}
 			},{
-				text: '部门岗位用户',
+				text: '添加岗位用户',
 				style: 'font-size:12px;',
 				tooltip: '设置此部门岗位的用户',
 				//ref: 'gridEdit',

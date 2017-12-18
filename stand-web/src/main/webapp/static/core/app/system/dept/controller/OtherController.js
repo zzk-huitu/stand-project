@@ -860,7 +860,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var basePanel;
         var funData;
         var pkName;
-        var title = "确定要删除所选的用户吗？";
+        var title = "确定解除这些部门岗位吗？";
 
         if (btn) {
             baseGrid = btn.up("basegrid");
@@ -884,7 +884,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var basetab = btn.up('baseformtab');
         var tabFunData = basetab.funData;
 
-        Ext.Msg.confirm('温馨提示', title, function (btnOper, text) {
+        Ext.Msg.confirm('解除确认', title, function (btnOper, text) {
             if (btnOper == 'yes') {
                 //发送ajax请求
                 var loading = self.LoadMask(baseGrid);
