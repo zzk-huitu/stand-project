@@ -8,6 +8,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotTree", {
         excludes: "checked",
     },
     selModel: {},
+    expandFirst:true,
     sortableColumns:false,
     tbar:{
         xtype:'toolbar',

@@ -4,6 +4,7 @@ Ext.define("core.basedevice.basegateway.view.PtGatewayTree", {
     dataUrl: comm.get('baseUrl') + "/BaseGateway/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: null,
+    expandFirst:true,
     sortableColumns:false,
     //title: "区域信息",
     tbar:{

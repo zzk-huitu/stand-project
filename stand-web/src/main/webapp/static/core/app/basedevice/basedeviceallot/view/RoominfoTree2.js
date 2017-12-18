@@ -4,6 +4,7 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree2", {
     dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
+    expandFirst:true,
     forceFit:true,
     sortableColumns:false,
     multiSelect: false,
