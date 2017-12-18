@@ -54,9 +54,12 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
     
     //排序字段及模式定义
     defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    }/*,{
         property: 'createTime',
         direction: 'DESC'
-    }],
+    }*/],
     extParams: {},
     columns:  {        
         defaults:{
