@@ -24,6 +24,19 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                      }
                  }
             },
+            beforeitemclick: function(grid) {
+                var basePanel = grid.up("basepanel");
+                var basegrid = basePanel.down("basegrid[xtype=basedevice.basegateway.miangrid]");
+                var records = basegrid.getSelectionModel().getSelection();
+                var btnSetFront = basegrid.down("button[ref=gridSetFront]");
+                if (records.length == 0) {
+                    btnSetFront.setDisabled(true);
+                } else if (records.length == 1) {
+                    btnSetFront.setDisabled(false);
+                } else {
+                    btnSetFront.setDisabled(false);
+                }
+            },
         },
     
               //区域列表刷新按钮事件

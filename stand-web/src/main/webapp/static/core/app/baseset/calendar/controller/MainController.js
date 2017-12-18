@@ -31,6 +31,27 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                         }
                      }
                  },
+                 beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnEdit = basegrid.down("button[ref=gridEdit]");
+                    var btnDelTime = basegrid.down("button[ref=gridDelTime]");
+                    var btnUse = basegrid.down("button[ref=gridUse]");
+                    if (records.length == 0) {
+                        btnEdit.setDisabled(true);
+                        btnDelTime.setDisabled(true);
+                        btnUse.setDisabled(true);
+                    } else if (records.length == 1) {
+                        btnEdit.setDisabled(false);
+                        btnDelTime.setDisabled(false);
+                        btnUse.setDisabled(false);
+                    } else {
+                        btnEdit.setDisabled(true);
+                        btnDelTime.setDisabled(false);
+                        btnUse.setDisabled(true);
+                    }
+                },
             },
 
             //增加作息时间目录事件

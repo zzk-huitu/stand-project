@@ -14,31 +14,31 @@ Ext.define("core.system.menu.view.MenuTree", {
 		text: '添加下级',
 		ref: 'gridAdd_Tab',
 		iconCls: 'x-fa fa-plus-square',
-		disabled: false
+	    disabled: true
 	}, {
 		xtype: 'button',
 		text: '添加同级',
 		ref: 'gridAddBrother_Tab',
 		iconCls: 'x-fa fa-plus-square-o',
-		disabled: false
+		disabled: true
 	}, {
 		xtype: 'button',
-		text: '修改',
+		text: '编辑',
 		ref: 'gridEdit_Tab',
 		iconCls: 'x-fa fa-pencil-square',
-		disabled: false  
+		disabled: true  
 	}, {
 		xtype: 'button',
 		text: '解锁',
 		ref: 'gridUnLock',
 		iconCls: 'x-fa fa-unlock',
-		disabled: false
+		disabled: true
 	}, {
 		xtype: 'button',
 		text: '锁定',
 		ref: 'gridLock',
 		iconCls: 'x-fa fa-lock',
-		disabled: false
+		disabled: true
 	},{
 		xtype: 'button',
 		text: '刷新',

@@ -24,6 +24,25 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                          }
                      }
                  },
+                 beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var funCode = basePanel.funCode;
+                    var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    var btnOut = baseGrid.down("button[ref=gridOut]");
+                    var btnDelete = baseGrid.down("button[ref=gridDelete]");
+                    if (records.length == 0) {
+                        btnOut.setDisabled(true);
+                        btnDelete.setDisabled(true);
+                    } else if (records.length == 1) {
+                        btnOut.setDisabled(false);
+                        btnDelete.setDisabled(false);
+                    } else {
+                        btnOut.setDisabled(false);
+                        btnDelete.setDisabled(false);
+                    }
+                    return false;
+                }
             },
              //区域列表刷新按钮事件
             "panel[xtype=baseset.teacherdorm.teacherdormtree] button[ref=gridRefresh]": {
@@ -56,36 +75,7 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                     return false;
                 }
             },
-             //表格单击事件
-            "basegrid[xtype=baseset.teacherdorm.maingrid]": {
-                beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                    var basePanel = grid.up("basepanel");
-                    var funCode = basePanel.funCode;
-                    var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
-                    var records = baseGrid.getSelectionModel().getSelection();
-                    var btnOut = baseGrid.down("button[ref=gridOut]");
-                    var btnDelete = baseGrid.down("button[ref=gridDelete]");
-                   if (records.length == 0) {
-                        if (btnOut)
-                            btnOut.setDisabled(true);
-                        if (btnDelete)
-                            btnDelete.setDisabled(true);
 
-                    } else if (records.length == 1) {
-                        if (btnOut)
-                            btnOut.setDisabled(false);
-                        if (btnDelete)
-                            btnDelete.setDisabled(false);
-                    } else {
-                        if (btnOut)
-                            btnOut.setDisabled(true);
-                        if (btnDelete)
-                            btnDelete.setDisabled(false);
-                    }
-                    return false;
-                }
-                
-            },
             
              /**
              * 操作列的操作事件

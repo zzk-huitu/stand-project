@@ -43,6 +43,31 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
                          }
                      }
                  },
+                 beforeitemclick: function(grid) {
+                 	var basePanel = grid.up("basepanel");
+                 	var basegrid = basePanel.down("basetreegrid[xtype=baseset.dictionary.dicgrid]");
+                 	var records = basegrid.getSelectionModel().getSelection();
+                 	var btnAdd = basegrid.down("button[ref=gridAdd]");
+                 	var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
+                 	var btnEdit = basegrid.down("button[ref=gridEdit]");
+                 	var btnDel = basegrid.down("button[ref=gridDel]");
+                 	if (records.length == 0) {
+                 		btnAdd.setDisabled(true);
+                 		btnAddBrother.setDisabled(true);
+                 		btnEdit.setDisabled(true);
+                 		btnDel.setDisabled(true);
+                 	} else if (records.length == 1) {
+                 		btnAdd.setDisabled(false);
+                 		btnAddBrother.setDisabled(false);
+                 		btnEdit.setDisabled(false);
+                 		btnDel.setDisabled(false);
+                 	} else {
+                 		btnAdd.setDisabled(true);
+                 		btnAddBrother.setDisabled(true);
+                 		btnEdit.setDisabled(true);
+                 		btnDel.setDisabled(false);
+                 	}
+                 },
             },
 			/**
 			 * 树形节点点击事件
@@ -275,7 +300,7 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 		var dicGrid = baseGrid.up("panel[xtype=baseset.dictionary.mainlayout]").down("panel[xtype=baseset.dictionary.dicgrid]");
 		var selectObject = dicGrid.getSelectionModel().getSelection();
 		if (selectObject.length <= 0) {
-			self.Warning("请选择数据字典!");
+			self.msgbox("请选择数据字典!");
 			return false;
 		}
 		//得到选择的字典

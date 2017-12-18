@@ -26,6 +26,7 @@ Ext.define("core.system.role.view.MainGrid", {
             text: '角色用户',
             ref: 'gridJobUser_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分   
+            disabled:true,
             iconCls: 'x-fa fa-user'
         },{
             xtype: 'button',

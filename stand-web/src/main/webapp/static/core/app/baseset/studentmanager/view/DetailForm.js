@@ -74,8 +74,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             ddCode: "CATEGORY",
             allowBlank: false,
             blankText: "身份不能为空",
-           //  value: "2"
-           // readOnly:true
+            readOnly:true
         }]
     }, {
         xtype: 'container',

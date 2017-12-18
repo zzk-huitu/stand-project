@@ -40,19 +40,22 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
             text: '锁定账户',
             ref: 'gridLock',
             funCode:'girdFuntionBtn',    
-            iconCls: 'x-fa fa-lock'
+            iconCls: 'x-fa fa-lock',
+            disabled:true,
         },{
             xtype: 'button',
             text: '解锁账户',
             ref: 'gridUnLock',
             funCode:'girdFuntionBtn',       
-            iconCls: 'x-fa fa-unlock'
+            iconCls: 'x-fa fa-unlock',
+            disabled:true,
         },{
             xtype: 'button',
             text: '重置密码',
             ref: 'gridSetPwd',
             funCode:'girdFuntionBtn',         
-            iconCls: 'x-fa fa-key'
+            iconCls: 'x-fa fa-key',
+            disabled:true,
         },{
             xtype: 'button',
             text: '导出',

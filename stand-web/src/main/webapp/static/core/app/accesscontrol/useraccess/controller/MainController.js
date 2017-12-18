@@ -26,6 +26,21 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
                  }
                   return false;
             },
+            beforeitemclick: function(grid) {
+              var basePanel = grid.up("basepanel");
+              var basegrid = basePanel.down("basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid]");
+              var records = basegrid.getSelectionModel().getSelection();
+              var btnPersonnel = basegrid.down("button[ref=selectPersonnel]");
+              if (records.length == 0) {
+                btnPersonnel.setDisabled(true);
+              } else if (records.length == 1) {
+                btnPersonnel.setDisabled(false);
+              } else {
+                btnPersonnel.setDisabled(false);
+
+              }
+              return false;
+            },
 
           },
 
@@ -51,7 +66,26 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
 
                  }
                 return false;
-            },
+              },
+              beforeitemclick: function(grid) {
+                var basePanel = grid.up("basepanel");
+                var basegrid = basePanel.down("basegrid[xtype=accesscontrol.useraccess.maingrid]");
+                var records = basegrid.getSelectionModel().getSelection();
+                var btnDeletePer = basegrid.down("button[ref=gridDeletePer]");
+                var btnDeleteAll = basegrid.down("button[ref=gridDeleteAll]");
+                if (records.length == 0) {
+                  btnDeletePer.setDisabled(true);
+                  btnDeleteAll.setDisabled(true);
+                } else if (records.length == 1) {
+                  btnDeletePer.setDisabled(false);
+                  btnDeleteAll.setDisabled(false);
+                } else {
+                  btnDeletePer.setDisabled(false);
+                  btnDeleteAll.setDisabled(true);
+
+                }
+                return false;
+              },
 
         },
     

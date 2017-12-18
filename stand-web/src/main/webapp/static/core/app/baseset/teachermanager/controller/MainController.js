@@ -47,7 +47,28 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                             btnAdd.setHidden(true);                    
                         }
                     }
-               },
+                },
+                beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basegrid[xtype=baseset.teachermanager.teachergrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnLock = basegrid.down("button[ref=gridLock]");
+                    var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+                    var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
+                    if (records.length == 0) {
+                        btnLock.setDisabled(true);
+                        btnUnLock.setDisabled(true);
+                        btnSetPwd.setDisabled(true);
+                    } else if (records.length == 1) {
+                        btnLock.setDisabled(false);
+                        btnUnLock.setDisabled(false);
+                        btnSetPwd.setDisabled(false);
+                    } else {
+                        btnLock.setDisabled(false);
+                        btnUnLock.setDisabled(false);
+                        btnSetPwd.setDisabled(false);
+                    }
+                },
 
             },
             //锁定账户事件

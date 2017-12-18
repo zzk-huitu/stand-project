@@ -39,6 +39,31 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                          }
                      }
                  },
+                 beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnAdd = basegrid.down("button[ref=gridAdd]");
+                    var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
+                    var btnEdit = basegrid.down("button[ref=gridEdit]");
+                    var btnDel = basegrid.down("button[ref=gridDel]");
+                    if (records.length == 0) {
+                        btnAdd.setDisabled(true);
+                        btnAddBrother.setDisabled(true);
+                        btnEdit.setDisabled(true);
+                        btnDel.setDisabled(true);
+                    } else if (records.length == 1) {
+                        btnAdd.setDisabled(false);
+                        btnAddBrother.setDisabled(false);
+                        btnEdit.setDisabled(false);
+                        btnDel.setDisabled(false);
+                    } else {
+                        btnAdd.setDisabled(true);
+                        btnAddBrother.setDisabled(true);
+                        btnEdit.setDisabled(true);
+                        btnDel.setDisabled(false);
+                    }
+                },
             },
     	 //品牌列表增加下级按钮事件
         "panel[xtype=basedevice.irdevice.irbrandtreegrid] button[ref=gridAdd]": {

@@ -32,6 +32,7 @@ Ext.define("core.system.permission.view.MainGrid", {
             text: '删除',
             ref: 'gridDelete',
             iconCls: 'x-fa fa-minus-circle',
+            disabled: true
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'

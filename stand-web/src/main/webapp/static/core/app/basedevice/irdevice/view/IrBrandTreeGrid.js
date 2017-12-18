@@ -16,26 +16,26 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
         xtype: 'button',
         text: '添加下级',
         ref: 'gridAdd',
-        iconCls: 'x-fa fa-plus-circle'
-        //disabled: true
+        iconCls: 'x-fa fa-plus-circle',
+        disabled: true
     }, {
         xtype: 'button',
         text: '添加同级',
         ref: 'gridAddBrother',
-        iconCls: 'x-fa fa-plus-circle'
-        //disabled: true
+        iconCls: 'x-fa fa-plus-circle',
+        disabled: true
     }, {
         xtype: 'button',
-        text: '修改',
+        text: '编辑',
         ref: 'gridEdit',
-        iconCls: 'x-fa fa-pencil-square'
-        //disabled: true
+        iconCls: 'x-fa fa-pencil-square',
+        disabled: true
     }, {
         xtype: 'button',
         text: '删除',
         ref: 'gridDel',
-        iconCls: 'x-fa fa-minus-circle'
-        //disabled: true
+        iconCls: 'x-fa fa-minus-circle',
+        disabled: true
     }, {
         xtype: 'button',
         text: '刷新',

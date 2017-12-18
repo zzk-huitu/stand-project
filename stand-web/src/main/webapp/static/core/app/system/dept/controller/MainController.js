@@ -48,7 +48,32 @@ Ext.define("core.system.dept.controller.MainController", {
                   }
                   return false;
                 },
-              
+            beforeitemclick: function(grid) {
+                var basePanel = grid.up("basepanel");
+                var basegrid = basePanel.down("basetreegrid[xtype=system.dept.maingrid]");
+                var records = basegrid.getSelectionModel().getSelection();
+                var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+                var btnDelete = basegrid.down("button[ref=gridDelete]");
+                var btnsetJob = basegrid.down("button[ref=gridSetJob]");
+                var btnsetMainJob = basegrid.down("button[ref=gridSetMainJob]");
+                if (records.length == 0) {
+                    btnEdit.setDisabled(true);
+                    btnDelete.setDisabled(true);
+                    btnsetJob.setDisabled(true);
+                    btnsetMainJob.setDisabled(true);
+                } else if (records.length == 1) {
+                    btnEdit.setDisabled(false);
+                    btnDelete.setDisabled(false);
+                    btnsetJob.setDisabled(false);
+                    btnsetMainJob.setDisabled(false);
+                } else {
+                    btnEdit.setDisabled(true);
+                    btnDelete.setDisabled(false);
+                    btnsetJob.setDisabled(true);
+                    btnsetMainJob.setDisabled(false);
+                }
+                return false;
+             },
             },
             //修改按钮事件
             "basetreegrid button[ref=gridEdit_Tab]": {

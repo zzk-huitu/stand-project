@@ -12,7 +12,7 @@ Ext.define("core.system.dept.view.MainGrid", {
     },
     tbar: [{
         xtype: 'button',
-        text: '添加部门',
+        text: '添加',
         ref: 'gridAdd_Tab',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-plus-circle',
@@ -31,38 +31,42 @@ Ext.define("core.system.dept.view.MainGrid", {
         disabled:true
     }*/, {
         xtype: 'button',
-        text: '修改',
+        text: '编辑',
         ref: 'gridEdit_Tab',
         funCode: 'girdFuntionBtn',
-        iconCls: 'x-fa fa-pencil-square'
+        iconCls: 'x-fa fa-pencil-square',
+        disabled:true
     },{
         xtype: 'button',
         text: '删除',
         ref: 'gridDelete',
         iconCls: 'x-fa fa-minus-circle',
-    }, {
-        xtype: 'button',
-        text: '刷新',
-        ref: 'gridRefresh',
-        iconCls: 'x-fa fa-refresh'
+        disabled:true
     },{
         xtype: 'button',
         text: '设置部门岗位',
         ref: 'gridSetJob',
         funCode: 'girdFuntionBtn',
-        iconCls: 'x-fa fa-pencil-square'
+        iconCls: 'x-fa fa-pencil-square',
+        disabled:true
     },{
         xtype: 'button',
         text: '设置部门上级主管',
         ref: 'gridSetMainJob',
         funCode: 'girdFuntionBtn',
-        iconCls: 'x-fa fa-pencil-square'
+        iconCls: 'x-fa fa-pencil-square',
+        disabled:true
     }, {
         xtype: 'button',
         text: '同步部门数据到UP',
         ref: 'sync',
         funCode:'girdFuntionBtn',         
-        iconCls: 'x-fa fa-rss'
+        iconCls: 'x-fa fa-rss',
+    }, {
+        xtype: 'button',
+        text: '刷新',
+        ref: 'gridRefresh',
+        iconCls: 'x-fa fa-refresh'
     }],
     
     columns:  {        

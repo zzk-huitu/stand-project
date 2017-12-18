@@ -23,6 +23,19 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                      }
                  }
             },
+            beforeitemclick: function(grid) {
+                var basePanel = grid.up("basepanel");
+                var basegrid = basePanel.down("basegrid[xtype=basedevice.baserate.maingrid]");
+                var records = basegrid.getSelectionModel().getSelection();
+                var btnBinding = basegrid.down("button[ref=gridBinding]");
+                if (records.length == 0) {
+                    btnBinding.setDisabled(true);
+                } else if (records.length == 1) {
+                    btnBinding.setDisabled(false);
+                } else {
+                    btnBinding.setDisabled(true);
+                }
+            },
         },
     	 //费率列表添加按钮
     	 "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridAdd_Tab]": {

@@ -26,12 +26,12 @@ Ext.define("core.system.jobinfo.view.DetailForm", {
     }, {
         beforeLabelTextTpl: comm.get("required"),
         allowBlank: false,
-        blankText: "岗位编码能为空",            
+        blankText: "岗位编码不能为空",            
         xtype: "textfield",
         fieldLabel: "岗位编码",
         name: "jobCode",
         maxLength: 16,
-        emptyText: '请输入岗位名称(最大16个字符)'        
+        emptyText: '请输入岗位编码(最大16个字符)'        
     }]
 
 });

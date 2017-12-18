@@ -26,7 +26,8 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
             xtype: 'button',
             text: '解除设置',
             ref: 'gridDelete',
-            iconCls: 'x-fa fa-minus-circle'
+            iconCls: 'x-fa fa-minus-circle',
+            disabled:true,
         },{
             xtype: 'button',
             text: '推送消息',

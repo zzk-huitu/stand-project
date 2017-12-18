@@ -49,8 +49,38 @@ Ext.define("core.system.user.controller.MainController", {
                         btnAdd.setHidden(true);                    
                     }
 
-                  }
-                },
+                }
+            },
+            beforeitemclick: function(grid) {
+                var basePanel = grid.up("basepanel");
+                var basegrid = basePanel.down("basegrid[xtype=system.user.usergrid]");
+                var records = basegrid.getSelectionModel().getSelection();
+                var btnLock = basegrid.down("button[ref=gridLock]");
+                var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+                var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
+                var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+                if (records.length == 0) {
+                    btnLock.setDisabled(true);
+                    btnUnLock.setDisabled(true);
+                    btnSetPwd.setDisabled(true);
+                    btnEdit.setDisabled(true);
+                } else if (records.length == 1) {
+                    btnLock.setDisabled(false);
+                    btnUnLock.setDisabled(false);
+                    btnSetPwd.setDisabled(false);
+                    if(records[0].getData().issystem==0){
+                    btnEdit.setDisabled(true);
+                    }else{
+                    btnEdit.setDisabled(false);     
+                    }
+                } else {
+                    btnLock.setDisabled(false);
+                    btnUnLock.setDisabled(false);
+                    btnSetPwd.setDisabled(false);
+                    btnEdit.setDisabled(true);
+                }
+                return false;
+            },
               
             },
              "basegrid[xtype=system.user.usergrid] actioncolumn": {

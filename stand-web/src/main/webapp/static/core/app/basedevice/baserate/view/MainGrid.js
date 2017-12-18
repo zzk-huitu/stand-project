@@ -40,7 +40,8 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             text: '费率绑定',
             ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-plus-circle',
+            disabled:true,
         },{
             xtype: 'tbtext', 
             html:'快速搜索：'

@@ -27,12 +27,13 @@ Ext.define("core.baseset.dictionary.view.ItemGrid", {
 		text: '编辑',
 		ref: 'gridEdit_Tab',
         iconCls: 'x-fa fa-pencil-square',
-		//disabled: true
+		disabled: true
 	}, {
 		xtype: 'button',
 		text: '删除',
 		ref: 'gridDelete',
         iconCls: 'x-fa fa-minus-circle',
+        disabled: true
 	},{
         xtype: 'tbtext',
         html: '（请慎重操作这些数据项）',

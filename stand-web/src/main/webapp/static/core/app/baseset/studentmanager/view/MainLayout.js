@@ -25,7 +25,7 @@ Ext.define("core.baseset.studentmanager.view.MainLayout", {
 		//默认的初始值设置
 		defaultObj: {
 			sex: '1',
-			category: '1',
+			category: '2',
 			state: '1',
 			orderIndex: 1,
 			userPwd: '123456',

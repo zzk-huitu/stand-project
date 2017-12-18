@@ -26,9 +26,9 @@ Ext.define("core.system.jobinfo.view.MainLayout", {
         defaultObj: {},
         tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
             titleField:'jobName',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-        	addTitle:'添加职位',
-        	editTitle:'编辑职位',
-        	detailTitle:'职位详情'
+        	addTitle:'添加岗位',
+        	editTitle:'编辑岗位',
+        	detailTitle:'岗位详情'
         }
     },
     /*设置最小宽度，并且自动滚动*/

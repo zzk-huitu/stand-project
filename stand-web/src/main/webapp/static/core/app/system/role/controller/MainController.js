@@ -28,6 +28,34 @@ Ext.define("core.system.role.controller.MainController", {
                     }
                  }
                 },
+                beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basegrid[xtype=system.role.maingrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+                    var btnJobUser = basegrid.down("button[ref=gridJobUser_Tab]");
+                    var btnDelete = basegrid.down("button[ref=gridDelete]");
+                    if (records.length == 0) {
+                        btnEdit.setDisabled(true);
+                        btnJobUser.setDisabled(true);
+                        btnDelete.setDisabled(true);
+                    } else if (records.length == 1) {
+                        if(records[0].getData().issystem==1){
+                          btnEdit.setDisabled(true);
+                      }else{
+                         btnEdit.setDisabled(false); 
+                    }
+
+                        btnJobUser.setDisabled(false);
+                        btnDelete.setDisabled(false);
+                    } else {
+                        btnEdit.setDisabled(true);
+                        btnJobUser.setDisabled(true);
+                        btnDelete.setDisabled(true);
+                    }
+                    return false;
+                },
+
 
              },
             "basegrid button[ref=gridAdd_Tab]": {
@@ -186,7 +214,7 @@ Ext.define("core.system.role.controller.MainController", {
                 pkValue= recordData[pkName];
 
                 insertObj = recordData;
-                tabTitle =  recordData[funData.tabConfig.titleField]+"-"+funData.tabConfig.detailTitle;
+                tabTitle =  recordData[funData.tabConfig.titleField]+"-"+funData.tabConfig.editTitle;
                 tabItemId=funCode+"_gridEdit"; 
                 break;
             case "detail":                
@@ -202,7 +230,7 @@ Ext.define("core.system.role.controller.MainController", {
                 var pkName = funData.pkName;
                 pkValue= recordData[pkName];
                 insertObj = recordData;
-                tabTitle =  recordData[funData.tabConfig.titleField]+"-"+funData.tabConfig.detailTitle;
+                tabTitle =  recordData[funData.tabConfig.titleField]+"-角色详情";
                 tabItemId=funCode+"_gridDetail"+pkValue; 
                 xItemType = [{
                     xtype:detLayout,                        

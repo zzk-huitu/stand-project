@@ -16,7 +16,7 @@ Ext.define("core.system.menu.controller.MainController", {
 
         this.control({
           "basepanel basetreegrid[xtype=system.menu.menutree]": {
-             afterrender : function(grid) {
+            afterrender : function(grid) {
                 if(comm.get("isAdmin")!="1"){
                     var menuCode="MENUMANAGE";     // 此菜单的前缀
                     var userBtn=comm.get("userBtn");
@@ -44,7 +44,39 @@ Ext.define("core.system.menu.controller.MainController", {
                   }
                   return false;
                 },
-              
+            },
+         "basepanel basetreegrid[xtype=system.menu.menutree]": {
+			beforeitemclick: function(grid) {
+				var basePanel = grid.up("basepanel");
+				var funCode = basePanel.funCode;
+				var basegrid = basePanel.down("basetreegrid[funCode=" + funCode + "]");
+				var records = basegrid.getSelectionModel().getSelection();
+				var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+				var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
+				var btnAddBrother = basegrid.down("button[ref=gridAddBrother_Tab]");
+				var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+				var btnLock = basegrid.down("button[ref=gridLock]");
+				if (records.length == 0) {
+					btnEdit.setDisabled(true);
+					btnAdd.setDisabled(true);
+					btnAddBrother.setDisabled(true);
+					btnUnLock.setDisabled(true);
+					btnLock.setDisabled(true);
+				} else if (records.length == 1) {
+					btnEdit.setDisabled(false);
+					btnAdd.setDisabled(false);
+					btnAddBrother.setDisabled(false);
+					btnUnLock.setDisabled(false);
+					btnLock.setDisabled(false);
+				} else {
+					btnEdit.setDisabled(true);
+					btnAdd.setDisabled(true);
+					btnAddBrother.setDisabled(true);
+					btnUnLock.setDisabled(false);
+					btnLock.setDisabled(false);
+				}
+				return false;
+			}
             },
         	//刷新按钮事件
 			"panel[xtype=system.menu.menutree] button[ref=gridRefresh]": {
@@ -173,7 +205,7 @@ Ext.define("core.system.menu.controller.MainController", {
 				tabItemId= funCode + "_gridEdit";
 				iconCls = "x-fa fa-pencil-square";
 				operType = "edit";
-				title = "修改菜单";
+				title = "编辑菜单";
                 
                 insertObj = records[0].getData();
 				insertObj = Ext.apply(insertObj, {

@@ -47,7 +47,8 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
             xtype: 'button',
             text: '选择人员',
             ref: 'selectPersonnel',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-plus-circle',
+            disabled:true,
         }]
     }, 
     panelButtomBar:null,

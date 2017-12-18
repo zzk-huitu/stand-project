@@ -46,7 +46,7 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
             xtype:'textfield',
             name:'jobName',
             funCode: 'girdFastSearchText',
-            emptyText: '请输入职务名称'
+            emptyText: '请输入岗位名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
@@ -77,7 +77,7 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            text: "名称",
+            text: "岗位名称",
             dataIndex: "jobName",
             flex: 1,
             minWidth: 150,

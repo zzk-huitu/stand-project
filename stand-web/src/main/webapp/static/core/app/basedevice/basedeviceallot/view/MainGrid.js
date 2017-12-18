@@ -24,14 +24,14 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '编辑设备',
+            text: '编辑',
             ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
-            text: '删除设备',
+            text: '删除',
             ref: 'gridDelete',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,

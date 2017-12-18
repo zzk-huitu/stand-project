@@ -31,7 +31,7 @@ Ext.define("core.system.permission.controller.MainController", {
                 var baseTreeGrid = mainLayout.down("basetreegrid");
                 var records = baseTreeGrid.getSelectionModel().getSelection();
                 if (records.length != 1) {
-                    self.Warning("请选择一项菜单！");
+                    self.msgbox("请选择一项菜单！");
                     return false;
                 }
 

@@ -3,7 +3,7 @@ Ext.define("core.system.user.view.UserGrid", {
 	alias: "widget.system.user.usergrid",
 	dataUrl: comm.get('baseUrl') + "/SysUser/list",
 	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysUser", "checked").modelName,
-	al: false,
+	//al: false,
 
     menuCode:"SYSUSER", //new：此表格与权限相关的菜单编码
 
@@ -39,20 +39,23 @@ Ext.define("core.system.user.view.UserGrid", {
             iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
-            text: '锁定账户',
+            text: '锁定用户',
             ref: 'gridLock',
-            funCode:'girdFuntionBtn',    
+            funCode:'girdFuntionBtn',  
+            disabled:true,  
             iconCls: 'x-fa fa-lock'
         },{
             xtype: 'button',
-            text: '解锁账户',
+            text: '解锁用户',
             ref: 'gridUnLock',
-            funCode:'girdFuntionBtn',       
+            funCode:'girdFuntionBtn',
+            disabled:true,       
             iconCls: 'x-fa fa-unlock'
         },{
             xtype: 'button',
             text: '重置密码',
             ref: 'gridSetPwd',
+            disabled:true,
             funCode:'girdFuntionBtn',         
             iconCls: 'x-fa fa-key'
         },{
@@ -237,15 +240,17 @@ Ext.define("core.system.user.view.UserGrid", {
                 style:'font-size:12px;',         
                 tooltip: '编辑',
                 ref: 'gridEdit',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="SYSUSER";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){
+                     if(record.get("issystem")==0){//内置用户
+                         return 'x-hidden-display';
+                     }else if(comm.get("isAdmin")!="1"){
+                           var menuCode="SYSUSER";     // 此菜单的前缀
+                           var userBtn=comm.get("userBtn");                 
+                          if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
                             return 'x-hidden-display';
-                        }
-                    }
-                    return null; 
+                          }
+                      }
+                      return null; 
                 },
                 handler: function(view, rowIndex, colIndex, item) {                 
                     var rec = view.getStore().getAt(rowIndex);

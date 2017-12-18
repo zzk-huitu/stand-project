@@ -24,7 +24,8 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             xtype: 'button',
             text: '批量设置前置',
             ref: 'gridSetFront',
-            iconCls: 'x-fa fa-cogs'
+            iconCls: 'x-fa fa-cogs',
+            disabled:true,
         },/*{
             xtype: 'button',
             text: '添加',
