@@ -161,16 +161,16 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	 *            女宿舍id
 	*/
 	@Auth("BASESTUDENTDORM_oneKeyAllot")
-	@RequestMapping("/onKeyAllotDorm")
-	public void onKeyAllotDorm(String gradId, String boyId, String girlId, HttpServletRequest request,
+	@RequestMapping("/doKeyAllotDorm")
+	public void doKeyAllotDorm(String gradId, String boyId, String girlId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
 		Boolean flag = false;
 		SysUser currentUser = getCurrentSysUser();
 		flag = thisService.oneKeyAllotDorm(gradId, boyId, girlId, currentUser);
 		if (flag) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'一键分配分配成功。'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"一键分配分配成功。\""));
 		} else {
-			writeJSON(response, jsonBuilder.returnFailureJson("'一键分配分配失败。'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"一键分配分配失败。\""));
 		}
 
 	}

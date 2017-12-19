@@ -5,6 +5,7 @@ Ext.define("core.baseset.studentdorm.view.GirlDormGrid", {
     extParams: {
     },
     al:false,
+    remoteSort:false,
     noPagging: true,
     panelTopBar:{
         xtype:'toolbar',
@@ -38,29 +39,36 @@ Ext.define("core.baseset.studentdorm.view.GirlDormGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            width:100,
+            flex:1,
+            minWidth:100,
             text: "宿舍名称",
             dataIndex: "roomName",
             field: {
                 xtype: "textfield"
             }
         }, {
-            flex:1,
-            minWidth:100,
+            width:100,
             text: "所属楼层",
             dataIndex: "areaName",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:80,
             text: "所属楼栋",
             dataIndex: "upAreaName",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width: 60,
+            text: "床位数",
+            dataIndex: "dormBedCount",
+            field: {
+                xtype: "textfield"
+            }
+        }, {
+            width:80,
             text: "宿舍类型",
             dataIndex: "dormType",
             renderer: function(value) {
@@ -79,13 +87,18 @@ Ext.define("core.baseset.studentdorm.view.GirlDormGrid", {
         }]
     },
     listeners: {
-        beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
-            grid.getStore().removeAt(index); //将选中的移除
-            var girlCount = grid.getStore().getCount();
-            var dormInfo = grid.up('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
-            var girlyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.girldormgrid]');
-            var conutHtml="总数："+girlCount;
-            girlyDormGrid.down('panel[ref= girlTotalInfo]').setHtml(conutHtml); 
+        beforeitemdblclick: function(grid, record, item, index, e, eOpts) {          
+            var store=grid.getStore();
+            store.removeAt(index); //将选中的移除
+            
+            var countBed=0;
+            for (var i = 0; i < store.getCount(); i++) {
+                countBed+=store.getAt(i).get("dormBedCount");
+            }
+
+            var conutHtml="总宿舍数："+store.getCount()+" &nbsp;&nbsp;总床位数："+countBed;   
+
+            this.down('panel[ref=girlTotalInfo]').setHtml(conutHtml);
     }                        
 }, 
 });

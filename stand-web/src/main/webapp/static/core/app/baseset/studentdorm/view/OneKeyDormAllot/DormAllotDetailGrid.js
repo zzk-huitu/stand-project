@@ -6,6 +6,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotDetailGrid", {
     extParams: {
         whereSql:''
     },
+    selModel:null,
     noPagging: true,
     panelTopBar:{
         xtype:'toolbar',
@@ -21,7 +22,8 @@ Ext.define("core.baseset.studentdorm.view.DormAllotDetailGrid", {
     },
     columns:{
         defaults:{
-            titleAlign:"center"
+            titleAlign:"center",
+            align:"center"
         },
         items: [{
                 width:100,
@@ -46,22 +48,22 @@ Ext.define("core.baseset.studentdorm.view.DormAllotDetailGrid", {
                 }
             }, {
                 width:100,
-                text: "男生所需宿舍",
-                dataIndex: "nanDormCount",
+                text: "男生所需床位",
+                dataIndex: "nanDormBed",
                 field: {
                     xtype: "textfield"
                 }
             }, {
                 width:100,
-                text: "女生所需宿舍",
-                dataIndex: "nvDormCount",
+                text: "女生所需床位",
+                dataIndex: "nvDormBed",
                 field: {
                     xtype: "textfield"
                 }
             }, {
                 width:100,
-                text: "<font color=red>合计所需宿舍</font>",
-                dataIndex: "sxDorm",
+                text: "<font color=red>合计所需床位</font>",
+                dataIndex: "sxDormBed",
                 field: {
                     xtype: "textfield"
                 }

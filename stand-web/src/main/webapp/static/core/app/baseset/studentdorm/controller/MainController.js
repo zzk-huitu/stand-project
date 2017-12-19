@@ -100,15 +100,15 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
             var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
             if (!otherController)
                 otherController = '';  
-            var width = 1150;
-            var height = 550;
+            var width = 1200;
+            var height = 600;
             var iconCls= 'x-fa fa-plus-circle';
             var winTitle = "学生分配宿舍";
             var operType="add";
             switch(cmd){
                case "adjust":
-                width = 1150;
-                height = 650;
+                width = 1200;
+                height = 600;
                 winTitle = "虚拟宿舍调整";
                 operType="add";
                 detCode =  "adjustdorm_detail";
@@ -199,7 +199,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                         var girlDormGrid = dormInfo.down("basegrid[xtype=baseset.studentdorm.girldormgrid]");
                         boyDormGrid.getStore().removeAll();
                         girlDormGrid.getStore().removeAll();
-                        var conutHtml="总数："+0;
+                        var conutHtml="总宿舍数：0 &nbsp;&nbsp;总床位数：0";                   
                         boyDormGrid.down('panel[ref= boyTotalInfo]').setHtml(conutHtml);
                         girlDormGrid.down('panel[ref= girlTotalInfo]').setHtml(conutHtml);
                     }

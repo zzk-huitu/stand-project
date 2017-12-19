@@ -30,6 +30,6 @@ Ext.define("core.public.OneKeyAllotDorm.view.MainLayout", {
         xtype: "pubonkeyallotdorm.isselectdormgrid",
         region: "east",
         margin:'5',
-        width: 500
+        width: 450
     }]
 })

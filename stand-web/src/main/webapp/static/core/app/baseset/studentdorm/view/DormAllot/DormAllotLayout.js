@@ -15,7 +15,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
     items: [{
         xtype:'baseset.studentdorm.dormallottree',
         region: "west",
-        width: comm.get("clientWidth") * 0.17,
+        width: 250,
         margin:'5'
     },{
         xtype:'baseset.studentdorm.classdormgrid',
@@ -23,7 +23,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
         margin:'5'
     }, {
         xtype: "baseset.studentdorm.dormnotallotgrid",
-        width: comm.get("clientWidth") * 0.40,
+        width: 500,
         region: "east",
         margin:'5'
     }]

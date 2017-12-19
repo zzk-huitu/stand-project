@@ -21,12 +21,12 @@
     },{ 
         xtype : 'baseset.studentdorm.boydormgrid',  
         region : 'west',  
-        width : 550,
+        flex : 1,
         margin:'5' ,
     },{ 
        region : 'center',  
        xtype: 'baseset.studentdorm.girldormgrid',
-       minWidth:550,
+       flex : 1,
        margin:'5',
    }] 
 })

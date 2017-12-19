@@ -86,7 +86,7 @@ Ext.define("core.baseset.roomdefine.controller.OtherController", {
                     var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
                     if (data.success) {
-
+                        loading.hide();
                         self.msgbox("提交成功!");
                         if(sign=="add"){
                             roomgrid.getStore().load();
@@ -96,18 +96,18 @@ Ext.define("core.baseset.roomdefine.controller.OtherController", {
                             var store = baseGrid.getStore();
                             store.load();                         
                         }
-                        loading.hide();
+                        
 
                         //获取当前tab页
                         var tabPanel = btn.up("tabpanel[xtype=app-main]");
                         var tabItem = tabPanel.getComponent(basetab.tabItemId);
                         if(sign=="edit"){
                            tabPanel.remove(tabItem);
-                          } 
-                         objForm.down("textfield[name=roomName]").setValue("");//房间标志 
+                        }else
+                            objForm.down("textfield[name=roomName]").setValue("");//房间标志 
                       } else {
-                        self.Error(data.obj);
                         loading.hide();
+                        self.Error(data.obj);                    
                     }
                 },
                 failure: function(response) {                   

@@ -37,7 +37,7 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
         },
         items:[{
             xtype: "rownumberer",
-            width: 66,
+            width: 50,
             text: '序号',
             align: 'center'
         }, {

@@ -973,7 +973,8 @@ Ext.define("core.system.dept.controller.OtherController", {
      */
     doFastSearch: function (component) {
         //得到组件
-
+        var baseGrid=component.up("basegrid");
+        var toolBar = component.up("toolbar");
         var win = baseGrid.up("window");
         var winFunData = win.funData;
         var roleId = winFunData.roleId;

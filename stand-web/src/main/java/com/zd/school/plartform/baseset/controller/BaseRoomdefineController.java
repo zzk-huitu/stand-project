@@ -234,7 +234,7 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 			writeJSON(response, jsonBuilder.returnFailureJson("\"获取宿舍对象失败,详情见错误日志\""));
 	}
 	/**
-	 * 用于一键分配宿舍时使用
+	 * 用于一键分配宿舍时使用（获取男生、女生可用宿舍）
 	 * @param entity
 	 * @param request
 	 * @param response

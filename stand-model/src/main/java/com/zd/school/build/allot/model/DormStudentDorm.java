@@ -105,15 +105,12 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	private String ismixed;
 
 	@Transient
-	@FieldInfo(name = "所需宿舍")
-	private Integer sxDorm;
-	@Transient
 	@FieldInfo(name = "学生人数")
 	private Integer stuCount;
 	@Transient
 	@FieldInfo(name = "有效宿舍")
 	private Integer yxDorm;
-
+	
 	@Transient
 	@FieldInfo(name = "有效男宿舍")
 	private Integer nanDorm;
@@ -124,12 +121,29 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	@FieldInfo(name = "有效混班宿舍")
 	private Integer hunDorm;
 	
+	/*由于宿舍人数不定，所以，此处由宿舍改为床位数
+	@Transient
+	@FieldInfo(name = "所需宿舍")
+	private Integer sxDorm;
+	
 	@Transient
 	@FieldInfo(name = "男生所需宿舍")
 	private Integer nanDormCount;
 	@Transient
 	@FieldInfo(name = "女生所需宿舍")
 	private Integer nvDormCount;
+	*/
+	@Transient
+	@FieldInfo(name = "所需宿舍床位")
+	private Integer sxDormBed;
+	
+	@Transient
+	@FieldInfo(name = "男生所需床位")
+	private Integer nanDormBed;
+	@Transient
+	@FieldInfo(name = "女生所需床位")
+	private Integer nvDormBed;
+	
 	@Transient
 	@FieldInfo(name = "男生数量")
 	private Integer nanCount;
@@ -225,14 +239,7 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 		this.ismixed = ismixed;
 	}
 
-	public Integer getSxDorm() {
-		return sxDorm;
-	}
-
-	public void setSxDorm(Integer sxDorm) {
-		this.sxDorm = sxDorm;
-	}
-
+	
 	public Integer getStuCount() {
 		return stuCount;
 	}
@@ -248,23 +255,34 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	public void setYxDorm(Integer yxDorm) {
 		this.yxDorm = yxDorm;
 	}
+	
+	
 
-	public Integer getNanDormCount() {
-		return nanDormCount;
+	public Integer getSxDormBed() {
+		return sxDormBed;
 	}
 
-	public void setNanDormCount(Integer nanDormCount) {
-		this.nanDormCount = nanDormCount;
+	public void setSxDormBed(Integer sxDormBed) {
+		this.sxDormBed = sxDormBed;
 	}
 
-	public Integer getNvDormCount() {
-		return nvDormCount;
+	public Integer getNanDormBed() {
+		return nanDormBed;
 	}
 
-	public void setNvDormCount(Integer nvDormCount) {
-		this.nvDormCount = nvDormCount;
+	public void setNanDormBed(Integer nanDormBed) {
+		this.nanDormBed = nanDormBed;
 	}
 
+	public Integer getNvDormBed() {
+		return nvDormBed;
+	}
+
+	public void setNvDormBed(Integer nvDormBed) {
+		this.nvDormBed = nvDormBed;
+	}
+
+	
 	public Integer getNanCount() {
 		return nanCount;
 	}

@@ -299,9 +299,14 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             return;
           }
           var getAt = dormallotdetailgrid.getStore().getAt(0);
+          /*
           var nanDormCount = getAt.get('nanDormCount');   //男生所需宿舍
           var nvDormCount = getAt.get('nvDormCount');   //女生所需宿舍
           var sxDorm = getAt.get('sxDorm');        //合计所需宿舍 
+          */
+          var nanDormBed = getAt.get('nanDormBed');   //男生所需宿舍床位
+          var nvDormBed = getAt.get('nvDormBed');    //女生所需宿舍床位
+          var sxDormBed = getAt.get('sxDormBed');     //合计所需宿舍床位
 
           var nanDorm = getAt.get('nanDorm'); //男生有效宿舍
           var nvDorm = getAt.get('nvDorm'); //女生有效宿舍
@@ -309,10 +314,14 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
 
           var boyDormGrid = basepanel.down("basegrid[xtype=baseset.studentdorm.boydormgrid]"); //男宿舍列表
           var girlDormGrid = basepanel.down("basegrid[xtype=baseset.studentdorm.girldormgrid]"); //女宿舍列表
+          var boyStore=boyDormGrid.getStore();       
+          var girlStore=girlDormGrid.getStore();
+
           if (nanDorm != 0 || nvDorm != 0 || hunDorm!= 0) {
               self.msgbox("一键分配时，不允许存在有效班级宿舍，如需使用一键分配，请将已有班级宿舍删除");
               return;
           }
+          /*
           if (boyDormGrid.getStore().getCount() != nanDormCount) {
               self.msgbox("男生宿舍数量无法匹配，无法继续，请检查数据");
               return;
@@ -325,22 +334,40 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
           if (count != (nanDormCount + nvDormCount + hunDorm)) {
               self.msgbox("宿舍所需总数无法匹配，请检查数据");
               return;
-          }
+          }*/
+          var count = boyStore.getCount() + girlStore.getCount();
           if (count==0) {
-              self.msgbox("请选择男生或女生宿舍");
+              self.msgbox("请选择男生或女生宿舍！");
               return;
           }
+
           var uuid = null;
           var boyId = [];
           var girlId = [];
-          for (var i = 0; i < boyDormGrid.getStore().getCount(); i++) {
-              uuid = boyDormGrid.getStore().getAt(i).get('uuid');
+          var nanRed=0;
+          var nvBed=0;
+          
+          for (var i = 0; i <boyStore.getCount(); i++) {
+              uuid = boyStore.getAt(i).get('uuid');
+              nanRed+=boyStore.getAt(i).get('dormBedCount');
               boyId.push(uuid);
           }
-          for (var k = 0; k < girlDormGrid.getStore().getCount(); k++) {
-              uuid = girlDormGrid.getStore().getAt(k).get('uuid');
-              girlId.push(uuid);
+          if (nanRed < nanDormBed) {
+              self.msgbox("男生宿舍床位小于所需床位！");
+              return;
           }
+
+          
+          for (var k = 0; k < girlStore.getCount(); k++) {
+              uuid = girlStore.getAt(k).get('uuid');
+              nvBed+=girlStore.getAt(k).get('dormBedCount');
+              girlId.push(uuid);
+          }      
+          if (nvBed < nvDormBed) {
+              self.msgbox("女生宿舍床位小于所需床位！");
+              return;
+          }
+
           boyId.join(",");
           girlId.join(",");
           Ext.Msg.confirm("一键分配", "一键分配之后不能回退，如要局部调整请进入手动分配宿舍界面", function(btns) {
@@ -348,7 +375,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
               var loading = self.LoadMask(win,'正在分配中，请等待...');
 
               self.asyncAjax({
-                  url: comm.get('baseUrl') + "/BaseStudentDorm/onKeyAllotDorm",
+                  url: comm.get('baseUrl') + "/BaseStudentDorm/doKeyAllotDorm",
                   params: {
                     gradId: gradId,
                     boyId: boyId,
@@ -358,15 +385,16 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                     var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
                     if(data.success){
                       basegrid.getStore().load(); 
-                      self.msgbox(data.obj);
+                      
                       loading.hide();
-                      win.close();                              
+                      win.close(); 
+                      self.msgbox(data.obj);
+                                                  
                     }else {
-                      self.Error(data.obj);
                       loading.hide();
                       win.close();
-                    }           
-                    loading.hide();
+                      self.Error(data.obj);                  
+                    } 
                   },
                   failure: function(response) {                   
                     Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
@@ -377,25 +405,25 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
          })               
         },
     	doSelectBoy :function(btn){
-        var self=this;
-    		var dormInfo = btn.up('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
-    		var baseGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]')
-    		var funcPanel = "pubonkeyallotdorm.mainlayout";
-    		var funcTitle = "宿舍列表";
-        var otherController = 'baseset.studentdorm.othercontroller';
-        var win = Ext.createWidget("mtfuncwindow", {
-            title: funcTitle,
-            width: 1100,
-            identify: 1,
-            baseGrid: baseGrid,
-            controller: otherController, 
-            height: 500,
-            maximizable: false,
-            resizable: false, //禁止拖动
-            funcPanel: funcPanel,
-            items: {
-              xtype: funcPanel
-            },
+          var self=this;
+      		var dormInfo = btn.up('basepanel[xtype=baseset.studentdorm.onekeyallotdormlayout]');
+      		var baseGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]')
+      		var funcPanel = "pubonkeyallotdorm.mainlayout";
+      		var funcTitle = "宿舍列表";
+          var otherController = 'baseset.studentdorm.othercontroller';
+          var win = Ext.createWidget("mtfuncwindow", {
+              title: funcTitle,
+              width: 1200,
+              identify: 1,
+              baseGrid: baseGrid,
+              controller: otherController, 
+              height: 500,
+              maximizable: false,
+              resizable: false, //禁止拖动
+              funcPanel: funcPanel,
+              items: {
+                xtype: funcPanel
+              },
            }); //打开自定义窗口 
       
           var oneKeyPanel = win.down("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
@@ -404,22 +432,28 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
           girldormdefintree.hidden=true;
           boydormdefintree.hidden=false;
           win.show();
-          },
+      },
         doDeleteBoyDorm :function(btn){
-          var self=this;
-        	var boyDormGrid = btn.up('basegrid[xtype=baseset.studentdorm.boydormgrid]');
-        	var rows = boyDormGrid.getSelectionModel().getSelection();
-        	if (rows <= 0) {
-        		self.msgbox("请选择要删除的数据!");
-        		return;
-        	}
-        	for (var i = 0; i < rows.length; i++) {
-                  boyDormGrid.getStore().remove(rows[i]); //将选中的移除
-              }
-          var conutHtml="总数："+boyDormGrid.getStore().getCount();
-          boyDormGrid.down('panel[ref= boyTotalInfo]').setHtml(conutHtml);
+            var self=this;
+          	var boyDormGrid = btn.up('basegrid[xtype=baseset.studentdorm.boydormgrid]');
+          	var rows = boyDormGrid.getSelectionModel().getSelection();
+          	if (rows <= 0) {
+          		self.msgbox("请选择要删除的数据!");
+          		return;
+          	}
+            var store=boyDormGrid.getStore();
+          	//for (var i = 0; i < rows.length; i++) {
+            store.remove(rows); //将选中的移除
+            //}
+            var countBed=0;
+            for (var i = 0; i < store.getCount(); i++) {
+                countBed+=store.getAt(i).get("dormBedCount");
+            }
 
-          },
+            var conutHtml="总宿舍数："+store.getCount()+" &nbsp;&nbsp;总床位数："+countBed;        
+            boyDormGrid.down('panel[ref=boyTotalInfo]').setHtml(conutHtml);
+
+        },
 
          doSelectGirl :function(btn){
             var self=this;
@@ -451,19 +485,25 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
           win.show();
         },
         doDeleteGirlDorm :function(btn){
-          var self=this;
-        	var girlDormGrid = btn.up('basegrid[xtype=baseset.studentdorm.girldormgrid]');
-        	var rows = girlDormGrid.getSelectionModel().getSelection();
-        	if (rows <= 0) {
-        		self.msgbox("请选择要删除的数据!");
-        		return;
-        	}
-        	for (var i = 0; i < rows.length; i++) {
-                  girlDormGrid.getStore().remove(rows[i]); //将选中的移除
-              }
-          var conutHtml="总数："+girlDormGrid.getStore().getCount();
-          girlDormGrid.down('panel[ref= girlTotalInfo]').setHtml(conutHtml);
-          },
+            var self=this;
+          	var girlDormGrid = btn.up('basegrid[xtype=baseset.studentdorm.girldormgrid]');
+          	var rows = girlDormGrid.getSelectionModel().getSelection();
+          	if (rows <= 0) {
+          		self.msgbox("请选择要删除的数据!");
+          		return;
+          	}
+            var store=girlDormGrid.getStore();
+          	//for (var i = 0; i < rows.length; i++) {
+            girlDormGrid.getStore().remove(rows); //将选中的移除
+            //}
+            var countBed=0;
+            for (var i = 0; i < store.getCount(); i++) {
+                countBed+=store.getAt(i).get("dormBedCount");
+            }
+
+            var conutHtml="总宿舍数："+store.getCount()+" &nbsp;&nbsp;总床位数："+countBed;        
+            girlDormGrid.down('panel[ref=girlTotalInfo]').setHtml(conutHtml);
+        },
         doGetDorm: function(btn){
             var self=this;
             var win = btn.up('window');
@@ -477,14 +517,16 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             var arr4 = [];
             var data = null;
             var getAt = null;
+            var countBed = 0;
             for (var j = 0; j < baseGrid.getStore().getCount(); j++) {
               getAt = baseGrid.getStore().getAt(j);
-              data = getAt.data
+              //data = getAt.data;
+              countBed+=getAt.get("dormBedCount");
               arr1.push(getAt.get('uuid'));//男女宿舍列表
             };
             for (var i = 0; i < isselectdormgrid.getStore().getCount(); i++) {
               getAt = isselectdormgrid.getStore().getAt(i);
-              data = getAt.data
+              //data = getAt.data;
               arr2.push(getAt.get('uuid'));//已选宿舍
             };
             for (var s in arr1) {
@@ -498,24 +540,26 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
               self.Warning("列表中已有相同的宿舍，请勿重复选择!");
               return;
             }
+
             var dormArray = new Array();
             var sameCount=0;
             if (identify == 1) {
+
               for (var k = 0; k < isselectdormgrid.getStore().getCount(); k++) {
                 getAt = isselectdormgrid.getStore().getAt(k);
                 var dormUUid = getAt.get('uuid');
                 if(dormArray.indexOf(dormUUid)==-1){
                    dormArray.push(dormUUid);
-                   data = getAt.data
+                   data = getAt.getData();
+                   countBed+=getAt.get("dormBedCount");
                    baseGrid.getStore().insert(0, data);
                 }else{
                   sameCount++;
-                }
-               
+                }              
               };
-              var boyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]');
-              var conutHtml="总数："+(isselectdormgrid.getStore().getCount()+arr1.length-sameCount);
-              boyDormGrid.down('panel[ref= boyTotalInfo]').setHtml(conutHtml);
+              //var boyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.boydormgrid]');
+              var conutHtml="总宿舍数："+(baseGrid.getStore().getCount())+" &nbsp;&nbsp;总床位数："+countBed;
+              baseGrid.down('panel[ref=boyTotalInfo]').setHtml(conutHtml);
 
               win.close();
             } else if (identify == 2) {
@@ -524,15 +568,16 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                 var dormUUid = getAt.get('uuid');
                 if(dormArray.indexOf(dormUUid)==-1){
                    dormArray.push(dormUUid);
-                   data = getAt.data
+                   data = getAt.getData();
+                   countBed+=getAt.get("dormBedCount");
                    baseGrid.getStore().insert(0, data);
                 }else{
                   sameCount++;
                 }
               };
-              var girlyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.girldormgrid]');
-              var conutHtml="总数："+(isselectdormgrid.getStore().getCount()+arr1.length-sameCount);
-              girlyDormGrid.down('panel[ref= girlTotalInfo]').setHtml(conutHtml);
+              //var girlyDormGrid = dormInfo.down('basegrid[xtype=baseset.studentdorm.girldormgrid]');
+              var conutHtml="总宿舍数："+(baseGrid.getStore().getCount())+" &nbsp;&nbsp;总床位数："+countBed;
+              baseGrid.down('panel[ref=girlTotalInfo]').setHtml(conutHtml);
 
               win.close();
             } else {

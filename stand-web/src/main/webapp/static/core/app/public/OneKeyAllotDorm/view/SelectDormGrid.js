@@ -6,7 +6,15 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
     extParams: {
         filter: "[{'type':'string','comparison':'=','value':'ROOT','field':'areaId'},{'type':'string','comparison':'=','value':'0','field':'roomStatus'},{'type':'string','comparison':'=','value':'0','field':'isMixed'}]"
     },
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:30,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        //mode:'single',  //multi,simple,single；默认为多选multi
+        checkOnly:true,    //如果值为true，则只用点击checkbox列才能选中此条记录
+        //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
+    },
     al:false,
+    pageDisplayInfo:false,
     panelTopBar:{},
     title: "<font color=#ffeb00>待选宿舍(选中后向左拖动或双击添加)</font>",
     viewConfig: {
@@ -73,7 +81,14 @@ Ext.define("core.public.OneKeyAllotDorm.view.SelectDormGrid", {
         field: {
             xtype: "textfield"
         }
-    }, { 
+    },  {
+        width: 60,
+        text: "床位数",
+        dataIndex: "dormBedCount",
+        field: {
+            xtype: "textfield"
+        }
+    },{ 
         width: 80,
         text: "宿舍类型",
         dataIndex: "dormType",

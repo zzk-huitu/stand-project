@@ -31,7 +31,7 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
     },
     items:[{
         xtype: "rownumberer",
-        width: 66,
+        width: 50,
         text: '序号',
         align: 'center'
     },{
@@ -42,7 +42,7 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
         },
         hidden: true
     },{
-        width: 110,
+        width: 100,
         text: "宿舍名称",
         dataIndex: "dormName",
         field: {

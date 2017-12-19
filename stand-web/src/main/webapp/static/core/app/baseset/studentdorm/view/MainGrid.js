@@ -30,7 +30,7 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '虚拟宿舍调整(或换宿舍)',
+            text: '虚拟宿舍调整(换宿舍)',
             ref: 'dormAdjust',
             iconCls: 'x-fa fa-plus-circle',
         },{
@@ -46,6 +46,10 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             iconCls: 'x-fa fa-file',
         }]
     },
+    defSort: [{
+        property: 'userNumb',
+        direction: 'ASC'
+    }],
     columns:{
         defaults:{
             titleAlign:"center"
@@ -63,20 +67,29 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            flex: 1,
+            minWidth:100,
             text: "学生名称",
             dataIndex: "xm",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            flex: 1,
+            minWidth:100,
             text: "学号",
             dataIndex: "userNumb",
             field: {
                 xtype: "textfield"
             }
         }, {
+            text: "性别",
+            dataIndex: "xbm",
+            columnType: "basecombobox",
+            ddCode: "XBM",
+            width:80,
+            align:'left'
+        },{
             width:100,
             text: "宿舍名称",
             dataIndex: "roomName",
