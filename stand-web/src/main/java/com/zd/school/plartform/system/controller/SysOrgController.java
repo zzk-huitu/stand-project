@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
+import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.JsonBuilder;
@@ -68,10 +69,11 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		String strData = "";
 		String whereSql = request.getParameter("whereSql");
 		String orderSql = request.getParameter("orderSql");
+		String deptId = request.getParameter("deptId")== null ?TreeVeriable.ROOT: request.getParameter("deptId");
 		String excludes = super.excludes(request);
 
 		SysUser currentUser = getCurrentSysUser();
-		List<BaseOrgChkTree> lists = thisService.getOrgChkTreeList(whereSql, orderSql, currentUser);
+		List<BaseOrgChkTree> lists = thisService.getOrgChkTreeList(whereSql, orderSql,deptId, currentUser);
 
 		strData = JsonBuilder.getInstance().buildList(lists, excludes);// 处理数据
 		writeJSON(response, strData);// 返回数据

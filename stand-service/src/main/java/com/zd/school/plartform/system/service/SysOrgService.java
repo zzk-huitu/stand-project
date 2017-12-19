@@ -132,7 +132,7 @@ public interface SysOrgService extends BaseService<BaseOrg> {
      * @throws @since
      *             JDK 1.8
      */
-    public List<BaseOrgChkTree> getOrgChkTreeList(String whereSql, String orderSql, SysUser currentUser);
+    public List<BaseOrgChkTree> getOrgChkTreeList(String whereSql, String orderSql, String deptId, SysUser currentUser);
 
     /**
      * 

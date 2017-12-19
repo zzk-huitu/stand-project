@@ -64,7 +64,8 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             name: "xbm",
             ddCode: "XBM",
             allowBlank: false,
-            blankText: "性别不能为空"
+            blankText: "性别不能为空",
+            value:0
         },{
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),

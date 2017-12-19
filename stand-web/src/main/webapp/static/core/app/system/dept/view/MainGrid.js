@@ -8,7 +8,7 @@ Ext.define("core.system.dept.view.MainGrid", {
     menuCode:"DEPARTMENT",
     //selModel: null,    
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: " order by parentNode,orderIndex asc"
     },
     tbar: [{
@@ -68,8 +68,48 @@ Ext.define("core.system.dept.view.MainGrid", {
         text: '刷新',
         ref: 'gridRefresh',
         iconCls: 'x-fa fa-refresh'
-    }],
-    
+    },'->',/*{
+        xtype: 'tbtext', 
+        html:'快速搜索：'
+    },{
+        xtype:'textfield',
+        name:'nodeText',
+        funCode: 'girdFastSearchText',
+        emptyText: '请输入部门名称'
+    },{
+        xtype: 'button',            
+        ref: 'gridFastSearchBtn',  
+        funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
+        iconCls: 'x-fa fa-search',  
+    }*/{
+            xtype:'textfield',
+            name:'deptId',
+            hidden:true,
+            funCode:"girdFastSearchText"
+        }, {
+            width:200,
+            emptyText: '请选择部门名称',
+            xtype: "basetreefield",
+            name:"deptName",
+            rootId: "ROOT",
+            funCode:'girdFastSearchText',
+            //dCode: "DEPTTREE",
+            configInfo: {
+                //controller: 'role.OtherController',
+                multiSelect: false,
+                fieldInfo: "deptName~deptId,text~id",
+                whereSql: " and isDelete='0' ",
+                orderSql: " order by parentNode,orderIndex asc",
+                url:comm.get('baseUrl') + "/SysOrg/chkTreeList"
+            }
+        },{
+            xtype: 'button',
+            funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型
+            ref: 'gridFastSearchBtn',
+            iconCls: 'x-fa fa-search'
+        }
+        ],
+
     columns:  {        
         defaults:{
             //flex:1,
