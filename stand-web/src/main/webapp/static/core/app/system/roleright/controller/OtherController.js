@@ -85,9 +85,31 @@ Ext.define("core.system.roleright.controller.OtherController", {
                  }
               };
               if(FuncRecords.length>0){
-                  self.msgbox("请选择要授权的功能的菜单!");
-                  return false;
+                  var tabPanel = Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
+                  var tabItem = tabPanel.getActiveTab();
+                  var rolgerightgrid = tabItem.down("basetreegrid[xtype=system.roleright.rolgerightgrid]");
+                  var MeunStore = rolgerightgrid.getStore();
+                  var MeunCount = MeunStore.getCount();
+                  if(MeunCount>0){
+                      for(var j =0;j<FuncRecords.length;j++){
+                         FuncId = FuncRecords[j].get('parent');
+                         for(var m=0;m<MeunCount;m++){
+                            if(MeunStore.getAt(m).get('id')==FuncId){
+                                FuncRecords.splice(j--,1);
+                                break;
+                            }
+                       }
+                    }
+                  }else{
+                      self.msgbox("请为未授权菜单的功能选择要授权的功能的菜单!");
+                      return false;
+                  }
 
+              }
+              if(FuncRecords.length>0){
+               // self.msgbox("请选择要授权的功能的菜单!");
+                self.msgbox("请为未授权菜单的功能选择要授权的功能的菜单!");
+                return false;
               }
 
                 var funData = win.funData;

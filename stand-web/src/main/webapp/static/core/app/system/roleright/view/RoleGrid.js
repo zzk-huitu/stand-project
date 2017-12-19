@@ -4,7 +4,8 @@ Ext.define("core.system.roleright.view.RoleGrid", {
     dataUrl: comm.get('baseUrl') + "/SysRole/list",
     model: 'com.zd.school.plartform.system.model.SysRole',
     selModel: {
-        selType: ""
+        selType: "",
+        mode:'single'
     },      
     //排序字段及模式定义
     defSort: [{

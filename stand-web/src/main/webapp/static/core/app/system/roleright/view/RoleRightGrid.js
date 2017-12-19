@@ -21,23 +21,25 @@ Ext.define("core.system.roleright.view.RoleRightGrid", {
 		text: '取消授权',
 		ref: 'gridEdit',
 		iconCls: 'x-fa fa-user-times',
-		disabled: false
+		disabled: true
 	}, {
 		xtype: 'button',
 		text: '展开',
 		ref: 'gridExpand',
-		iconCls: 'x-fa fa-minus-square-o'
+		iconCls: 'x-fa fa-minus-square-o',
+		//disabled: true
 	}, {
 		xtype: 'button',
 		text: '折叠',
 		ref: 'gridCollapse',
-		iconCls: 'x-fa fa-plus-square-o'
+		iconCls: 'x-fa fa-plus-square-o',
+		//disabled: true
 	},{
 		xtype: 'button',
 		text: '设置功能权限',
 		ref: 'gridSetPermission',
 		iconCls: 'x-fa fa-pencil-square',
-		disabled: false
+		disabled: true
 	}],
 	columns:  {
         defaults:{
