@@ -42,16 +42,16 @@ Ext.define("core.system.role.controller.MainController", {
                     } else if (records.length == 1) {
                         if(records[0].getData().issystem==1){
                           btnEdit.setDisabled(true);
+                          btnDelete.setDisabled(true);
                       }else{
-                         btnEdit.setDisabled(false); 
+                         btnEdit.setDisabled(false);
+                         btnDelete.setDisabled(false); 
                     }
-
-                        btnJobUser.setDisabled(false);
-                        btnDelete.setDisabled(false);
+                         btnJobUser.setDisabled(false);
                     } else {
                         btnEdit.setDisabled(true);
                         btnJobUser.setDisabled(true);
-                        btnDelete.setDisabled(true);
+                        btnDelete.setDisabled(false);
                     }
                     return false;
                 },
@@ -81,14 +81,14 @@ Ext.define("core.system.role.controller.MainController", {
 
             "basegrid button[ref=gridDelete]": {
                 beforeclick: function(btn) {
-                    
+                    var self=this;
                     var baseGrid=btn.up("basegrid");                
-                    var rescords = baseGrid.getSelectionModel().getSelection();
-                    if (rescords.length != 1) {
+                    var records = baseGrid.getSelectionModel().getSelection();
+     /*               if (rescords.length != 1) {
                         self.msgbox("请选择一条数据！");
                         return false;
-                    }
-                    recordData = rescords[0].data;
+                    }*/
+                    recordData = records[0].data;
                     if(recordData.uuid=='8a8a8834533a0f8a01533a0f8e220000' ||recordData.roleName=="超级管理员"){
                         self.msgbox("不允许删除超级管理员角色！");
                         return false;
@@ -97,9 +97,56 @@ Ext.define("core.system.role.controller.MainController", {
                         self.msgbox("不允许删除系统角色！");
                         return false;
                     }
-                   
-                }
-            },
+                    if (records.length > 0) {
+                       //封装ids数组
+                       Ext.Msg.confirm('提示', "是否删除数据", function (btn, text) {
+                        if (btn == 'yes') {
+                            var loading = self.LoadMask(baseGrid,"正在提交，请稍等...");
+                            var ids = new Array();
+                            Ext.each(records, function (rec) {
+                                var pkValue = rec.get("uuid");
+                                ids.push(pkValue);
+                            });
+
+                            self.asyncAjax({
+                                url:  comm.get('baseUrl')  + "/SysRole/doDelete",
+                                params: {
+                                    ids: ids.join(","),
+                                    //pkName: pkName
+                                },                       
+                                success: function(response) {
+                                    var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                                    var store=baseGrid.getStore();
+                                    if(data.success){
+                                      //如果当前页的数据量和删除的数据量一致，则翻到上一页
+                                        if(store.getData().length==records.length&&store.currentPage>1){    
+                                            store.loadPage(store.currentPage-1);
+                                        }else{
+                                           //store.load();
+                                           store.remove(records); //不刷新的方式
+                                       }
+
+                                       self.msgbox(data.obj);                               
+                                   }else {
+                                    store.load();
+                                    self.Error(data.obj);
+                                }           
+                                loading.hide();
+                            },
+                            failure: function(response) {                   
+                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                                loading.hide();
+                            }
+                        });     
+                   }
+                });
+                } else {
+                    self.msgbox("请选择数据");
+             }
+             return false;
+
+            }
+         },
 
             "basegrid[xtype=system.role.maingrid]  actioncolumn": {
                 editClick_Tab:function(data){

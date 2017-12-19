@@ -1,6 +1,7 @@
 package com.zd.school.plartform.system.service.Impl;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -11,6 +12,7 @@ import com.zd.core.constant.StatuVeriable;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.plartform.system.dao.SysRoleDao;
 import com.zd.school.plartform.system.model.SysRole;
+import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 
@@ -87,5 +89,33 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements SysR
 		else
 			return false;
 
+	}
+
+	@Override
+	public Boolean doDeleteRole(String ids, Map hashMap, String xm) {
+		Boolean flag = false;
+		String[] delIds = ids.split(",");
+		SysRole sysrole = null;
+		StringBuffer roleName = new StringBuffer();
+		for (int i = 0; i < delIds.length; i++) {
+			// 判断这些角色是否正在被其他用户使用
+			String hql = "select u from SysUser as u inner join fetch u.sysRoles as r where r.uuid='" + delIds[i]
+					+ "' and r.isDelete=0 and u.isDelete=0 ";
+			int count = userSerive.queryByHql(hql).size();
+			if (count > 0) {// 该角色关联着用户
+				sysrole = this.get(delIds[i]);
+				roleName.append(sysrole.getRoleName() + ",");
+				flag = false;
+				hashMap.put("flag", flag);
+				continue;
+			} else {
+				flag = this.doDelete(delIds[i], StatuVeriable.ISDELETE, xm);
+				if(!flag){
+				  hashMap.put("sign", "1");
+				}
+			}
+		}
+		hashMap.put("roleName", roleName);
+		return flag;
 	}
 }

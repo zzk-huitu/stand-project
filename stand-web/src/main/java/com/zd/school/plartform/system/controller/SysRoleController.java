@@ -4,7 +4,9 @@ package com.zd.school.plartform.system.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -140,12 +142,30 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     @Auth("SYSROLE_delete")
     @RequestMapping("/doDelete")
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String delIds = request.getParameter("ids");
+    	Boolean flag=false;
+    	String delIds = request.getParameter("ids");
+        SysUser currentUser = getCurrentSysUser();
+        Map<String, Object> hashMap = new HashMap<String, Object>();
         if (StringUtils.isEmpty(delIds)) {
             writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除主键\""));
             return;
-        } else {        	
-        	//判断这些角色是否正在被其他用户使用
+		} else {
+			flag = thisService.doDeleteRole(delIds, hashMap, currentUser.getXm());
+			flag = (Boolean) hashMap.get("flag") == null ? true : (Boolean) hashMap.get("flag");
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+			} else {
+				String sign = (String) hashMap.get("sign")== null ?"0":(String) hashMap.get("sign");
+				if (!sign.equals("1")) {
+					StringBuffer roleName = (StringBuffer) hashMap.get("roleName");
+					writeJSON(response, jsonBuilder.returnFailureJson(" '角色" + roleName + "正在被其他用户使用，不允许删除！'"));
+				} else {
+					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
+				}
+
+				
+			}
+        /*	//判断这些角色是否正在被其他用户使用
         	String hql = "select u from SysUser as u inner join fetch u.sysRoles as r where r.uuid='" + delIds
     				+ "' and r.isDelete=0 and u.isDelete=0 ";
     		int count = userSerive.queryByHql(hql).size();
@@ -160,7 +180,7 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
             } else {
                 writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
-            }
+            }*/
         }
     }
 
