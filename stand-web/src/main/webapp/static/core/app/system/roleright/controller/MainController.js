@@ -39,7 +39,30 @@ Ext.define("core.system.roleright.controller.MainController", {
                   }
                   return false;
                 },
-              
+   
+              beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basetreegrid[xtype=system.roleright.rolgerightgrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnEdit = basegrid.down("button[ref=gridEdit]");//取消授权
+                    var btnSetPerm = basegrid.down("button[ref=gridSetPermission]");
+                  
+                    if (records.length == 0) {
+                        btnEdit.setDisabled(true);
+                        btnSetPerm.setDisabled(true);
+                    } else if (records.length == 1) {
+                         btnEdit.setDisabled(false);
+                         if(records[0].get('menuType')=="MENU"){
+                         	btnSetPerm.setDisabled(true);
+                         }else{
+                         	btnSetPerm.setDisabled(false);
+                         }
+                    } else {
+                        btnEdit.setDisabled(false);
+                        btnSetPerm.setDisabled(true);
+                    }
+                    return false;
+                },
             },
 			
 			/**
@@ -175,7 +198,7 @@ Ext.define("core.system.roleright.controller.MainController", {
 					//得到配置信息
 					var funData = basePanel.funData;
 		
-					if (!funData.roleId) {
+			/*		if (!funData.roleId) {
 	                    self.msgbox("请选择要授权的角色!");
 	                    return false;
 	                }
@@ -184,8 +207,18 @@ Ext.define("core.system.roleright.controller.MainController", {
 	                	self.msgbox("此角色拥有全部权限，不用授权!");
 	                    return false;
 	                }
-	                	
+	                */
+	                var rolegrid = basePanel.down("basegrid[xtype=system.roleright.rolegrid]");
+	                var record = rolegrid.getSelectionModel().getSelection();
+	                if(record.length!=1){
+	                	self.msgbox("请选择要授权的角色!");
+	                	return false;
 
+	                }
+	                if(record[0].get('uuid')=='8a8a8834533a0f8a01533a0f8e220000' || record[0].get('roleName')=='超级管理员'){
+	                	self.msgbox("此角色拥有全部权限，不用授权!");
+	                	return false;
+	                }
 					var popFunData = Ext.apply(funData, {
 						grid: baseGrid
 					});

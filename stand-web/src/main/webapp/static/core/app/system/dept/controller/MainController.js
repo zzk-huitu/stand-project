@@ -121,7 +121,22 @@ Ext.define("core.system.dept.controller.MainController", {
                     return false;
                 }
             },
-
+                        //快速搜索按按钮
+            "basetreegrid[xtype=system.dept.maingrid] button[ref=gridFastSearchBtn]": {
+                beforeclick: function (btn) {
+                    this.doFastSearch(btn);
+                    return false;
+                }
+            },
+            //快速搜索文本框回车事件
+            "basetreegrid[xtype=system.dept.maingrid] field[funCode=girdFastSearchText]": {
+                specialkey: function (field, e) {
+                    if (e.getKey() == e.ENTER) {
+                        this.doFastSearch(field); 
+                        return false;               
+                    }
+                }
+            }, 
             //删除按钮事件
             "panel[xtype=system.dept.maingrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
@@ -207,11 +222,11 @@ Ext.define("core.system.dept.controller.MainController", {
                     var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
                     var funData = basePanel.funData;
                     var store = baseGrid.getStore();
-                    //var proxy = store.getProxy();
-                    // proxy.extraParams = {
-                    //     whereSql: funData.whereSql,
-                    //     orderSql: funData.orderSql
-                    // };
+                    var proxy = store.getProxy();
+                    proxy.extraParams = {
+                      whereSql: "",
+                      orderSql: " order by parentNode,orderIndex asc"
+                  };
                     // store.load(); //刷新父窗体的grid
                     store.load(function(records, operation, success) {                    
                         baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
@@ -328,8 +343,40 @@ Ext.define("core.system.dept.controller.MainController", {
                     eachChild(node, checked);                    
                     return false;
                 }
-            }          
+            },
+
         });
+    },
+     doFastSearch: function (component) {
+        //得到组件
+        var basetreegrid = component.up("basetreegrid");
+        if (!basetreegrid)
+          return false;
+
+        var toolBar = component.up("toolbar");
+        if (!toolBar)
+          return false;
+
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var deptId= '';
+        if (girdSearchTexts[0].getValue() != ""){
+             deptId = girdSearchTexts[0].getValue();
+        }
+        var selectStore = basetreegrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        if(deptId!=""){
+         selectProxy.extraParams={
+               whereSql: " and treeIds like '%"+deptId+"%' " ,
+               deptId: deptId,
+               orderSql: " order by parentNode,orderIndex asc"
+           };
+        }else{
+          selectProxy.extraParams={
+             whereSql: "" ,
+             orderSql: " order by parentNode,orderIndex asc"
+         };
+        }
+        selectStore.loadPage(1);
     },
     openDetail_Tab:function(btn, cmd,grid,record) {
         var self = this;
@@ -544,7 +591,8 @@ Ext.define("core.system.dept.controller.MainController", {
                     tabItemId:tabItemId,                //指定tab页的itemId
                     insertObj:insertObj,                    //保存一些需要默认值，提供给提交事件中使用
                     funData:popFunData,                     //保存funData数据，提供给提交事件中使用
-                    items:itemXtype
+                    items:itemXtype,
+                    cmd:cmd
                 }); 
 
 

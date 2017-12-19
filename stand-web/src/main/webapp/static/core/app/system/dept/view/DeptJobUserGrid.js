@@ -16,13 +16,13 @@ Ext.define("core.system.dept.view.DeptJobUserGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'button',
-            text: '添加部门岗位用户',
+            text: '添加岗位用户',
             ref: 'gridAddUser',
             funCode: 'girdFuntionBtn',
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '删除部门岗位用户',
+            text: '解除用户岗位',
             ref: 'gridDelUser',
             funCode: 'girdFuntionBtn',
             iconCls: 'x-fa fa-minus-circle'

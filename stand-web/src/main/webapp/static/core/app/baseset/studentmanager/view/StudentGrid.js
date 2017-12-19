@@ -9,6 +9,9 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
 
 	//排序字段及模式定义
 	defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    },{
 		property: 'userNumb',
 		direction: 'ASC'
 	}, {

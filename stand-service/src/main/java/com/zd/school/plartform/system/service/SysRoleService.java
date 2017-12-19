@@ -1,5 +1,8 @@
 package com.zd.school.plartform.system.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.zd.core.service.BaseService;
 import com.zd.school.plartform.system.model.SysRole;
 
@@ -21,4 +24,5 @@ public interface SysRoleService extends BaseService<SysRole> {
 	Boolean doDeleteRoleUser(String ids, String userId);
 
 	Boolean doAddRoleUser(String ids, String userId);
+	Boolean doDeleteRole(String ids,  Map hashMap,String xm);
 }

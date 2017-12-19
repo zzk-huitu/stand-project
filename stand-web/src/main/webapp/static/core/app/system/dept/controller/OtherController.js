@@ -182,7 +182,7 @@ Ext.define("core.system.dept.controller.OtherController", {
 
         var funCode = basetab.funCode;      //mainLayout的funcode
         var detCode = basetab.detCode;      //detailLayout的funcode
-
+        var cmd = basetab.cmd;
         var detPanel = basetab.down("basepanel[funCode=" + detCode + "]");
         var objForm = detPanel.down("baseform[funCode=" + detCode + "]");
         
@@ -195,7 +195,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var parent = formObj.findField("parentNode").getValue();
         var parentName = formObj.findField("parentName").getValue();
         var deptType = formObj.findField("deptType").getValue();
-        var orderIndex = formObj.findField("orderIndex").getValue() + 1;
+       // var orderIndex = formObj.findField("orderIndex").getValue() + 1;
         var parentType = formObj.findField("parentType").getValue();
 
         //根据上级部门的类型业控制本部门的类型
@@ -258,7 +258,13 @@ Ext.define("core.system.dept.controller.OtherController", {
         //     }
         // }
         //判断当前是保存还是修改操作
-        var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
+      //  var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
+        if(cmd=="add"){
+            var act = "doAdd" ;
+        }else{
+            var act ="doUpdate";
+        }
+
         if (formObj.isValid()) {
 
             var loading = self.LoadMask(basetab, '正在提交，请稍等...');
@@ -860,7 +866,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var basePanel;
         var funData;
         var pkName;
-        var title = "确定要删除所选的用户吗？";
+        var title = "确定解除这些部门岗位吗？";
 
         if (btn) {
             baseGrid = btn.up("basegrid");
@@ -884,7 +890,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var basetab = btn.up('baseformtab');
         var tabFunData = basetab.funData;
 
-        Ext.Msg.confirm('温馨提示', title, function (btnOper, text) {
+        Ext.Msg.confirm('解除确认', title, function (btnOper, text) {
             if (btnOper == 'yes') {
                 //发送ajax请求
                 var loading = self.LoadMask(baseGrid);

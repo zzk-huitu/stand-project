@@ -56,8 +56,8 @@ Ext.define("core.system.permission.view.MainGrid", {
      
     /** 排序字段定义 */
     defSort: [{
-        property: "createTime", //字段名
-        direction: "DESC" //升降序
+        property: 'updateTime',
+        direction: 'DESC'
     }],
     /** 扩展参数 */
     extParams: {

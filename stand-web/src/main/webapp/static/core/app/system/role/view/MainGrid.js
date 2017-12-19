@@ -54,7 +54,7 @@ Ext.define("core.system.role.view.MainGrid", {
 
     //排序字段及模式定义
     defSort: [{
-        property: 'createTime',
+        property: 'updateTime',
         direction: 'DESC'
     }],
     extParams: {

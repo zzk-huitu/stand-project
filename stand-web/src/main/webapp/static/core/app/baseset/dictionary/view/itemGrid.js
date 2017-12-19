@@ -7,6 +7,9 @@ Ext.define("core.baseset.dictionary.view.ItemGrid", {
 	al: true,
 	menuCode:"DICTIONARY",
 	defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    },{
 		property: 'orderIndex',
 		direction: 'ASC'
 	},{
@@ -46,7 +49,7 @@ Ext.define("core.baseset.dictionary.view.ItemGrid", {
 	panelTopBar:false,
 	panelButtomBar:false,
     columns:  { 
-	 defaults:{
+	defaults:{
          //flex:1,
          align:'center',
          titleAlign:"center"

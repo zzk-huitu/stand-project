@@ -40,6 +40,9 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
     
     //排序字段
     defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    },{
         property: "termCode", //排序字段
         direction: "ASC" //升降充
     }],

@@ -541,15 +541,20 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	}
 
 	@Override
-	public List<BaseOrgChkTree> getOrgChkTreeList(String whereSql, String orderSql, SysUser currentUser) {
+	public List<BaseOrgChkTree> getOrgChkTreeList(String whereSql, String orderSql, String deptId, SysUser currentUser) {
 
 		// 先查询出当前用户有权限的部门数据
 		List<BaseOrg> listOrg = this.getOrgList(whereSql, orderSql, currentUser);
 		// 根据部门数据生成带checkbox的树
 
 		List<BaseOrgChkTree> result = new ArrayList<BaseOrgChkTree>();
-		createChildChkTree(new BaseOrgChkTree(TreeVeriable.ROOT, new ArrayList<BaseOrgChkTree>()), result, listOrg);
-		// TODO Auto-generated method stub
+		if (deptId.equals(TreeVeriable.ROOT)) {
+			createChildChkTree(new BaseOrgChkTree(TreeVeriable.ROOT, new ArrayList<BaseOrgChkTree>()), result, listOrg);
+		}else{//当传进来的根节点不是root时 ，是部门id时
+			createDeptChildChkTree(new BaseOrgChkTree(deptId, new ArrayList<BaseOrgChkTree>()), result, listOrg,deptId);
+		}
+	
+		
 		return result;
 	}
 
@@ -585,7 +590,39 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			createChildChkTree(child, result, list);
 		}
 	}
+	private void createDeptChildChkTree(BaseOrgChkTree parentNode, List<BaseOrgChkTree> result, List<BaseOrg> list,String deptId) {
+		List<BaseOrg> childs = new ArrayList<BaseOrg>();
+		for (BaseOrg org : list) {
+			if (org.getUuid().equals(deptId)) {
+				childs.add(org);
+				continue;
+			}else{
+				if (org.getParentNode().equals(parentNode.getId())) {
+					childs.add(org);
+				}
+			}
+		}
+/*		for (BaseOrg org : list) {
+			if (org.getParentNode().equals(parentNode.getId())) {
+				childs.add(org);
+			}
+		}*/
+		for (BaseOrg org : childs) {
+			BaseOrgChkTree child = new BaseOrgChkTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(),
+					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
+					org.getRemark(), org.getNodeCode(), org.getParentNode(), org.getOrderIndex(), org.getDeptType(),
+					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode());
 
+			if (org.getUuid().equals(deptId)) {
+				result.add(child);
+			} else {
+				List<BaseOrgChkTree> trees = parentNode.getChildren();
+				trees.add(child);
+				parentNode.setChildren(trees);
+			}
+			createDeptChildChkTree(child, result, list,"");
+		}
+	}
 	@Override
 	public String getOrgChildIds(String orgId, boolean isSelf) {
 		String treeIds = "";

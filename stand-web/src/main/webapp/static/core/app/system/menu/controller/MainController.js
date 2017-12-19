@@ -132,7 +132,8 @@ Ext.define("core.system.menu.controller.MainController", {
 					self.doLockOrUnlock(btn,"1");
 					return false;
 				}
-			},			
+			},	
+		
 		});
        
     	
@@ -330,5 +331,6 @@ Ext.define("core.system.menu.controller.MainController", {
 				myMask.hide();
 			}
         });             
-	}
+	},
+
 });

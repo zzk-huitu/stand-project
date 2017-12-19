@@ -64,7 +64,8 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             name: "xbm",
             ddCode: "XBM",
             allowBlank: false,
-            blankText: "性别不能为空"
+            blankText: "性别不能为空",
+            value:0
         },{
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
@@ -169,7 +170,8 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             xtype: "datetimefield",
             dateType:'date',
             fieldLabel: "出生日期",
-            name: "csrq"
+            name: "csrq",
+            maxValue:new Date()
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: "",

@@ -11,9 +11,12 @@ Ext.define("core.baseset.room.view.MainGrid", {
         filter: '[{"type":"string","comparison":"=","value":"","field":"roomName"}]'
     },
     defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    }/*{
         property: 'createTime',
         direction: 'DESC'
-    }],
+    }*/],
     title: "区域房间",
     panelTopBar:{
         xtype:'toolbar',

@@ -13,6 +13,13 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
         property: "xm", //字段名
         direction: "DESC" //升降序
     }],
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:30,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        //mode:'single',  //multi,simple,single；默认为多选multi
+        checkOnly:true,    //如果值为true，则只用点击checkbox列才能选中此条记录
+        //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
+    },
     extParams: {
         filter:'[{"type":"string","value":"1","field":"category","comparison":""}]'
     },

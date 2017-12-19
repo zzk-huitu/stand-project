@@ -63,8 +63,11 @@ Ext.define("core.baseset.campus.view.MainGrid", {
     },
     
     //排序字段及模式定义
-    defSort: [{
+    defSort: [/*{
         property: 'createTime',
+        direction: 'DESC'
+    },*/{
+        property: 'updateTime',
         direction: 'DESC'
     }],
     extParams: {},

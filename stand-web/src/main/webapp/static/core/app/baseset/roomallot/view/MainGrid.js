@@ -36,7 +36,13 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         }]
     }, 
    panelButtomBar:{},
-   
+   defSort: [{
+        property: 'updateTime',
+        direction: 'DESC'
+    },/*{
+        property: 'createTime',
+        direction: 'DESC'
+    }*/],
    columns:  {        
     defaults:{
             titleAlign:"center"
