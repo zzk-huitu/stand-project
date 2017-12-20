@@ -200,6 +200,8 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			} else
 				defaultOrderIndex = 0;
 			entity.setOrderIndex(defaultOrderIndex);
+		}else{
+			entity.setOrderIndex(baseOrg.getOrderIndex());
 		}
 
 		SysUser currentUser = getCurrentSysUser();
