@@ -49,11 +49,11 @@ public class BaseCalenderServiceImpl extends BaseServiceImpl<JwCalender> impleme
 	}
 
 	@Override
-	public int updateStatu(String uuid) {
+	public int updateStatu(String calenderIds,String campusNames) {
 		// TODO Auto-generated method stub
 		try{
-			String hql1="update JwCalender set activityState=0 ";
-			String hql2="update JwCalender set activityState=1 where uuid='"+uuid+"'";
+			String hql1="update JwCalender set activityState=0 where campusName in('"+campusNames.replace(",","','")+"')";
+			String hql2="update JwCalender set activityState=1 where uuid in('"+calenderIds.replace(",", "','")+"')";//1：启用
 			this.doExecuteCountByHql(hql1);
 			this.doExecuteCountByHql(hql2);
 			return 1;
