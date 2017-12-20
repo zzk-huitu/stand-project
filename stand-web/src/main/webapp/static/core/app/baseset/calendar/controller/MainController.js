@@ -49,7 +49,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     } else {
                         btnEdit.setDisabled(true);
                         btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(true);
+                        btnUse.setDisabled(false);
                     }
                     var funData = basePanel.funData;
                     funData = Ext.apply(funData, {
@@ -450,7 +450,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
         var width = 450;
         var height = 250;
         var iconCls= 'x-fa fa-plus-circle';
-        var winTitle = "增加作息时间目录";
+        var winTitle = "添加作息时间目录";
         var recordData=null;
         var operType="add";
         switch (cmd) {
@@ -460,7 +460,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                 operType="add";
                 break;*/
             case "edit":
-                winTitle = "修改作息时间目录";
+                winTitle = "编辑作息时间目录";
                 operType="edit";
                 iconCls = "x-fa fa-pencil-square";
               

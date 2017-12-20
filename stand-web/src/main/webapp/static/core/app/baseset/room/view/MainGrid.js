@@ -30,19 +30,19 @@ Ext.define("core.baseset.room.view.MainGrid", {
             }
         },'->',*/{
             xtype: 'button',
-            text: '添加房间',
+            text: '添加',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
         },{
             xtype: 'button',
-            text: '批量添加房间',
+            text: '批量添加',
             ref: 'gridBatchAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
         }, {
             xtype: 'button',
-            text: '编辑房间',
+            text: '编辑',
             ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-pencil-square',

@@ -271,13 +271,18 @@ Ext.define("core.baseset.room.controller.MainController", {
         var otherController = basePanel.otherController;
         if (!otherController)
             otherController = '';
-        
+        var areagrid = basePanel.down("basetreegrid[xtype=baseset.room.areagrid]");
+        var areaRescords = areagrid.getSelectionModel().getSelection();
+        if(areaRescords.length!=1){
+           self.msgbox("请选择楼层!");
+           return ;
+        }
         var areaId = funData.areaId;
         var areaType = funData.areaType;
         var areaName = funData.areaName;
         if (areaType != "04") {
-            self.Warning("请选择楼层!");
-            return false;
+            self.msgbox("只能选择楼层!");
+            return ;
         }
         detCode = "room_roomdetail";
         //处理特殊默认值
@@ -395,7 +400,7 @@ Ext.define("core.baseset.room.controller.MainController", {
         var selectRecord = tree.getSelectionModel().getSelection();
         if(selectRecord.length!=1){
             self.msgbox("请选择楼层!");
-            return false;
+            return ;
         }
         var selectObject = selectRecord[0];
         var areaId = "";
@@ -404,7 +409,7 @@ Ext.define("core.baseset.room.controller.MainController", {
        
         if (selectObject == null) {
             self.msgbox("请选择楼层!");
-            return false;
+            return ;
         } else {
             areaId = selectObject.get("id");
             areaType = selectObject.get("areaType");
@@ -412,7 +417,7 @@ Ext.define("core.baseset.room.controller.MainController", {
         }
         if (areaType != "04") {
             self.msgbox("只能选择楼层!");
-            return false;
+            return ;
         }
         //得到组件
         var funCode = baseGrid.funCode; //jobinfo_main
@@ -512,6 +517,9 @@ Ext.define("core.baseset.room.controller.MainController", {
         var funData = basePanel.funData;
         var detCode = basePanel.detCode;
         var detLayout = basePanel.detLayout;
+         var otherController = basePanel.otherController;
+        if (!otherController)
+            otherController = '';
         //处理特殊默认值
         var defaultObj = funData.defaultObj;
         var insertObj = self.getDefaultValue(defaultObj);
@@ -615,8 +623,10 @@ Ext.define("core.baseset.room.controller.MainController", {
                 operType: operType,
                 funData: popFunData,
                 funCode: detCode,
+                controller:otherController,
                 //给form赋初始值
                 insertObj: insertObj,
+                cmd:operType,
                 items: [{
                     xtype: "baseset.room.areadetaillayout"
                 }]

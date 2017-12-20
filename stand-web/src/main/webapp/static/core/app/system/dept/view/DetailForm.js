@@ -5,7 +5,6 @@ Ext.define("core.system.dept.view.DetailForm", {
     autoHeight: true,
     frame: false,
     bodyPadding: "10 20",
-
     fieldDefaults: { // 统一设置表单字段默认属性
         labelSeparator: "：", // 分隔符
         msgTarget: "qtip",
@@ -22,9 +21,11 @@ Ext.define("core.system.dept.view.DetailForm", {
         fieldLabel: "上级部门类型",
         name: "parentType",
         hidden: true
-    }, /*{
+    }, {
         xtype: "container",
         layout: "column", // 从左往右的布局
+        ref:"indexContainer",
+        hidden: true,
         items: [{
             columnWidth: 0.6,
             beforeLabelTextTpl: comm.get("required"),
@@ -34,13 +35,14 @@ Ext.define("core.system.dept.view.DetailForm", {
             allowBlank: false,
             emptyText: "同级别的部门的显示顺序",
             blankText: "顺序号不能为空",
+            allowDecimals: false,
         }, {
             columnWidth: 0.4,
             xtype: "label",
             margin:'5 0 0 5 ',
             html: "  (<font color=red,size=12>同级别的部门的显示顺序,不能重复)</font>",
         }]
-    },*/  {
+    },  {
         xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{

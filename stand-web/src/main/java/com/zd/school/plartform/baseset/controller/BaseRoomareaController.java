@@ -6,6 +6,7 @@ import com.zd.core.constant.StatuVeriable;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.EntityUtil;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.BuildRoomAreaTree;
@@ -71,19 +72,27 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
             throws IOException, IllegalAccessException, InvocationTargetException {
         String parentNode = entity.getParentNode();      
         String nodeText = entity.getNodeText();
-        Integer orderIndex = entity.getOrderIndex();
-
+        //Integer orderIndex = entity.getOrderIndex();
+    	Integer defaultOrderIndex = Integer.valueOf(0);
         //此处为放在入库前的一些检查的代码，如唯一校验等
         String hql1 = " o.isDelete='0' and o.parentNode='" + parentNode + "' ";
-        if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql1)) {
+ /*       if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql1)) {
             writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此顺序号！\""));
             return;
-        }
+        }*/
         if (thisService.IsFieldExist("nodeText", nodeText, "-1", hql1)) {
             writeJSON(response, jsonBuilder.returnFailureJson("\"同一级别已有此区域！\""));
             return;
         }
-        
+		// 获取同一级别的顺序号
+		String hql = " from BuildRoomarea where orderIndex = (select max(o.orderIndex) from BuildRoomarea o where  o.isDelete='0' and o.parentNode='"
+				+ parentNode + "' )";
+		List list = thisService.queryByHql(hql);
+		if (list.size() > 0) {
+			defaultOrderIndex = (Integer) EntityUtil.getPropertyValue(list.get(0), "orderIndex") + 1;
+		} else
+			defaultOrderIndex = 0;
+		entity.setOrderIndex(defaultOrderIndex);
         SysUser currentUser = getCurrentSysUser();    
         
         entity = thisService.doAddEntity(entity, currentUser.getXm());

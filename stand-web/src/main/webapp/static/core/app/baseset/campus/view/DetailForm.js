@@ -55,7 +55,10 @@ Ext.define("core.baseset.campus.view.DetailForm", {
             xtype: "numberfield",
             fieldLabel: "排序字段",
             name: "orderIndex",
-            hidden: false
+            hidden: false,
+            allowDecimals: false,
+            allowBlank: false,
+            blankText: "排序字段不能为空",
         }, {
             columnWidth:0.5,
             beforeLabelTextTpl: comm.get("required"),

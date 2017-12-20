@@ -60,7 +60,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
    }],
    
     multiSelect: false,
-    sortableColumns: false,
+   // sortableColumns: false,
     columns:  {        
         defaults:{
             titleAlign:"center"

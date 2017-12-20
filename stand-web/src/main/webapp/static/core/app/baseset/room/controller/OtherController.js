@@ -37,7 +37,20 @@ Ext.define("core.baseset.room.controller.OtherController", {
                     return false;
                 }
             },
-        });
+            "baseform[xtype=baseset.room.areaform] ": {
+                afterrender: function (grid) {
+                  var baseformwin = grid.up("baseformwin");
+                  var indexContainer =  grid.down("container[ref=indexContainer]");
+                  var cmd = baseformwin.cmd;
+                  if(cmd=="edit"){
+                   indexContainer.setVisible(true);
+               }else{
+                 indexContainer.setVisible(false);
+             }
+             return false;
+         }
+       },
+     });
     },
     doSave_Tab:function(btn,cmd){
         var self=this;

@@ -49,6 +49,7 @@ Ext.define("core.baseset.dictionary.view.DicForm", {
 		name: "orderIndex",
 		xtype: "numberfield",
 		emptyText: "同级别字典的显示顺序",
+		allowDecimals: false,
 	}, {
 		beforeLabelTextTpl: comm.get('required'),
 		allowBlank: true,

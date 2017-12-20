@@ -168,6 +168,19 @@ Ext.define("core.system.dept.controller.OtherController", {
                     return false;
                 }
             },
+             "baseform[xtype=system.dept.detailform] ": {
+                afterrender: function (grid) {
+                  var baseformtab = grid.up("baseformtab");
+                  var indexContainer =  grid.down("container[ref=indexContainer]");
+                  var cmd = baseformtab.cmd;
+                  if(cmd=="edit"){
+                     indexContainer.setVisible(true);
+                 }else{
+                   indexContainer.setVisible(false);
+               }
+               return false;
+           }
+       },
 
         });
     },
@@ -195,7 +208,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var parent = formObj.findField("parentNode").getValue();
         var parentName = formObj.findField("parentName").getValue();
         var deptType = formObj.findField("deptType").getValue();
-       // var orderIndex = formObj.findField("orderIndex").getValue() + 1;
+        var orderIndex = formObj.findField("orderIndex").getValue() + 1;
         var parentType = formObj.findField("parentType").getValue();
 
         //根据上级部门的类型业控制本部门的类型
