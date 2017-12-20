@@ -7,30 +7,30 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
     
 
     menuCode:"SCHOOLINFO", //new：此表格与权限相关的菜单编码
-
-    panelTopBar:{
+    sortableColumns: false,
+   /* panelTopBar:{
         xtype:'toolbar',
-        items: [/*{
+        items: [{
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
-        },*/{
+        },{
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
-        },/* {
+        }, {
             xtype: 'button',
             text: '删除',
             ref: 'gridDelete',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },*/'->',{
+        },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         }, {
@@ -50,8 +50,19 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             iconCls: 'x-fa fa-sliders'
         }],
     }, 
-   
-
+   */
+    panelTopBar:{
+     xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '学校信息',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800
+            }
+        }]
+    },
     panelButtomBar:{
         xtype:'baseset.schoolinfo.mainquerypanel'
     },

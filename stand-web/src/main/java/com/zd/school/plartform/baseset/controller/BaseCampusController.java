@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
@@ -19,7 +20,9 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.plartform.baseset.model.BaseCampus;
+import com.zd.school.plartform.baseset.model.BaseSchool;
 import com.zd.school.plartform.baseset.service.BaseCampusService;
 import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -201,5 +204,11 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
             writeJSON(response, jsonBuilder.returnFailureJson("\"修改校区失败\""));
         }
 
+    }
+    @RequestMapping("/getSchool")
+    public  @ResponseBody BaseSchool getSchool(HttpServletRequest request, HttpServletResponse response){
+    	String hql = " from BaseSchool";
+    	BaseSchool baseSchool = thisService.getEntityByHql(hql);
+        return baseSchool;
     }
 }

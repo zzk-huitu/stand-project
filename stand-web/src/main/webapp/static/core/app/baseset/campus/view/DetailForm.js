@@ -13,7 +13,7 @@ Ext.define("core.baseset.campus.view.DetailForm", {
         fieldLabel: "主键",
         name: "uuid",
         hidden: true
-    }, {
+    },/* {
         fieldLabel: "学校主键",
         name: "schoolId",
         xtype: "textfield",
@@ -47,6 +47,23 @@ Ext.define("core.baseset.campus.view.DetailForm", {
             name: "version",
             hidden: true
         }]
+    }*/{
+        xtype: "container",
+        layout: "column", // 从左往右的布局
+        ref:"schoolContainer",
+        hideen:true,
+        items: [{
+            fieldLabel: "学校主键",
+            name: "schoolId",
+            xtype: "textfield",
+            hidden: true
+        },{
+            columnWidth:0.5,
+            fieldLabel: "所属学校",
+            name: "schoolName",
+            xtype: "textfield",
+            readOnly:true,
+     }]
     }, {
         xtype: "container",
         layout: "column", // 从左往右的布局
