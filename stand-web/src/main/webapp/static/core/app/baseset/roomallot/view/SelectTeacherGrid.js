@@ -4,6 +4,13 @@ Ext.define("core.baseset.roomallot.view.SelectTeacherGrid", {
     dataUrl: comm.get('baseUrl') + "/BaseOfficeAllot/teacherAllot",
     model: "com.zd.school.plartform.system.model.SysUser",
     al:false,
+    selModel: {
+        type: "checkboxmodel",   
+        headerWidth:30,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
+        //mode:'single',  //multi,simple,single；默认为多选multi
+        checkOnly:true,    //如果值为true，则只用点击checkbox列才能选中此条记录
+        //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
+    },
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -45,7 +52,7 @@ Ext.define("core.baseset.roomallot.view.SelectTeacherGrid", {
                     var isSelectStore = isSelectGrid.getStore();
                     for (var i = 0; i < isSelectStore.getCount(); i++) {
                         if (data.userNumb == isSelectStore.getAt(i).get('userNumb')) {
-                            Ext.Msg.alert("提示", "该教师已存在!");
+                            Ext.Msg.alert("提示",  data.xm+"教师已存在!");
                             return;
                         }
                     };

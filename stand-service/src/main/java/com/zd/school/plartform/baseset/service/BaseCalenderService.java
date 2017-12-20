@@ -30,7 +30,7 @@ public interface BaseCalenderService extends BaseService<JwCalender> {
      */
 	public JwCalender findJwTcanderByClaiId(JwTGrade  jtg);
 	
-	public int updateStatu(String uuid);
+	public int updateStatu(String calenderIds,String campusNames);
 	public JwCalender  doUpdateEntity(JwCalender entity, SysUser currentUser);
 	public JwCalender  doAddEntity(JwCalender entity, SysUser currentUser);
 	public Boolean  doDeleteEntity(String delIds);

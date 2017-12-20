@@ -24,6 +24,8 @@ Ext.define("core.baseset.room.view.AreaForm", {
 	},{
         xtype: "container",
         layout: "column", // 从左往右的布局
+        ref:"indexContainer",
+        hidden: true,
         items: [{
             columnWidth: 0.6,
             beforeLabelTextTpl: comm.get("required"),
@@ -32,7 +34,8 @@ Ext.define("core.baseset.room.view.AreaForm", {
             name: "orderIndex",
             allowBlank: false,
             emptyText: "同级别的区域的显示顺序",
-            blankText: "顺序号不能为空"
+            blankText: "顺序号不能为空",
+            allowDecimals: false,
         }, {
             columnWidth: 0.4,
             xtype: "label",

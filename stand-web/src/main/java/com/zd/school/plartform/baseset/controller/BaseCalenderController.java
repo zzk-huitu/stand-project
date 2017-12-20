@@ -193,9 +193,10 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 入库前检查代码
-		String calenderId = request.getParameter("uuid");
-
-		int statu = thisService.updateStatu(calenderId);
+		String calenderIds = request.getParameter("ids");
+		String campusNames = request.getParameter("campusNames");
+		
+		int statu = thisService.updateStatu(calenderIds,campusNames);
 		if (statu == 1) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\'启用成功！\'"));
 		} else {

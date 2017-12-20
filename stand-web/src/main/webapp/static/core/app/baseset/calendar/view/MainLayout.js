@@ -37,7 +37,8 @@ Ext.define("core.baseset.calendar.view.MainLayout", {
 		xtype: "baseset.calendar.calendargrid",
 		region: "west",
 		split:true,
-		width: comm.get("clientWidth") * 0.42
+		width: 500,
+		collapsible:true,
 	}, {
 		xtype: "baseset.calendar.maingrid",
 		region: "center",

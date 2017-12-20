@@ -49,7 +49,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     } else {
                         btnEdit.setDisabled(true);
                         btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(true);
+                        btnUse.setDisabled(false);
                     }
                     var funData = basePanel.funData;
                     funData = Ext.apply(funData, {
@@ -60,11 +60,12 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     });
                     //加载作息时间项信息
                     var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
-                    var btn1 = mainGrid.down("button[ref=gridEdit_Tab]");
-                    var btn2 = mainGrid.down("button[ref=gridDelete]");
-                   // btn1.setDisabled(true);
-                   // btn2.setDisabled(true);
-
+                    var btn3 = mainGrid.down("button[ref=gridAdd_Tab]");
+                    if(record.get("activityState")==1){
+                        btn3.setDisabled(true);
+                    }else{
+                       btn3.setDisabled(false); 
+                   }
                    var store = mainGrid.getStore();
                    var proxy = store.getProxy();
 
@@ -98,20 +99,33 @@ Ext.define("core.baseset.calendar.controller.MainController", {
             "basepanel basegrid[xtype=baseset.calendar.maingrid]": {
                beforeitemclick: function(grid) {
                 var basePanel = grid.up("basepanel");
+                var funData = basePanel.funData;
                 var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.maingrid]");
                 var records = basegrid.getSelectionModel().getSelection();
                 var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
                 var btnDelete = basegrid.down("button[ref=gridDelete]");
+                var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
+                if(funData.activityState==1){//启用 
+                  btnAdd.setDisabled(true);
+                  btnEdit.setDisabled(true);
+                  btnDelete.setDisabled(true);
+                }else{
                 if (records.length == 0) {
+                    btnAdd.setDisabled(false);
                     btnEdit.setDisabled(true);
                     btnDelete.setDisabled(true);
                 } else if (records.length == 1) {
+                    btnAdd.setDisabled(false);
                     btnEdit.setDisabled(false);
                     btnDelete.setDisabled(false);
                 }else{
+                    btnAdd.setDisabled(false);
                     btnEdit.setDisabled(true);
                     btnDelete.setDisabled(false);
                 }
+                }
+             
+
                 return false;
             },
         },
@@ -450,7 +464,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
         var width = 450;
         var height = 250;
         var iconCls= 'x-fa fa-plus-circle';
-        var winTitle = "增加作息时间目录";
+        var winTitle = "添加作息时间目录";
         var recordData=null;
         var operType="add";
         switch (cmd) {
@@ -460,7 +474,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                 operType="add";
                 break;*/
             case "edit":
-                winTitle = "修改作息时间目录";
+                winTitle = "编辑作息时间目录";
                 operType="edit";
                 iconCls = "x-fa fa-pencil-square";
               
@@ -663,20 +677,46 @@ Ext.define("core.baseset.calendar.controller.MainController", {
 
     },
     doCalenderUse:function(btn) {
-               var self=this;
-               //得到组件
-               var basegrid = btn.up("basegrid");
-               var basepanel = basegrid.up('basepanel');
-               var records = basegrid.getSelectionModel().getSelection();
-               if (records.length > 0) {
+            var self=this;
+            var ids=new Array();
+            var campusNames = new Array();
+            //得到组件
+            var basegrid = btn.up("basegrid");
+            var basepanel = basegrid.up('basepanel');
+            var records = basegrid.getSelectionModel().getSelection();
+            if(records.length==0){
+               self.msgbox("请选择一条需要生效的日历!");
+               return;
+            }
+            if(records.length==1){
+                ids.push(records[0].get('uuid'));
+                campusNames.push(records[0].get('campusName'));
+            }else{
+                var count = records.length;
+                for(var i=0; i<records.length;i++){
+                   var campusName = records[i].get('campusName');
+                   if(campusNames.indexOf(campusName)==-1){//不存在相同的
+                      ids.push(records[i].get('uuid'));
+                      campusNames.push(campusName);
+                   }
+
+                }
+                if(campusNames.length!=count){
+                   self.msgbox("一个校区只能选中一条生效的日历!");
+                   return;
+               }
+             };
+
+            if (records.length > 0) {
             //封装ids数组
-            Ext.Msg.confirm("提示", "启用此作息时间则会使其他作息时间失效，你确定要启用吗？", function (btn, text) {
+            Ext.Msg.confirm("提示", "启用此作息时间则会使相同校区的其他作息时间失效，你确定要启用吗？", function (btn, text) {
                 if (btn == 'yes') {
                     var loading = self.LoadMask(basegrid);
                     self.asyncAjax({
                         url: comm.get('baseUrl') + "/BaseCalender/doUpdateState", 
                         params: {
-                         uuid: records[0].get("uuid")
+                         ids: ids.join(","),
+                         campusNames: campusNames.join(",")
                      },                      
                         success: function(response) {
                             var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));

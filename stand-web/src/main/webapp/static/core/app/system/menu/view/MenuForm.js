@@ -28,8 +28,7 @@ Ext.define("core.system.menu.view.MenuForm", {
 			allowBlank: false,
 			emptyText: "同级别的菜单的显示顺序",
 			blankText: "顺序号不能为空",
-		//	allowDecimals:false,
-			stepValue: 1
+		    allowDecimals:false,
 		}, {
 			columnWidth: 0.4,
 			xtype: "label",

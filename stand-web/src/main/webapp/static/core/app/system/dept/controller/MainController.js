@@ -592,7 +592,7 @@ Ext.define("core.system.dept.controller.MainController", {
                     insertObj:insertObj,                    //保存一些需要默认值，提供给提交事件中使用
                     funData:popFunData,                     //保存funData数据，提供给提交事件中使用
                     items:itemXtype,
-                    cmd:cmd
+                    cmd:cmd,
                 }); 
 
 
