@@ -19,7 +19,8 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:800,
+                padding: '8px 5px'
             }
         }]
     },
@@ -48,7 +49,7 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
         hidden: true
     }, {
         flex : 1,
-        minWidth:100,
+        minWidth:80,
         text: "宿舍名称",
         dataIndex: "dormName",
         field: {

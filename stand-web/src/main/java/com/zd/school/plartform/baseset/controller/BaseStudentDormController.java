@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
+import com.zd.core.constant.StatuVeriable;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -33,6 +34,7 @@ import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
+import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -58,6 +60,9 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	JwClassstudentService classStuService; // 学生分班
 	@Resource
 	BaseDormDefineService dormDefineService;// 宿舍定义
+	@Resource
+	private BaseOfficeAllotService roomaAllotService;// 房间分配 办公室
+
    /**
 		 * 已入住宿舍学生列表 @Title: list @Description: TODO @param @param entity
 		 * 实体类 @param @param request @param @param response @param @throws
@@ -86,7 +91,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		} else {
 			filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + null + "\",\"field\":\"claiId\"}]";
 		}
-		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request), Integer.MAX_VALUE,
+		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request),super.limit(request),
 				super.sort(request), filter, true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
@@ -197,32 +202,36 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void classStuNotAllotlist(@ModelAttribute JwClassstudent entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String strData = ""; // 返回给js的数据
+		String strData = ""; // 返回给js的数据	
 		String classId = request.getParameter("classId");
-		String sql = " select * from STAND_V_CLASSSTUDENT a where "
-				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
-		String countsql = " select count(*) from STAND_V_CLASSSTUDENT a where "
-				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
-		if(classId!=null){
-			sql+=" and a.classId='"+classId+"' ";
-			countsql+=" and a.classId='"+classId+"' ";
+		
+		if(classId==null){
+			classId="";
 		}
-		/*String sql=" select * from STAND_V_CLASSSTUDENT a where a.classId='"+classId+"' and "
-				+ " userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
-		String countsql=" select count(*) from STAND_V_CLASSSTUDENT a where a.classId='"+classId+"' and "
-				+ " userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";*/
-		/*StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + "");
-	    StringBuffer countHql = new StringBuffer("select count(*) from " + entity.getClass().getSimpleName() + "");
-		String whereSql = request.getParameter("whereSql");
-	    hql.append(whereSql);
-		countHql.append(whereSql);
-		List<JwClassstudent> lists = classStuService.queryByHql(hql.toString(), 0, 0);// 执行查询方法
-		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
-*/		
-		List<StandVClassStudent> lists =thisService.queryEntityBySql(sql, StandVClassStudent.class);
-		//QueryResult<StandVClassStudent> lists =thisService.queryPageResultBySql(sql, 0, 0, StandVClassStudent.class);
-		Integer count = thisService.getQueryCountBySql(countsql.toString());// 查询总记录数
-		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
+		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
+				+ classId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		String str="";
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}		
+		if(sb.length()>0)
+			str=sb.substring(0,sb.length()-1);
+		
+		String sql = " select a.userId as userId,a.xm as xm,a.userNumb as userNumb,a.xbm as xbm,a.classId as classId,"
+				+ " a.className as className,a.gradeId as gradeId,a.gradeCode as gradeCode,a.gradeName as gradeName "
+				+ "from STAND_V_CLASSSTUDENT a where "
+				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
+		
+		if(classId!=null){
+			sql+=" and a.classId in ('"+str.replace(",", "','")+"')";
+		}
+		
+		QueryResult<StandVClassStudent> qr = thisService.queryPageResultBySql(sql, super.start(request),super.limit(request), StandVClassStudent.class);	
+	
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		
 		writeJSON(response, strData);// 返回数据
 	}
 	
@@ -334,7 +343,58 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 
 		}
 	}
+	
+	/**
+	 * 取消分配学生宿舍
+	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
+	 * request @param @param response @param @throws IOException 设定参数 @return
+	 * void 返回类型 @throws
+	 */
+	@RequestMapping("/doDelete")
+	public void doDelete(DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		boolean flag = false;
+		SysUser currentUser = getCurrentSysUser();
+		if (StringUtils.isEmpty(entity.getUuid())) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
+			return;
+		} else {
+			String[] delIds = entity.getUuid().split(",");
+			flag = thisService.doDeleteDorm(delIds,currentUser.getXm());
+					
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"取消宿舍成功!\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"取消宿舍失败!\""));
+			}
+		}
+	}
+	
+	/**
+	 * 修改床号和柜子号
+	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
+	 * DormStudentdorm @param @param request @param @param
+	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
+	 */
+	@RequestMapping("/doUpdateBedArkNum")
+	public void doUpdates(DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+		// 获取当前的操作用户
+		SysUser currentUser = getCurrentSysUser();
 
+		String[] list = entity.getUuid().split(";");
+		int count = 0;
+		
+		count = thisService.doUpdateBedArkNum(list,currentUser.getXm());
+			
+		if (count > 0) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"保存成功。\""));
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"保存失败。\""));
+		}
+
+	}
+	
 	//推送消息
 	@Auth("BASESTUDENTDORM_dormTs")
 	@RequestMapping("/pushMessage")

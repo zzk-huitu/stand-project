@@ -37,7 +37,7 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
     },
     items:[{
         xtype: "rownumberer",
-        width: 66,
+        width: 50,
         text: '序号',
         align: 'center'
     },{
@@ -48,7 +48,8 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
         },
         hidden: true
     }, {
-        width: 100,
+        flex:1,
+        minWidth: 80,
         text: "姓名",
         dataIndex: "xm",
         field: {
@@ -70,7 +71,7 @@ Ext.define("core.baseset.studentdorm.view.NotAllotStuGrid", {
         }
     }, {
         flex:1,
-        minWidth: 100,
+        minWidth: 80,
         text: "所属班级",
         dataIndex: "className",
         field: {

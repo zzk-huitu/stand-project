@@ -126,6 +126,7 @@ Ext.define("core.baseset.studentdorm.controller.MainController", {
                 operType: operType,
                 width: width,
                 height: height,
+                maximized:true,
                 controller: otherController,
                 funData: popFunData,
                 funCode: detCode,

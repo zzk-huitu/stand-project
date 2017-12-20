@@ -56,23 +56,33 @@ Ext.define("core.baseset.studentdorm.view.DormAllotTree", {
             // 加载班级宿舍列表
              var classDormGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.classdormgrid]");
              var store = classDormGrid.getStore();
-             var proxy = store.getProxy();
-             proxy.extraParams = {
+             var proxy1 = store.getProxy();
+             proxy1.extraParams = {
                 filter: filter
             };
             store.loadPage(1); 
             //获取未分配宿舍学生列表
             var dormNotAllotGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]");
             var dormNotAllotGridstore = dormNotAllotGrid.getStore();
-            var proxy = dormNotAllotGridstore.getProxy();
+            var proxy2 = dormNotAllotGridstore.getProxy();
             whereSql = " where studentId not in (select stuId from DormStudentDorm where isDelete=0) and claiId='" + record.get("id") + "' and isDelete=0";
-            proxy.extraParams = {
+            proxy2.extraParams = {
                // filter: filter,
                 whereSql: whereSql,
                 classId:record.get("id")
             };
             dormNotAllotGridstore.loadPage(1);
-           
+            
+
+            //获取到已分配的grid
+            var dormAllotFinshGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+            var dormAllotFinshGridStore = dormAllotFinshGrid.getStore();
+            var proxy3 = dormAllotFinshGridStore.getProxy();
+            proxy3.extraParams = {
+                claiId:record.get("id")
+            };
+            dormAllotFinshGridStore.loadPage(1); //刷新
+
         }
     }
 });

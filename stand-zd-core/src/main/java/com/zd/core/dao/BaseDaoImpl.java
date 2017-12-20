@@ -824,7 +824,12 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
                     }
                 }
                 criteria.setProjection(null);
-                criteria.setMaxResults(limit);
+                if(limit<=0)
+                	criteria.setMaxResults(Integer.MAX_VALUE);
+                else
+                	criteria.setMaxResults(limit);
+                
+                
                 criteria.setFirstResult(start);
                 qr.setResultList(criteria.list());
             } else {

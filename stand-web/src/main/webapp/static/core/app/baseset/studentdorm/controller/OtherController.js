@@ -151,6 +151,22 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
              }
            },
 
+           //取消分配
+            "basegrid[xtype=baseset.studentdorm.dormallotfinishgrid] button[ref=dormDelete]": {
+                 beforeclick: function(btn) {
+                    self.doCanelAllot(btn);
+                    return false;
+                 }
+             },
+            //保存已修改的信息
+            "basegrid[xtype=baseset.studentdorm.dormallotfinishgrid] button[ref=dormSave]": {
+                beforeclick: function(btn) {
+                    self.doSaveDorm(btn);
+                    return false;
+                 }
+            }
+
+
   		})
 	},
 
@@ -190,6 +206,7 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                     }
                   }
                 }
+
          if (yes == 0) {
              Ext.Msg.confirm("分配确认", "分配宿舍之后，只能从宿舍记录中删除，或者手动修改床号、柜号", function(btns) {
               if (btns == 'yes') {
@@ -206,10 +223,14 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                   success: function(response) {
                     var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
                     if(data.success){
-                        var store = dormNotAllotGrid.getStore();
-                        store.load(); //刷新
-                        baseGrid.getStore().load();
                         self.msgbox(data.obj); 
+
+                        dormNotAllotGrid.getStore().loadPage(1); 
+                        var dormAllotFinishGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+                        dormAllotFinishGrid.getStore().loadPage(1);
+
+                        baseGrid.getStore().load();
+                      
                         loading.hide();
                     }else {
                         self.Warning(data.obj);
@@ -257,33 +278,41 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
              self.msgbox("自动分配时，必须确保班级下有宿舍，并且有未分配的学生。");
              return;
          }
-         self.asyncAjax({
-              url: comm.get('baseUrl') + "/BaseStudentDorm/dormAutoAllot", 
-              params: {
-                 classId: claiId
-                 },                 
-                 success: function(response) {
-                  var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                  if(data.success){
-                        var dormNotAllotGridstore = dormNotAllotGrid.getStore();
-                        var proxy = dormNotAllotGridstore.getProxy();
-                        whereSql = " where studentId not in (select stuId from DormStudentDorm where isDelete=0) and claiId='" + claiId + "' and isDelete=0";
-                        proxy.extraParams = {
-                          // whereSql: whereSql,
-                          classId:claiId
-                         };
-                     dormNotAllotGridstore.loadPage(1);
-                     baseGrid.getStore().loadPage(1);
-                     self.msgbox(data.obj); 
 
-                 }else {
-                   self.Error(data.obj);
-                 }           
-               },
-               failure: function(response) {                   
-                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-              }
-       });
+         Ext.Msg.confirm('温馨提示', '确实要执行自动分配宿舍吗？', function(btns) {
+             if (btns == 'yes') {
+                 //发送ajax请求
+                var loading = self.LoadMask(detailLayout,'正在分配中，请等待...');
+
+                self.asyncAjax({
+                    url: comm.get('baseUrl') + "/BaseStudentDorm/dormAutoAllot", 
+                    params: {
+                       classId: claiId
+                     },                 
+                     success: function(response) {
+                      var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                      if(data.success){
+                          self.msgbox(data.obj); 
+                          
+                          dormNotAllotGrid.getStore().loadPage(1);                      
+                          var dormAllotFinishGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+                          dormAllotFinishGrid.getStore().loadPage(1);
+
+                          baseGrid.getStore().loadPage(1);
+
+                     }else {
+                       self.Error(data.obj);
+                     }   
+                     loading.hide();        
+                   },
+                     failure: function(response) {                   
+                      Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                    }
+                });                             
+             }
+         });
+
+         
                   
       },
 
@@ -722,4 +751,125 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
          });
        },
 
-      });
+       doCanelAllot:function(btn){      
+            var self=this;  
+           var mainLayout = btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
+           var baseGrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+           var studormId = "";
+           var rows = baseGrid.getSelectionModel().getSelection();
+           if (rows <= 0) {
+               self.msgbox("请先选择学生再进行操作!");
+               return false;
+           }
+           for (var i = 0; i < rows.length; i++) {
+               studormId = studormId + rows[i].get('uuid') + ",";
+           }
+           Ext.Msg.confirm('温馨提示', '确实要取消此学生的宿舍吗？', function(btns) {
+               if (btns == 'yes') {
+                   //发送ajax请求
+                  var loading = self.LoadMask(mainLayout,'正在分配中，请等待...');
+
+                  self.asyncAjax({
+                    url: comm.get('baseUrl') + "/BaseStudentDorm/doDelete",
+                    params: {
+                      uuid: studormId                  
+                    },                 
+                    success: function(response) {
+                      var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                      if(data.success){
+                          self.msgbox(data.obj);
+                          //已分配宿舍学生grid
+                          baseGrid.getStore().loadPage(1);
+                          //未分配宿舍学生grid
+                          mainLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]").getStore().loadPage(1);                     
+                      }else {
+                          self.Warning(data.obj);                          
+                      }           
+                      loading.hide();
+                    },
+                    failure: function(response) {                   
+                      Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                      loading.hide();
+                    }
+                  }); 
+                  
+               }
+           });
+       },
+
+     
+         doSaveDorm: function(btn) {
+            var self=this;
+             var mainLayout = btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
+             var baseGrid = mainLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+             var roomName = [];
+             var store = baseGrid.getStore();
+             var storeCount = store.getCount();
+             //获取到已经更改过的数据
+             var records = store.getModifiedRecords();
+             //判断修改过的记录数
+             if (records.length == 0) {
+                 self.msgbox("列表中没有修改过的数据");
+                 return false;
+             }
+             var cdormId = "";
+             var bedNum = [];
+             var arkNum = [];
+             var list = [];
+             for (var i = 0; i < records.length; i++) {
+                 cdormId = records[i].data.cdormId + "," + cdormId;
+                 list.push(records[i].data.uuid + "," + records[i].data.bedNum + "," + records[i].data.arkNum + ";")
+             };
+             var forCount = cdormId.split(",");
+             for (var k = 0; k < forCount.length; k++) {
+                 for (var j = 0; j < storeCount; j++) {
+                     var record = store.getAt(j);
+                     if (record.get("cdormId") == forCount[k]) {
+                         bedNum.push(record.get("bedNum"));
+                         arkNum.push(record.get("arkNum"));
+                     }
+                 }
+                 var nary = bedNum.sort();
+                 for (var l = 0; l < bedNum.length; l++) {
+                     if (nary[l] == nary[l + 1]) {
+                         self.msgbox("床号有重复!");
+                         return false;
+                     }
+                 }
+                 var narys = arkNum.sort();
+                 for (var n = 0; n < arkNum.length; n++) {
+                     if (narys[n] == narys[n + 1]) {
+                         self.msgbox("柜号有重复!");
+                         return false;
+                     }
+                 }
+                 bedNum = [];
+                 arkNum = [];
+             }
+             var studormId = list.join(",");
+
+             //发送ajax请求
+              var loading = self.LoadMask(mainLayout,'正在分配中，请等待...');
+
+            self.asyncAjax({
+                url: comm.get('baseUrl') + "/BaseStudentDorm/doUpdateBedArkNum",
+                params: {
+                  uuid: list                  
+                },                 
+                success: function(response) {
+                  var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                  if(data.success){
+                      self.msgbox(data.obj);                      
+                  }else {
+                      self.Warning(data.obj);                          
+                  }           
+                  loading.hide();
+                },
+                failure: function(response) {                   
+                  Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                  loading.hide();
+                }
+            }); 
+         }
+
+});

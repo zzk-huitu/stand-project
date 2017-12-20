@@ -9,7 +9,7 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
         }
     },
 
-    minWidth:1000,
+    minWidth:1200,
     scrollable:'x',
     layout:'border',
     items: [{
@@ -20,10 +20,18 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
     },{
         xtype:'baseset.studentdorm.classdormgrid',
         region: "center",
+        flex:1,
         margin:'5'
     }, {
         xtype: "baseset.studentdorm.dormnotallotgrid",
-        width: 500,
+        flex:1,
+        region: "east",
+        minWidth:350,
+        margin:'5'
+    },{
+        xtype: "baseset.studentdorm.dormallotfinishgrid",
+        flex:1.5,
+        minWidth:350,
         region: "east",
         margin:'5'
     }]

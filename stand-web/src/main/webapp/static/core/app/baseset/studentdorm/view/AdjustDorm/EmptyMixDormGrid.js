@@ -36,7 +36,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
     },
     items:[{
         xtype: "rownumberer",
-        width: 66,
+        width: 50,
         text: '序号',
         align: 'center'
     },{
@@ -47,7 +47,8 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
         },
         hidden: true
     },{
-        width: 100,
+        flex:1,
+        minWidth: 100,
         text: "宿舍名称",
         dataIndex: "dormName",
         field: {
@@ -61,8 +62,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
         field: {
             xtype: "textfield"
         }
-    }, {
-        width: 100,
+    }, {       
         text: "班级主键",
         dataIndex: "claiId",
         hidden: true
@@ -81,7 +81,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
             }
         }
     }, {
-        width: 80,
+        width: 75,
         text: "最大人数",
         dataIndex: "dormBedCount",
         field: {

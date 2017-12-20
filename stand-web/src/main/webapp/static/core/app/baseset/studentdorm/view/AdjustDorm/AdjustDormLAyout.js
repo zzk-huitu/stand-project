@@ -16,16 +16,19 @@ Ext.define("core.baseset.studentdorm.view.AdjustDormLayout", {
     items: [{
         xtype:'baseset.studentdorm.mixdormgrid',
         region: "west",
-        width: 400,
+        minWidth: 500,
+        flex:1.5,
         margin:'5'
     },{
         xtype:'baseset.studentdorm.emptymixdormgrid',
         region: "center",
+        flex:1.2,
         margin:'5'
     }, {
         xtype: "baseset.studentdorm.notallotstugrid",
-        width: 400,
+        minWidth: 350,
         region: "east",
+        flex:1,
         margin:'5'
     }]
 })

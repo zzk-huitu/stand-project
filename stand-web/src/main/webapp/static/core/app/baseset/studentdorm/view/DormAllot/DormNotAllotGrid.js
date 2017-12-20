@@ -7,12 +7,13 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
         whereSql: " where studentId not in (select A.stuId from BaseStudentDorm as A where A.isDelete=0) and isDelete=0",
     },
     al: false,
-    noPagging: true,
+    noPagging: false,
+    pageDisplayInfo:false,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '未分配宿舍学生列表',
+            html: '未分配宿舍学生',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -20,13 +21,13 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
             }
         }, '->',{
             xtype: 'button',
-            text: '手动分配宿舍',
+            text: '手动分配',
             ref: 'dormFp',
             iconCls: 'x-fa fa-plus-circle',
             titleAlign:'right',
         },{
             xtype: 'button',
-            text: '自动分配宿舍',
+            text: '自动分配',
             ref: 'dormzdFp',
             iconCls: 'x-fa fa-plus-circle'
         }]
@@ -46,21 +47,22 @@ Ext.define("core.baseset.studentdorm.view.DormNotAllotGrid", {
             hidden: true
         }, {
             flex : 1,
-            minWidth:100,
+            minWidth:80,
             text: "学生学号",
             dataIndex: "userNumb",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            flex : 1,
+            minWidth:80,
             text: "学生姓名",
             dataIndex: "xm",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:70,
+            width:60,
             text: "性别",
             dataIndex: "xbm",
             renderer: function(value) {
