@@ -1,6 +1,7 @@
 package com.zd.school.plartform.baseset.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import com.zd.core.service.BaseService;
 import com.zd.school.plartform.baseset.model.BaseCampus;
@@ -24,6 +25,6 @@ public interface BaseCampusService extends BaseService<BaseCampus> {
     public BaseCampus doUpdate(BaseCampus entity, SysUser currentUser)
             throws IllegalAccessException, InvocationTargetException;
 
-    public boolean doDelete(String delIds, SysUser currentUser)
+    public boolean doDelete(String delIds, SysUser currentUser,Map hashMap)
             throws IllegalAccessException, InvocationTargetException;
 }

@@ -3,7 +3,9 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -123,17 +125,21 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
     public void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
         String delIds = request.getParameter("ids");
+        Map<String,Object> hashMap = new HashMap<String,Object>();
         SysUser currentUser = getCurrentSysUser();
         if (StringUtils.isEmpty(delIds)) {
             writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
         } else {  
-    		 boolean flag = thisService.doDelete(delIds, currentUser);
+    		 boolean flag = thisService.doDelete(delIds, currentUser,hashMap);
+    		 flag = hashMap.get("rs")==null?true:(boolean) hashMap.get("rs");
             //flag = areaService.logicDelOrRestore(delIds, StatuVeriable.ISDELETE);
             if (flag) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
             } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("\"校区关联了部门或建筑物区域,不能删除\""));
+                StringBuffer notSb = (StringBuffer) hashMap.get("notSb");
+                writeJSON(response, jsonBuilder.returnFailureJson("'"+notSb.substring(0,notSb.length()-1)+"校区关联了部门或建筑物区域,不能删除'"));
+               // writeJSON(response, jsonBuilder.returnFailureJson("\"校区关联了部门或建筑物区域,不能删除\""));
             }
         }
     }

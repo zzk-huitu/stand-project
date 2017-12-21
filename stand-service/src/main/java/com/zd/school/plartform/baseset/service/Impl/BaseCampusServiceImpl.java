@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -146,13 +147,14 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 	}
 
 	@Override
-	public boolean doDelete(String delIds, SysUser currentUser)
+	public boolean doDelete(String delIds, SysUser currentUser,Map hashMap)
 			throws IllegalAccessException, InvocationTargetException {
 		boolean rs = true;
 		String[] ids = delIds.split(",");
 		Integer childOrg = 0;
 		Integer childDeptJob = 0;
 		Integer childArea = 0;
+		StringBuffer notSb = new StringBuffer();
 		StringBuffer canSb = new StringBuffer();
 		StringBuffer orgSb = new StringBuffer();
 		StringBuffer areaSb = new StringBuffer();
@@ -179,6 +181,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 				
 				if(roomarea!=null)
 					areaSb.append(roomarea.getUuid() + ",");			
+			}else{//当校区信息关联了部门管理或者建筑物时 ，不能删除
+				BaseCampus baseCampus=this.get(uuid);
+				notSb.append(baseCampus.getCampusName()+",");
+			    hashMap.put("rs", false);
 			}
 		}
 		if (canSb.length() > 0) {		
@@ -197,6 +203,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		} else {
 			rs = false;
 		}
+		hashMap.put("notSb", notSb);
 		// TODO Auto-generated method stub
 		return rs;
 	}

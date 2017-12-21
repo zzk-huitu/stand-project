@@ -19,6 +19,12 @@ Ext.define("core.baseset.campus.controller.MainController", {
                 this.doDetail_Tab(btn);
                 return false;
             }
+        },   
+        "basegrid[xtype=baseset.campus.maingrid]  button[ref=gridDelete]": {
+            beforeclick: function (btn) {
+                this.doDeleteRecords(btn);
+                return false;
+            }
         },
         "basegrid[xtype=baseset.campus.maingrid] actioncolumn": {
             detailClick_Tab: function (data) {
@@ -104,5 +110,69 @@ Ext.define("core.baseset.campus.controller.MainController", {
         }
 
         tabPanel.setActiveTab( tabItem);   
+    },  
+    doDeleteRecords:function(btn){
+        var self=this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        //得到选中数据
+        var records = baseGrid.getSelectionModel().getSelection();
+        if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm('提示', '是否删除数据?', function (btn, text) {
+                if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
+
+                    var ids = new Array();
+                    Ext.each(records, function (rec) {
+                        var pkValue = rec.get(pkName);
+                        ids.push(pkValue);
+                    });
+
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete",
+                        params: {
+                            ids: ids.join(","),
+                            pkName: pkName
+                        },                       
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            var store=baseGrid.getStore();
+                            if(data.success){
+                              //如果当前页的数据量和删除的数据量一致，则翻到上一页
+                                if(store.getData().length==records.length&&store.currentPage>1){    
+                                    store.loadPage(store.currentPage-1);
+                                }else{
+                                    //store.load();
+                                    store.remove(records); //不刷新的方式
+                                }
+                            
+                                self.msgbox(data.obj);                               
+                            }else {
+                                store.load();
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
     },
 });
