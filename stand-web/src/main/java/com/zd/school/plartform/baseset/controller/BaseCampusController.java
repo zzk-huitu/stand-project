@@ -21,6 +21,7 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
+import com.zd.core.util.EntityUtil;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.BuildDormDefine;
@@ -81,7 +82,8 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
         String campusCode = entity.getCampusCode();
         String schoolId = entity.getSchoolId();
         String schoolName = entity.getSchoolName();
-        Integer orderIndex = entity.getOrderIndex();
+       // Integer orderIndex = entity.getOrderIndex();
+        Integer defaultOrderIndex = Integer.valueOf(0);
 
         //此处为放在入库前的一些检查的代码，如唯一校验等
         String hql = " o.isDelete='0' and o.schoolId='" + schoolId + "'";
@@ -89,17 +91,25 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
             writeJSON(response, jsonBuilder.returnFailureJson("\"已存在此校区名称！\""));
             return;
         }
-        if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql)) {
+/*        if (thisService.IsFieldExist("orderIndex", orderIndex.toString(), "-1", hql)) {
             writeJSON(response, jsonBuilder.returnFailureJson("\"已存在此顺序号！\""));
             return;
-        }
+        }*/
         if (StringUtils.isNotEmpty(campusCode)) {
             if (thisService.IsFieldExist("campusCode", campusCode, "-1", hql)) {
                 writeJSON(response, jsonBuilder.returnFailureJson("\"已存在此校区编码！\""));
                 return;
             }
         }
-
+		// 获取同一级别的顺序号
+		String hql1 = " from BaseCampus where orderIndex = (select max(o.orderIndex) from BaseCampus o where  o.isDelete='0' and o.schoolId='"
+				+ schoolId + "' )";
+		List list = thisService.queryByHql(hql1);
+		if (list.size() > 0) {
+			defaultOrderIndex = (Integer) EntityUtil.getPropertyValue(list.get(0), "orderIndex") + 1;
+		} else
+			defaultOrderIndex = 0;
+		entity.setOrderIndex(defaultOrderIndex);
         SysUser currentUser = getCurrentSysUser();
         //持久化到数据库
         entity = thisService.doAdd(entity, currentUser);

@@ -50,8 +50,6 @@ Ext.define("core.baseset.campus.view.DetailForm", {
     }*/{
         xtype: "container",
         layout: "column", // 从左往右的布局
-        ref:"schoolContainer",
-        hideen:true,
         items: [{
             fieldLabel: "学校主键",
             name: "schoolId",
@@ -63,34 +61,40 @@ Ext.define("core.baseset.campus.view.DetailForm", {
             name: "schoolName",
             xtype: "textfield",
             readOnly:true,
-     }]
+        }]
     }, {
         xtype: "container",
         layout: "column", // 从左往右的布局
+        ref:"schoolContainer",
+        hideen:true,
         items: [{
-            columnWidth:0.5,
+            columnWidth:0.6,
             xtype: "numberfield",
             fieldLabel: "排序字段",
             name: "orderIndex",
-            hidden: false,
             allowDecimals: false,
             allowBlank: false,
             blankText: "排序字段不能为空",
-        }, {
-            columnWidth:0.5,
-            beforeLabelTextTpl: comm.get("required"),
-            xtype: "textfield",
-            fieldLabel: "校区名称",
-            name: "campusName",
-            allowBlank: false,
-            maxLength: 32,
-            emptyText: '校区名称(最大32个字符)',
-            blankText: "校区名称不能为空"
+        },{
+            columnWidth: 0.4,
+            xtype: "label",
+            margin:'5 0 0 5 ',
+            html: "  (<font color=red,size=12>显示顺序,不能重复)</font>",
         }]
     }, {
         xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
+                columnWidth:0.5,
+                beforeLabelTextTpl: comm.get("required"),
+                xtype: "textfield",
+                fieldLabel: "校区名称",
+                name: "campusName",
+                allowBlank: false,
+                maxLength: 32,
+                emptyText: '校区名称(最大32个字符)',
+                blankText: "校区名称不能为空"
+            },{
                 columnWidth:0.5,
                 xtype: "textfield",
                 fieldLabel: "校区编码",
@@ -99,7 +103,11 @@ Ext.define("core.baseset.campus.view.DetailForm", {
                 maxLength: 32,
                 emptyText: '校区编码(最大32个字符)',
                 blankText: "校区编码不能为空"
-            }, {
+            }]
+        }, {
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [ {
                 columnWidth:0.5,
                 xtype: "textfield",
                 fieldLabel: "校区地址",
@@ -108,35 +116,31 @@ Ext.define("core.baseset.campus.view.DetailForm", {
                 maxLength: 128,
                 emptyText: '校区地址(最大128个字符)',
                 blankText: "校区地址不能为空"
-            }]
-        }, {
-            xtype: "container",
-            layout: "column", // 从左往右的布局
-            items: [{
-             columnWidth:0.5,
-             xtype: "textfield",
-             fieldLabel: "邮政编码",
-             name: "zipCode",
-             allowBlank: true,
-             maxLength: 6,
-             vtype: "zipCode",
-             vtypeText: "邮政编码为6位数字",
-             emptyText: '邮政编码(6位数字)',
-             blankText: "邮政编码不能为空"
-         }, {
-            columnWidth:0.5,
-            xtype: "textfield",
-            fieldLabel: "校区联系电话",
-            name: "campusPhone",
-            allowBlank: true,
-            maxLength: 30,
-            emptyText: '校区联系电话(最大30个字符)',
-            blankText: "校区联系电话不能为空"
-        }]
-    }, {
+            },{
+               columnWidth:0.5,
+               xtype: "textfield",
+               fieldLabel: "邮政编码",
+               name: "zipCode",
+               allowBlank: true,
+               maxLength: 6,
+               vtype: "zipCode",
+               vtypeText: "邮政编码为6位数字",
+               emptyText: '邮政编码(6位数字)',
+               blankText: "邮政编码不能为空"
+           }]
+       }, {
         xtype: "container",
             layout: "column", // 从左往右的布局
-            items: [{
+            items: [ {
+                columnWidth:0.5,
+                xtype: "textfield",
+                fieldLabel: "校区联系电话",
+                name: "campusPhone",
+                allowBlank: true,
+                maxLength: 30,
+                emptyText: '校区联系电话(最大30个字符)',
+                blankText: "校区联系电话不能为空"
+            },{
                 columnWidth:0.5,
                 xtype: "textfield",
                 fieldLabel: "校区传真电话",
@@ -145,7 +149,11 @@ Ext.define("core.baseset.campus.view.DetailForm", {
                 maxLength: 30,
                 emptyText: '校区传真电话(最大30个字符)',
                 blankText: "校区传真电话不能为空"
-            }, {
+            }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
                 columnWidth:0.5,
                 xtype: "textfield",
                 fieldLabel: "校区负责人号",
