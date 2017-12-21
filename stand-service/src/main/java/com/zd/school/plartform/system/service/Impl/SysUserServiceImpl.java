@@ -246,6 +246,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			if (isDelete)
 				hql.append(" and o.isDelete=0 ");
 			hql.append(filterSql);
+			
+			if(StringUtils.isNotEmpty(sortSql))
+				hql.append(" order by "+sortSql);
 			QueryResult<SysUser> qr = this.queryResult(hql.toString(), start, limit);
 
 			return qr;

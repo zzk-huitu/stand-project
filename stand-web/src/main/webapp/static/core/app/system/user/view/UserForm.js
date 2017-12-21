@@ -40,8 +40,7 @@ Ext.define("core.system.user.view.UserForm", {
             emptyText: '请输入用户名(最大16个字符)',
             blankText: "用户名不能为空",
             maxLength:16,
-           // regex: /^[\s\S]{0,16}$/,
-           // regexText: '该用户名的最大长度是16个字符',
+            vtype:'userName'  
         }, {
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
@@ -51,7 +50,8 @@ Ext.define("core.system.user.view.UserForm", {
             allowBlank: false,
             emptyText: '请输入真实姓名(最大36个字符)',
             blankText: "真实姓名不能为空",
-            maxLength:36
+            maxLength:36,
+            vtype:'xm' 
         }]
     }, {
         xtype: 'container',
@@ -87,7 +87,8 @@ Ext.define("core.system.user.view.UserForm", {
             name: "userNumb",
             xtype: 'textfield',
             allowBlank: true,
-            maxLength:16
+            maxLength:16,
+            vtype:'userNumb'  
         },{
             columnWidth: .5,
             beforeLabelTextTpl: "",

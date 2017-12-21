@@ -225,7 +225,8 @@ Ext.apply(Ext.form.VTypes, {
 //MAC地址验证
 Ext.apply(Ext.form.VTypes, {
 	macCode: function(val, field) {
-		var reg = /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/;
+		//var reg = /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/;
+		var reg = /^[0-9]{1}[02468]{1}-([0-9A-Fa-f]{2}-){4}[0-9A-Fa-f]{2}$/;
 		try {
 			if (reg.test(val))
 				return true;
@@ -235,4 +236,46 @@ Ext.apply(Ext.form.VTypes, {
 		}
 	},
 	macCodeText:'MAC地址格式为：FF-FF-FF-FF-FF-FF',
+});
+//userName验证  
+Ext.apply(Ext.form.VTypes, {
+	userName: function(val, field) {
+		var reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/;
+		try {
+			if (reg.test(val))
+				return true;
+			return false;
+		} catch (e) {
+			return false;
+		}
+	},
+	userNameText:'用户名由汉字，字母，数字，下划线组成',
+});
+//xm  
+Ext.apply(Ext.form.VTypes, {
+	xm: function(val, field) {
+		var reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/;
+		try {
+			if (reg.test(val))
+				return true;
+			return false;
+		} catch (e) {
+			return false;
+		}
+	},
+	xmText:'姓名由汉字，字母，数字，下划线组成',
+});
+//userNumb验证  
+Ext.apply(Ext.form.VTypes, {
+	userNumb: function(val, field) {
+		var reg = /^[0-9a-zA-Z_]{0,}$/;
+		try {
+			if (reg.test(val))
+				return true;
+			return false;
+		} catch (e) {
+			return false;
+		}
+	},
+	userNumbText:'用户编号由字母，数字，下划线组成',
 });
