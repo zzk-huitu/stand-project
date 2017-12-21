@@ -3,6 +3,7 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -126,8 +127,8 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
         if (StringUtils.isEmpty(delIds)) {
             writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
             return;
-        } else {        	
-            boolean flag = thisService.doDelete(delIds, currentUser);
+        } else {  
+    		 boolean flag = thisService.doDelete(delIds, currentUser);
             //flag = areaService.logicDelOrRestore(delIds, StatuVeriable.ISDELETE);
             if (flag) {
                 writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
