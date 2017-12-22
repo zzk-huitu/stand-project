@@ -23,7 +23,8 @@ Ext.define("core.public.selectRole.view.IsSelectRoleGrid", {
         listeners: {
             drop: function (node, data, dropRec, dropPosition) {
             },
-            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){             
+            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){  
+                debugger;
                 var newRec=data.records;
                 var arrays=new Array();
                 
@@ -46,9 +47,10 @@ Ext.define("core.public.selectRole.view.IsSelectRoleGrid", {
                 
                 if(arrays.length==0)
                     return false;
-                else if(newRec.length==arrays.length)
-                    data.records=arrays;    //方式二：移除左边的数据
-                //return false;
+               /* else if(newRec.length==arrays.length)
+                    data.records=arrays; //方式二：移除左边的数据*/
+                else   
+                   data.records=arrays;
             },
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
                 var IsSelectStore = grid.getStore();

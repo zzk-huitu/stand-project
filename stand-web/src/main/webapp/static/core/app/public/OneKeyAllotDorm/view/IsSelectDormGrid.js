@@ -48,7 +48,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.IsSelectDormGrid", {
                 
                 if(arrays.length==0)
                     return false;
-                else if(newRec.length==arrays.length)
+                else/* if(newRec.length==arrays.length)*/
                     data.records=arrays;    //方式二：移除左边的数据
                 //return false;
             },
