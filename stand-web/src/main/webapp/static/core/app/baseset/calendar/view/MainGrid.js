@@ -70,12 +70,18 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
 		text: "外键",
 		dataIndex: "canderId",
 		hidden: true
-	}, {
-	    width: 100,
-	    text: "时辰",
-		dataIndex: "isafgernoon",
-		field: {
-			xtype: "textfield"
+	},{
+        xtype: "rownumberer",
+        flex:0,
+        width: 50,
+        text: '序号',
+        align: 'center'
+    }, {
+       width: 120,
+       text: "时辰",
+       dataIndex: "isafgernoon",
+       field: {
+         xtype: "textfield"
 		},
 		renderer: function(value) {
             var re = value;
@@ -100,9 +106,9 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
 			xtype: "textfield"
 		},
 		flex: 1,
-        minWidth: 100
+        minWidth: 120
 	}, { 
-		width: 100,
+		width: 120,
 		text: "开始时间",
 		dataIndex: "beginTime",
 		//renderer: Ext.util.Format.dateRenderer('H:i')
@@ -115,7 +121,7 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
         },
         
 	}, {
-		width: 100,
+		width: 120,
 		text: "结束时间",
 		dataIndex: "endTime",
 		//renderer: Ext.util.Format.dateRenderer('H:i')

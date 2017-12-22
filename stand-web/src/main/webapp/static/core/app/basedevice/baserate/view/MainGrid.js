@@ -111,7 +111,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             }
         }, {
             text: "币种",
-            width: 100,
+            width: 120,
             dataIndex: "currencyType",
             field: {
                 xtype: "textfield"
@@ -119,16 +119,22 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
         }, {
             text: "备注",
             flex:1,
-            minWidth:150,
+            minWidth:120,
             dataIndex: "priceNotes",
             field: {
                 xtype: "textfield"
+            },
+            renderer:function(value,metaData){
+                var title="备注";
+                metaData.tdAttr= 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                return value;  
+
             }
         },{
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 120,
+            width: 200,
             fixed: true,
             items: [{
                 text:'编辑',  

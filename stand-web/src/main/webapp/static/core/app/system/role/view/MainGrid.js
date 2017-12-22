@@ -84,7 +84,7 @@ Ext.define("core.system.role.view.MainGrid", {
         }, {
             text: "角色编码",
             dataIndex: "roleCode",
-            flex:1,
+            flex:1.5,
         }, {
             text: "是否系统角色",
             dataIndex: "issystem",

@@ -6,7 +6,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
     
    
     menuCode:"SCHOOLCALENDAR", //new：此表格与权限相关的菜单编码
-
+    pageDisplayInfo:false,
     //title: "作息时间目录",
     panelTopBar:{
         xtype:'toolbar',
@@ -70,15 +70,27 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
         dataIndex: "uuid",
         hidden: true
     }, {
+        xtype: "rownumberer",
+        flex:0,
+        width: 50,
+        text: '序号',
+        align: 'center'
+    },{
         text: "校历名称",
         dataIndex: "canderName",
         field: {
             xtype: "textfield"
         },
         flex: 1,
-        minWidth: 100
+        minWidth: 150,
+        renderer: function(value,metaData) {  
+            var title=" 校历名称 ";
+            metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';  
+            return value;  
+        }
+
     }, {
-        width: 100,
+        width: 120,
         text: "生效时间",
         dataIndex: "activityTime",
         renderer: function(v) {
@@ -86,11 +98,11 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
                 return Ext.Date.format(new Date(date), 'Y-m-d');
             }
     }, {
-        width: 100,
+        width: 120,
         text: "适用校区",
         dataIndex: "campusName",
     }, {
-        width: 60,
+        width: 120,
         //fixed : true,
         text: "状态",
         dataIndex: "activityState",

@@ -98,7 +98,7 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 150,
+            width: 200,
             fixed: true,
             items: [{
                 text:'高级参数',  

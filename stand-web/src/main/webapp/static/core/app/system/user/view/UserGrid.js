@@ -129,12 +129,12 @@ Ext.define("core.system.user.view.UserGrid", {
         }, {
 			text: "用户名",
 			dataIndex: "userName",
-			width:150,
+			width:120,
             align:'left'
 		}, {
 			text: "姓名",
 			dataIndex: "xm",
-			width:100,
+			width:120,
             align:'left'
 		}, {
 			text: "性别",

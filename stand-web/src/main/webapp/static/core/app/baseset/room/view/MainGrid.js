@@ -85,7 +85,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间编号",
             dataIndex: "roomCode",
             flex:1,        
-            minWidth:80,
+            minWidth:120,
             field: {
                 xtype: "textfield"
             }
@@ -93,7 +93,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间名称",
             dataIndex: "roomName",
             flex:1,
-            minWidth:80,
+            minWidth:120,
             field: {
                 xtype: "textfield"
             }
@@ -101,7 +101,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
-            width:80,
+            width:100,
             ddCode: "FJLX" //字典代码
         }, {
             text: "所属楼层",

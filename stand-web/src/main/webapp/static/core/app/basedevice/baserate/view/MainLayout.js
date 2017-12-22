@@ -38,11 +38,12 @@ Ext.define("core.basedevice.baserate.view.MainLayout", {
     items: [{
 		xtype: "basedevice.baserate.categroygrid",
 		region: "west",
-		margin:'5',
-		width: comm.get("clientWidth") * 0.18
+		//margin:'5',
+		width:250,
+        split:true
 	}, {
 		xtype: "basedevice.baserate.maingrid",
-        margin:'5',
+       // margin:'5',
 		region: "center",
 	}]
 })

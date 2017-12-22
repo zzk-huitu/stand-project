@@ -83,14 +83,14 @@ Ext.define("core.basedevice.basefrontserver.view.MainGrid", {
                 dataIndex: "uuid",
                 hidden: true
             }, {
-                width: 100,
+                width: 150,
                 text: "服务器名称",
                 dataIndex: "frontServerName",
                 field: {
                     xtype: "textfield"
                 }
             }, {
-                width: 100,
+                width: 150,
                 text: "服务IP",
                 dataIndex: "frontServerIp",
                 field: {
@@ -102,14 +102,14 @@ Ext.define("core.basedevice.basefrontserver.view.MainGrid", {
                 field: {
                     xtype: "textfield"
                 },
-                width: 100,
+                width: 120,
             }, {
                 text: "请求任务URL",
                 dataIndex: "frontServerUrl",
                 field: {
                     xtype: "textfield"
                 },
-                width: 100,
+                width: 150,
             }, {
                 width: 100,
                 text: "状态",
@@ -131,7 +131,13 @@ Ext.define("core.basedevice.basefrontserver.view.MainGrid", {
                     xtype: "textfield"
                 },
                 flex: 1,
-                minWidth:150
+                minWidth:150,
+                renderer:function(value,metaData){
+                    var title="备注";
+                    metaData.tdAttr= 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                    return value;  
+
+                }
             },{
             xtype: 'actiontextcolumn',
             text: "操作",

@@ -34,7 +34,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainLayout", {
         split: true,
         xtype: "basedevice.ptirroomdevice.roominfotree",
         region: "west",
-        width: comm.get("clientWidth") * 0.24
+        width: 345
     }, {
         xtype: "basedevice.ptirroomdevice.maingrid",
         region: "center"

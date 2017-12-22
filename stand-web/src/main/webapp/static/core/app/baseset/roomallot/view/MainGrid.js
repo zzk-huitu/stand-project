@@ -85,7 +85,7 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 120,
+        width: 200,
         fixed: true,
         items: [{
             text:'解除设置',  

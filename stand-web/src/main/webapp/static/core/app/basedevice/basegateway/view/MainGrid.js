@@ -84,23 +84,23 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
             field: {
                 xtype: "textfield"
             },
-            width: 100,
+            width: 120,
         }, {
             text: "网关名称",
             dataIndex: "gatewayName",
             field: {
                 xtype: "textfield"
             },
-            width: 100,
+            width: 120,
         }, {
-            width: 100,
+            width: 120,
             text: "前置名称",
             dataIndex: "frontServerName",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width: 100,
+            width: 120,
             text: "序列号",
             dataIndex: "gatewaySN",
             field: {
@@ -130,7 +130,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 }
             }
         }, {
-            width: 100,
+            width: 120,
             text: "前置IP",
             dataIndex: "frontServerIP",
             field: {
@@ -158,17 +158,23 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                 }
             }
         }, {
-            width: 100,
+            width: 120,
             text: "备注",
             dataIndex: "notes",
             field: {
                 xtype: "textfield"
+            },
+            renderer:function(value,metaData){
+                var title="备注";
+                metaData.tdAttr= 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                return value;  
+
             }
         }, {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 180,
+            width: 200,
             fixed: true,
             items: [{
                 text:'设备参数',  

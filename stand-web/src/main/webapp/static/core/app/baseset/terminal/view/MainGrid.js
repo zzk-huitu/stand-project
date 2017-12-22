@@ -117,7 +117,7 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 80,
+        width: 150,
         fixed: true,
         items: [{
             text:'详细',  

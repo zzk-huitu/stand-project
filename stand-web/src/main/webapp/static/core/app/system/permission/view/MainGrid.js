@@ -78,7 +78,7 @@ Ext.define("core.system.permission.view.MainGrid", {
             text: '序号',
             align: 'center'
         }, {
-            width: 100,
+            width: 150,
             text: "权限名称",
             dataIndex: "perName"
         },{
@@ -114,7 +114,7 @@ Ext.define("core.system.permission.view.MainGrid", {
         },{
             xtype:'actiontextcolumn',
             text: "操作",
-            width:150,
+            width:200,
             fixed:true,
             align:'center',
             items: [{

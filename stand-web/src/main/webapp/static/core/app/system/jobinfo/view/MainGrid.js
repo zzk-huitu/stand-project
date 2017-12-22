@@ -96,7 +96,7 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 250,
             fixed: true,
             items: [{
                 text:'编辑',  
