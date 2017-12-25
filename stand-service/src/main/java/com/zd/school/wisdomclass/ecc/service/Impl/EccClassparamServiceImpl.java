@@ -10,7 +10,7 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.ecc.model.EccClassparam ;
 import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.wisdomclass.ecc.EccClassparamDao;
+import com.zd.school.wisdomclass.ecc.dao.EccClassparamDao;
 import com.zd.school.wisdomclass.ecc.service.EccClassparamService;
 
 /**

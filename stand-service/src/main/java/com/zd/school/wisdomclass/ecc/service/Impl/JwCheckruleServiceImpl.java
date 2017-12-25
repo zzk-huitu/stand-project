@@ -16,7 +16,7 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.school.jw.ecc.model.JwCheckrule;
 import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.wisdomclass.ecc.JwCheckruleDao;
+import com.zd.school.wisdomclass.ecc.dao.JwCheckruleDao;
 import com.zd.school.wisdomclass.ecc.service.JwCheckruleService;
 
 /**

@@ -18,7 +18,7 @@ import com.zd.core.util.StringUtils;
 import com.zd.school.jw.ecc.model.EccClassstar ;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysUserService;
-import com.zd.school.wisdomclass.ecc.EccClassstarDao;
+import com.zd.school.wisdomclass.ecc.dao.EccClassstarDao;
 import com.zd.school.wisdomclass.ecc.service.EccClassstarService;
 
 /**

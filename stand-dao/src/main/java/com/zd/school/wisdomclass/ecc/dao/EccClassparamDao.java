@@ -1,4 +1,4 @@
-package com.zd.school.wisdomclass.ecc;
+package com.zd.school.wisdomclass.ecc.dao;
 
 import com.zd.core.dao.BaseDao;
 import com.zd.school.jw.ecc.model.EccClassparam ;
