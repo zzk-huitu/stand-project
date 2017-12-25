@@ -132,7 +132,7 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 100,
+            width: 200,
             fixed: true,
             items: [{
                 text:'编辑',  

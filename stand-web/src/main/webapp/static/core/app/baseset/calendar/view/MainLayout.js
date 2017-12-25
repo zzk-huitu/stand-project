@@ -30,7 +30,7 @@ Ext.define("core.baseset.calendar.view.MainLayout", {
         }
 	},
 
-    minWidth:1200,
+    minWidth:1000,
     scrollable:'x',
     layout:'border',
 	items: [{
@@ -38,7 +38,6 @@ Ext.define("core.baseset.calendar.view.MainLayout", {
 		region: "west",
 		split:true,
 		width: 600,
-		collapsible:true,
 	}, {
 		xtype: "baseset.calendar.maingrid",
 		region: "center",

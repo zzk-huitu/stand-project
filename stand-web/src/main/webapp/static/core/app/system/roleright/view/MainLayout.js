@@ -45,14 +45,14 @@ Ext.define("core.system.roleright.view.MainLayout", {
 		xtype: "system.roleright.rolegrid",
 		region: "west",
 
-		//split:true,
+		split:true,
 		//collapsible:true,
 		border: false,
 		// style:{
   //           border: '1px solid #ddd'
   //       },
-		margin:'0 5 0 0',
-		width:460
+		//margin:'0 5 0 0',
+		width:450
 		//width: comm.get("clientWidth") * 0.35
 	}, {
 		xtype: "system.roleright.rolgerightgrid",

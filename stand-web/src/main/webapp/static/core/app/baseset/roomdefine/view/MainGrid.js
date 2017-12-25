@@ -91,24 +91,24 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             text: "房间名称",
             dataIndex: "roomName"
         },{
-            width: 100,
+            width: 120,
             text: "房间编号",
             dataIndex: "roomCode",           
         },{
             text: "房间类型", //字段中文名
             dataIndex: "roomType", //字段名
             columnType: "basecombobox", //列类型
-            width: 100,
+            width: 120,
             ddCode: "FJLX" //字典代码
         },{
-            width: 100,
+            width: 120,
             text: "所属楼层",
             dataIndex: "areaName",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width: 100,
+            width: 120,
             text: "所属楼栋",
             dataIndex: "areaUpName",
             field: {
@@ -118,7 +118,7 @@ Ext.define("core.baseset.roomdefine.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 180,
+            width: 200,
             fixed: true,
             items: [{
                 text:'编辑宿舍',  

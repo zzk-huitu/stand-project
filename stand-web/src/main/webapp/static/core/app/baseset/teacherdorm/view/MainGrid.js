@@ -50,7 +50,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
         },
         items:[{ 
             xtype: "rownumberer",
-            width: 80,
+            width: 50,
             text: '序号',
             align: 'center'
         }, {
@@ -85,7 +85,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
                 xtype: "textfield"
             }
         }, {
-            width:100,
+            width:120,
             text: "房间名称",
             dataIndex: "dormName",
             field: {
@@ -137,7 +137,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 120,
+            width: 200,
             fixed: true,
             items: [{
                 text:'删除',  

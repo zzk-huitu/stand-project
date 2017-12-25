@@ -85,12 +85,11 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            flex: 1,
-            minWidth: 100,
+            width: 150,
             text: "校区名称",
             dataIndex: "campusName"
         }, {
-            width:100,
+            width:150,
             text: "校区编码",
             dataIndex: "campusCode"
         }, {
@@ -98,7 +97,8 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             dataIndex: "schoolName",
             hidden: true
         }, {
-            width:100,
+            flex: 1,
+            minWidth: 150,
             text: "校区地址",
             dataIndex: "campusAddr",
         }, {
@@ -106,11 +106,11 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             text: "邮政编码",
             dataIndex: "zipCode"
         }, {
-            width:100,
+            width:150,
             text: "校区联系电话",
             dataIndex: "campusPhone"
         }, {
-            width:100,
+            width:150,
             text: "校区传真电话",
             dataIndex: "campusFax"
         }, {

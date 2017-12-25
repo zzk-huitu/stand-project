@@ -82,7 +82,7 @@ Ext.define("core.system.menu.view.MenuForm", {
 			// fieldLabel: "上级菜单",
 			// name: "parentName",
 			// readOnly: true
-            columnWidth: .5,
+            columnWidth: 0.5,
             beforeLabelTextTpl: comm.get("required"),
             fieldLabel: "上级菜单",
             name: "parentName",

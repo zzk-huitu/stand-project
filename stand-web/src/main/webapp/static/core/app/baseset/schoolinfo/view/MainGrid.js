@@ -88,7 +88,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             align: 'center'
         }, {
             flex: 1,
-            minWidth: 100,
+            minWidth: 120,
             text: "学校名称",
             dataIndex: "schoolName"
            
@@ -97,17 +97,17 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             dataIndex: "schoolCode",        
             width: 100
         }, {
-            width: 100,
+            width: 120,
             text: "学校英文名",
             dataIndex: "schoolEng"
          
         }, {
-            width: 100,
+            width: 120,
             text: "学校邮政编码",
             dataIndex: "zipCode"
            
         }, { 
-            width: 100,
+            width: 120,
             text: "建校年月",
             dataIndex: "foundYear"
            
@@ -119,11 +119,11 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             ddCode: "BXLX" //字典代码
          
         },{
-            width: 100,
+            width: 120,
             text: "校长姓名",
             dataIndex: "schoolmasterName"
         }, {
-            width: 100,
+            width: 120,
             text: "联系电话",
             dataIndex: "telephone"
           
@@ -131,7 +131,7 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 100,
+            width: 200,
             fixed: true,
             items: [{
                 text:'编辑',  

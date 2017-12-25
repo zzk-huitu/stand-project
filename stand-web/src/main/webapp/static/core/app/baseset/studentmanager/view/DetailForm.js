@@ -83,7 +83,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         items: [ {
             columnWidth: .5,
             beforeLabelTextTpl: "",
-            fieldLabel: '工号/学号',
+            fieldLabel: '学号',
             name: "userNumb",
             xtype: 'textfield',
             allowBlank: true,

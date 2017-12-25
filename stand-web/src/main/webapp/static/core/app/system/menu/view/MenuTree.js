@@ -72,7 +72,7 @@ Ext.define("core.system.menu.view.MenuTree", {
 		}, {
 			header: '菜单编码',
 			dataIndex: 'menuCode',	
-			flex:1,
+			flex:1.5,
 		}, {
 			header: '图标',
 			dataIndex: 'bigIcon',
@@ -91,6 +91,11 @@ Ext.define("core.system.menu.view.MenuTree", {
 			header: '菜单URL',
 			dataIndex: 'menuTarget',
 			flex:3,
+			renderer: function(value,metaData) {  
+				var title=" 菜单URL ";
+				metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';  
+				return value;  
+			}
 		}]
 	}
 })

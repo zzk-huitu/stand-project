@@ -12,6 +12,7 @@ Ext.define("core.system.roleright.view.RoleGrid", {
         property: 'orderIndex',
         direction: 'DESC'
     }],
+    pageDisplayInfo:false,
     extParams: {
         whereSql: "",
         filter:"[{\"type\":\"numeric\",\"comparison\":\"=\",\"value\":0,\"field\":\"isDelete\"}]"

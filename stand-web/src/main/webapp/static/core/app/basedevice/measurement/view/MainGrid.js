@@ -73,6 +73,12 @@ Ext.define("core.basedevice.measurement.view.MainGrid", {
             text: "备注",
             dataIndex: "notes",
             flex:1,
+            renderer:function(value,metaData){
+                var title="备注";
+                metaData.tdAttr= 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                return value;  
+
+            }
         },{
             xtype: 'actiontextcolumn',
             text: "操作",
