@@ -16,23 +16,27 @@ Ext.define("core.baseset.studentdorm.view.DormAllotLayout", {
         xtype:'baseset.studentdorm.dormallottree',
         region: "west",
         width: 250,
-        margin:'5'
+        //split:true,
+        margin:'0 10 0 0'
     },{
         xtype:'baseset.studentdorm.classdormgrid',
         region: "center",
         flex:1,
-        margin:'5'
+        split:true,
+        //margin:'5'
     }, {
         xtype: "baseset.studentdorm.dormnotallotgrid",
         flex:1,
         region: "east",
         minWidth:350,
-        margin:'5'
+        split:true,
+        //margin:'5'
     },{
         xtype: "baseset.studentdorm.dormallotfinishgrid",
         flex:1.5,
         minWidth:350,
         region: "east",
-        margin:'5'
+        split:true,
+        //margin:'5'
     }]
 })

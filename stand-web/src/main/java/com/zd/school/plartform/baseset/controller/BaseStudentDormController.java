@@ -328,6 +328,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 				if (count == 0) {
 					defin = dormDefineService.get(jwTClassdorm.getDormId());
 					defin.setRoomStatus("0"); // 设置成未分配
+					defin.setIsMixed("0");	//恢复为非混合宿舍
 					dormDefineService.merge(defin); // 持久化
 					jwTClassdorm.setIsDelete(1); // 设置删除状态
 					classDormService.merge(jwTClassdorm); // 持久化

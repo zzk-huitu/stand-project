@@ -1,8 +1,9 @@
-import com.zd.school.jw.ecc.service.EccClassstarService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.zd.school.wisdomclass.ecc.service.EccClassstarService;
 
 import javax.annotation.Resource;
 

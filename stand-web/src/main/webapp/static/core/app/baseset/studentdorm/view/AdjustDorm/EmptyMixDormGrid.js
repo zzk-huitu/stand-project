@@ -18,7 +18,7 @@ Ext.define("core.baseset.studentdorm.view.EmptyMixDormGrid", {
             }
         }, '->',{
             xtype: 'button',
-            text: '删除数据',
+            text: '删除宿舍',
             ref: 'gridDelete',
             iconCls: 'x-fa fa-minus-circle',
             titleAlign:'right',

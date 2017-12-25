@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
 import com.zd.core.util.DateTimeSerializer;
+import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
@@ -83,7 +85,7 @@ public class OaNotice extends BaseEntity implements Serializable {
 	}
 
 	@FieldInfo(name = "公告正文")
-	@Column(name = "NOTICE_CONTENT",/* length = 2048,*/ nullable = false,columnDefinition="varchar(MAX)")
+	@Column(name = "NOTICE_CONTENT", /* length = 2048, */ nullable = false, columnDefinition = "varchar(MAX)")
 	private String noticeContent;
 
 	public void setNoticeContent(String noticeContent) {
@@ -151,7 +153,7 @@ public class OaNotice extends BaseEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "OA_T_NOTICEUSER", joinColumns = { @JoinColumn(name = "NOTICE_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "USER_ID") })
-	@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
+	//@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<SysUser> noticeUsers = new HashSet<SysUser>();
 
 	public Set<SysUser> getNoticeUsers() {
@@ -167,7 +169,7 @@ public class OaNotice extends BaseEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "OA_T_NOTICEROLE", joinColumns = { @JoinColumn(name = "NOTICE_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "ROLE_ID") })
-	@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
+	//@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<SysRole> noticeRoles = new HashSet<SysRole>();
 
 	public Set<SysRole> getNoticeRoles() {
@@ -183,7 +185,7 @@ public class OaNotice extends BaseEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "OA_T_NOTICEDEPT", joinColumns = { @JoinColumn(name = "NOTICE_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "DEPT_ID") })
-	@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
+	//@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<BaseOrg> noticeDepts = new HashSet<BaseOrg>();
 
 	public Set<BaseOrg> getNoticeDepts() {
@@ -229,6 +231,39 @@ public class OaNotice extends BaseEntity implements Serializable {
 
 	public void setPubdeptName(String pubdeptName) {
 		this.pubdeptName = pubdeptName;
+	}
+
+	@JsonIgnore
+	@FieldInfo(name = "公告发布终端")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "OA_T_NOTICETERM", joinColumns = { @JoinColumn(name = "NOTICE_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "TERM_ID") })
+	//@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Set<OaInfoterm> noticeTerms = new HashSet<OaInfoterm>();
+
+	public Set<OaInfoterm> getNoticeTerms() {
+		return noticeTerms;
+	}
+
+	public void setNoticeTerms(Set<OaInfoterm> noticeTerms) {
+		this.noticeTerms = noticeTerms;
+	}
+
+	
+	@JsonIgnore
+	@FieldInfo(name = "公告通知学生")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "OA_T_NOTICESTUDENT", joinColumns = { @JoinColumn(name = "NOTICE_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "USER_ID") })
+	//@Cache(region = "all", usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Set<SysUser> noticeStus = new HashSet<SysUser>();
+
+	public Set<SysUser> getNoticeStus() {
+		return noticeStus;
+	}
+
+	public void setNoticeStus(Set<SysUser> noticeStus) {
+		this.noticeStus = noticeStus;
 	}
 
 	/**

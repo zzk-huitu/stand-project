@@ -31,6 +31,20 @@ public class OaNoticeOther implements Serializable {
 
 	@FieldInfo(name = "通知的人员名称串")
 	private String userNames;
+	
+
+	@FieldInfo(name = "通知的学生ID串")
+	private String stuIds;
+
+	@FieldInfo(name = "通知的学生名称串")
+	private String stuNames;
+	
+
+	@FieldInfo(name = "通知的终端ID串")
+	private String termIds;
+
+	@FieldInfo(name = "通知的终端名称串")
+	private String termNames;
 
 	public String getNoticeId() {
 		return noticeId;
@@ -87,5 +101,39 @@ public class OaNoticeOther implements Serializable {
 	public void setUserNames(String userNames) {
 		this.userNames = userNames;
 	}
+
+	public String getStuIds() {
+		return stuIds;
+	}
+
+	public void setStuIds(String stuIds) {
+		this.stuIds = stuIds;
+	}
+
+	public String getStuNames() {
+		return stuNames;
+	}
+
+	public void setStuNames(String stuNames) {
+		this.stuNames = stuNames;
+	}
+
+	public String getTermIds() {
+		return termIds;
+	}
+
+	public void setTermIds(String termIds) {
+		this.termIds = termIds;
+	}
+
+	public String getTermNames() {
+		return termNames;
+	}
+
+	public void setTermNames(String termNames) {
+		this.termNames = termNames;
+	}
+
+	
 
 }

@@ -627,28 +627,29 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                for (var i = 0; i < rows.length; i++) {
                 uuid = uuid + rows[i].get('uuid') + ",";
                }
-               Ext.Msg.confirm('删除宿舍', '确定要删除宿舍吗？', function(btns) {
-                  var loading = self.LoadMask(baseGrid,'正在删除中，请等待...');
+               Ext.Msg.confirm('删除宿舍', '确定要删除宿舍吗？', function(btns) {                
                   if (btns == 'yes') {
-                  self.asyncAjax({
-                        url: comm.get('baseUrl') + "/BaseStudentDorm/dormDoDelete",
-                        params: {
-                           uuid: uuid
-                        },                      
-                   success: function(response) {
-                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                        if(data.success){
-                            baseGrid.getStore().remove(records); //不刷新的方式
-                            self.msgbox(data.obj); 
-                         }else {
-                            self.Error(data.obj);
-                          }   
-                            loading.hide();        
-                        },    
-                    failure: function(response) {                   
-                          Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                          loading.hide();
-                    }
+                     var loading = self.LoadMask(baseGrid,'正在删除中，请等待...');
+                     
+                      self.asyncAjax({
+                            url: comm.get('baseUrl') + "/BaseStudentDorm/dormDoDelete",
+                            params: {
+                               uuid: uuid
+                            },                      
+                       success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if(data.success){
+                                baseGrid.getStore().remove(rows); //不刷新的方式
+                                self.msgbox(data.obj); 
+                             }else {
+                                self.Error(data.obj);
+                              }   
+                                loading.hide();        
+                            },    
+                        failure: function(response) {                   
+                              Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                              loading.hide();
+                        }
                   }); 
               }
             });
