@@ -17,6 +17,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.ecc.model.EccClassredflag;
+import com.zd.school.jw.ecc.model.EccClassstar;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.wisdomclass.ecc.service.EccClassredflagService;
 
@@ -31,9 +32,19 @@ public class WisClassredflagController extends FrameWorkController<EccClassredfl
 	public void list(@ModelAttribute EccClassredflag entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-
-		QueryResult<EccClassredflag> qResult =thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), super.filter(request), true);
+		String redflagType = request.getParameter("redflagType");
+		String filter = request.getParameter("filter");
+		if (redflagType == null) {
+			redflagType = "";
+		}
+		if(filter!=null){
+			filter = filter.substring(0, filter.length()-1);
+			filter+=",{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ redflagType+"\",\"field\":\"redflagType\"}"+"]";
+		}else{
+			filter="[{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ redflagType+"\",\"field\":\"redflagType\"}]";
+		}
+	    QueryResult<EccClassredflag> qResult =thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

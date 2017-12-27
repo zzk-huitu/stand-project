@@ -20,7 +20,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
             text: '编辑',
             ref: 'gridEdit_Tab',
             funCode:'girdFuntionBtn',
-            iconCls: 'x-fa fa-pencil-circle',
+            iconCls: 'x-fa fa-pencil-square',
             disabled:true
         },{
             xtype: 'button',
@@ -58,7 +58,6 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
     	direction: 'DESC'
     }],
 
-    defGroup: [],
 	//扩展参数
 	extParams: {
 		
@@ -71,10 +70,12 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
         text: "红旗类型",
         dataIndex: "redflagType",
         columnType: "basecombobox", //列类型
-        ddCode: "REDFLAG", //字典代码         
+        ddCode: "REDFLAG", //字典代码 ,
+        flex:1        
     }, {
         text: "班级名称",
         dataIndex: "className",
+        flex:1,  
         renderer: function(value, metaData) {
             var title = "班级名称";
             var html = value;
@@ -84,6 +85,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
     }, {
         text: "开始日期",
         dataIndex: "beginDate",
+        flex:1,   
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "开始日期";
@@ -95,6 +97,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
     }, {
         text: "结束日期",
         dataIndex: "endDate",
+        flex:1,  
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "结束日期";
@@ -107,7 +110,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 250,
             fixed: true,
             items: [{
                 text:'编辑',  

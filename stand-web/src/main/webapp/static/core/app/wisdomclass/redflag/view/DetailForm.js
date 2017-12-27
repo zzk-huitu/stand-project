@@ -21,7 +21,7 @@ Ext.define("core.wisdomclass.redflag.view.DetailForm", {
     },{
         xtype: "container",
         layout: "column", // 从左往右的布局
-        hidden:true,
+        ref:"flagContainer",
         items: [{
             flex: 1,
             columnWidth:0.5,
@@ -35,6 +35,7 @@ Ext.define("core.wisdomclass.redflag.view.DetailForm", {
         layout: "column", // 从左往右的布局
         items: [{
                 flex: 1,
+                columnWidth:0.5,
                 fieldLabel: "红旗类型",
                 name: "redflagType",
                 xtype: "basecombobox",
@@ -51,11 +52,12 @@ Ext.define("core.wisdomclass.redflag.view.DetailForm", {
             blankText: "开始日期不能为空",
             fieldLabel: "开始日期",
             name: "beginDate",
-            id:"beginDate",
             xtype: "datefield",
             dateType: 'date',
             format: "Y-m-d",
-            emptyText: "请输入开始日期"
+            emptyText: "请输入开始日期",
+             vtype:'beginDate',
+            compareField:'endDate',
         }, {
             flex: 1,
             columnWidth:0.5,
@@ -67,7 +69,9 @@ Ext.define("core.wisdomclass.redflag.view.DetailForm", {
             xtype: "datefield",
             dateType: 'date',
             format: "Y-m-d",
-            emptyText: "请输入结束日期"
+            emptyText: "请输入结束日期",
+            vtype:'endDate',
+            compareField:'beginDate',
         }]
     }]
 });

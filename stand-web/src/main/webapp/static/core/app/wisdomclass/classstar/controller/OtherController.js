@@ -35,24 +35,25 @@ Ext.define("core.wisdomclass.classstar.controller.OtherController", {
 
     saveDetail_Tab:function(btn){
         var self=this;
-
         //获取组件
         var basetab = btn.up('baseformtab');
-        
+        var starLevel = basetab.starLevel;
         //获取以下两个Code值
         var funCode = basetab.funCode;      //mainLayout的funcode
         var detCode = basetab.detCode;      //detailLayout的funcode
         var cmd = basetab.operType;
-        var starLevel = basetab.starLevel;
         //找到详细布局视图和详细表单
-        var detPanel = basetab.down("basepanel[funCode=" + detCode + "]");
-        var objForm = detPanel.down("baseform[funCode=" + detCode + "]");
-
+      
+        if(cmd=="edit"){
+             var objForm = basetab.down("baseform[xtype=wisdomclass.classstar.detailform]");
+        }else{
+             var detPanel = basetab.down("basepanel[funCode=" + detCode + "]");
+             var objForm = detPanel.down("baseform[funCode=" + detCode + "]");
+        }
         var formObj = objForm.getForm();    //获取表单对象
-        var funData = detPanel.funData;     //获取详细视图下面的funData数据
-        var pkName = funData.pkName;        //获取主键字段
-        var pkField = formObj.findField(pkName);    //获取主键表单文本对象
+        var pkField = formObj.findField("uuid");    //获取主键表单文本对象
         var params = self.getFormValue(formObj);    //获取表单的值
+        //var starLevel = formObj.findField("starLevel").getValue();
     	if (cmd == "add") {
     		var isSelectGrid = detPanel.down("panel[xtype=public.SelectClass.isselectclassgrid]");
     		var isSelectStore = isSelectGrid.getStore();
@@ -81,7 +82,7 @@ Ext.define("core.wisdomclass.classstar.controller.OtherController", {
             var loading = self.LoadMask(basetab);
     
             self.asyncAjax({
-                url: funData.action + "/" + act,
+                url: comm.get("baseUrl") + "/classStar/" + act,
                 params: params,                
                 //回调代码必须写在里面
                 success: function (response) {
@@ -125,70 +126,6 @@ Ext.define("core.wisdomclass.classstar.controller.OtherController", {
                 }
             });
             self.msgbox(errors.join("<br/>"));
-        }
-    },
-
-    doSave: function(btn, cmd) {
-    	var self = this;
-    	var win = btn.up('window');
-    	var funCode = win.funCode;
-    	var doType = win.cmd;
-    	var grid = win.funData.grid;
-    	var basePanel = win.down("basepanel[funCode=" + funCode + "]");
-    	var objForm = basePanel.down("baseform[funCode=" + funCode + "]");
-    	var formObj = objForm.getForm();
-    	var funData = basePanel.funData;
-    	var pkName = funData.pkName;
-    	var pkField = formObj.findField(pkName);
-    	var params = self.getFormValue(formObj);
-    	if (doType == "addReturn") {
-    		var isSelectGrid = basePanel.down("panel[xtype=classstar.isclassgrid]");
-    		var isSelectStore = isSelectGrid.getStore();
-    		var ids = [];
-    		var className = [];
-    		isSelectStore.each(function(record) {
-    			ids.push(record.getData().uuid);
-    			className.push(record.getData().className);
-    		})
-    		if (ids.length == 0) {
-    			self.Warning("请选择班级");
-    			return false;
-    		}
-    		params = Ext.apply(params, {
-    			claiId: ids.join(","),
-    			className: className.join(",")
-    		})
-    	}
-        //判断当前是保存还是修改操作
-        var act = Ext.isEmpty(pkField.getValue()) ? "doadd" : "doupdate";
-        if (formObj.isValid()) {
-        	var resObj = self.ajax({
-        		url: funData.action + "/" + act,
-        		params: params
-        	});
-        	if (resObj.success) {
-        		self.msgbox("保存成功!");
-        		if (grid) {
-        			var store = grid.getStore();
-        			var proxy = store.getProxy();
-        			proxy.extraParams = {
-        				filter: win.funData.filter
-        			}
-        			store.load();
-        		}
-        		win.close();
-        	} else {
-        		if (!Ext.isEmpty(resObj.obj))
-        			self.Info(resObj.obj);
-        	}
-        } else {
-        	var errors = ["前台验证失败，错误信息："];
-        	formObj.getFields().each(function(f) {
-        		if (!f.isValid()) {
-        			errors.push("<font color=red>" + f.fieldLabel + "</font>:" + f.getErrors().join(","));
-        		}
-        	});
-        	self.msgbox(errors.join("<br/>"));
         }
     },
 });

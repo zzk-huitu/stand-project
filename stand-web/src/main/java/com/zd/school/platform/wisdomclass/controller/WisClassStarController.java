@@ -38,9 +38,9 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 		}
 		if(filter!=null){
 			filter = filter.substring(0, filter.length()-1);
-			filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}"+"]";
+			filter+=",{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}"+"]";
 		}else{
-			filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}]";
+			filter="[{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}]";
 		}
 		QueryResult<EccClassstar> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);

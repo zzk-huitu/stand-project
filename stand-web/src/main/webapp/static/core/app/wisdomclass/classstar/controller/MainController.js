@@ -2,14 +2,12 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
 	extend: "Ext.app.ViewController",
 	alias: 'controller.wisdomclass.classstar.maincontroller',
 	mixins: {
-
-		suppleUtil: "core.util.SuppleUtil",
-		messageUtil: "core.util.MessageUtil",
-		formUtil: "core.util.FormUtil",
-		gridActionUtil: "core.util.GridActionUtil",
-		dateUtil: 'core.util.DateUtil'
-
-	},
+        suppleUtil: "core.util.SuppleUtil",
+        messageUtil: "core.util.MessageUtil",
+        formUtil: "core.util.FormUtil",
+        gridActionUtil: "core.util.GridActionUtil",
+        dateUtil: 'core.util.DateUtil'
+    },
 	init: function () {
 		/*执行一些初始化的代码*/
 	},
@@ -47,7 +45,50 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 return false;
                 }
             },
-              
+          "basegrid[xtype=wisdomclass.classstar.maingrid]": {
+                  afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="CLASSSTAR";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                            btnAdd.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                            btnEdit.setHidden(true);
+                            
+                         }
+                         if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            var btnDel = grid.down("button[ref=gridDelete]");
+                            btnDel.setHidden(true);
+                            
+                         }
+                     }
+                 },
+                 beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                  //  var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
+                    var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+                    var btnDel = basegrid.down("button[ref=gridDelete]");
+                    if (records.length == 0) {
+                        //btnAdd.setDisabled(true);
+                        btnEdit.setDisabled(true);
+                        btnDel.setDisabled(true);
+                    } else if (records.length == 1) {
+                        //btnAdd.setDisabled(false);
+                        btnEdit.setDisabled(false);
+                        btnDel.setDisabled(false);
+                    } else {
+                        //btnAdd.setDisabled(true);
+                        btnEdit.setDisabled(true);
+                        btnDel.setDisabled(false);
+                    }
+                 },
+            }, 
             "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {                
                     this.doDetail_tab(btn,"add");
@@ -60,12 +101,12 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                     return false;
                 }
             },
-            "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridDelete]": {
+       /*     "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
-                    this.doCalenderUse(btn);
+                    this.doDelete(btn);
                     return false;
                 }
-            },
+            },*/
 
             "basegrid[xtype=wisdomclass.classstar.maingrid] actioncolumn": {
             	editClick_Tab: function (data) {
@@ -73,11 +114,15 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
             		return false;
 
             	},
+                detailClick_Tab: function (data) {
+                    this.doDetail_tab(null,"detail",data.view,data.record);
+                    return false;
+
+                },
             },
         },
-     doDetail_tab: function(btn, cmd,grid,record) {
+     doDetail_tab: function(btn,cmd,grid,record) {
         var self = this;
-
         //得到组件
         var baseGrid = grid;
         if(!baseGrid){
@@ -117,7 +162,7 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 operType="add";
                 levelSelected = starlevelgrid.getSelectionModel().getSelection();
                 if(levelSelected.length!=1){
-                    self.msgbox("请先选择星级！");
+                    self.msgbox("请先选择班级星级！");
                     return;
                  }
 
@@ -148,11 +193,7 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 tabItemId=funCode+"_gridEdit"; 
                 operType="edit";
                 detLayout = "wisdomclass.classstar.detailform";
-              /*   insertObj = Ext.apply(insertObj, {
-                    doDate: Ext.util.Format.date(Ext.value(insertObj["doDate"], null), 'Y-m-d'),
-                    beginDate: Ext.util.Format.date(Ext.value(insertObj["beginDate"], null), 'Y-m-d'),
-                    endDate: Ext.util.Format.date(Ext.value(insertObj["endDate"], null), 'Y-m-d')
-                });*/
+            
                 break;
             case "detail":
 
@@ -180,11 +221,6 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 operType="detail";
 
                 detLayout = "wisdomclass.classstar.detailhtml";
-             /*   insertObj = Ext.apply(insertObj, {
-                	doDate: Ext.util.Format.date(Ext.value(insertObj["doDate"], null), 'Y-m-d'),
-                	beginDate: Ext.util.Format.date(Ext.value(insertObj["beginDate"], null), 'Y-m-d'),
-                	endDate: Ext.util.Format.date(Ext.value(insertObj["endDate"], null), 'Y-m-d')
-                });*/
                 break;
         }
 
@@ -215,7 +251,6 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 if(recordData!=null){
                     insertObj=recordData;
                 }
-
                 var item=Ext.widget("baseformtab",{
                     operType:operType,                            
                     controller:otherController,         //指定重写事件的控制器
@@ -231,22 +266,27 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 }); 
               
                 tabItem.add(item);  
-                
-            /*    insertObj.beginTime = Ext.util.Format.date(insertObj.beginTime, 'H:i');
-                insertObj.endTime = Ext.util.Format.date(insertObj.endTime, 'H:i');*/
+              if(cmd=="detail"){
+                    insertObj = Ext.apply(insertObj, {
+                        doDate: Ext.util.Format.date(insertObj["doDate"], 'Y-m-d'),
+                        beginDate: Ext.util.Format.date(insertObj["beginDate"], 'Y-m-d'),
+                        endDate: Ext.util.Format.date(insertObj["endDate"], 'Y-m-d')
+                    });
+                    var detailHtml = item.down("container[xtype=wisdomclass.classstar.detailhtml]");
+                    detailHtml.setData(insertObj); 
 
-                //处理打开界面之后，显示的初始数据
-                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
-                var formDeptObj = objDetForm.getForm();              
-                self.setFormValue(formDeptObj, insertObj);
-                               
-                if(cmd=="detail"){
-                	var detailHtml = item.down("container[xtype=wisdomclass.classstar.detailhtml]");
-                	detailHtml.setData(insertObj); 
+                }else if(cmd=="edit"){
+                   var objDetForm = item.down("baseform[xtype=wisdomclass.classstar.detailform]");
+                   var formDeptObj = objDetForm.getForm();
+                   self.setFormValue(formDeptObj, insertObj); 
 
-                }
+               }else{
+                   var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                   var formDeptObj = objDetForm.getForm();
+                   self.setFormValue(formDeptObj, insertObj);  
+               }
 
-            },30);
+           },30);
                            
         }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
             self.msgbox("您当前已经打开了一个编辑窗口了！");

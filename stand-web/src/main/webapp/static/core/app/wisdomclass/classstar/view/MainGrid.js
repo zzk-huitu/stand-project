@@ -19,9 +19,9 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
-            funCode:'girdFuntionBtn',
-            iconCls: 'x-fa fa-pencil-circle',
-            disabled:true
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            disabled:true,
+            iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
             text: '删除',
