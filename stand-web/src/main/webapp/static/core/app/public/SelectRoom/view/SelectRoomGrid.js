@@ -69,12 +69,20 @@ Ext.define("core.public.SelectRoom.view.SelectRoomGrid", {
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
                
                 var basePanel = grid.up("panel[xtype=pubselect.selectroomlayout]");
+                 var data = record.data;
                 var isSelectGrid;
                 if (basePanel) {
                     isSelectGrid = basePanel.down("panel[xtype=pubselect.isselectroomgrid]");
              
                     if(isSelectGrid.isVisible()==true){
                         var isSelectStore = isSelectGrid.getStore();
+                         for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.roomName+"已存在!");
+                                return ;
+                            }
+                        };
+                        
                         isSelectStore.insert(0, [record]);
 
                         var selectStore = grid.getStore();

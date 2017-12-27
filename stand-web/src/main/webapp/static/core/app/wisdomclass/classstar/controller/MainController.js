@@ -1,0 +1,258 @@
+Ext.define("core.wisdomclass.classstar.controller.MainController", {
+	extend: "Ext.app.ViewController",
+	alias: 'controller.wisdomclass.classstar.maincontroller',
+	mixins: {
+
+		suppleUtil: "core.util.SuppleUtil",
+		messageUtil: "core.util.MessageUtil",
+		formUtil: "core.util.FormUtil",
+		gridActionUtil: "core.util.GridActionUtil",
+		dateUtil: 'core.util.DateUtil'
+
+	},
+	init: function () {
+		/*执行一些初始化的代码*/
+	},
+	/** 该视图内的组件事件注册 */
+	control: {
+		"basegrid[xtype=wisdomclass.classstar.starlevelgrid] button[ref=gridRefresh]": {
+			click: function(btn) {
+				var baseGrid = btn.up("basegrid");
+				var store = baseGrid.getStore();
+                store.load(); //刷新父窗体的grid
+                var mainlayout = btn.up("basepanel[xtype=wisdomclass.classstar.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.starLevel="";
+                return false;
+                }
+            },
+		"basegrid[xtype=wisdomclass.classstar.starlevelgrid]": {
+			beforeitemclick: function(grid, record, item, index, e, eOpts) {
+				var filter = "[{'type':'string','comparison':'=','value':'" + record.get("itemCode") + "','field':'starLevel'}]";
+				var mainLayout = grid.up("panel[xtype=wisdomclass.classstar.mainlayout]");
+				var baseGrid = mainLayout.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
+				var funData = mainLayout.funData;
+				mainLayout.funData = Ext.apply(funData, {
+					starLevel: record.get("itemCode"),
+					starLevelName: record.get("itemName"),
+					filter: filter
+				});
+                var store = baseGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.starLevel=record.get("itemCode");
+                store.load(); 
+
+                return false;
+                }
+            },
+              
+            "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridAdd_Tab]": {
+                beforeclick: function(btn) {                
+                    this.doDetail_tab(btn,"add");
+                    return false;
+                }
+            },
+            "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridEdit_Tab]": {
+                beforeclick: function(btn) {
+                    this.doDetail_tab(btn, "edit");
+                    return false;
+                }
+            },
+            "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridDelete]": {
+                beforeclick: function(btn) {
+                    this.doCalenderUse(btn);
+                    return false;
+                }
+            },
+
+            "basegrid[xtype=wisdomclass.classstar.maingrid] actioncolumn": {
+            	editClick_Tab: function (data) {
+            		this.doDetail_tab(null,"edit",data.view,data.record);
+            		return false;
+
+            	},
+            },
+        },
+     doDetail_tab: function(btn, cmd,grid,record) {
+        var self = this;
+
+        //得到组件
+        var baseGrid = grid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+        }
+
+        var basePanel = baseGrid.up("basepanel");
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]");
+        var starlevelgrid = basePanel.down("basegrid[xtype=wisdomclass.classstar.starlevelgrid]");
+        //得到配置信息
+        var funData = basePanel.funData;                //主界面的配置信息  
+        var pkName=funData.pkName;
+       
+        var funCode = basePanel.funCode;          //主界面的funCode
+        var detCode =  basePanel.detCode;               //打开的tab也的detCode标识，可自定指定，用于查找唯一组件
+        var detLayout = basePanel.detLayout;            //打开的tab页的布局视图
+         
+        var otherController = basePanel.otherController;    //关键：打开的tab页面的视图控制器
+        if (!otherController)
+            otherController = '';  
+
+        //获取Tab相关数据,根据cmd的类型，来获取不同的数据
+        var tabConfig=funData.tabConfig;
+        var tabTitle = ""; 
+        var tabItemId ="";
+        var pkValue= null;
+        var operType="";
+        var recordData=null;
+        var levelSelected =null;
+
+        var insertObj =  Ext.apply(new Object(),funData.defaultObj);
+        switch (cmd) {
+            case "add":
+                tabTitle = tabConfig.addTitle; 
+                tabItemId = funCode + "_gridAdd";    //命名规则：funCode+'_ref名称',确保不重复
+                pkValue = null;
+                operType="add";
+                levelSelected = starlevelgrid.getSelectionModel().getSelection();
+                if(levelSelected.length!=1){
+                    self.msgbox("请先选择星级！");
+                    return;
+                 }
+
+                 insertObj = Ext.apply(insertObj, {
+                 	starLevel: levelSelected[0].get('itemCode')
+                 });
+                break;
+            case "edit":
+                if (btn) {  //点击按钮的方式
+                    var records = baseGrid.getSelectionModel().getSelection();
+                    if (records.length != 1) {
+                        self.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = records[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                }          
+                //获取名称
+                var titleName = recordData[tabConfig.titleField]; 
+                if(titleName)
+                    tabTitle = titleName+"-"+tabConfig.editTitle;
+                else
+                    tabTitle = tabConfig.editTitle;
+
+                //获取主键值
+                pkValue= recordData[pkName];
+                tabItemId=funCode+"_gridEdit"; 
+                operType="edit";
+                detLayout = "wisdomclass.classstar.detailform";
+              /*   insertObj = Ext.apply(insertObj, {
+                    doDate: Ext.util.Format.date(Ext.value(insertObj["doDate"], null), 'Y-m-d'),
+                    beginDate: Ext.util.Format.date(Ext.value(insertObj["beginDate"], null), 'Y-m-d'),
+                    endDate: Ext.util.Format.date(Ext.value(insertObj["endDate"], null), 'Y-m-d')
+                });*/
+                break;
+            case "detail":
+
+                if (btn) {//点击按钮的方式
+                    var rescords = baseGrid.getSelectionModel().getSelection();
+                    if (rescords.length != 1) {
+                        this.msgbox("请选择一条数据！");
+                        return;
+                    }
+                    recordData = rescords[0].getData();
+                }else{  //点击操作列的方式
+                    recordData=record.getData();
+                }
+                
+                //获取名称
+                var titleName = recordData[tabConfig.titleField];
+                if(titleName)
+                    tabTitle = titleName+"-"+tabConfig.detailTitle;
+                else
+                    tabTitle = tabConfig.detailTitle;
+
+                //获取主键值
+                pkValue= recordData[pkName];
+                tabItemId=funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
+                operType="detail";
+
+                detLayout = "wisdomclass.classstar.detailhtml";
+             /*   insertObj = Ext.apply(insertObj, {
+                	doDate: Ext.util.Format.date(Ext.value(insertObj["doDate"], null), 'Y-m-d'),
+                	beginDate: Ext.util.Format.date(Ext.value(insertObj["beginDate"], null), 'Y-m-d'),
+                	endDate: Ext.util.Format.date(Ext.value(insertObj["endDate"], null), 'Y-m-d')
+                });*/
+                break;
+        }
+
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem=tabPanel.getComponent(tabItemId);
+        if(!tabItem){
+
+            //创建tabItem
+            var tabItem = Ext.create({
+                xtype:'container',
+                title: tabTitle,
+                //iconCls: 'x-fa fa-clipboard',
+                scrollable :true, 
+                itemId:tabItemId,            
+                layout:'fit', 
+                itemPKV:pkValue,      //保存主键值
+            });
+            tabPanel.add(tabItem); 
+
+            //延迟放入到tab中
+            setTimeout(function(){
+
+                //创建tab内部组件                     
+             
+                var popFunData = Ext.apply(funData, {   //将一些必要的信息，统一存放于此，提高给处理提交代码使用。
+                    grid: baseGrid
+                });
+                if(recordData!=null){
+                    insertObj=recordData;
+                }
+
+                var item=Ext.widget("baseformtab",{
+                    operType:operType,                            
+                    controller:otherController,         //指定重写事件的控制器
+                    funCode:funCode,                    //指定mainLayout的funcode
+                    detCode:detCode,                    //指定detailLayout的funcode
+                    tabItemId:tabItemId,                //指定tab页的itemId
+                    insertObj:insertObj,                    //保存一些需要默认值，提供给提交事件中使用
+                    funData:popFunData,  
+                    starLevel:insertObj.starLevel,                   //保存funData数据，提供给提交事件中使用
+                    items:[{
+                        xtype:detLayout
+                    }]
+                }); 
+              
+                tabItem.add(item);  
+                
+            /*    insertObj.beginTime = Ext.util.Format.date(insertObj.beginTime, 'H:i');
+                insertObj.endTime = Ext.util.Format.date(insertObj.endTime, 'H:i');*/
+
+                //处理打开界面之后，显示的初始数据
+                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                var formDeptObj = objDetForm.getForm();              
+                self.setFormValue(formDeptObj, insertObj);
+                               
+                if(cmd=="detail"){
+                	var detailHtml = item.down("container[xtype=wisdomclass.classstar.detailhtml]");
+                	detailHtml.setData(insertObj); 
+
+                }
+
+            },30);
+                           
+        }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
+            self.msgbox("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab(tabItem);   
+    },
+});

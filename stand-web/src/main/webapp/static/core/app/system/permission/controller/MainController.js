@@ -26,7 +26,6 @@ Ext.define("core.system.permission.controller.MainController", {
 
                 var mainLayout = baseGrid.up("basepanel[xtype=system.permisson.mainlayout]");
 
-                mainLayout
                 //得到树组件
                 var baseTreeGrid = mainLayout.down("basetreegrid");
                 var records = baseTreeGrid.getSelectionModel().getSelection();
