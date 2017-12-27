@@ -11,7 +11,7 @@ Ext.define("core.wisdomclass.redflag.view.MainQueryPanel", {
         width: '100%'
     },
 
-    items: [{
+ items: [{
         xtype: "container",
         layout: "column",
         items: [{
@@ -20,15 +20,24 @@ Ext.define("core.wisdomclass.redflag.view.MainQueryPanel", {
             name: "className",
             fieldLabel: "班级名称",
             queryType: "textfield",
-        }, {        
-            xtype: "datetimefield",
-            dateType: 'date',
-            fieldLabel: "评定日期",     
-            anchor: '100%',
-            name: "doDate",
-            columnWidth: 0.5
+        },{
+            columnWidth:0.25,
+            fieldLabel: "开始日期",
+            xtype: "basequeryfield",
+            queryType: "datetimefield",
+            name: "beginDate",
+            operationType:">=",
+            format: "Y-m-d",
+        }, {
+            columnWidth:0.25,
+            fieldLabel: "结束日期",
+            xtype: "basequeryfield",
+            queryType: "datetimefield",
+            name: "endDate",
+            operationType:"<=",
+            format: "Y-m-d",
         }]
-    }],
+ }],
     buttonAlign: "center",
     buttons: [{
         text: '查询',

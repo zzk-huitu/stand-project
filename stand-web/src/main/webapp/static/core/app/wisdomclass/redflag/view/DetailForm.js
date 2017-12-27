@@ -56,7 +56,7 @@ Ext.define("core.wisdomclass.redflag.view.DetailForm", {
             dateType: 'date',
             format: "Y-m-d",
             emptyText: "请输入开始日期",
-             vtype:'beginDate',
+            vtype:'beginDate',
             compareField:'endDate',
         }, {
             flex: 1,

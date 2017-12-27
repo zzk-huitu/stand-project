@@ -31,8 +31,11 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 	public void list(@ModelAttribute EccClassstar entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		SysUser currentUser = getCurrentSysUser();
 		String starLevel = request.getParameter("starLevel");
 		String filter = request.getParameter("filter");
+		String whereSql = super.whereSql(request);
+		String orderSql = super.orderSql(request);
 		if (starLevel == null) {
 			starLevel = "";
 		}
@@ -42,8 +45,9 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 		}else{
 			filter="[{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}]";
 		}
-		QueryResult<EccClassstar> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
+		/*QueryResult<EccClassstar> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), filter, true);*/
+		 QueryResult<EccClassstar> qResult = thisService.list(super.start(request), super.limit(request), super.sort(request), filter, whereSql, orderSql, currentUser);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

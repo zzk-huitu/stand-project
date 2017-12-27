@@ -32,8 +32,11 @@ public class WisClassredflagController extends FrameWorkController<EccClassredfl
 	public void list(@ModelAttribute EccClassredflag entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		SysUser currentUser = getCurrentSysUser();
 		String redflagType = request.getParameter("redflagType");
 		String filter = request.getParameter("filter");
+		String whereSql = super.whereSql(request);
+		String orderSql = super.orderSql(request);
 		if (redflagType == null) {
 			redflagType = "";
 		}
@@ -43,8 +46,8 @@ public class WisClassredflagController extends FrameWorkController<EccClassredfl
 		}else{
 			filter="[{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ redflagType+"\",\"field\":\"redflagType\"}]";
 		}
-	    QueryResult<EccClassredflag> qResult =thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
+	    //QueryResult<EccClassredflag> qResult =thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);
+		QueryResult<EccClassredflag> qResult = thisService.list(super.start(request), super.limit(request),super.sort(request), filter, whereSql, orderSql, currentUser);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

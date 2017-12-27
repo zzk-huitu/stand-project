@@ -6,7 +6,9 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
         messageUtil: "core.util.MessageUtil",
         formUtil: "core.util.FormUtil",
         gridActionUtil: "core.util.GridActionUtil",
-        dateUtil: 'core.util.DateUtil'
+        dateUtil: 'core.util.DateUtil',
+        QueryUtil:"core.util.QueryUtil",
+        SqlUtil:"core.util.SqlUtil",
     },
 	init: function () {
 		/*执行一些初始化的代码*/
@@ -101,13 +103,6 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                     return false;
                 }
             },
-       /*     "basegrid[xtype=wisdomclass.classstar.maingrid] button[ref=gridDelete]": {
-                beforeclick: function(btn) {
-                    this.doDelete(btn);
-                    return false;
-                }
-            },*/
-
             "basegrid[xtype=wisdomclass.classstar.maingrid] actioncolumn": {
             	editClick_Tab: function (data) {
             		this.doDetail_tab(null,"edit",data.view,data.record);
@@ -119,6 +114,27 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                     return false;
 
                 },
+            },
+            "basequeryform[xtype=wisdomclass.classstar.mainquerypanel] field":{
+                /*高级查询面板，实现文本框回车时查询*/
+                specialkey: function (field, e) {
+                    if (e.getKey() == e.ENTER) {                                                                  
+                        this.queryHignSearchForm(field);
+                        return false;
+                    }
+                }
+            },
+            "basequeryform[xtype=wisdomclass.classstar.mainquerypanel] button[ref=gridSearchFormOk]":{
+                beforeclick:function(btn){        
+                    this.queryHignSearchForm(btn);   
+                    return false;               
+                }
+            },
+            "basequeryform[xtype=wisdomclass.classstar.mainquerypanel] button[ref=gridSearchFormReset]":{
+                beforeclick:function(btn){
+                    this.resetHignSearchForm(btn);  
+                    return false;                             
+                }
             },
         },
      doDetail_tab: function(btn,cmd,grid,record) {
@@ -295,4 +311,43 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);   
     },
+    queryHignSearchForm:function(component){
+        var self=this;
+        var queryPanel = component.up("basequeryform");
+        var querySql = self.getQuerySql(queryPanel);
+        var funCode = queryPanel.funCode;
+        var basePanel = queryPanel.up("basepanel[funCode=" + funCode + "]");
+        //加入basegrid默认的filter
+        var baseGrid = basePanel.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
+                     
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.filter = [];
+        proxy.extraParams.whereSql = querySql;
+        store.loadPage(1);
+    },
+    resetHignSearchForm:function(component){
+        var self=this;
+
+        var queryPanel=component.up("basequeryform");
+        self.resetQueryPanel(queryPanel);
+
+        var funCode = queryPanel.funCode;
+        var basePanel = queryPanel.up("basepanel[funCode=" + funCode + "]");
+        var baseGrid = basePanel.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();           
+        
+        var filterStr=[];
+        //获取baseGrid中编写的默认filter值
+        var gridFilterStr=baseGrid.extParams.filter;
+        if(gridFilterStr&&gridFilterStr.trim().length>0){
+            filterStr=gridFilterStr;
+        }
+    
+        //extParams参数是来自baseGrid中设置的，不用去改变。     
+        proxy.extraParams.filter = filterStr;
+        proxy.extraParams.whereSql = "";
+        store.load();
+    }
 });
