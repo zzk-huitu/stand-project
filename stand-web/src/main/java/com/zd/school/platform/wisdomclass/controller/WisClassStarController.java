@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -51,7 +52,7 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+	@Auth("CLASSSTAR_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(EccClassstar entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -70,7 +71,7 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 			writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
 		}
 	}
-
+	@Auth("CLASSSTAR_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -91,7 +92,7 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 			}
 		}
 	}
-
+	@Auth("CLASSSTAR_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(EccClassstar entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

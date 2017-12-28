@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -86,7 +87,7 @@ public class WisTGradeClassController extends FrameWorkController<JwTGradeclass>
 			strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 			writeJSON(response, strData);// 返回数据
 		}
-		// 修改班级数据
+		@Auth("CLASSMOTTO_update")
 		@RequestMapping("/doUpdate")
 		public void doupdate(JwTGradeclass entity, HttpServletRequest request, HttpServletResponse response)
 				throws IOException, IllegalAccessException, InvocationTargetException {

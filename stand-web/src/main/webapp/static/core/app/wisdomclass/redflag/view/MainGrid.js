@@ -3,7 +3,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
 	alias: "widget.wisdomclass.redflag.maingrid",
     dataUrl: comm.get("baseUrl") + "/ClassRedflag/list", //数据获取地址
     model: "com.zd.school.jw.ecc.model.EccClassredflag", //对应的数据模型
-	al:false,
+	//al:false,
     menuCode:"REDFLAG",
 	//工具栏操作按钮
     panelTopBar:{
