@@ -1,7 +1,6 @@
 Ext.define("core.public.selectRole.view.IsSelectRoleGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.pbselectRole.isselectrolegrid",
-    dataUrl: comm.get('baseUrl') + "/SysRole/selectList",
     title: "当前已选角色",
     al: false,
     noPagging: true,
@@ -23,8 +22,7 @@ Ext.define("core.public.selectRole.view.IsSelectRoleGrid", {
         listeners: {
             drop: function (node, data, dropRec, dropPosition) {
             },
-            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){  
-                debugger;
+            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){        
                 var newRec=data.records;
                 var arrays=new Array();
                 

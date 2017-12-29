@@ -14,28 +14,34 @@ Ext.define("core.base.controller.QueryController",{
 					//node.expand(true);
 					
 					node.expand();//只展开第一层
+					
+					/*
 					//递归选中父节点
 					var eachParent = function(node,checked){
-                            if(!node.isRoot() && checked == true){
-                                if(!Ext.isEmpty(node.get('checked'))){
-                                    node.set('checked',checked);
-                                    node.commit();
-                                }
-                                eachParent(node.parentNode,checked);
+                        if(!node.isRoot() && checked == true){
+                            if(!Ext.isEmpty(node.get('checked'))){
+                                node.set('checked',checked);
+                                node.commit();
                             }
+                            eachParent(node.parentNode,checked);
                         }
-                      eachParent(node.parentNode,checked);
-                      //递归选中孩子节点
-                      var eachChild = function(node,checked){
-                        node.eachChild(function(n){
-                            if(!Ext.isEmpty(n.get('checked'))){
-                                n.set('checked',checked);
-                                n.commit();
-                            }
-                            eachChild(n,checked);
-                        });
-                    	};
-                    	eachChild(node,checked);
+                    }
+                  	eachParent(node.parentNode,checked);
+                  	*/
+
+                 	//递归选中孩子节点
+                  	var eachChild = function(node,checked){
+	                    node.eachChild(function(n){
+	                        if(!Ext.isEmpty(n.get('checked'))){
+	                            n.set('checked',checked);
+	                            n.commit();
+	                        }
+	                        eachChild(n,checked);
+	                    });
+                	};
+                	eachChild(node,checked);
+					
+
 				},
 				//注册树形render事件
 				render:function(tree){				

@@ -4,7 +4,7 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
     al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/BaseTeacherDrom/getTeacherInUser", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/SysUser/list", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     defSort: [{
         property: "deptName", //字段名
@@ -115,7 +115,13 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
             text: '序号',
             align: 'center'
         },{
-            width:150,
+            flex:1,
+            minWidth:100,
+            text: "用户名",
+            dataIndex: "userName"
+        }, {
+            flex:1,
+            minWidth:100,
             text: "姓名",
             dataIndex: "xm"
         }, {
@@ -126,6 +132,7 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
             ddCode: "XBM"
         }, {
             flex:1,
+            minWidth:100,
             text: "部门",
             dataIndex: "deptName"
         }, {

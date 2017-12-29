@@ -23,7 +23,7 @@ Ext.define("core.public.selectUser.view.SelectUserLayout", {
     }, {
         xtype: "pubselect.isselectusergrid",
         region: "east",
-        width:480,
+        width:300,
         margin:'5'
     }]
 })

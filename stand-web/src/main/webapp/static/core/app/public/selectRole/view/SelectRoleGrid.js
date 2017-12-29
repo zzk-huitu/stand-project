@@ -1,9 +1,9 @@
 Ext.define("core.public.selectRole.view.SelectRoleGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.pbselectRole.selectrolegrid",
-    dataUrl: comm.get('baseUrl') + "/SysRole/selectList",
+    dataUrl: comm.get('baseUrl') + "/SysRole/list",
     model: 'com.zd.school.plartform.system.model.SysRole',
-    al: false,
+    al: true,
     tbar: [],
     selModel: {
         type: "checkboxmodel",   

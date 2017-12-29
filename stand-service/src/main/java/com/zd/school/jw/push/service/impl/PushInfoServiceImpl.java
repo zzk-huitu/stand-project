@@ -12,6 +12,7 @@ import com.zd.core.util.StringUtils;
 import com.zd.school.jw.push.dao.PushInfoDao;
 import com.zd.school.jw.push.model.PushInfo;
 import com.zd.school.jw.push.service.PushInfoService;
+import com.zd.school.plartform.system.model.SysUser;
 
 @Service
 @Transactional
@@ -23,28 +24,29 @@ public class PushInfoServiceImpl extends BaseServiceImpl<PushInfo> implements Pu
     }
 
     @Override
-    public boolean pushInfo(String empName, String empNo, String eventType, String regStatus) {
-        return this.pushInfo(empName, empNo, eventType, regStatus, null);
-    }
+	public boolean pushInfo(String empName, String empNo, String eventType, String regStatus,SysUser currentUser) {
+		return this.pushInfo(empName, empNo, eventType, regStatus,null, currentUser);
+	}
 
-    @Override
-    public boolean pushInfo(String empName, String empNo, String eventType, String regStatus, String pushUrl) {
-        Boolean br = false;
-        PushInfo pushInfo = new PushInfo();
-        pushInfo.setEmplName(empName);
-        pushInfo.setEmplNo(empNo);
-        pushInfo.setRegTime(new Date());
-        pushInfo.setEventType(eventType);
-        pushInfo.setPushStatus(0);
-        pushInfo.setPushWay(1);
-        pushInfo.setRegStatus(regStatus);
-        if (StringUtils.isEmpty(pushUrl))
-            pushInfo.setPushUrl("");
-        else
-            pushInfo.setPushUrl(pushUrl);
-        this.persist(pushInfo);
-        br = true;
-        return br;
-    }
+	@Override
+	public boolean pushInfo(String empName, String empNo, String eventType, String regStatus, String pushUrl,SysUser currentUser) {
+		Boolean br = false;
+		PushInfo pushInfo = new PushInfo();
+		pushInfo.setEmplName(empName);
+		pushInfo.setEmplNo(empNo);
+		pushInfo.setRegTime(new Date());
+		pushInfo.setEventType(eventType);
+		pushInfo.setPushStatus(0);
+		pushInfo.setPushWay(1);
+		pushInfo.setRegStatus(regStatus);
+		pushInfo.setCreateUser(currentUser.getUuid());
+		if (StringUtils.isEmpty(pushUrl))
+			pushInfo.setPushUrl("");
+		else
+			pushInfo.setPushUrl(pushUrl);
+		this.persist(pushInfo);
+		br = true;
+		return br;
+	}
 
 }

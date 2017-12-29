@@ -1,8 +1,11 @@
 package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,7 +30,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
@@ -35,10 +40,13 @@ import com.zd.core.constant.AuthorType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.ImportNotInfo;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.DBContextHolder;
+import com.zd.core.util.EntityExportExcel;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
+import com.zd.core.util.PoiImportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDicitem;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
@@ -933,5 +941,72 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
     		
     		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
     	}	
+    }
+    
+    
+    
+    /**
+	 * 描述：通过传统方式form表单提交方式导入excel文件
+	 * 
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/importData", method = { RequestMethod.GET, RequestMethod.POST })
+	public void uploadExcel(@RequestParam("file") MultipartFile file, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		try {
+
+			SysUser currentUser = getCurrentSysUser();
+			
+			InputStream in = null;
+			List<List<Object>> listObject = null;
+			List<ImportNotInfo> listReturn;
+
+			
+			if (!file.isEmpty()) {
+				in = file.getInputStream();
+				listObject = new PoiImportExcel().getListByExcel(in, file.getOriginalFilename());
+				in.close();
+				
+				listReturn = thisService.doImportUser(listObject, currentUser);
+
+                if (listReturn.size() == 0)
+                    writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导入成功！\""));
+                else {
+                    String strData = jsonBuilder.buildList(listReturn, "");
+                    request.getSession().setAttribute("UserImportError", strData);
+                    writeJSON(response, jsonBuilder.returnSuccessJson("-1")); // 返回前端-1，表示存在错误数据
+                }
+
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件不存在！\""));
+			}
+		} catch (Exception e) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导入失败,请下载模板或联系管理员！\""));
+		}
+	}
+
+	@RequestMapping(value = {"/downNotImportInfo"})
+    public void downNotImportInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Object obj = request.getSession().getAttribute("UserImportError");
+        if (obj != null) {
+
+            request.getSession().removeAttribute("UserImportError");// 移除此session
+
+            String downData = (String) obj;
+
+            List<ImportNotInfo> list = (List<ImportNotInfo>) jsonBuilder.fromJsonArray(downData, ImportNotInfo.class);
+            EntityExportExcel excel = new EntityExportExcel();
+
+            String[] Title = {"序号", "用户姓名", "异常级别", "异常原因"};
+            Integer[] coulumnWidth = {8, 20, 20, 100};
+            Integer[] coulumnDirection = {1, 1, 1, 1};
+
+            List<String> excludeList = new ArrayList<>();
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+            String fileNAME = "（" + sdf2.format(new Date()) + "）导入用户的异常信息名单";
+
+            excel.exportExcel(response, fileNAME, Title, list, excludeList, coulumnWidth, coulumnDirection);
+        }
     }
 }

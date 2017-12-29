@@ -95,6 +95,8 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.4.6.v20170531</version>
 				<configuration>
+					<!-- webDefaultXml>src/main/resources/jetty.xml</webDefaultXml> -->
+				
 					<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
 					<!-- 自动扫描时间参数，此处设置为3秒，为0表示 不自动扫描 -->
 					<scanIntervalSeconds>0</scanIntervalSeconds>
@@ -105,6 +107,16 @@
 					<!-- 配置的停止jetty服务 -->
 					<stopKey>shutdown</stopKey>
 					<stopPort>9999</stopPort>
+					
+					<!-- 额外监听目录 -->  
+			        <contextHandlers>  
+			            <!-- 附件目录服务 -->  
+			            <contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext">  
+			                <contextPath>/upload</contextPath>  <!-- /upload -->
+			                <resourceBase>D:/Q1_Files/uploadFiles/</resourceBase>  
+			            </contextHandler>  
+			        </contextHandlers>  
+			        
 				</configuration>
 			</plugin>
 		</plugins>

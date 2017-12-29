@@ -265,7 +265,59 @@ public class OaNotice extends BaseEntity implements Serializable {
 	public void setNoticeStus(Set<SysUser> noticeStus) {
 		this.noticeStus = noticeStus;
 	}
-
+	
+	/*特意冗余字段*/
+	@FieldInfo(name = "通知部门方式（1-所有部门、2-指定部门、3-不通知）")
+	@Column(name = "DEPT_RADIO", length = 1, nullable = true)
+	private String deptRadio;
+	public void setDeptRadio(String deptRadio) {
+		this.deptRadio = deptRadio;
+	}
+	public String getDeptRadio() {
+		return deptRadio;
+	}
+	
+	@FieldInfo(name = "通知学生方式（1-所有学生、2-指定学生、3-不通知）")
+	@Column(name = "STU_RADIO", length = 1, nullable = true)
+	private String stuRadio;
+	public void setStuRadio(String stuRadio) {
+		this.stuRadio = stuRadio;
+	}
+	public String getStuRadio() {
+		return stuRadio;
+	}
+	
+	@FieldInfo(name = "通知终端方式（1-所有终端、2-指定终端、3-不通知）")
+	@Column(name = "TERMINAL_RADIO", length = 1, nullable = true)
+	private String terminalRadio;
+	public void setTerminalRadio(String terminalRadio) {
+		this.terminalRadio = terminalRadio;
+	}
+	public String getTerminalRadio() {
+		return terminalRadio;
+	}
+	
+	
+	/*由于界面上显示的终端数据，实际上是房间信息，所以这里特殊的存入*/
+	@FieldInfo(name = "终端的房间名称")
+	@Column(name = "TERM_NAMES", /* length = 2048, */ nullable = true, columnDefinition = "varchar(MAX)")
+	private String termNames;
+	public void setTermNames(String termNames) {
+		this.termNames = termNames;
+	}
+	public String getTermNames() {
+		return termNames;
+	}
+	@FieldInfo(name = "终端的房间ID")
+	@Column(name = "TERM_IDS", /* length = 2048, */ nullable = true, columnDefinition = "varchar(MAX)")
+	private String termIds;
+	public void setTermIds(String termIds) {
+		this.termIds = termIds;
+	}
+	public String getTermIds() {
+		return termIds;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

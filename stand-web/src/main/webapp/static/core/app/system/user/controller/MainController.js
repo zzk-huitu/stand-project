@@ -15,74 +15,80 @@ Ext.define("core.system.user.controller.MainController", {
             //事件注册
         this.control({
             "basepanel basegrid[xtype=system.user.usergrid]": {
-             afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="SYSUSER";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridLock")==-1){
-                        var btnlock = grid.down("button[ref=gridLock]");
-                         btnlock.setHidden(true);
-                         
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
-                        var btnUnlock = grid.down("button[ref=gridUnLock]");
-                         btnUnlock.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
-                        var btnPwd = grid.down("button[ref=gridSetPwd]");
-                         btnPwd.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridExport")==-1){
-                        var btnExport = grid.down("button[ref=gridExport]");
-                        btnExport.setHidden(true);                    
-                    }
-                    if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
-                        var btnSync = grid.down("button[ref=syncToUP]");
-                        btnSync.setHidden(true);                    
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                        var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
-                        btnUpdate.setHidden(true);                    
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                        var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                        btnAdd.setHidden(true);                    
-                    }
+                 afterrender : function(grid) {
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSUSER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");
+                        if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                            var btnlock = grid.down("button[ref=gridLock]");
+                             btnlock.setHidden(true);
+                             
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                            var btnUnlock = grid.down("button[ref=gridUnLock]");
+                             btnUnlock.setHidden(true);
+                          }
+                        if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
+                            var btnPwd = grid.down("button[ref=gridSetPwd]");
+                             btnPwd.setHidden(true);
+                          }
+                        if(userBtn.indexOf(menuCode+"_gridExport")==-1){
+                            var btnExport = grid.down("button[ref=gridExport]");
+                            btnExport.setHidden(true);                    
+                        }
+                        if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
+                            var btnSync = grid.down("button[ref=syncToUP]");
+                            btnSync.setHidden(true);                    
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                            var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
+                            btnUpdate.setHidden(true);                    
+                        }
+                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                            btnAdd.setHidden(true);                    
+                        }
 
-                }
-            },
-            beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=system.user.usergrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnLock = basegrid.down("button[ref=gridLock]");
-                var btnUnLock = basegrid.down("button[ref=gridUnLock]");
-                var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
-                var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
-                if (records.length == 0) {
-                    btnLock.setDisabled(true);
-                    btnUnLock.setDisabled(true);
-                    btnSetPwd.setDisabled(true);
-                    btnEdit.setDisabled(true);
-                } else if (records.length == 1) {
-                    btnLock.setDisabled(false);
-                    btnUnLock.setDisabled(false);
-                    btnSetPwd.setDisabled(false);
-                    if(records[0].getData().issystem==0){
-                    btnEdit.setDisabled(true);
-                    }else{
-                    btnEdit.setDisabled(false);     
                     }
-                } else {
-                    btnLock.setDisabled(false);
-                    btnUnLock.setDisabled(false);
-                    btnSetPwd.setDisabled(false);
-                    btnEdit.setDisabled(true);
+                },
+                beforeitemclick: function(grid) {
+                    var basePanel = grid.up("basepanel");
+                    var basegrid = basePanel.down("basegrid[xtype=system.user.usergrid]");
+                    var records = basegrid.getSelectionModel().getSelection();
+                    var btnLock = basegrid.down("button[ref=gridLock]");
+                    var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+                    var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
+                    var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+                    if (records.length == 0) {
+                        btnLock.setDisabled(true);
+                        btnUnLock.setDisabled(true);
+                        btnSetPwd.setDisabled(true);
+                        btnEdit.setDisabled(true);
+                    } else if (records.length == 1) {
+                        btnLock.setDisabled(false);
+                        btnUnLock.setDisabled(false);
+                        btnSetPwd.setDisabled(false);
+                        if(records[0].getData().issystem==0){
+                        btnEdit.setDisabled(true);
+                        }else{
+                        btnEdit.setDisabled(false);     
+                        }
+                    } else {
+                        btnLock.setDisabled(false);
+                        btnUnLock.setDisabled(false);
+                        btnSetPwd.setDisabled(false);
+                        btnEdit.setDisabled(true);
+                    }
+                    return false;
+                },            
+            },
+            "basegrid[xtype=system.user.usergrid] button[ref=gridImport]": {
+                beforeclick: function (btn) {
+                    this.openImportView(btn);
+                    return false;
                 }
-                return false;
             },
-              
-            },
+
              "basegrid[xtype=system.user.usergrid] actioncolumn": {
                 detailClick_Tab: function (data) {
                     this.doDetail_Tab(null,"detail",data.view,data.record);
@@ -1017,6 +1023,34 @@ Ext.define("core.system.user.controller.MainController", {
             }
         });
        return false;
- 	}
+ 	},
+
+
+    openImportView:function(btn){
+        var self = this;
+        //得到组件
+        var baseGrid = btn.up("basegrid");
+    
+        var win = Ext.create('Ext.Window', {
+            title: "导入用户数据",
+            iconCls: 'x-fa fa-clipboard',
+            width: 450,
+            resizable: false,
+            constrain: true,
+            autoHeight: true,
+            modal: true,
+            controller: 'public.importExcel.maincontroller',
+            closeAction: 'close',
+            plain: true,
+            grid: baseGrid,
+            items: [{
+                xtype: "public.importExcel.importform",
+                url:comm.get('baseUrl') + "/SysUser/importData",
+                downUrl:comm.get('baseUrl') + "/SysUser/downNotImportInfo"
+            }]
+        });
+        win.show();
+
+    }
 
 });

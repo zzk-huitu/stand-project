@@ -578,7 +578,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			BaseOrgChkTree child = new BaseOrgChkTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(),
 					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
 					org.getRemark(), org.getNodeCode(), org.getParentNode(), org.getOrderIndex(), org.getDeptType(),
-					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode());
+					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode(),false);
 
 			if (org.getParentNode().equals(TreeVeriable.ROOT)) {
 				result.add(child);
@@ -611,7 +611,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			BaseOrgChkTree child = new BaseOrgChkTree(org.getUuid(), org.getNodeText(), "", org.getLeaf(),
 					org.getNodeLevel(), org.getTreeIds(), new ArrayList<BaseOrgChkTree>(), org.getOutPhone(), org.getInPhone(), org.getFax(), org.getIssystem(),
 					org.getRemark(), org.getNodeCode(), org.getParentNode(), org.getOrderIndex(), org.getDeptType(),
-					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode());
+					org.getParentType(), org.getMainLeaderName(), org.getSuperJob(),org.getSuperjobName(), "0",org.getNj(),org.getSectionCode(),false);
 
 			if (org.getUuid().equals(deptId)) {
 				result.add(child);

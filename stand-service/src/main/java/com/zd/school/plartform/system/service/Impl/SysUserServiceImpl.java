@@ -1,12 +1,15 @@
 package com.zd.school.plartform.system.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,12 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.zd.core.constant.Constant;
+import com.zd.core.model.ImportNotInfo;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.SortListUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.plartform.baseset.model.BaseDicitem;
+import com.zd.school.plartform.baseset.model.BaseOrg;
+import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.dao.SysUserDao;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
 import com.zd.school.plartform.system.model.SysMenuPermission;
@@ -78,6 +85,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
 
+	@Resource
+	private BaseDicitemService dicitemService;
+	
 	@Override
 	public SysUser doAddUser(SysUser entity, SysUser currentUser) throws Exception, InvocationTargetException {
 
@@ -863,6 +873,119 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		String hql = "select u.uuid from SysUser as u,BaseUserdeptjob as r where u.uuid=r.userId and r.deptId='"
 				+ deptId + "' and r.isDelete=0 and u.isDelete=0";
 		return this.queryByHql(hql);
+	}
+	
+	/**
+	 * 根据用户ID获取人员的部门
+	 * 
+	 * @param deptId
+	 *            部门ID
+	 * @return
+	 */
+	@Override
+	public Set<BaseOrg> getDeptByUserId(String userId) {
+		String hql = "select u.uuid from SysUser as u,BaseUserdeptjob as r,BaseOrg o where u.uuid=r.userId and r.uuid='"
+				+ userId + "' and r.deptId=o.uuid and r.isDelete=0 and u.isDelete=0 and o.isDelete=0";
+		List<BaseOrg>  orgs= orgService.queryByHql(hql);
+		
+		Set<BaseOrg> set=new HashSet<>(orgs);      
+	
+		return set;
+	}
+	
+	@Override
+	public List<ImportNotInfo> doImportUser(List<List<Object>> listObject, SysUser currentUser) {
+		// TODO Auto-generated method stub
+		
+		List<ImportNotInfo> listNotExit = new ArrayList<>();
+		SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
+		ImportNotInfo notExits = null;
+		Integer notCount = 1;
+
+		
+		Map<String, String> mapZzmmm = new HashMap<>();
+		Map<String, String> mapXbm = new HashMap<>();
+		Map<String, String> mapCategory = new HashMap<>();
+		String hql1 = " from BaseDicitem where dicCode in ('ZZMMM','XBM','CATEGORY')";
+		List<BaseDicitem> listBaseDicItems1 = dicitemService.queryByHql(hql1);
+		for (BaseDicitem baseDicitem : listBaseDicItems1) {
+			if (baseDicitem.getDicCode().equals("XBM"))
+				mapXbm.put(baseDicitem.getItemName(), baseDicitem.getItemCode());
+			else if (baseDicitem.getDicCode().equals("ZZMMM"))
+				mapZzmmm.put(baseDicitem.getItemName(), baseDicitem.getItemCode());
+			else
+				mapCategory.put(baseDicitem.getItemName(), baseDicitem.getItemCode());
+		}
+
+		
+
+		/**
+		 * 用户名    姓名	性别	 身份	  学号/工号	   身份证件号	移动电话	出生日期	电子邮件	政治面貌	
+		 * 
+		 */
+		String doResult = "";
+		String title = "";
+		String errorLevel = "";
+		SysUser user = null;
+		for (int i = 0; i < listObject.size(); i++) {
+			try {
+
+				List<Object> lo = listObject.get(i);
+
+				// 导入的表格会错误的读取空行的内容，所以，当判断第一列为空，就跳过此行。
+				if (!StringUtils.isNotEmpty((String) lo.get(0))) {
+					continue;
+				}
+
+				title = String.valueOf(lo.get(0));
+				doResult = "导入成功"; // 默认是成功
+	
+				// 查询库中是否存在此用户
+				user = this.getByProerties(new String[]{"userName","isDelete"}, new Object[]{lo.get(0),0});
+				
+				//如果存在，就返回错误信息，不允许导入此条数据
+				if(user!=null){
+					
+					errorLevel = "重复导入";
+					doResult = "导入失败；异常信息：已存在此用户名的帐号信息";
+					
+				}else{
+					user = new SysUser();
+					user.setUserName(String.valueOf(lo.get(0)));
+					user.setXm(String.valueOf(lo.get(1)));
+					user.setXbm(mapXbm.get(lo.get(2)));
+					user.setCategory(mapCategory.get(lo.get(3)));
+					user.setUserNumb(String.valueOf(lo.get(4)));
+					user.setSfzjh(String.valueOf(lo.get(5)));
+					user.setMobile(String.valueOf(lo.get(6)));
+					user.setCsrq(dateSdf.parse(String.valueOf(lo.get(7))));
+					user.setDzxx(String.valueOf(lo.get(8)));
+					user.setZzmmm(mapZzmmm.get(lo.get(9)));
+					user.setUserPwd("123456");
+					this.doAddUser(user,currentUser);
+				}				
+
+			} catch (Exception e) {
+				// return null;
+				errorLevel = "错误";
+				doResult = "导入失败；异常信息：" + e.getMessage();
+			}
+
+			if (!"导入成功".equals(doResult)) {
+				// List<Map<String, Object>>
+				notExits = new ImportNotInfo();
+				notExits.setOrderIndex(notCount);
+				notExits.setTitle(title);
+				notExits.setErrorLevel(errorLevel);
+				notExits.setErrorInfo(doResult);
+
+				listNotExit.add(notExits);
+				notCount++;
+			}
+		}
+
+		return listNotExit;
+		
 	}
 
 }
