@@ -996,23 +996,25 @@ Ext.define("core.system.dept.controller.OtherController", {
         var toolBar = component.up("toolbar");
         var win = baseGrid.up("window");
         var winFunData = win.funData;
-        var roleId = winFunData.roleId;
+        //var roleId = winFunData.roleId;
 
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         //这里快速搜索就姓名与部门，固定写死查询的条件
         var filter = new Array();
         if (girdSearchTexts[0].getValue() != "")
             filter.push("{'type': 'string', 'comparison': '', 'value':'" + girdSearchTexts[0].getValue() + "', 'field': 'xm'}");
-        if (girdSearchTexts[1].getValue() != "")
-            filter.push("{'type': 'string', 'comparison': '=', 'value':'" + girdSearchTexts[1].getValue() + "', 'field': 'deptId'}");
+        //if (girdSearchTexts[1].getValue() != "")
+        //    filter.push("{'type': 'string', 'comparison': '=', 'value':'" + girdSearchTexts[1].getValue() + "', 'field': 'deptId'}");
         filter = "[" + filter.join(",") + "]";
 
         var selectStore = baseGrid.getStore();
         var selectProxy = selectStore.getProxy();
         selectProxy.extraParams = {
-            roleId: roleId,
+            // roleId: roleId,
             filter: filter
         };
+        selectProxy.extraParams.deptId = girdSearchTexts[1].getValue();
+
         selectStore.loadPage(1);
     },
 
@@ -1074,7 +1076,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         });
     },
 
-  queryFastSearchForm:function(component){
+    queryFastSearchForm:function(component){
         //得到组件                 
         var baseGrid = component.up("basegrid");
         if (!baseGrid)
@@ -1101,6 +1103,7 @@ Ext.define("core.system.dept.controller.OtherController", {
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
         proxy.extraParams.filter = JSON.stringify(filter);
+
         store.loadPage(1);
     },
 });

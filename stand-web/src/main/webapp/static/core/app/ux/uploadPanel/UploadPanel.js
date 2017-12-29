@@ -4,6 +4,8 @@
  * @author caizhiping
  * @since 2012-11-15
  */
+var uploadPanelLoading = null;
+
 Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.uploadpanel',
@@ -11,7 +13,7 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 	height : 300,
 	columns : [
         {xtype: 'rownumberer'},
-		{text: '文件名', width: 130,dataIndex: 'name'},
+		{text: '文件名', flex:1,minWidth: 100,dataIndex: 'name'},
 		/*{text: '自定义文件名', width: 130,dataIndex: 'fileName',editor: {xtype: 'textfield'}},*/
         {text: '类型', width: 70,dataIndex: 'type'},
         {text: '大小', width: 70,dataIndex: 'size',renderer:function(v){
@@ -46,15 +48,19 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 		}},
         {
             xtype:'actioncolumn',
-            width:50,
+            width:60,
+            align:'center',
             items: [{
-                icon: comm.get('baseUrl') + '/static/core/ux/uploadPanel/icons/delete.gif',
+                iconCls: 'x-fa fa-minus-circle',
                 tooltip: '移除文件',
                 handler: function(grid, rowIndex, colIndex) {
-                	var row= grid.store.getAt(rowIndex);
+                	
+                	var me=grid.ownerCt;
+
+                	var row = me.store.getAt(rowIndex);
                 	var id = row.get('id');
 
-                	var me = grid.up('panel');
+                	//var me = grid.up('panel');
                 	//ajax请求移除数据，弹出确认框 fileId
                 	var fileId = row.get('fileId');
                 	if(fileId==1){
@@ -103,21 +109,41 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
                             } 
                         });
                     }else{
-                    	grid.store.remove(grid.store.getAt(rowIndex));
+                    	me.store.remove(row);				
+						me.swfupload.cancelUpload(id,false);	//设置这个id的文件为取消上传，防止上传删除的图片						
                     }
                    
+                }
+            },{
+                iconCls:'x-fa fa-eye',
+                tooltip: '查看文件',                
+                handler: function(grid, rowIndex, colIndex) {                
+                	var me=grid.ownerCt;
+                	var row = me.store.getAt(rowIndex);
+                	var fileUrl = row.get('fileUrl');
+                	if(fileUrl)
+                		window.open(fileUrl);
+                	else
+                		Ext.Msg.show({
+							title : '温馨提示',
+							msg : "文件提交后才可以查看！",
+							width : 250,
+							icon : Ext.Msg.INFO,
+							buttons :Ext.Msg.OK
+						});
+
                 }
             }]
         }
     ],
-    plugins: [
-        Ext.create('Ext.grid.plugin.CellEditing', {
-            clicksToEdit: 1
-        })
-    ],    
+    plugins: {
+        ptype: 'cellediting',
+        clicksToEdit: 1
+
+    },    
     store : Ext.create('Ext.data.JsonStore',{
     	autoLoad : false,
-    	fields : ['id','name','type','size','percent','status','fileName','fileId']
+    	fields : ['id','name','type','size','percent','status','fileName','fileId','fileUrl']
     }),
 	addFileBtnText : 'Add File',
 	uploadBtnText : 'Upload',
@@ -132,8 +158,8 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 	post_params : {},
 	upload_url : 'test.do',
 	delete_url:'test.do',
-	flash_url : comm.get('baseUrl') + "/static/assets/js/swfupload/swfupload.swf",
-	flash9_url : comm.get('baseUrl') + "/static/assets/js/swfupload/swfupload_fp9.swf",
+	flash_url : comm.get('baseUrl') + "/static/core/resources/js/swfupload/swfupload.swf",
+	flash9_url : comm.get('baseUrl') + "/static/core/resources/js/swfupload/swfupload_fp9.swf",
 	initComponent : function(){		
 		this.dockedItems = [{
 		    xtype: 'toolbar',
@@ -142,7 +168,7 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 		        { 
 			        xtype:'button',
 			        ref: 'addFileBtn',
-			        iconCls : 'add',
+			        iconCls : 'x-fa fa-plus-square',
 			        //id : '_btn_for_swf_',
 			        text : this.addFileBtnText
 		        }/*,{ xtype: 'tbseparator' },{
@@ -155,14 +181,14 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 		        }*/,{ xtype: 'tbseparator' },{
 		        	xtype : 'button',
 		        	ref : 'removeBtn',
-		        	iconCls : 'trash',
+		        	iconCls : 'x-fa fa-trash',
 		        	text : this.removeBtnText,
 		        	scope : this,
 		        	handler : this.onRemoveForBtn
 		        },{ xtype: 'tbseparator' },{
 		        	xtype : 'button',
 		        	ref : 'cancelBtn',
-		        	iconCls : 'cancel',
+		        	iconCls : 'x-fa fa-times',
 		        	disabled : true,
 		        	text : this.cancelBtnText,
 		        	scope : this,
@@ -355,6 +381,10 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 				icon : Ext.Msg.WARNING,
 				buttons :Ext.Msg.OK
 			});
+
+			if(uploadPanelLoading!=null){
+				uploadPanelLoading.hide();
+			}	
 		}else{	
 			//当上传成功了，就设置这个标识，代表暂时不允许删除
 			var rec = me.store.getById(file.id);
@@ -378,8 +408,28 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 			fileUrl:''
 		});
 	},
-	onUpload : function(url,params){
+	file_is_uploadSuccess:function(){	//判断是否上传完毕
+			
+		var ds = this.store;
 
+		for(var i=0;i<ds.getCount();i++){
+			var record =ds.getAt(i);
+
+			var fileId = record.get('fileId');
+			var status =record.get('status');
+			if(fileId!=1&&status!=0){
+				return false;
+			}
+
+		}
+
+		if(uploadPanelLoading!=null){
+			uploadPanelLoading.hide();
+		}
+
+		return true;
+	},
+	onUpload : function(url,params,view){
 		if (this.swfupload&&this.store.getCount()>0) {
 
 			if (this.swfupload.getStats().files_queued > 0) {
@@ -394,6 +444,14 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 				this.swfupload.uploadStopped = false;		
 				this.swfupload.startUpload();
 
+				if(view){
+					uploadPanelLoading = new Ext.LoadMask(view,{
+	               		msg : '正在上传文件，请等待...',
+		               	removeMask : true// 完成后移除
+		            });            
+		            uploadPanelLoading.show();
+				}
+				
 			}
 		}
 	},
@@ -420,6 +478,9 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 		
 	        ds.removeAll();
 			this.swfupload.uploadStopped = false;
+        }else{
+        	var ds = this.store;
+        	ds.removeAll();
         }
 	},
 	onRemoveForBtn : function(btn){
@@ -485,6 +546,15 @@ Ext.define('Ext.ux.uploadPanel.UploadPanel',{
 			this.swfupload.uploadStopped = true;
 			this.swfupload.stopUpload();
 			this.showBtn(this,true);
+		}
+	},
+
+	listeners:{
+		/*在关闭这个组件前，移除所有数据，否则会出错*/
+		beforedestroy :function(){
+			var ds = this.store;
+			ds.removeAll();
+			this.swfupload.uploadStopped = false;
 		}
 	}
 });

@@ -4,7 +4,7 @@ Ext.define("core.system.dept.view.SelectUserGrid", {
     al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get("baseUrl") + "/SysUser/userList", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/SysUser/list", //数据获取地址
     model: "com.zd.school.plartform.system.model.SysUser",
     pageDisplayInfo:false,
     selModel: {

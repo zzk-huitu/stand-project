@@ -12,7 +12,8 @@ Ext.define("core.base.view.query.MtssWindow", {
 			xtype: this.queryType,
 			model: this.model,
 			multiSelect: this.multiSelect,
-			selModel:this.selModel
+			selModel:this.selModel,
+			al:this.al
 		};
 		items = Ext.apply(items, config);
 		this.items = items;

@@ -9,6 +9,7 @@ Ext.define('core.base.view.query.TreeView', {
 	height:500,
 	autoScroll: true,
 	animate: true,
+	al: true,           //是否store自动加载
 	initComponent: function() {
 		var me=this;
 	
@@ -26,10 +27,10 @@ Ext.define('core.base.view.query.TreeView', {
 		if (!this.multiSelect) {		
 			params.excludes = "checked";
 		}
-
+		
 		this.store=Ext.create('Ext.data.TreeStore', {
             defaultRootId: "ROOT",
-            autoLoad: true,
+            autoLoad: this.al,
             model: factory.ModelFactory.getModelByName(this.model, "checked").modelName,   
             proxy: {
                 type: 'ajax',

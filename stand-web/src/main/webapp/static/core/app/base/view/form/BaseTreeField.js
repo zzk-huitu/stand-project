@@ -99,8 +99,10 @@ Ext.define("core.base.view.form.BaseTreeField", {
             self.selTreeWin({
                 model: self.model,
                 title: self.fieldLabel,
-                funcPanel: self.funcPanel,	//zzk：2017-2-13加入，用于辨别此窗口是由哪里打开的
+                funcPanel: self.funcPanel,	//zzk：2017-2-13加入，用于辨别此窗口是由哪里打开的（意义不大）
+                formPanel: self.formPanel,  //zzk：2017-12-27加入，用于辨别此窗口是从哪个表单中打开的
                 multiSelect: configInfo.multiSelect,
+                al:configInfo.al,
                 controller: configInfo.controller,
                 haveButton: true,
                 isEmpty: true,

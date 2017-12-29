@@ -13,7 +13,7 @@ Ext.define("core.system.user.view.DeptTree", {
     extParams: {
         whereSql: " and isDelete='0' ",
         orderSql: " order by parentNode,orderIndex asc",
-        excludes:"checked"
+        excludes:"checked"      //排除这个字段，不显示复选框
     },
 
     columnLines:false,

@@ -13,10 +13,14 @@ Ext.define("core.util.FormUtil", {
                 //如果是日期，则转换一下
                 var fieldXtype = field.xtype;
                 if (fieldXtype == "datefield" || fieldXtype == "datetimefield") {
-                    //一些浏览器不能对 2017-1-1格式的日期进行转换，只能是2017/1/1
-                    var date = objValue.replace(new RegExp(/-/gm), "/");
-                    value = new Date(date);
+
+                    if(!Ext.isDate(objValue)){
+                        //一些浏览器不能对 2017-1-1格式的日期进行转换，只能是2017/1/1
+                        var date = objValue.replace(new RegExp(/-/gm), "/");
+                        value = new Date(date);                    
+                    }
                     formObj.findField(field.name).setValue(value);
+
                 } else if (fieldXtype == "htmleditor") {
                     formObj.findField(field.name).setHtml(value);
                 } else {

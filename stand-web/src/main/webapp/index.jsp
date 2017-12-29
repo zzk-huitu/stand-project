@@ -27,6 +27,7 @@
 <script type="text/javascript" src="${contextPath}/static/core/resources/js/jquery-1.8.3.js"></script>
 <script type="text/javascript" src="${contextPath}/static/core/resources/js/layer/layer.js"></script>
 
+
 </body>
 
 <script type="text/javascript" >
@@ -87,9 +88,56 @@
             }
         }
         ExtCommLoad();
+
+
     }
         
    
+
+
+    //延迟加载这些js
+    // Add a script element as a child of the body
+    function downloadJSAtOnload() {
+        setTimeout(function(){
+
+            var element1 = document.createElement("script");
+            element1.src = "${contextPath}/static/core/resources/js/swfupload/swfupload.js";
+            document.body.appendChild(element1);
+
+
+            var element2 = document.createElement("script");
+            element2.src = "${contextPath}/ueditor/ueditor.config.js";
+            document.body.appendChild(element2);
+
+            var element3 = document.createElement("script");
+            element3.src = "${contextPath}/ueditor/ueditor.all.min.js";
+            document.body.appendChild(element3);
+
+            var element4 = document.createElement("script");
+            element4.src = "${contextPath}/ueditor/ueditor.parse.min.js";
+            document.body.appendChild(element4);
+    
+
+            var element6 = document.createElement("link");
+            element6.rel = "stylesheet";
+            element6.type = "text/css";
+            element6.href = "${contextPath}/static/core/app/ux/uploadPanel/UploadPanel.css";
+            document.body.appendChild(element6);
+
+        },2000);    
+        
+       
+
+     }
+
+     // Check for browser support of event handling capability
+     if (window.addEventListener)
+        window.addEventListener("load", downloadJSAtOnload, false);
+     else if (window.attachEvent)
+        window.attachEvent("onload", downloadJSAtOnload);
+     else window.onload = downloadJSAtOnload;
+
+
    
 </script>
     

@@ -9,4 +9,6 @@ public class AdminType {
 	 
 	 public final static String ADMIN_ORG_ID = "2851655E-3390-4B80-B00C-52C7CA62CB39";
 	 
+	 public final static String SCHOOLADMIN_ROLE_ID = "843bb53b-09f6-422e-9575-82d541478469";
+	 public final static String SCHOOLADMIN_ROLE_NAME= "SCHOOLADMIN";
 }

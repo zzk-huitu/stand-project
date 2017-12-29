@@ -179,4 +179,95 @@ public class CommTreeServiceImpl extends BaseServiceImpl<BaseEntity> implements 
 			}
 		}
 	}
+	
+	@Override
+	public List<CommTreeChk> getCommTreeChk(String treeView, String whereSql) {
+
+		String sql = "select id,text,iconCls,leaf,level,parent from " + treeView + " where 1=1 " + whereSql;
+
+		List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
+
+		List<CommTreeChk> result = new ArrayList<CommTreeChk>();
+
+		// 构建Tree数据
+		createTreeChildChk(new CommTreeChk(TreeVeriable.ROOT, new ArrayList<CommTreeChk>()), result, lists);
+
+		return result;
+	}
+
+	public void createTreeChildChk(CommTreeChk parentNode, List<CommTreeChk> result, List<CommBase> list) {
+		List<CommBase> childs = new ArrayList<CommBase>();
+		for (CommBase dic : list) {
+			if (dic.getParent().equals(parentNode.getId())) {
+				childs.add(dic);
+			}
+		}
+
+		for (CommBase fc : childs) {
+			CommTreeChk child = new CommTreeChk(fc.getId(), fc.getText(), fc.getIconCls(),
+					Boolean.parseBoolean(fc.getLeaf()), fc.getLevel(), "", new ArrayList<CommTreeChk>(), fc.getParent(),
+					false);
+
+			if (fc.getParent().equals(TreeVeriable.ROOT)) {
+				result.add(child);
+			} else {
+				List<CommTreeChk> trees = parentNode.getChildren();
+				trees.add(child);
+				parentNode.setChildren(trees);
+			}
+			createTreeChildChk(child, result, list);
+		}
+	}
+	
+	/**指定根节点**/
+	@Override
+	public List<CommTreeChk> getCommTreeChk_CoustomRoot(String treeView, String root, String whereSql) {
+
+		String sql = "select id,text,iconCls,leaf,level,parent from " + treeView + " where 1=1 " + whereSql;
+
+		List<CommBase> lists = this.queryEntityBySql(sql, CommBase.class);
+
+		CommTreeChk result =null;
+		for (CommBase dic : lists) {
+			if(dic.getId().equals(root)){
+				result = new CommTreeChk(dic.getId(), dic.getText(), dic.getIconCls(),
+						Boolean.parseBoolean(dic.getLeaf()), dic.getLevel(), "", new ArrayList<CommTreeChk>(), dic.getParent(),
+						false);
+			}
+		}
+		// 构建Tree数据
+		createTreeChildChk_CoustomRoot(new CommTreeChk(root, new ArrayList<CommTreeChk>()),root, result.getChildren(), lists);
+		List list= new ArrayList();
+				list.add(result);
+		return list;
+	}
+	
+	private void createTreeChildChk_CoustomRoot(CommTreeChk parentNode, String root,List<CommTreeChk> result, List<CommBase> list) {
+		List<CommBase> childs = new ArrayList<CommBase>();
+		for (CommBase dic : list) {
+			if(dic.getId().equals(root)){
+				CommTreeChk child = new CommTreeChk(dic.getId(), dic.getText(), dic.getIconCls(),
+						Boolean.parseBoolean(dic.getLeaf()), dic.getLevel(), "", new ArrayList<CommTreeChk>(), dic.getParent(),
+						false);
+			}
+			if (dic.getParent().equals(parentNode.getId())) {
+				childs.add(dic);
+			}
+		}
+
+		for (CommBase fc : childs) {
+			CommTreeChk child = new CommTreeChk(fc.getId(), fc.getText(), fc.getIconCls(),
+					Boolean.parseBoolean(fc.getLeaf()), fc.getLevel(), "", new ArrayList<CommTreeChk>(), fc.getParent(),
+					false);
+
+			if (fc.getParent().equals(root)) {
+				result.add(child);
+			} else {
+				List<CommTreeChk> trees = parentNode.getChildren();
+				trees.add(child);
+				parentNode.setChildren(trees);
+			}
+			createTreeChildChk(child, result, list);
+		}
+	}
 }

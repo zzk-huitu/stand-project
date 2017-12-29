@@ -7,8 +7,10 @@ import java.util.Set;
 
 import org.apache.shiro.session.Session;
 
+import com.zd.core.model.ImportNotInfo;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseService;
+import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
 import com.zd.school.plartform.system.model.SysPermission;
 import com.zd.school.plartform.system.model.SysUser;
@@ -165,4 +167,8 @@ public interface SysUserService extends BaseService<SysUser> {
 	public QueryResult<SysUser> getUserNotInRoleId(String roleId, int start, int limit, String sort, String filter);
 
 	public List<SysUser> getUserByDeptId(String id);
+
+	public List<ImportNotInfo> doImportUser(List<List<Object>> listObject, SysUser currentUser);
+
+	public Set<BaseOrg> getDeptByUserId(String userId);
 }

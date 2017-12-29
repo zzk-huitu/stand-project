@@ -153,7 +153,7 @@ public class PoiImportExcel {
 				double cellValue = cell.getNumericCellValue();
 				Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(cellValue);
 				value = sdf2.format(date);
-			} else if (cell.getCellStyle().getDataFormat() == 183 || cell.getCellStyle().getDataFormat() == 177) {
+			} else if (cell.getCellStyle().getDataFormat() == 183 || cell.getCellStyle().getDataFormat() == 177 || cell.getCellStyle().getDataFormat() == 181) {
 				// 处理自定义日期格式：y年m月d日(通过判断单元格的格式id解决，id的值是183)
 				SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 				Date date = cell.getDateCellValue();

@@ -240,7 +240,7 @@ Ext.apply(Ext.form.VTypes, {
 //userName验证  
 Ext.apply(Ext.form.VTypes, {
 	userName: function(val, field) {
-		var reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/;
+		var reg = /^[_a-zA-Z0-9]+$/;
 		try {
 			if (reg.test(val))
 				return true;
@@ -249,7 +249,7 @@ Ext.apply(Ext.form.VTypes, {
 			return false;
 		}
 	},
-	userNameText:'用户名由汉字，字母，数字，下划线组成',
+	userNameText:'用户名由英文字母，数字，下划线组成',
 });
 //xm  
 Ext.apply(Ext.form.VTypes, {

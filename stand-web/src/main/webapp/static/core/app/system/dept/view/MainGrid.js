@@ -9,7 +9,8 @@ Ext.define("core.system.dept.view.MainGrid", {
     //selModel: null,    
     extParams: {
         whereSql: "",
-        orderSql: " order by parentNode,orderIndex asc"
+        orderSql: " order by parentNode,orderIndex asc",
+        excludes:"checked"      //排除这个字段，不显示复选框
     },
     tbar: [{
         xtype: 'button',

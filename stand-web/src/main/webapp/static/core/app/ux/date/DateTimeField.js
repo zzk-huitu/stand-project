@@ -76,6 +76,14 @@ Ext.define('Ext.ux.DateTimeField', {
     format : null,
     submitFormat:null,
     startDay: 1,
+
+    formatText:'',
+    // invalidText :'',
+    // minText :'',
+    // ariaMinText:'',
+    // maxText:'',
+    // ariaMaxText:'',
+    
     //分为两种控件， date 和 datetime
     dateType:'datetime',        
 

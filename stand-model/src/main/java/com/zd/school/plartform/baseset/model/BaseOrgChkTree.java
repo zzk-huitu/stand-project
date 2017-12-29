@@ -15,6 +15,7 @@ import javax.persistence.Column;
 
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.extjs.ExtTreeNode;
+import com.zd.core.model.extjs.ExtTreeNodeChk;
 
 /**
  * ClassName:BaseOrgChkTree Function: TODO ADD FUNCTION. Reason: TODO ADD
@@ -25,7 +26,7 @@ import com.zd.core.model.extjs.ExtTreeNode;
  * @since JDK 1.8
  * @see
  */
-public class BaseOrgChkTree extends ExtTreeNode<BaseOrgChkTree> {
+public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
 	@FieldInfo(name = "部门编码")
 	private String code;
 
@@ -214,9 +215,9 @@ public class BaseOrgChkTree extends ExtTreeNode<BaseOrgChkTree> {
 	public BaseOrgChkTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,
 			List<BaseOrgChkTree> children, String outPhone, String inPhone, String fax, Integer isSystem, String remark,
 			String code, String parent, Integer orderIndex, String deptType, String parentType, String mainLeaderName,
-			String superJob, String superjobName, String isRight) {
+			String superJob, String superjobName, String isRight,Boolean checked) {
 
-		super(id, text, iconCls, leaf, level, treeid, parent, orderIndex, children);
+		super(id, text, iconCls, leaf, level, treeid, children,checked);
 		// TODO Auto-generated constructor stub
 
 		this.outPhone = outPhone;
@@ -238,9 +239,9 @@ public class BaseOrgChkTree extends ExtTreeNode<BaseOrgChkTree> {
 	public BaseOrgChkTree(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,
 			List<BaseOrgChkTree> children, String outPhone, String inPhone, String fax, Integer isSystem, String remark,
 			String code, String parent, Integer orderIndex, String deptType, String parentType, String mainLeaderName,
-			String superJob, String superjobName, String isRight,String nj, String sectionCode) {
+			String superJob, String superjobName, String isRight,String nj, String sectionCode,Boolean checked) {
 
-		super(id, text, iconCls, leaf, level, treeid, parent, orderIndex, children);
+		super(id, text, iconCls, leaf, level, treeid, children,checked);
 		// TODO Auto-generated constructor stub
 
 		this.outPhone = outPhone;

@@ -2,7 +2,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
     extend: "Ext.grid.Panel",
     alias: "widget.pubselect.isselectusergrid",
     ref: 'isselectusergrid',
-    title: "<font color='#ffeb00'>已选用户(选中后向左拖动或双击移除）</font>",
+    title: "<font color='#ffeb00'>已选用户(向左拖动或双击移除）</font>",
     columnLines: true,
     loadMask: true,
     multiSelect: true,
@@ -26,15 +26,23 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
         text: '序号',
         align: 'center'
     }, {
-        width: 150,
+        flex:1,
+        minWidth: 150,
         text: "姓名",
+        titleAlign: "center",
+        align:'center',
         dataIndex: "xm"
-    }, {
+    }/*, {
         width: 50,
         text: "性别",
         dataIndex: "xbm",
-        renderer: function(value){
-            return value == 1 ? "男" : "女";
+        renderer: function(value){        
+            if(value==1)
+                return "男";
+            else if(value==2)
+                return "女";
+            else
+                return "";
         }
     }, {
         flex:1,
@@ -44,7 +52,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
         width: 120,
         text: "岗位",
         dataIndex: "jobName"
-    }],
+    }*/],
     viewConfig: {
         plugins: {
             ptype: 'gridviewdragdrop',
