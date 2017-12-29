@@ -341,4 +341,10 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
         return result;
     }
 
+	@Override
+	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

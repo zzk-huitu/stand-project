@@ -70,11 +70,18 @@ Ext.define("core.public.selectGateway.view.SelectGatewayGrid", {
 
                 var basePanel = grid.up("panel[xtype=public.selectGateway.selectgatewaylayout]");
                 var isSelectGrid;
+                var data = record.data;
                 if(basePanel){
                     isSelectGrid = basePanel.down("panel[xtype=public.selectGateway.isselectgatewaygrid]");
                     
                     if(isSelectGrid.isVisible()==true){
                         var isSelectStore = isSelectGrid.getStore();
+                        for (var i = 0; i < isSelectStore.getCount(); i++) {
+                            if (data.uuid == isSelectStore.getAt(i).get('uuid')) {
+                                Ext.Msg.alert("提示", data.gatewayName+"已存在!");
+                                return ;
+                            }
+                        };
                         isSelectStore.insert(0, [record]);
 
                         var selectStore = grid.getStore();

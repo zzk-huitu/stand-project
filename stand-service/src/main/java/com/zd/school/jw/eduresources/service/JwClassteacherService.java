@@ -84,4 +84,5 @@ public interface JwClassteacherService extends BaseService<JwClassteacher> {
             throws IllegalAccessException, InvocationTargetException;
 
     public Boolean doDelete(String delIds, SysUser currentUser);
+    public CommTree getCommTree(String rootId, String deptType, SysUser currentUser);
 }
