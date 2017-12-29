@@ -3,8 +3,6 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
     alias: "widget.baseset.terminal.maingrid",
     dataUrl: comm.get("baseUrl") + "/BaseInfoterm/list", //数据获取地址
     model: "com.zd.school.oa.terminal.model.OaInfoterm", //对应的数据模型
-    fileName:"信息终端",//导出Excel文件名称
-    exWhereSql:" and isUse=1", //导出Excel 过滤
     tbar:[],
     menuCode:"INFOTERM",
     panelTopBar:{
@@ -133,6 +131,5 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             }
         }]
     }],
-    emptyText: '<span style="width:100%;text-align:center;display: block;">暂无数据</span>'
     }
 });
