@@ -19,7 +19,7 @@ Ext.define("core.wisdomclass.roomterm.controller.OtherController", {
 	    			return false;
 	    		}
 	    	},
-	    } ,
+      } ,
 
     saveDetail_Tab:function(btn){
         var self=this;
@@ -118,5 +118,5 @@ Ext.define("core.wisdomclass.roomterm.controller.OtherController", {
             self.msgbox(errors.join("<br/>"));
         }
     },
-	       
+       
 	});

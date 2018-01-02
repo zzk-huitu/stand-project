@@ -85,6 +85,7 @@ control: {
                 return false;
             }
         },
+
     },
 
     doDetail_tab: function(btn,cmd,grid,record) {
@@ -315,13 +316,13 @@ control: {
                                 component.destroy();
                             }
                         });
-};
-setTimeout(function () {
-    time()
-                    }, 1000);    //延迟1秒执行
-}
-});
-return false;
-}
+                    };
+                    setTimeout(function () {
+                        time()
+                        }, 1000);  
+                }
+            });
+            return false;
+        },
 
 });
