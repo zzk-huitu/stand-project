@@ -3,8 +3,6 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
     alias: "widget.baseset.terminal.maingrid",
     dataUrl: comm.get("baseUrl") + "/BaseInfoterm/list", //数据获取地址
     model: "com.zd.school.oa.terminal.model.OaInfoterm", //对应的数据模型
-    fileName:"信息终端",//导出Excel文件名称
-    exWhereSql:" and isUse=1", //导出Excel 过滤
     tbar:[],
     menuCode:"INFOTERM",
     panelTopBar:{
@@ -46,14 +44,10 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
         property: "termCode", //排序字段
         direction: "ASC" //升降充
     }],
-    //分组字段
-    defGroup: [],
     //扩展参数
     extParams: {
         whereSql: "",
-        //查询的过滤字段
-        //type:字段类型 comparison:过滤的比较符 value:过滤字段值 field:过滤字段
-        //filter: "[{'type':'string','comparison':'=','value':'','field':'claiId'}]"
+        //filter: "[{'type':'numeric','comparison':'=','value':'0','field':'isUse'}]"
     },
     
     columns:  {        
@@ -133,6 +127,5 @@ Ext.define("core.baseset.terminal.view.MainGrid", {
             }
         }]
     }],
-    emptyText: '<span style="width:100%;text-align:center;display: block;">暂无数据</span>'
     }
 });

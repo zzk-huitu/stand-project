@@ -1,6 +1,5 @@
 package com.zd.school.plartform.baseset.controller;
 
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
+import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.oa.terminal.model.OaRoomTerm;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
@@ -39,167 +39,167 @@ import com.zd.school.plartform.system.model.SysUser;
 @RequestMapping("/BaseInfoterm")
 public class BaseInfotermController extends FrameWorkController<OaInfoterm> implements Constant {
 
-    @Resource
-    BaseInfotermService thisService; // service层接口
+	@Resource
+	BaseInfotermService thisService; // service层接口
 
-    @Resource
-    private BaseRoominfoService roomService;
-    
-    @Resource
+	@Resource
+	private BaseRoominfoService roomService;
+
+	@Resource
 	BaseDicitemService dicitemService;
 
-    /**
-     * @param entity   实体类
-     * @param request
-     * @param response
-     * @return void 返回类型
-     * @throws IOException 设定参数
-     * @Title: list
-     * @Description: 查询数据列表
-     */
-    @RequestMapping(value = {"/list"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET,
-            org.springframework.web.bind.annotation.RequestMethod.POST})
-    public void list(@ModelAttribute OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        String strData = ""; // 返回给js的数据
-        Integer start = super.start(request);
-        Integer limit = super.limit(request);
-        String sort = super.sort(request);
-        String filter = super.filter(request);
-        QueryResult<OaInfoterm> qResult = thisService.list(start, limit, sort, filter, true);
-        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-        writeJSON(response, strData);// 返回数据
-    }
+	/**
+	 * @param entity
+	 *            实体类
+	 * @param request
+	 * @param response
+	 * @return void 返回类型
+	 * @throws IOException
+	 *             设定参数
+	 * @Title: list
+	 * @Description: 查询数据列表
+	 */
+	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void list(@ModelAttribute OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		QueryResult<OaInfoterm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
 
-    /**
-     * @param entity
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    @Auth("INFOTERM_add")
-    @RequestMapping("/doAdd")
-    public void doAdd(OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, IllegalAccessException, InvocationTargetException {
+	/**
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@Auth("INFOTERM_add")
+	@RequestMapping("/doAdd")
+	public void doAdd(OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
 
-        Integer beforeNumber = Integer.parseInt(request.getParameter("beforeNumber"));
-        Integer termCount = Integer.parseInt(request.getParameter("termCount"));
-        // 此处为放在入库前的一些检查的代码，如唯一校验等
-        Integer isCount = thisService.getQueryCountByHql(" select count(uuid) from OaInfoterm where isDelete=0 ");
-        if (isCount >= beforeNumber) {
-            isCount++;
-            writeJSON(response, jsonBuilder.returnFailureJson("\"起始顺序号应该从[" + isCount.toString() + "]起\""));
-            return;
-        }
-        // 获取当前操作用户
-        SysUser currentUser = getCurrentSysUser();
-      
-        entity = thisService.doAddEntity(entity, currentUser, beforeNumber, termCount);// 执行增加方法
-        if (ModelUtil.isNotNull(entity))
-            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-        else
-            writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));      
-}
+		Integer beforeNumber = Integer.parseInt(request.getParameter("beforeNumber"));
+		Integer termCount = Integer.parseInt(request.getParameter("termCount"));
+		// 此处为放在入库前的一些检查的代码，如唯一校验等
+		Integer isCount = thisService.getQueryCountByHql(" select count(uuid) from OaInfoterm where isDelete=0 ");
+		if (isCount >= beforeNumber) {
+			isCount++;
+			writeJSON(response, jsonBuilder.returnFailureJson("\"起始顺序号应该从[" + isCount.toString() + "]起\""));
+			return;
+		}
+		// 获取当前操作用户
+		SysUser currentUser = getCurrentSysUser();
 
-    /**
-     * @param request
-     * @param response
-     * @return void 返回类型
-     * @throws IOException 抛出异常
-     * @Title: doDelete
-     * @Description: 逻辑删除指定的数据
-     */
-    @RequestMapping("/doDelete")
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String delIds = request.getParameter("ids");
-        if (StringUtils.isEmpty(delIds)) {
-            writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入主键\""));
-            return;
-        } else {
-            SysUser currentUser = getCurrentSysUser();
-          
-            boolean flag = thisService.doLogicDeleteByIds(delIds, currentUser);
-            if (flag) {
-                writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功\""));
-            } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败,详情见错误日志\""));
-            }
-        }
-    }
+		entity = thisService.doAddEntity(entity, currentUser, beforeNumber, termCount);// 执行增加方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));
+	}
 
+	/**
+	 * @param request
+	 * @param response
+	 * @return void 返回类型
+	 * @throws IOException
+	 *             抛出异常
+	 * @Title: doDelete
+	 * @Description: 逻辑删除指定的数据
+	 */
+	@Auth("ROOMTERM_delete")
+	@RequestMapping("/doDelete")
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String delIds = request.getParameter("ids");
+		if (StringUtils.isEmpty(delIds)) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入主键\""));
+			return;
+		} else {
+			SysUser currentUser = getCurrentSysUser();
 
-    /**
-     * @param entity
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    @RequestMapping("/doUpdate")
-    public void doUpdates(OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, IllegalAccessException, InvocationTargetException {
+			boolean flag = thisService.doLogicDeleteByIds(delIds, currentUser);
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功\""));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败,详情见错误日志\""));
+			}
+		}
+	}
 
-        // 入库前检查代码
+	/**
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/doUpdate")
+	public void doUpdates(OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
 
-        // 获取当前的操作用户
-        SysUser currentUser = getCurrentSysUser();
-       
-        entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
-        if (ModelUtil.isNotNull(entity))
-            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-        else
-            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
-      
-    }
+		// 入库前检查代码
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping("/doSetTerminal")
-    public void doSetTerminal(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String setTerminals = request.getParameter("terminals");
-        String roomId = request.getParameter("roomId");
-        String roomName = request.getParameter("roomName");
-        SysUser currentUser = getCurrentSysUser();
+		// 获取当前的操作用户
+		SysUser currentUser = getCurrentSysUser();
 
-        List<OaInfoterm> entityTerminals = (List<OaInfoterm>) jsonBuilder.fromJsonArray(setTerminals,
-                OaInfoterm.class);
-        Boolean result = thisService.doSetTerminal(entityTerminals, roomId, roomName, currentUser);
-        if (result)
-            writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
-        else
-            writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败,详情见错误日志\""));
-        
-    }
+		entity = thisService.doUpdateEntity(entity, currentUser);// 执行修改方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 
-    @RequestMapping("/getRoomTermInfo")
-    public void getRoomInfo(String roomId, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        String sql = "select * from OA_V_ROOMTERM where roomId='" + roomId + "'";
-        List<OaRoomTerm> roomTerms= thisService.queryEntityBySql(sql, OaRoomTerm.class);
-        if(roomTerms.size()==0){        	
-              writeJSON(response, jsonBuilder.returnFailureJson("\"请选择房间！\""));
-        }else{
-        	  OaRoomTerm roominfo = roomTerms.get(0);
-              String strData = jsonBuilder.toJson(roominfo);
-              writeJSON(response, jsonBuilder.returnSuccessJson(strData));
-        }
-      
-    }
-    @Auth("INFOTERM_export")
-    @RequestMapping("/doExportExcel")
-    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().setAttribute("exportTerminfoIsEnd", "0");
-        request.getSession().removeAttribute("exportTerminfoIsState");
-        String roomName = request.getParameter("roomName");
+	}
+	@Auth("ROOMTERM_add")
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/doSetTerminal")
+	public void doSetTerminal(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String setTerminals = request.getParameter("terminals");
+		String roomId = request.getParameter("roomId");
+		String roomName = request.getParameter("roomName");
+		SysUser currentUser = getCurrentSysUser();
+
+		List<OaInfoterm> entityTerminals = (List<OaInfoterm>) jsonBuilder.fromJsonArray(setTerminals, OaInfoterm.class);
+		Boolean result = thisService.doSetTerminal(entityTerminals, roomId, roomName, currentUser);
+		if (result)
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功\""));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败,详情见错误日志\""));
+
+	}
+
+	@RequestMapping("/getRoomTermInfo")
+	public void getRoomInfo(String roomId, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String sql = "select * from OA_V_ROOMTERM where roomId='" + roomId + "'";
+		List<OaRoomTerm> roomTerms = thisService.queryEntityBySql(sql, OaRoomTerm.class);
+		if (roomTerms.size() == 0) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"请选择房间！\""));
+		} else {
+			OaRoomTerm roominfo = roomTerms.get(0);
+			String strData = jsonBuilder.toJson(roominfo);
+			writeJSON(response, jsonBuilder.returnSuccessJson(strData));
+		}
+
+	}
+
+	@Auth("INFOTERM_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportTerminfoIsEnd", "0");
+		request.getSession().removeAttribute("exportTerminfoIsState");
+		String roomName = request.getParameter("roomName");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 35,};
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 35, };
 		List<OaInfoterm> terminfoList = null;
 		String hql = " from OaInfoterm where isDelete=0 and isUse=1 ";
-		if(StringUtils.isNotEmpty(roomName)){
-			hql +=" and roomName like '%"+roomName+"%' ";
+		if (StringUtils.isNotEmpty(roomName)) {
+			hql += " and roomName like '%" + roomName + "%' ";
 		}
 		hql += " order by termCode";
 		terminfoList = thisService.queryByHql(hql);
@@ -211,7 +211,7 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 			terminfoMap.put("termCode", terminfo.getTermCode());
 			terminfoMap.put("termType", terminfo.getTermType());
 			terminfoMap.put("termSpec", terminfo.getTermSpec());
-			terminfoMap.put("isUse", terminfo.getIsUse()==0?"未使用":"已使用");
+			terminfoMap.put("isUse", terminfo.getIsUse() == 0 ? "未使用" : "已使用");
 			terminfoMap.put("roomName", terminfo.getRoomName());
 			terminfoExpList.add(terminfoMap);
 		}
@@ -219,9 +219,9 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", terminfoExpList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "终端号", "类型", "规格", "使用状态", "房间名称"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] { "终端号", "类型", "规格", "使用状态", "房间名称" }); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 
@@ -233,24 +233,68 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 			request.getSession().setAttribute("exportTerminfoIsEnd", "0");
 			request.getSession().setAttribute("exportTerminfoIsState", "0");
 		}
-     
-    } 
-    
-    @RequestMapping("/checkExportEnd")
-    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Object isEnd = request.getSession().getAttribute("exportTerminfoIsEnd");
-        Object state = request.getSession().getAttribute("exportTerminfoIsState");
-        if (isEnd != null) {
-            if ("1".equals(isEnd.toString())) {
-                writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
-            } else if (state != null && state.equals("0")) {
-                writeJSON(response, jsonBuilder.returnFailureJson("0"));
-            } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
-            }
-        } else {
-            writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
-        }
-    }
+	}
+    @Auth("ROOMTERM_export")
+	@RequestMapping("/doRoomTermExportExcel")
+	public void doRoomTermExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportTerminfoIsEnd", "0");
+		request.getSession().removeAttribute("exportTerminfoIsState");
+		String ids = request.getParameter("ids");
+
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 25, 25, 25 };
+		List<OaInfoterm> terminfoList = null;
+		String hql = " from OaInfoterm where isDelete=0 and isUse=1 ";
+		if (StringUtils.isNotEmpty(ids)) {
+			hql += " and uuid in ('" + ids.replace(",", "','") + "')";
+		}
+		hql += " order by termCode";
+		terminfoList = thisService.queryByHql(hql);
+		List<Map<String, String>> terminfoExpList = new ArrayList<>();
+		Map<String, String> terminfoMap = null;
+		for (OaInfoterm terminfo : terminfoList) {
+			terminfoMap = new LinkedHashMap<>();
+			terminfoMap.put("termCode", terminfo.getTermCode());
+			terminfoMap.put("houseNumb", terminfo.getHouseNumb());
+			terminfoMap.put("roomName", terminfo.getRoomName());
+			terminfoExpList.add(terminfoMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", terminfoExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "终端号", "使用房间名称", "使用房间门牌号" }); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "终端分配信息", "终端分配信息", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportTerminfoIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportTerminfoIsEnd", "0");
+			request.getSession().setAttribute("exportTerminfoIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportTerminfoIsEnd");
+		Object state = request.getSession().getAttribute("exportTerminfoIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 }

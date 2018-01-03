@@ -6,26 +6,18 @@ Ext.define("core.baseset.terminal.view.MainLayout", {
         "core.baseset.terminal.view.DetailLayout",
         "core.baseset.terminal.view.MainGrid",
         "core.baseset.terminal.view.DetailForm",
-        "core.baseset.terminal.view.ReadonlyForm"
    
     ],
     
     controller: 'baseset.terminal.maincontroller',
     
     otherController:'baseset.terminal.othercontroller',
-    layout:'fit',
-    border:false,
     funCode: "terminal_main",
     detCode: "terminal_detail",
     detLayout: "baseset.terminal.detaillayout",
     funData: {
         action: comm.get("baseUrl") + "/BaseInfoterm", //请求Action
-        whereSql: "", //表格查询条件
-        orderSql: "", //表格排序条件
-        filter: "",
         pkName: "uuid",
-        width: 400,
-        height: 300,
         defaultObj: {
             beforeNumber:1,
             termCount:30,
