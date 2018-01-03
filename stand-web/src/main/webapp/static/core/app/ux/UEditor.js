@@ -78,11 +78,17 @@
         },
         getRawValue: function () {
             var me = this;
+            var content=null;
             if (me.UEditorIsReady) {
                 me.ue.sync(me.getInputId());
+                content=me.ue.getContent(); //真正的获取编辑器的内容； zzk 2017-12-29加入
+                me.rawValue = content;          
+                return content;
             }
             v = (me.inputEl ?me.inputEl.dom?me.inputEl.getValue() : Ext.valueFrom(me.rawValue, '') : Ext.valueFrom(me.rawValue, ''));
+
             me.rawValue = v;
+
             return v;
         },
         destroyUEditor: function () {
@@ -102,5 +108,6 @@
             var me = this;
             me.callParent();
             me.destroyUEditor();
-        }
+        },
+
     });

@@ -6,6 +6,7 @@ Ext.define("core.wisdomclass.classpersence.view.ClassTree", {
     expandFirst:true,
     selModel: {},
     sortableColumns:false,
+    multiSelect: false,
     tbar:{
         xtype:'toolbar',
         items: [{

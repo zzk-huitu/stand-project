@@ -106,8 +106,8 @@ Ext.define("core.wisdomclass.notice.view.DetailForm", {
             items: [{
                 beforeLabelTextTpl: comm.get("required"),
                 fieldLabel: "公告正文",
-                allowBlank: false, 
-                blankText: "公告正文不能为空",
+                //allowBlank: false, 
+                //blankText: "公告正文不能为空",
                 columnWidth: 1,
                 name: "noticeContent",
                 xtype: "ueditor",

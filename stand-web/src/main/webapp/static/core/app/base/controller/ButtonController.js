@@ -465,6 +465,16 @@ Ext.define("core.base.controller.ButtonController", {
                                     //store.load();
                                     store.remove(records); //不刷新的方式
                                 }
+                                
+                                /*
+                                var totalCount=store.getTotalCount();
+                                var pageSize=store.pageSize;
+                                if((totalCount-records.length)%pageSize==0){
+                                    store.loadPage(1);
+                                }else{
+                                    store.load();
+                                }*/
+
                             
                                 self.msgbox(data.obj);                               
                             }else {

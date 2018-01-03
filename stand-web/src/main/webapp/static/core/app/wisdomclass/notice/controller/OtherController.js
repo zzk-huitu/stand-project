@@ -62,6 +62,7 @@ Ext.define("core.wisdomclass.notice.controller.OtherController", {
     },
 
     doSave_Tab:function(btn,cmd){
+
         var self=this;
         //获取基本的容器
         var basetab = btn.up('baseformtab');
@@ -84,41 +85,51 @@ Ext.define("core.wisdomclass.notice.controller.OtherController", {
         var funData = detPanel.funData;
         var pkName = funData.pkName;
         var pkField = formObj.findField(pkName);
-        var params = self.getFormValue(formObj);
-
-
-        //把checkbox的值转换为数字 ；    暂时测试时设置，
-        params.deptRadio=objForm.down("radiogroup[ref=deptRadio]").getChecked()[0].inputValue;
-        params.stuRadio=objForm.down("radiogroup[ref=stuRadio]").getChecked()[0].inputValue;
-        params.terminalRadio=objForm.down("radiogroup[ref=terminalRadio]").getChecked()[0].inputValue;
-
-        //当为指定具体数据的时候，才传入数据
-        if(params.deptRadio!=2)
-            params.deptIds=null;
         
-        if(params.stuRadio!=2)
-            params.stuIds=null;
-           
-        if(params.terminalRadio!=2){
-            params.termIds=null;    //入库（在编辑时直接显示此值）
-            params.termNames=null;  //入库（在编辑时直接显示此值）
-        }
 
-        if(params.isNoticeParent==false)
-            params.isNoticeParent=null;
-
-        //不需要上传
-        params.deptNames=null;
-        params.stuNames=null;
-
-        if (Ext.isEmpty(params.deptIds) && Ext.isEmpty(params.roleIds) && Ext.isEmpty(params.userIds) && Ext.isEmpty(params.stuIds)) {
-            self.Warning("通知部门、角色、教职工、学生至少要设置一项数据");
-            return false;
-        }
 
         //判断当前是保存还是修改操作
         var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
         if (formObj.isValid()) {
+
+            var params = self.getFormValue(formObj);
+           
+            //文本编辑器进行手动验证（因为使用isValid不太稳定，经常出错：zzk）
+            if(params.noticeContent==null || params.noticeContent.trim()==""){
+                self.msgbox("<font color=red>公告正文</font>:不能为空！");
+                return false;
+            }
+
+            //把checkbox的值转换为数字 ；    暂时测试时设置，
+            params.deptRadio=objForm.down("radiogroup[ref=deptRadio]").getChecked()[0].inputValue;
+            params.stuRadio=objForm.down("radiogroup[ref=stuRadio]").getChecked()[0].inputValue;
+            params.terminalRadio=objForm.down("radiogroup[ref=terminalRadio]").getChecked()[0].inputValue;
+
+            //当为指定具体数据的时候，才传入数据
+            if(params.deptRadio!=2)
+                params.deptIds=null;
+            
+            if(params.stuRadio!=2)
+                params.stuIds=null;
+               
+            if(params.terminalRadio!=2){
+                params.termIds=null;    //入库（在编辑时直接显示此值）
+                params.termNames=null;  //入库（在编辑时直接显示此值）
+            }
+
+            if(params.isNoticeParent==false)
+                params.isNoticeParent=null;
+
+            //不需要上传
+            params.deptNames=null;
+            params.stuNames=null;
+
+            if (Ext.isEmpty(params.deptIds) && Ext.isEmpty(params.roleIds) 
+                && Ext.isEmpty(params.userIds) && Ext.isEmpty(params.stuIds)
+                &&params.deptRadio!=1&&params.stuRadio!=1) {
+                self.Warning("通知部门、角色、教职工、学生至少要设置一项数据");
+                return false;
+            }
 
             var loading = new Ext.LoadMask(basetab, {
                 msg: '正在提交，请稍等...',
@@ -135,21 +146,21 @@ Ext.define("core.wisdomclass.notice.controller.OtherController", {
 
                     if (data.success) {
 
-                        loading.hide();
-
                         //执行上传文件
                         var uploadpanel = detPanel.down("panel[xtype=uploadpanel]");
                         var url = funData.action + "/doUpload";
                         var params = {
                             recordId: data.obj.uuid
                         };
-                        uploadpanel.onUpload(url, params,detPanel);
+                        uploadpanel.onUpload(url, params);
 
                         //判断是否上传完毕
                         var uploadFileInterval=setInterval(function(){                            
                             if(uploadpanel.file_is_uploadSuccess()==true){
                                 clearInterval(uploadFileInterval);
-                            
+
+                                loading.hide();
+
                                 self.msgbox("保存成功!");        
 
                                 var grid = basetab.funData.grid; //此tab是否保存有grid参数

@@ -30,13 +30,13 @@ Ext.define("core.wisdomclass.notice.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },{
+        },/*{
             xtype: 'button',
             text: '新生注冊',
             ref: 'gridReg', 
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+            iconCls: 'x-fa fa-registered'
+        },*/'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -128,7 +128,7 @@ Ext.define("core.wisdomclass.notice.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 250,
+            width: 150,
             fixed: true,
             items: [{
                 text:'编辑',  

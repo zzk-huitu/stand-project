@@ -166,7 +166,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/dodelete")
+	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
@@ -174,16 +174,13 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			try {
-				boolean flag = thisService.doLogicDeleteByIds(delIds, currentUser);
-				if (flag) {
-					writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
-				} else {
-					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
-				}
-			} catch (Exception e) {
+	
+			boolean flag = thisService.doLogicDeleteByIds(delIds, currentUser);
+			if (flag) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败,详情见错误日志\""));
-			}
+			}		
 		}
 	}
 
@@ -319,7 +316,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 					//String url = "/static/upload/OaNotice/" + sdf.format(System.currentTimeMillis()) + "/";
-					String url = "OaNotice\\" + sdf.format(System.currentTimeMillis()) + "\\";
+					String url = "OaNotice/" + sdf.format(System.currentTimeMillis()) + "/";
 					//String rootPath = request.getSession().getServletContext().getRealPath("/");
 					//rootPath = rootPath.replace("\\", "/");				
 					

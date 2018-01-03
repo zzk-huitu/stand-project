@@ -11,20 +11,7 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
     init: function() {
     },
     control: {
-        "basegrid[xtype=wisdomclass.notice.maingrid] actioncolumn": {
-            detailClick_Tab: function (data) {
-                this.doDetail_Tab(null,data.view,data.record);
-                return false;
-            }
-        },
 
-        
-        "basegrid[xtype=wisdomclass.notice.maingrid] button[ref=gridExport]": {
-            beforeclick: function(btn) {
-                this.doExport(btn);
-                return false;
-            }
-        },
         /*前端按钮权限控制*/
         // "basegrid[xtype=systemset.jobinfo.maingrid]": {
         //      afterrender: function (grid, eOpts) {
@@ -64,31 +51,25 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
             }
         },
 
-        // "basegrid[xtype=systemset.jobinfo.maingrid] button[ref=gridEdit_Tab]": {
-        //     beforeclick: function(btn) {
-        //         this.doDetail_Tab(btn,"edit");
-        //         return false;
-        //     }
-        // },
 
-        // "basegrid[xtype=systemset.jobinfo.maingrid]  actioncolumn": {
-        //     editClick_Tab:function(data){
-        //         var baseGrid=data.view;
-        //         var record=data.record;
+        "basegrid  actioncolumn": {
+            editClick_Tab:function(data){
+                var baseGrid=data.view;
+                var record=data.record;
 
-        //         this.doDetail_Tab(null,"edit",baseGrid,record);
+                this.doDetail_Tab(null,"edit",baseGrid,record);
 
-        //         return false;
-        //     },
-        //     detailClick_Tab:function(data){
-        //         var baseGrid=data.view;
-        //         var record=data.record;
+                return false;
+            },
+            detailClick_Tab:function(data){
+                var baseGrid=data.view;
+                var record=data.record;
 
-        //         this.doDetail_Tab(null,"detail",baseGrid,record);
+                this.doDetail_Tab(null,"detail",baseGrid,record);
 
-        //         return false;
-        //     }
-        // }
+                return false;
+            }
+        }
     },
    
     doDetail_Tab:function(btn, cmd, grid, record) {
@@ -136,7 +117,7 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
         var tabItemId=funCode+"_gridAdd";     //设置tab页的itemId；命名规则：funCode+'_ref名称',确保不重复
         var pkValue= null;      //主键值
         var operType = cmd;     //控制提交按钮的显示方式
-
+        var itemXtype = "wisdomclass.notice.detailform";
         //判断是哪种打开方式
         switch (cmd) {
             case "edit":
@@ -172,6 +153,7 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
                 insertObj = recordData;
                 tabTitle = recordData["noticeTitle"]+"-"+funData.tabConfig.detailTitle;
                 tabItemId=funCode+"_gridDetail"+pkValue; 
+                itemXtype = "wisdomclass.notice.readform";
                 break;
         }
 
@@ -203,7 +185,10 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
                     funData: popFunData,                //保存funData数据，提供给提交事件中使用
                     items:[{
                         xtype:detLayout,                        
-                        funCode: detCode             
+                        funCode: detCode,
+                        items: [{
+                            xtype: itemXtype
+                        }]             
                     }]
                 }); 
                 tabItem.add(item);  
@@ -274,7 +259,59 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
                 }
 
                 if(cmd=="detail"){
-                    self.setFuncReadOnly(funData, objDetForm, true);
+
+                    //1. 加载部门、人员、用户等数据
+                    self.asyncAjax({
+                        url: funData.action + "/getNoticeOther",
+                        params: {
+                            noticeId: insertObj.uuid     
+                        },
+                        //回调代码必须写在里面
+                        success: function (response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if (data.success) {
+                                insertObj = Ext.apply(insertObj, {
+                                    deptIds: data.obj.deptIds,
+                                    deptNames: data.obj.deptNames,
+                                    roleIds: data.obj.roleIds,
+                                    roleNames: data.obj.roleNames,
+                                    userIds: data.obj.userIds,
+                                    userNames: data.obj.userNames,
+                                    stuIds: data.obj.stuIds,
+                                    stuNames: data.obj.stuNames,
+                                    termIds: data.obj.termIds,  //显示的是房间id
+                                    termNames: data.obj.termNames
+                                });
+
+                                if(insertObj.deptRadio==1)
+                                    insertObj.deptNames="所有部门";
+                                
+                                if(insertObj.stuRadio==1)
+                                    insertObj.deptNames="所有学生";
+                                   
+                                if(insertObj.terminalRadio==1)
+                                    insertObj.stuNames="所有终端";
+                                
+
+                                //加载表单数据
+                                self.setFormValue(formDeptObj, insertObj);
+                            }
+                        },
+                        failure: function(response) {
+                            Ext.Msg.alert('读取文件数据失败！', '错误信息：\n' + response.responseText);                           
+                        }
+                    });
+                    //加载表单数据
+                    self.setFormValue(formDeptObj, insertObj);
+
+                    //加载图片
+                    objDetForm.down("dataview[ref=fileView]").getStore().load({
+                        params: {
+                            recordId: insertObj.uuid,
+                            attachIsMain: '0',
+                            entityName:'OaNotice'
+                        }
+                    });
                 }
 
                 

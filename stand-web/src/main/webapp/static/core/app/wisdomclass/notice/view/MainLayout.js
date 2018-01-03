@@ -47,7 +47,7 @@ Ext.define("core.wisdomclass.notice.view.MainLayout", {
 	items: [{
 		xtype: "wisdomclass.notice.maintree",
 		region: "west",
-		width:250,
+		width:200,
 		split : true,
         collapsible:true,          
 	}, 

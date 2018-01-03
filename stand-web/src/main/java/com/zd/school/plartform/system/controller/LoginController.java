@@ -21,6 +21,7 @@ import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,9 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
+	
+	@Value("${virtualFileUrl}")
+	private String virtualFileUrl;
 	
 	
 	//测试jedis
@@ -163,6 +167,8 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			}
 			session.setAttribute(SESSION_SYS_ISADMIN,0);
 		}
+		
+		session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
 		
 		result.put("result", 1);
 		writeJSON(response, jsonBuilder.toJson(result));

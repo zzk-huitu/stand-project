@@ -10,7 +10,7 @@ Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
         items: [{
             xtype: 'button',
             text: '添加',
-            ref: 'gridAdd_Tab',
+            ref:'gridAdd_Tab',
             iconCls: 'x-fa fa-plus-circle',
             funCode:'girdFuntionBtn',
             //disabled:true
