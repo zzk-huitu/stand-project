@@ -19,6 +19,14 @@ Ext.define("core.wisdomclass.roomterm.controller.OtherController", {
 	    			return false;
 	    		}
 	    	},
+            "mtfuncwindow[funcPanel=baseset.terminal.mainlayout]": {
+                afterrender: function(grid) {
+                    var basegrid = grid;
+                    var toolbar = basegrid.down("toolbar[ref=panelTopBar]");
+                    toolbar.removeAll();
+                    return false;
+                }
+            },
       } ,
 
     saveDetail_Tab:function(btn){

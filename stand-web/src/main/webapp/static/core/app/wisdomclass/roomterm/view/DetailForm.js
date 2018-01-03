@@ -68,7 +68,7 @@ Ext.define("core.wisdomclass.roomterm.view.DetailForm", {
             fieldLabel: "分配终端",
             xtype: "basefuncfield",
             name: "termCode2",
-           // funcController: "", //该功能主控制器
+            refController: "wisdomclass.roomterm.othercontroller", //该功能主控制器
             funcPanel: "baseset.terminal.mainlayout", //该功能显示的主视图
             funcTitle: "选择终端", //查询窗口的标题
             configInfo: {
@@ -99,7 +99,7 @@ Ext.define("core.wisdomclass.roomterm.view.DetailForm", {
             fieldLabel: "分配终端",
             xtype: "basefuncfield",
             name: "termCode3",
-            //  funcController: "", //该功能主控制器
+            refController: "wisdomclass.roomterm.othercontroller", //该功能主控制器
             funcPanel: "baseset.terminal.mainlayout", //该功能显示的主视图
             funcTitle: "选择终端", //查询窗口的标题
             configInfo: {
@@ -130,7 +130,7 @@ Ext.define("core.wisdomclass.roomterm.view.DetailForm", {
             fieldLabel: "分配终端",
             xtype: "basefuncfield",
             name: "termCode4",
-           // funcController: "", //该功能主控制器
+            refController: "wisdomclass.roomterm.othercontroller", //该功能主控制器
             funcPanel: "baseset.terminal.mainlayout", //该功能显示的主视图
             funcTitle: "选择终端", //查询窗口的标题
             configInfo: {
@@ -161,7 +161,7 @@ Ext.define("core.wisdomclass.roomterm.view.DetailForm", {
             fieldLabel: "分配终端",
             xtype: "basefuncfield",
             name: "termCode5",
-            //funcController: "", //该功能主控制器
+            refController: "wisdomclass.roomterm.othercontroller", //该功能主控制器
             funcPanel: "baseset.terminal.mainlayout", //该功能显示的主视图
             funcTitle: "选择终端", //查询窗口的标题
             configInfo: {
