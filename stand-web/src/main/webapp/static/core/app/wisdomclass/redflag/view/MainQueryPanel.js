@@ -25,6 +25,8 @@ Ext.define("core.wisdomclass.redflag.view.MainQueryPanel", {
             fieldLabel: "开始日期",
             xtype: "basequeryfield",
             queryType: "datetimefield",
+            dateType:'date',        //指定这个组件的格式，date或者datetime
+            dataType:'date',        //指定查询设置filter时的进行判断的类型，date或者datetime
             name: "beginDate",
             operationType:">=",
             format: "Y-m-d",
@@ -33,6 +35,8 @@ Ext.define("core.wisdomclass.redflag.view.MainQueryPanel", {
             fieldLabel: "结束日期",
             xtype: "basequeryfield",
             queryType: "datetimefield",
+            dateType:'date',        //指定这个组件的格式，date或者datetime
+            dataType:'date',        //指定查询设置filter时的进行判断的类型，date或者datetime
             name: "endDate",
             operationType:"<=",
             format: "Y-m-d",

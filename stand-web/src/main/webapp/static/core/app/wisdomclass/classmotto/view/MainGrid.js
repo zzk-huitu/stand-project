@@ -1,7 +1,7 @@
 Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.wisdomclass.classmotto.maingrid",
-	dataUrl: comm.get("baseUrl") + "/gradeClass/classmottolist", //数据获取地址
+	dataUrl: comm.get("baseUrl") + "/GradeClass/classmottolist", //数据获取地址
 	model: "com.zd.school.jw.eduresources.model.JwTGradeclass", //对应的数据模型
 	al:false,
     menuCode:"CLASSMOTTO",
@@ -46,7 +46,7 @@ Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
 	}, {
 		text: "班级名称",
 		dataIndex: "className",
-        flex:1,
+        width:200,
 		renderer: function(value, metaData) {
 			var title = "班级名称";
 			var html = value;
@@ -57,6 +57,7 @@ Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
 		text: "班训",
 		dataIndex: "classMotto",
         flex:1,
+        minWidth:200,
 		renderer: function(value, metaData) {
 			var title = "classMotto";
 			var html = value;
@@ -67,7 +68,7 @@ Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 250,
+        width: 150,
         fixed: true,
         items: [{
             text:'编辑',  

@@ -39,13 +39,15 @@ Ext.define("core.util.DetailTabUtil", {
         var pkValue= null;
         var operType="";
         var recordData=null;
-
+        var itemXtype=null;     //2018/1/3新加入，指定打开的界面别名
         switch (cmd) {
             case "add":
                 tabTitle = tabConfig.addTitle; 
                 tabItemId = funCode + "_gridAdd";    //命名规则：funCode+'_ref名称',确保不重复
                 pkValue= null;
                 operType="add";
+
+                itemXtype=tabConfig.addXtype;
                 break;
             case "edit":
                 if (btn) {	//点击按钮的方式
@@ -70,6 +72,8 @@ Ext.define("core.util.DetailTabUtil", {
                 pkValue= recordData[pkName];
                 tabItemId=funCode+"_gridEdit"; 
                 operType="edit";
+
+                itemXtype=tabConfig.editXtype;
                 break;
             case "detail":
 
@@ -95,6 +99,8 @@ Ext.define("core.util.DetailTabUtil", {
                 pkValue= recordData[pkName];
                 tabItemId=funCode+"_gridDetail"+pkValue;    //详情页面可以打开多个，ID不重复
                 operType="detail";
+
+                itemXtype=tabConfig.detailXtype;
                 break;
         }
 
@@ -104,7 +110,8 @@ Ext.define("core.util.DetailTabUtil", {
 	        tabItemId : tabItemId,
 	        pkValue : pkValue,
 	        operType : operType,
-	        recordData : recordData
+	        recordData : recordData,
+            itemXtype:itemXtype
         };
 	},
 
@@ -131,6 +138,20 @@ Ext.define("core.util.DetailTabUtil", {
         if(tabInfo.recordData!=null){
         	insertObj=tabInfo.recordData;
         }
+        
+        var currentXtype=[{
+            xtype:moduleInfo.detLayout
+        }];
+
+        //如果指定了子视图界面，就替换掉默认的视图
+        if(tabInfo.itemXtype){
+            currentXtype=[{
+                xtype:moduleInfo.detLayout,
+                items: [{
+                    xtype: tabInfo.itemXtype
+                }]
+            }];
+        }
 
 		var item=Ext.widget("baseformtab",{
             operType:tabInfo.operType,                            
@@ -140,9 +161,7 @@ Ext.define("core.util.DetailTabUtil", {
             tabItemId:tabInfo.tabItemId,                //指定tab页的itemId
             insertObj:insertObj,                	//保存一些需要默认值，提供给提交事件中使用
             funData:popFunData,                		//保存funData数据，提供给提交事件中使用
-            items:[{
-                xtype:moduleInfo.detLayout
-            }]
+            items:currentXtype
         }); 
         return item;
 	},

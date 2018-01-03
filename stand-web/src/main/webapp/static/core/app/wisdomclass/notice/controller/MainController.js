@@ -210,7 +210,7 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
                     var uploadpanel = objDetForm.down("panel[xtype=uploadpanel]");
                     //1. 加载文件数据
                     self.asyncAjax({
-                        url: funData.action + "/getFileList",
+                        url: comm.get('baseUrl') + "/BaseAttachment/getFileList",
                         params: {
                             recordId: insertObj.uuid                   
                         },

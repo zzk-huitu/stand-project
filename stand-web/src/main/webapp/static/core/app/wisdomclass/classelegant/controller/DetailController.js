@@ -1,6 +1,6 @@
-Ext.define("core.wisdomclass.classpersence.controller.DetailController", {
+Ext.define("core.wisdomclass.classelegant.controller.DetailController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.wisdomclass.classpersence.detailcontroller',
+    alias: 'controller.wisdomclass.classelegant.detailcontroller',
     mixins: {},
     init: function () {
         /*执行一些初始化的代码*/

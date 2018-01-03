@@ -82,7 +82,7 @@ Ext.define("core.wisdomclass.classstar.controller.OtherController", {
             var loading = self.LoadMask(basetab);
     
             self.asyncAjax({
-                url: comm.get("baseUrl") + "/classStar/" + act,
+                url: comm.get("baseUrl") + "/ClassStar/" + act,
                 params: params,                
                 //回调代码必须写在里面
                 success: function (response) {

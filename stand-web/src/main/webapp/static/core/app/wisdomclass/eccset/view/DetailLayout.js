@@ -3,7 +3,7 @@ Ext.define("core.wisdomclass.eccset.view.DetailLayout", {
 	alias: "widget.wisdomclass.eccset.detaillayout",
 	funCode: "eccset_detail",
 	funData: {
-		action: comm.get("baseUrl") + "/JwCheckrule", //请求Action
+		action: comm.get("baseUrl") + "/ClassCheckrule", //请求Action
 		pkName: "uuid",
 		defaultObj: {}
 	},

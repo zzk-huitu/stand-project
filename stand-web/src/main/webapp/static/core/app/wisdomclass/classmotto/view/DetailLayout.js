@@ -3,7 +3,7 @@ Ext.define("core.wisdomclass.classmotto.view.DetailLayout", {
 	alias: 'widget.wisdomclass.classmotto.detaillayout',
 	funCode: "classmotto_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/gradeClass", //请求Action	
+		action: comm.get('baseUrl') + "/GradeClass", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
 		}

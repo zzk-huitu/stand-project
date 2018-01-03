@@ -9,7 +9,7 @@ Ext.define("core.wisdomclass.eccset.view.MainLayout", {
     /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'wisdomclass.eccset.othercontroller',
     funData: {
-        action: comm.get("baseUrl") + "/JwCheckrule", //请求Action
+        action: comm.get("baseUrl") + "/ClassCheckrule", //请求Action
         pkName: "uuid",
         defaultObj: {
             inBefore: 30,

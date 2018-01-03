@@ -29,7 +29,7 @@ Ext.define("core.wisdomclass.classmotto.view.DetailForm", {
         name: "classMotto",
         xtype: "textfield",
         emptyText: "请输入班训内容",
-        maxLength: 36,
-        maxLengthText: "最多36个字符,汉字占2个字符"
+        maxLength: 50,
+        maxLengthText: "最多50个字符"
     }]
 });

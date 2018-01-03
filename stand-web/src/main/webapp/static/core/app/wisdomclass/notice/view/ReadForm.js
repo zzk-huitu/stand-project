@@ -5,13 +5,7 @@ Ext.define("core.wisdomclass.notice.view.ReadForm", {
     layout: "form", //从上往下布局
 
     bodyPadding: '0 10 10 0',
-
-    fieldDefaults: { // 统一设置表单字段默认属性
-        labelSeparator: "：", // 分隔符
-        msgTarget: "qtip",
-        labelWidth: 100,
-        labelAlign: "right"
-    },
+   
     items: [{
         fieldLabel: "主键",
         name: "uuid",
@@ -200,7 +194,7 @@ Ext.define("core.wisdomclass.notice.view.ReadForm", {
             itemSelector: 'a',
             tpl: new Ext.XTemplate(
                 '<tpl for=".">',
-                '<a target="_blank" href="#" onclick="window.open(\''+comm.get("fileUrl")+'/{fileUrl}\')" title="{name}" style="text-decoration: none;float:left;width:100px;height:80px;margin:8px 4px;display:block;text-align: center;color: #0e9fd6;font-weight: 400;" >',
+                '<a target="_blank" href="#" onclick="window.open(\'{fileUrl}\')" title="{name}" style="text-decoration: none;float:left;width:100px;height:80px;margin:8px 4px;display:block;text-align: center;color: #0e9fd6;font-weight: 400;" >',
                 '<tpl switch="type.toUpperCase()">',
                 '<tpl case=".JPG" case=".JPEG" case=".PNG" case=".GIF" case=".BMP">',
                 '<img src="' + comm.get('baseUrl') + '/static/core/resources/images/fileTypeIcon/image.png" style="width:50px;height:50px;margin-top: 5px;">',
@@ -229,7 +223,7 @@ Ext.define("core.wisdomclass.notice.view.ReadForm", {
                 '</a>',
                 '</tpl>'
             ),
-            width: 550,
+            //width: 550,
             height: 100,
             margin: '0 0 0 5'
         }]

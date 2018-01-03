@@ -184,7 +184,7 @@ public class JwTGradeclass extends BaseEntity implements Serializable {
     }
 
     @FieldInfo(name = "班训")
-    @Column(name = "CLASS_MOTTO", length = 36, nullable = true)
+    @Column(name = "CLASS_MOTTO", length = 100, nullable = true,columnDefinition="varchar(100)")	//一个汉字占两个字符，所以是50个字
     private String classMotto;
     
     public String getClassMotto() {

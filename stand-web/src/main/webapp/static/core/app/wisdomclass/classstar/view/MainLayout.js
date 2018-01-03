@@ -17,10 +17,10 @@ Ext.define("core.wisdomclass.classstar.view.MainLayout", {
     otherController:'wisdomclass.classstar.othercontroller',
  
 	funData: {
-		action: comm.get('baseUrl') + "/classStar", //请求Action
+		action: comm.get('baseUrl') + "/ClassStar", //请求Action
 		pkName: "uuid",
 		defaultObj: {
-           
+        	doDate:new Date()
         },
        // whereSql:" where isDelete=0",
 	    tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据

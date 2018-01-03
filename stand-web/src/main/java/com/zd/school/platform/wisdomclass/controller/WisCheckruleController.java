@@ -21,7 +21,7 @@ import com.zd.school.jw.ecc.model.JwCheckrule;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.wisdomclass.ecc.service.JwCheckruleService;
 @Controller
-@RequestMapping("/JwCheckrule")
+@RequestMapping("/ClassCheckrule")
 public class WisCheckruleController extends FrameWorkController<JwCheckrule> implements Constant{
 	  @Resource
 	  JwCheckruleService thisService; // service层接口

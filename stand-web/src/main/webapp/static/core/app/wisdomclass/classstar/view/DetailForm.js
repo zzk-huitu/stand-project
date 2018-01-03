@@ -2,12 +2,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailForm", {
     extend: "core.base.view.BaseForm",
     alias: "widget.wisdomclass.classstar.detailform",
 
-    fieldDefaults: { // 统一设置表单字段默认属性
-        labelSeparator: "：", // 分隔符
-        msgTarget: "qtip",
-        labelWidth: 120,
-        labelAlign: "right"
-    },
+  
     items: [{
         fieldLabel: "主键",
         name: "uuid",
@@ -49,7 +44,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailForm", {
             blankText: "评定日期不能为空",
             fieldLabel: "评定日期",
             name: "doDate",
-            xtype: "datefield",
+            xtype: "datetimefield",
             dateType: 'date',
             format: "Y-m-d",
             emptyText: "请输入评定日期"
@@ -65,7 +60,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailForm", {
             blankText: "开始日期不能为空",
             fieldLabel: "开始日期",
             name: "beginDate",
-            xtype: "datefield",
+            xtype: "datetimefield",
             dateType: 'date',
             format: "Y-m-d",
             emptyText: "请输入开始日期",
@@ -79,7 +74,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailForm", {
             blankText: "结束日期不能为空",
             fieldLabel: "结束日期",
             name: "endDate",
-            xtype: "datefield",
+            xtype: "datetimefield",
             dateType: 'date',
             format: "Y-m-d",
             emptyText: "请输入结束日期",

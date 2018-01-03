@@ -18,7 +18,7 @@ Ext.define("core.wisdomclass.redflag.view.DetailLayout", {
     scrollable:'x',
     items: [{
     	xtype: "wisdomclass.redflag.detailform",
-    	height: 100,
+    	height: 120,
     	padding:0, 
     	region: "north"
     },{

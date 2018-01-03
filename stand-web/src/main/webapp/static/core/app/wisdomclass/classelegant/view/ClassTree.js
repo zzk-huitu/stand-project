@@ -1,6 +1,6 @@
-Ext.define("core.wisdomclass.classpersence.view.ClassTree", {
+Ext.define("core.wisdomclass.classelegant.view.ClassTree", {
     extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.wisdomclass.classpersence.classtree",
+    alias: "widget.wisdomclass.classelegant.classtree",
     model:" com.zd.school.plartform.comm.model.CommTree",
     dataUrl:comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     expandFirst:true,
@@ -51,14 +51,14 @@ Ext.define("core.wisdomclass.classpersence.view.ClassTree", {
     },
     listeners: {
         itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("panel[xtype=wisdomclass.classpersence.mainlayout]");
+            var mainLayout = view.up("panel[xtype=wisdomclass.classelegant.mainlayout]");
             var funData = mainLayout.funData;
             mainLayout.funData = Ext.apply(funData, {
                 claiId: record.get("id"),
                 claiLevel: record.get("level")
             });
             // 加载人员信息
-            var grid = mainLayout.down("panel[xtype=wisdomclass.classpersence.maingrid]");
+            var grid = mainLayout.down("panel[xtype=wisdomclass.classelegant.maingrid]");
             var store = grid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams = {

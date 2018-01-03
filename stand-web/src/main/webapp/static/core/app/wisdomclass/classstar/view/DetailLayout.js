@@ -3,7 +3,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailLayout", {
 	alias: 'widget.wisdomclass.classstar.detaillayout',
 	funCode: "classstar_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/classStar", //请求Action	
+		action: comm.get('baseUrl') + "/ClassStar", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
 		}
@@ -18,8 +18,7 @@ Ext.define("core.wisdomclass.classstar.view.DetailLayout", {
     scrollable:'x',
     items: [{
     	xtype: "wisdomclass.classstar.detailform",
-    	height: 150,
-    	margin:'5',
+    	height: 120,
     	region: "north"
     },{ 
         xtype: "public.SelectClass.selectclasslayout",

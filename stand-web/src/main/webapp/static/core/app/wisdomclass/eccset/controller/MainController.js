@@ -156,16 +156,16 @@ Ext.define("core.wisdomclass.eccset.controller.MainController", {
                         if(data.success){
                             store.loadPage(1);
                             self.msgbox(data.obj);                               
-                            }else {
-                            self.Error(data.obj);
-                            }           
-                        },
-                        failure: function(response) {                   
-                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                            loading.hide();
-                        }
-                    });
-              }
+                        }else {
+                        self.Error(data.obj);
+                        }           
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });
+            }
         });
     },
 

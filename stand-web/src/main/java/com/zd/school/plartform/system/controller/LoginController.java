@@ -60,8 +60,8 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
 	
-	@Value("${virtualFileUrl}")
-	private String virtualFileUrl;
+//	@Value("${virtualFileUrl}")
+//	private String virtualFileUrl;
 	
 	
 	//测试jedis
@@ -168,7 +168,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			session.setAttribute(SESSION_SYS_ISADMIN,0);
 		}
 		
-		session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
+		//session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
 		
 		result.put("result", 1);
 		writeJSON(response, jsonBuilder.toJson(result));

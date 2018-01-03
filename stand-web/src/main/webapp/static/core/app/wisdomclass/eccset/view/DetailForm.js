@@ -20,13 +20,14 @@ Ext.define("core.wisdomclass.eccset.view.DetailForm", {
         name: "ruleName",
         xtype: "textfield",
         emptyText: "请输入规则名称",
-        maxLength: 36,
-        maxLengthText: "最多36个字符,汉字占2个字符"
+        maxLength: 18,
+        maxLengthText: "最多18个字符"
     }, {
         xtype: 'container',
         layout: "column", // 从左往右的布局
         items: [{
-            columnWidth: 1,
+            //columnWidth: 0.5,
+            width:500,
             beforeLabelTextTpl: comm.get("required"),
             fieldLabel: "考勤模式",
             allowBlank: false,
@@ -57,8 +58,8 @@ Ext.define("core.wisdomclass.eccset.view.DetailForm", {
         name: "inBefore",
         xtype: "numberfield",
         emptyText: "请输入签到提前分钟",
-        maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         beforeLabelTextTpl: comm.get("required"),
@@ -68,8 +69,8 @@ Ext.define("core.wisdomclass.eccset.view.DetailForm", {
         name: "beLate",
         xtype: "numberfield",
         emptyText: "请输入迟到分钟",
-        maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         beforeLabelTextTpl: comm.get("required"),
@@ -80,54 +81,55 @@ Ext.define("core.wisdomclass.eccset.view.DetailForm", {
         xtype: "numberfield",
         emptyText: "请输入缺勤分钟",
         maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         xtype: "container",
         layout: "column", // 从左往右的布局
         items: [{
-            columnWidth: 0.3,
+            width:140,
             beforeLabelTextTpl: comm.get("required"),
             fieldLabel: "是否需要签退",
             xtype: "checkbox",
             name: "needCheckout",
         }, {
-            columnWidth: 0.7,
+            columnWidth: 0.5,
             xtype: "label",
-            html: "<font color=red,size=12>(打勾表示需要)</font>",
+            html: "&nbsp;<font style='color: rgb(196, 68, 68); font-weight: 400;font-size: 14px;line-height: 30px;padding-left: 10px;'>(打勾表示需要签退)</font>",
         }]
     }, {
         fieldLabel: "签退提前分钟",
         name: "outBefore",
         xtype: "numberfield",
         emptyText: "请输入签退提前分钟",
-        maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         fieldLabel: "早退分钟",
         name: "leaveEarly",
         xtype: "numberfield",
         emptyText: "请输入早退分钟",
-        maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         fieldLabel: "签退延迟分钟",
         name: "outLate",
         xtype: "numberfield",
         emptyText: "请输入签退延迟分钟",
-        maxLength: 5,
-        maxLengthText: "最多5个字符,汉字占2个字符",
+        minValue: 0,
+        maxValue : 9999,
         allowDecimals:false,
     }, {
         fieldLabel: "规则说明",
         name: "ruleDesc",
-        xtype: "textfield",
+        xtype: "textarea",
         emptyText: "请输入规则说明",
-        maxLength: 255,
+        maxLength: 100,
         height: 100,
-        maxLengthText: "最多255个字符,汉字占2个字符",
+        maxLengthText: "最多100个字符",
         allowDecimals:false,
     }]
 });

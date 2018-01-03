@@ -22,7 +22,7 @@ import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.wisdomclass.ecc.service.EccClassstarService;
 
 @Controller
-@RequestMapping("/classStar")
+@RequestMapping("/ClassStar")
 public class WisClassStarController extends FrameWorkController<EccClassstar> implements Constant {
 	@Resource
 	EccClassstarService thisService; // service层接口

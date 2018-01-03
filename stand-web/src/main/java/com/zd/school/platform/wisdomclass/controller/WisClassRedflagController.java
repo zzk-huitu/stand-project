@@ -24,7 +24,7 @@ import com.zd.school.wisdomclass.ecc.service.EccClassredflagService;
 
 @Controller
 @RequestMapping("/ClassRedflag")
-public class WisClassredflagController extends FrameWorkController<EccClassredflag> implements Constant{
+public class WisClassRedflagController extends FrameWorkController<EccClassredflag> implements Constant{
 	@Resource
 	EccClassredflagService thisService; // service层接口
 	

@@ -39,7 +39,7 @@ Ext.define("core.wisdomclass.redflag.view.MainLayout", {
 		xtype: "wisdomclass.redflag.flagtypegrid",
 		region: "west",
 		split:true,
-		width: 250
+		width: 200
 	}, {
 		xtype: "wisdomclass.redflag.maingrid",
 		region: "center",

@@ -71,11 +71,13 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
         dataIndex: "redflagType",
         columnType: "basecombobox", //列类型
         ddCode: "REDFLAG", //字典代码 ,
-        flex:1        
+        flex:1,
+        minWidth:200,  
     }, {
         text: "班级名称",
         dataIndex: "className",
-        flex:1,  
+        flex:1,
+        minWidth:200,  
         renderer: function(value, metaData) {
             var title = "班级名称";
             var html = value;
@@ -85,7 +87,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
     }, {
         text: "开始日期",
         dataIndex: "beginDate",
-        flex:1,   
+        width:150,
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "开始日期";
@@ -97,7 +99,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
     }, {
         text: "结束日期",
         dataIndex: "endDate",
-        flex:1,  
+        width:150,
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "结束日期";
@@ -107,67 +109,67 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
             return ss;
         }
     },{
-            xtype: 'actiontextcolumn',
-            text: "操作",
-            align: 'center',
-            width: 250,
-            fixed: true,
-            items: [{
-                text:'编辑',  
-                style:'font-size:12px;', 
-                tooltip: '编辑',
-                ref: 'gridEdit',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="REDFLAG";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                            return 'x-hidden-display';
-                        }
+        xtype: 'actiontextcolumn',
+        text: "操作",
+        align: 'center',
+        width: 150,
+        fixed: true,
+        items: [{
+            text:'编辑',  
+            style:'font-size:12px;', 
+            tooltip: '编辑',
+            ref: 'gridEdit',
+            getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="REDFLAG";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");                 
+                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                        return 'x-hidden-display';
                     }
-                    return null; 
-                },  
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('editClick_Tab', {
-                        view: view.grid,
-                        record: rec
-                    });
                 }
-            }, {
-                text:'删除',  
-                style:'font-size:12px;', 
-                tooltip: '删除',
-                ref: 'gridDelete',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="REDFLAG";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                            return 'x-hidden-display';
-                        }
+                return null; 
+            },  
+            handler: function(view, rowIndex, colIndex, item) {
+                var rec = view.getStore().getAt(rowIndex);
+                this.fireEvent('editClick_Tab', {
+                    view: view.grid,
+                    record: rec
+                });
+            }
+        }, {
+            text:'详细',  
+            style:'font-size:12px;', 
+            tooltip: '详细',
+            ref: 'gridDetail',
+            handler: function(view, rowIndex, colIndex, item) {
+                var rec = view.getStore().getAt(rowIndex);
+                this.fireEvent('detailClick_Tab', {
+                    view: view.grid,
+                    record: rec
+                });
+            }
+        }, {
+            text:'删除',  
+            style:'font-size:12px;', 
+            tooltip: '删除',
+            ref: 'gridDelete',
+            getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                if(comm.get("isAdmin")!="1"){
+                    var menuCode="REDFLAG";     // 此菜单的前缀
+                    var userBtn=comm.get("userBtn");                 
+                    if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                        return 'x-hidden-display';
                     }
-                    return null; 
-                },  
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('deleteClick', {
-                        view: view.grid,
-                        record: rec
-                    });
                 }
-            }, {
-                text:'详细',  
-                style:'font-size:12px;', 
-                tooltip: '详细',
-                ref: 'gridDetail',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('detailClick_Tab', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            }]
-        }],
+                return null; 
+            },  
+            handler: function(view, rowIndex, colIndex, item) {
+                var rec = view.getStore().getAt(rowIndex);
+                this.fireEvent('deleteClick', {
+                    view: view.grid,
+                    record: rec
+                });
+            }
+        }]
+    }],
 });

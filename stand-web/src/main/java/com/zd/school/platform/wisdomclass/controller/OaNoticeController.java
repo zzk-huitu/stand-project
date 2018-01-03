@@ -1,4 +1,4 @@
-package com.zd.school.oa.notice.controller;
+package com.zd.school.platform.wisdomclass.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -351,37 +351,6 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 			return;
 		}
 	}
-	
-	@RequestMapping("/getFileList") // Filename sendId
-	public void getFileList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		String setRecordId = request.getParameter("recordId");
-		if (setRecordId == null) {
-			writeJSON(response, "[]");
-			return;
-		}		
-		String hql = "from BaseAttachment b where b.recordId='" + setRecordId + "' and b.entityName='OaNotice' order by b.createTime asc";
-	
-		List<BaseAttachment> list = baseTAttachmentService.queryByHql(hql);
-
-		List<HashMap<String, Object>> lists = new ArrayList<>();
-		HashMap<String, Object> maps = null;
-		for (BaseAttachment bt : list) {
-			maps = new LinkedHashMap<>();
-			maps.put("id", "SWFUpload_" + bt.getUuid());
-			maps.put("name", bt.getAttachName());
-			maps.put("size", bt.getAttachSize());
-			maps.put("type", bt.getAttachType());
-			maps.put("status", 0);
-			maps.put("percent", 100);
-			maps.put("fileId", bt.getUuid());
-			maps.put("fileUrl",virtualFileUrl +"/"+ bt.getAttachUrl());
-			lists.add(maps);
-		}
-
-		writeJSON(response, jsonBuilder.toJson(lists));
-	}
-
 	@RequestMapping("/doDeleteFile") // Filename sendId
 	public void doDeleteFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {

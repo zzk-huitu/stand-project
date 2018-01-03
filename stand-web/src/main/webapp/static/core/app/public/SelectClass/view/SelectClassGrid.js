@@ -4,7 +4,8 @@ Ext.define("core.public.SelectClass.view.SelectClassGrid", {
     al:true,
     frame: false,
     columnLines: false,
-    dataUrl: comm.get('baseUrl') + "/gradeClass/listUser",
+    pageDisplayInfo:false,
+    dataUrl: comm.get('baseUrl') + "/GradeClass/listUser",
     model: "com.zd.school.jw.eduresources.model.JwTGradeclass",
     selModel: {
         type: "checkboxmodel",   
@@ -21,7 +22,8 @@ Ext.define("core.public.SelectClass.view.SelectClassGrid", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:800,
+                lineHeight:'30px',
             }
         }]
     },

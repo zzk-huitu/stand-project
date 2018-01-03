@@ -9,7 +9,7 @@ Ext.define("core.public.SelectClass.view.SelectClassLayout", {
     layout:'border',
     border:false,
     funData: {
-        action: comm.get("baseUrl") + "/gradeClass", //请求Action
+        action: comm.get("baseUrl") + "/GradeClass", //请求Action
         pkName: "uuid"
     },
     /*设置最小宽度，并且自动滚动*/
@@ -20,11 +20,11 @@ Ext.define("core.public.SelectClass.view.SelectClassLayout", {
         //width:600,
         flex:1,
         region: "center",
-        margin:'5'
+        margin:'5 5 0 0'
     }, {
         xtype: "public.SelectClass.isselectclassgrid",
-        region: "east",
-        width:600,
-        margin:'5'
+        region: "east",    
+        flex:1,
+        margin:'5 0 0 5'
     }]
 })

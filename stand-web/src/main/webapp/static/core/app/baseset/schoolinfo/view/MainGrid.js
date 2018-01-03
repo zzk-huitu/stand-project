@@ -59,7 +59,8 @@ Ext.define("core.baseset.schoolinfo.view.MainGrid", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:800,
+                lineHeight:'30px',
             }
         }]
     },

@@ -1,7 +1,7 @@
 Ext.define("core.wisdomclass.classstar.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.wisdomclass.classstar.maingrid",
-	dataUrl: comm.get("baseUrl") + "/classStar/list", //数据获取地址
+	dataUrl: comm.get("baseUrl") + "/ClassStar/list", //数据获取地址
     model: "com.zd.school.jw.ecc.model.EccClassstar", //对应的数据模型
 	//al:false,
     menuCode:"CLASSSTAR",
@@ -70,6 +70,7 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
         text: "班级名称",
         dataIndex: "className",
         flex:1,
+        minWidth:200,
         renderer: function(value, metaData) {
             var title = "班级名称";
             var html = value;
@@ -80,7 +81,8 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
         text: "星级",
         dataIndex: "starLevel",
         columnType: "basecombobox", //列类型
-        ddCode: "STARLEVEL", //字典代码         
+        ddCode: "STARLEVEL", //字典代码       
+        width:100,  
         renderer: function(value, metaData) {
             var title = "星级";
             var html = value;
@@ -90,6 +92,7 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
     }, {
         text: "评定日期",
         dataIndex: "doDate",
+        width:150,
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "评定日期";
@@ -101,6 +104,7 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
     }, {
         text: "开始日期",
         dataIndex: "beginDate",
+        width:150,
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "选课开始日期";
@@ -112,6 +116,7 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
     }, {
         text: "结束日期",
         dataIndex: "endDate",
+        width:150,
         renderer: function(value, metaData) {
             var date = value.replace(new RegExp(/-/gm), "/");
             var title = "选课结束日期";
@@ -124,7 +129,7 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 250,
+        width: 150,
         fixed: true,
         items: [{
             text:'编辑',  
@@ -149,6 +154,18 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
                     });
                 }
             }, {
+                text:'详细',  
+                style:'font-size:12px;', 
+                tooltip: '详细',
+                ref: 'gridDetail',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }, {
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
@@ -166,18 +183,6 @@ Ext.define("core.wisdomclass.classstar.view.MainGrid", {
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            }, {
-                text:'详细',  
-                style:'font-size:12px;', 
-                tooltip: '详细',
-                ref: 'gridDetail',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('detailClick_Tab', {
                         view: view.grid,
                         record: rec
                     });

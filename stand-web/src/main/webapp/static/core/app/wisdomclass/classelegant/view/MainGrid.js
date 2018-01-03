@@ -1,9 +1,9 @@
-Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
+Ext.define("core.wisdomclass.classelegant.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
-	alias: "widget.wisdomclass.classpersence.maingrid",
-	dataUrl: comm.get("baseUrl") + "/classPersence/list", //数据获取地址
+	alias: "widget.wisdomclass.classelegant.maingrid",
+	dataUrl: comm.get("baseUrl") + "/ClassElegant/list", //数据获取地址
 	model: "com.zd.school.jw.ecc.model.EccClasselegant", //对应的数据模型
-    menuCode:"CLASSPRESENCE",
+    menuCode:"CLASSELEGANT",
 	//工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',
@@ -59,20 +59,21 @@ Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
 	},{
         text: "班级名称",
         dataIndex: "className",
-        flex:1
+        width:200,
     },{
         text: "标题",
         dataIndex: "title",
-        flex:1
+        flex:1,
+        minWidth:200,
     }, {
-        text: "时间",
-        dataIndex: "createTime",
-        flex:1
+        text: "更新时间",
+        dataIndex: "updateTime",
+        width:200,
     },{
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 250,
+        width: 150,
         fixed: true,
         items: [{
             text:'编辑',  
@@ -81,7 +82,7 @@ Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
             ref: 'gridEdit',
             getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                 if(comm.get("isAdmin")!="1"){
-                        var menuCode="CLASSPRESENCE";     // 此菜单的前缀
+                        var menuCode="CLASSELEGANT";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
                         if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
                             return 'x-hidden-display';
@@ -97,13 +98,25 @@ Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
                     });
                 }
             }, {
+                text:'详细',  
+                style:'font-size:12px;', 
+                tooltip: '详细',
+                ref: 'gridDetail',
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            },{
                 text:'删除',  
                 style:'font-size:12px;', 
                 tooltip: '删除',
                 ref: 'gridDelete',
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                     if(comm.get("isAdmin")!="1"){
-                        var menuCode="CLASSPRESENCE";     // 此菜单的前缀
+                        var menuCode="CLASSELEGANT";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
                         if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
                             return 'x-hidden-display';
@@ -114,18 +127,6 @@ Ext.define("core.wisdomclass.classpersence.view.MainGrid", {
                 handler: function(view, rowIndex, colIndex, item) {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            }, {
-                text:'详细',  
-                style:'font-size:12px;', 
-                tooltip: '详细',
-                ref: 'gridDetail',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('detailClick_Tab', {
                         view: view.grid,
                         record: rec
                     });

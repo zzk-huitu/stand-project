@@ -9,6 +9,8 @@ import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseAttachment;
 import com.zd.school.plartform.baseset.service.BaseAttachmentService;
 import com.zd.school.plartform.system.model.SysUser;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,9 @@ public class BaseAttachmentController extends FrameWorkController<BaseAttachment
     @Resource
     BaseAttachmentService thisService; // service层接口
 
+    @Value("${virtualFileUrl}")  
+    private String virtualFileUrl; //文件目录虚拟路径
+    
     /**
      * list查询 @Title: list @Description: TODO @param @param entity
      * 实体类 @param @param request @param @param response @param @throws
@@ -213,7 +218,7 @@ public class BaseAttachmentController extends FrameWorkController<BaseAttachment
     		maps.put("status", 0);
     		maps.put("percent", 100);
     		maps.put("fileId", bt.getUuid());
-    		maps.put("fileUrl", bt.getAttachUrl());
+    		maps.put("fileUrl", virtualFileUrl +"/"+ bt.getAttachUrl());
     		lists.add(maps);
     	}
     	writeJSON(response,jsonBuilder.toJson(lists));
