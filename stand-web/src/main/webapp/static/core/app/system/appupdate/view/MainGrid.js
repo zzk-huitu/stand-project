@@ -20,7 +20,7 @@ Ext.define("core.system.appupdate.view.MainGrid", {
             text: '上传APP',
             ref: 'gridAdd_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-upload-circle'
+            iconCls: 'x-fa fa-upload'
         },{
             xtype: 'button',
             text: '启用',
