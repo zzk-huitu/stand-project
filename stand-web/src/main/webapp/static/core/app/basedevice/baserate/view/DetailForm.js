@@ -62,7 +62,7 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
         	allowBlank: false,
         	emptyText: '名称',
         	blankText: "名称不能为空",
-            maxLength:36
+            maxLength:18
         	},{
                 columnWidth: 0.3,
                 xtype: "label",
@@ -83,7 +83,7 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
         },{
             columnWidth: 0.3,
             xtype: "label",
-            html: "&nbsp;<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>(电控：金额/度)&nbsp&nbsp(水控：金额/升)</font>",
+            html: "&nbsp;<font style='color: rgb(196, 68, 68);font-size: 14px;font-weight:400;line-height: 30px;padding-left: 10px;'>(电控：金额/度)&nbsp&nbsp(水控：金额/升)</font>",
         }]
     }, {
         xtype: "container",
@@ -113,6 +113,7 @@ Ext.define("core.basedevice.baserate.view.DetailForm", {
     	items: [{
     		columnWidth: 0.7,
         	fieldLabel: "备注",
+            emptyText: '请输入备注信息',
         	name: "priceNotes",
         	xtype: "textarea",
         	maxLength:500

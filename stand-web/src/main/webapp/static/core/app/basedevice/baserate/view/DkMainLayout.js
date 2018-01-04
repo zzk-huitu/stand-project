@@ -8,7 +8,7 @@ Ext.define("core.basedevice.baserate.view.DkMainLayout", {
     items: [{
         region: "west",
         xtype: "basedevice.baserate.roominfotree",
-        width: comm.get("clientWidth") * 0.15,
+        width: 250,
         margin:'5',
     }, {
         region: "center",
@@ -17,7 +17,7 @@ Ext.define("core.basedevice.baserate.view.DkMainLayout", {
     }, {
         region: "east",
         xtype: "basedevice.baserate.skdatagridtwo",
-        width: comm.get("clientWidth") * 0.35,
+        width: 400,
         margin:'5' ,
     }]
 })

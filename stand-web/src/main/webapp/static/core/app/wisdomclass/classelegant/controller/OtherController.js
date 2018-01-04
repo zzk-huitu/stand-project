@@ -20,6 +20,7 @@ Ext.define("core.wisdomclass.classelegant.controller.OtherController", {
             }
         },
 
+        /*在打开视图显示之后的需要进行处理的数据*/
         "baseformtab[detCode=classelegant_detail]":{
             afterrender: function(cmp) {
             	this.doLoadFiles(cmp);
@@ -160,7 +161,7 @@ Ext.define("core.wisdomclass.classelegant.controller.OtherController", {
                 }
             });
 
-        }else if(cmp.operType=="detail"){
+        }else if(cmp.operType =="detail"){
             var fileView=cmp.down("dataview[ref=fileView]");
             fileView.getStore().load({
                 params: {

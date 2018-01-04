@@ -40,7 +40,7 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
             text: "区域名称",
             dataIndex: "text",
             xtype: 'treecolumn',
-            width: 200
+            flex:1
         }, {
             text: "主键",
             dataIndex: 'id',

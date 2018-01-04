@@ -5,7 +5,7 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
     fieldDefaults: { // 统一设置表单字段默认属性
         labelSeparator: "：", // 分隔符
         msgTarget: "qtip",
-        labelWidth: 110,
+        labelWidth: 100,
         labelAlign: "right"
     },
     items: [{

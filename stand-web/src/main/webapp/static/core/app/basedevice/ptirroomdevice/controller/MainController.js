@@ -90,7 +90,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
 				title: "品牌型号选择",
 				/*zzk: 必须指定一个viewController控制器，否则，里面的control无法生效*/
 				controller: otherController,
-				width: comm.get("clientWidth") * 0.8,
+				width: 1000,
 				height: 600,
 				resizable: false,
 				iconCls: iconCls,

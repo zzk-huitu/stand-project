@@ -36,7 +36,7 @@ Ext.define("core.basedevice.smartdevice.view.MainLayout", {
         split: true,
         xtype: "basedevice.smartdevice.roominfotree",
         region: "west",
-        width: 300
+        width: 250
     }, {
         xtype: "basedevice.smartdevice.maingrid",
         region: "center"

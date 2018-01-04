@@ -76,20 +76,22 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            flex: 1,
-            minWidth: 200,
+            flex: 1.5,
+            minWidth: 150,
             text: "设备名称",
             dataIndex: "termName",            
-        }, {           
-            width: 150,
+        }, {     
+            flex: 1,
+            minWidth: 100,
             text: "网关名称",
             dataIndex: "gatewayName"
         }, {
-            width: 150,
+            flex: 1,
+            minWidth: 100,
             text: "所属房间",
             dataIndex: "roomName",
         }, {
-            width: 150,
+            width: 100,
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
@@ -98,7 +100,7 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 150,
             fixed: true,
             items: [{
                 text:'高级参数',  

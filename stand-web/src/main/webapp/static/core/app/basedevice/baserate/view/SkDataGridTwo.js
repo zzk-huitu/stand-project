@@ -22,22 +22,23 @@ Ext.define("core.basedevice.baserate.view.SkDataGridTwo", {
         dataIndex: "uuid",
         hidden: true
     }, {
-        width:150,
+        flex:1,
+        minWidth:100,
         text: "设备名称",
         dataIndex: "termName",
         field: {
             xtype: "textfield"
         }
     }, {
-        width:150,
+        flex:1.5,
+        minWidth:150,
         text: "序列号",
         dataIndex: "termSN",
         field: {
             xtype: "textfield"
         }
     }, {
-        flex:1,
-        minWidth:150,
+        width:100,
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
@@ -52,6 +53,33 @@ Ext.define("core.basedevice.baserate.view.SkDataGridTwo", {
             drop: function(node, data, dropRec, dropPosition) {
                 //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
             },
+            beforedrop:function(node, data, overModel, dropPosition, dropHandlers){             
+                var newRec=data.records;
+                var arrays=new Array();
+                
+                var isSelectStore = this.grid.getStore();
+                var oldRec=isSelectStore.getData().items;
+                var isExist=null;
+                for(var i in newRec){
+                    isExist=false;
+                    for(var j in oldRec){
+                        if(newRec[i].get("uuid")==oldRec[j].get("uuid")){
+                            //isSelectStore.remove(oldRec[j]);   //方式一：移除右边的原有数据
+                            //this.refresh();
+                            isExist=true;
+                            break;
+                        }                  
+                    }
+                    if(isExist==false)
+                        arrays.push(newRec[i]);                        
+                }
+                
+                if(arrays.length==0)
+                    return false;
+                else/* if(newRec.length==arrays.length)*/
+                    data.records=arrays;    //方式二：移除左边的数据
+                //return false;
+            },        
             beforeitemdblclick: function (grid, record, item, index, e, eOpts) {
                 IsSelectStore = grid.getStore();
                 IsSelectStore.removeAt(index);
