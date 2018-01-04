@@ -10,16 +10,18 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '房间存在设备<font color=red>（往右拖动或者双击选择）</font>',
+            html: '房间设备<font color=red>（往右拖动或者双击选择）</font>',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:800,
+                lineHeight:'32px',
             }
         }],
     }, 
-    panelButtomBar:{},
+    panelButtomBar:false,
     al:false,
+    pageDisplayInfo:false,
     columns: [{
         text: "主键",
         dataIndex: "uuid",
@@ -27,17 +29,19 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
     }, {
         text: "设备名称",
         dataIndex: "termName",
-        width:120
+        flex:1,
+        minWidth:100
     }, {
         text: "序列号",
         dataIndex: "termSN",
-        width:150
+        flex:1,
+        minWidth:150
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
-        flex:1
+        width:100
     }],
     viewConfig: {
         plugins: {

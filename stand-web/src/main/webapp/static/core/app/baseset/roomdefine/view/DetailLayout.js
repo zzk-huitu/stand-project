@@ -14,7 +14,7 @@ Ext.define("core.baseset.roomdefine.view.DetailLayout", {
 
 	 /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
-    scrollable:true,
+    scrollable:'x',
     items: [{
         xtype: "baseset.roomdefine.detailform"
     }]

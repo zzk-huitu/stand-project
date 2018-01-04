@@ -71,21 +71,23 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
             hidden:true
         }, {
             flex:1,
-            minWidth: 150,
+            minWidth: 100,
             text: "老师姓名",
             dataIndex: "xm",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:150,
+            flex:1.2,
+            minWidth:120,
             text: "工号",
             dataIndex: "gh",
             field: {
                 xtype: "textfield"
             }
         }, {
-            width:120,
+            flex:1.2,
+            minWidth:120,
             text: "房间名称",
             dataIndex: "dormName",
             field: {
@@ -137,7 +139,7 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
-            width: 200,
+            width: 100,
             fixed: true,
             items: [{
                 text:'删除',  

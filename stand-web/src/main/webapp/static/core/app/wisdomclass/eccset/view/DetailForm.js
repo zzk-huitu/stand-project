@@ -80,7 +80,6 @@ Ext.define("core.wisdomclass.eccset.view.DetailForm", {
         name: "absenteeism",
         xtype: "numberfield",
         emptyText: "请输入缺勤分钟",
-        maxLength: 5,
         minValue: 0,
         maxValue : 9999,
         allowDecimals:false,

@@ -4,11 +4,7 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
     forceFit: true,
     sortableColumns:false,
     columnLines: true,
-    selModel: {
-        type: "checkboxmodel",   
-        headerWidth:40,    //设置这个值为50。 但columns中的defaults中设置宽度，会影响他
-        mode:'single',  //multi,simple,single；默认为多选multi
-    },
+    selModel: null,
     store:{
     	type:"basedevice.baserate.categroystore",
     },
@@ -39,7 +35,7 @@ Ext.define("core.basedevice.baserate.view.CategroyGrid", {
         text: '序号',
         align: 'center'
     }, {
-        text: "类别",
+        text: "类别名称",
         dataIndex: "categroy",
     }],
     listeners: {

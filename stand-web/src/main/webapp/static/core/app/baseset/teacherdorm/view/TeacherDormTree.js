@@ -35,8 +35,7 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             text: "区域名称",
             dataIndex: "text",
             xtype:'treecolumn',
-            flex: 1,
-            minWidth:200
+            flex: 1
         },/* {
             text: "顺序号",
             dataIndex: "orderIndex",

@@ -38,8 +38,8 @@ Ext.define("core.basedevice.ptirroomdevice.view.RoominfoTree", {
         items: [{
             text: "区域名称",
             dataIndex: "text",
-            xtype: 'treecolumn',
-            width: comm.get("clientWidth") * 0.24
+            xtype: 'treecolumn',  
+            flex:1         
         }, {
             text: "主键",
             dataIndex: 'id',

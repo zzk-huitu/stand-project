@@ -19,7 +19,8 @@ Ext.define("core.baseset.roomdefine.view.RoomGrid", {
             style: {
                 fontSize: '16px',
                 color: '#C44444',
-                fontWeight:800
+                fontWeight:800,
+                lineHeight:'30px'
             }
         }],
     }, 
