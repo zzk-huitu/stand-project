@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -80,6 +81,7 @@ public class SysAppinfoController extends FrameWorkController<SysAppinfo> implem
  	 * @param response
  	 * @throws IOException
  	 */
+    @Auth("APPUPDATE_add")
      @RequestMapping(value = {"/doUploadApp"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET,
              org.springframework.web.bind.annotation.RequestMethod.POST})
      public void doUpload(SysAppinfo entity,@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response)
@@ -150,6 +152,7 @@ public class SysAppinfoController extends FrameWorkController<SysAppinfo> implem
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
+    @Auth("APPUPDATE_useOrCancel")
 	@RequestMapping("/doUpdateState")	
     public void doUpdateState( HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
