@@ -57,6 +57,16 @@ public class PtIrRoomDevice extends BaseEntity implements Serializable{
    	@FieldInfo(name = "型号名称")
    	private String deviceTypeCode;
     
+    @Formula("(SELECT A.BRANDNAME FROM dbo.PT_IR_DEVICE_BRAND A WHERE A.BRAND_ID=BRAND_ID)")
+   	@FieldInfo(name = "品牌名称")
+   	private String deviceBrandName;	//zzk新加入
+    
+    @Formula("(select B.BRANDNAME from dbo.PT_IR_DEVICE_BRAND B where B.BRAND_ID=("
+    		+ "	SELECT A.DEVICETYPECODE FROM dbo.PT_IR_DEVICE_BRAND A WHERE A.BRAND_ID=BRAND_ID"
+    		+ "))")
+   	@FieldInfo(name = "产品类型名称")
+   	private String deviceTypeName;	//zzk新加入
+    
     public void setNotes(String notes) {
         this.notes = notes;
     }
@@ -81,6 +91,19 @@ public class PtIrRoomDevice extends BaseEntity implements Serializable{
 	public void setDeviceTypeCode(String deviceTypeCode) {
 		this.deviceTypeCode = deviceTypeCode;
 	}
+	public String getDeviceBrandName() {
+		return deviceBrandName;
+	}
+	public void setDeviceBrandName(String deviceBrandName) {
+		this.deviceBrandName = deviceBrandName;
+	}
+	public String getDeviceTypeName() {
+		return deviceTypeName;
+	}
+	public void setDeviceTypeName(String deviceTypeName) {
+		this.deviceTypeName = deviceTypeName;
+	}
+	
 	
 	
 	

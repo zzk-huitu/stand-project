@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
+Ext.define("core.smartcontrol.useraccess.controller.OtherController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.accesscontrol.useraccess.othercontroller',
+    alias: 'controller.smartcontrol.useraccess.othercontroller',
     mixins: {
     	suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",
@@ -52,7 +52,7 @@ Ext.define("core.accesscontrol.useraccess.controller.OtherController", {
 
         var tabPanel = Ext.ComponentQuery.query("tabpanel[xtype=app-main]")[0];
         var mainlayout = tabPanel.getActiveTab(); 
-        var usExistGrid = mainlayout.down('panel[xtype=accesscontrol.useraccess.maingrid]');
+        var usExistGrid = mainlayout.down('panel[xtype=smartcontrol.useraccess.maingrid]');
 
         var gridStore = usExistGrid.getStore();
         var gridCount = usExistGrid.getStore().getCount()

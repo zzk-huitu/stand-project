@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
+Ext.define("core.smartcontrol.useraccess.view.RoominfoTree", {
 	extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.accesscontrol.useraccess.roominfotree",
+    alias: "widget.smartcontrol.useraccess.roominfotree",
     dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     al: true,
@@ -47,7 +47,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
     },
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
-        	var mainLayout = tree.up("panel[xtype=accesscontrol.useraccess.mainlayout]");
+        	var mainLayout = tree.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
         	var funData = mainLayout.funData;
             var roomId=record.get("id");
             mainLayout.funData = Ext.apply(funData, {
@@ -56,7 +56,7 @@ Ext.define("core.accesscontrol.useraccess.view.RoominfoTree", {
                 arealevel: record.get("level"),
             });
             // 加载房间的人员信息
-            var mianGrid = mainLayout.down("panel[xtype=accesscontrol.useraccess.mjuserrightgrid]");
+            var mianGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams.roomId=roomId;

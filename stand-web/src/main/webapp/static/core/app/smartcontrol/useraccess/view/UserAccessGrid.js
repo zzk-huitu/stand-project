@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.view.UserAccessGrid", {
+Ext.define("core.smartcontrol.useraccess.view.UserAccessGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.accesscontrol.useraccess.useraccessgrid",
+    alias: "widget.smartcontrol.useraccess.useraccessgrid",
     dataUrl: comm.get('baseUrl') + "/BaseMjUserright/list",
     model: "com.zd.school.control.device.model.MjUserright",
     panelTopBar:{

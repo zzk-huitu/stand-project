@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.controller.MainController", {
+Ext.define("core.smartcontrol.useraccess.controller.MainController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.accesscontrol.useraccess.maincontroller',
+    alias: 'controller.smartcontrol.useraccess.maincontroller',
     mixins: {
         suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",
@@ -12,7 +12,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
     init: function() {
     },
     control: {
-    	     "basepanel basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid]": {
+    	     "basepanel basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid]": {
               afterrender : function(grid) {
                 if(comm.get("isAdmin")!="1"){
                     var menuCode="USERACCESS";     // 此菜单的前缀
@@ -28,7 +28,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
             },
             beforeitemclick: function(grid) {
               var basePanel = grid.up("basepanel");
-              var basegrid = basePanel.down("basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid]");
+              var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid]");
               var records = basegrid.getSelectionModel().getSelection();
               var btnPersonnel = basegrid.down("button[ref=selectPersonnel]");
               if (records.length == 0) {
@@ -45,7 +45,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
           },
 
 
-          "basepanel basegrid[xtype=accesscontrol.useraccess.maingrid]": {
+          "basepanel basegrid[xtype=smartcontrol.useraccess.maingrid]": {
             afterrender : function(grid) {
               if(comm.get("isAdmin")!="1"){
                     var menuCode="USERACCESS";     // 此菜单的前缀
@@ -69,7 +69,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
               },
               beforeitemclick: function(grid) {
                 var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=accesscontrol.useraccess.maingrid]");
+                var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.maingrid]");
                 var records = basegrid.getSelectionModel().getSelection();
                 var btnDeletePer = basegrid.down("button[ref=gridDeletePer]");
                 var btnDeleteAll = basegrid.down("button[ref=gridDeleteAll]");
@@ -90,12 +90,12 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
         },
     
     	//房间列表刷新按钮
-    	"basetreegrid[xtype=accesscontrol.useraccess.roominfotree] button[ref=gridRefresh]": {
+    	"basetreegrid[xtype=smartcontrol.useraccess.roominfotree] button[ref=gridRefresh]": {
           beforeclick: function(btn) {
              btn.up('basetreegrid').getStore().load();
              var baseGrid = btn.up("basetreegrid");
-             var mainLayout= baseGrid.up("panel[xtype=accesscontrol.useraccess.mainlayout]");
-             var mjuserrightGrid = mainLayout.down("panel[xtype=accesscontrol.useraccess.mjuserrightgrid]");
+             var mainLayout= baseGrid.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
+             var mjuserrightGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
              var mjuserrightstore = mjuserrightGrid.getStore();
              mjuserrightstore.removeAll();
              return false;
@@ -103,7 +103,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
         },
     	
     	 //选择人员按钮
-    	 "basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid] button[ref=selectPersonnel]": {
+    	 "basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid] button[ref=selectPersonnel]": {
             beforeclick: function(btn) {
                 this.openRoomAccess_Win(btn);
                 return false;
@@ -111,7 +111,7 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
         },
     	
         //保存数据按钮
-    	"basegrid[xtype=accesscontrol.useraccess.mjuserselectgrid] button[ref=gridSave]": {
+    	"basegrid[xtype=smartcontrol.useraccess.mjuserselectgrid] button[ref=gridSave]": {
             beforeclick: function(btn) {
                 this.saveRoomAccess(btn);
                 return false;
@@ -119,19 +119,19 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
         },
     	
         //删除人员权限
-        "panel[xtype=accesscontrol.useraccess.maingrid] button[ref=gridDeleteAll]": {
+        "panel[xtype=smartcontrol.useraccess.maingrid] button[ref=gridDeleteAll]": {
           	beforeclick: function(btn) {
               this.deleteUserAccess(btn);
               return false;
             }
         },
-        "basegrid[xtype=accesscontrol.useraccess.maingrid] button[ref=gridDeletePer]": {
+        "basegrid[xtype=smartcontrol.useraccess.maingrid] button[ref=gridDeletePer]": {
             beforeclick: function (btn) {
               this.doDeleteRecords(btn);
               return false; 
             }
         },
-        "basegrid[xtype=accesscontrol.useraccess.mjuserrightgrid] actioncolumn": {
+        "basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid] actioncolumn": {
              selectPersonnel_Win: function(data) {
                this.openRoomAccess_Win(null,data.view,data.record); 
                return false;          
@@ -271,12 +271,12 @@ Ext.define("core.accesscontrol.useraccess.controller.MainController", {
                 funData: popFunData,
                 funCode: detCode,
                 items: [{
-                    xtype: "accesscontrol.useraccess.detaillayout"
+                    xtype: "smartcontrol.useraccess.detaillayout"
                 }],
                 listeners: {
                     beforerender: function(win) {
                         // //隐藏按钮
-                        baseGrids = win.down("panel[xtype=accesscontrol.useraccess.useraccessgrid]");
+                        baseGrids = win.down("panel[xtype=smartcontrol.useraccess.useraccessgrid]");
                         var store = baseGrids.getStore();
                         var proxy = store.getProxy();
                         proxy.extraParams.filter="["+"{\"type\":\"string\",\"value\":"+"\""+stuId+"\""+",\"field\":\"stuId\",\"comparison\":\"\"}"+"]";

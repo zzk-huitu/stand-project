@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.controller.DetailController", {
+Ext.define("core.smartcontrol.useraccess.controller.DetailController", {
     extend: "Ext.app.ViewController",
-    alias: 'controller.accesscontrol.useraccess.detailcontroller',
+    alias: 'controller.smartcontrol.useraccess.detailcontroller',
     mixins: {},
     init: function () {
         /*执行一些初始化的代码*/

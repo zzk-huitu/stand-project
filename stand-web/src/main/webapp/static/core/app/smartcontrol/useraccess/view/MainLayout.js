@@ -1,18 +1,18 @@
-Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
+Ext.define("core.smartcontrol.useraccess.view.MainLayout", {
     extend: "core.base.view.BasePanel",
-    alias: 'widget.accesscontrol.useraccess.mainlayout',
+    alias: 'widget.smartcontrol.useraccess.mainlayout',
     requires: [   
-        "core.accesscontrol.useraccess.view.MainLayout",
+        "core.smartcontrol.useraccess.view.MainLayout",
     ],
     
     /** 关联此视图控制器 */
-    controller: 'accesscontrol.useraccess.maincontroller',
+    controller: 'smartcontrol.useraccess.maincontroller',
     /** 页面代码定义 */
     funCode: "useraccess_main",
     detCode: "useraccess_detail",
-    detLayout: "accesscontrol.useraccess.detaillayout",
+    detLayout: "smartcontrol.useraccess.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
-    otherController:'accesscontrol.useraccess.othercontroller',
+    otherController:'smartcontrol.useraccess.othercontroller',
     layout:'border',
     border:false,
     funData: {
@@ -30,16 +30,16 @@ Ext.define("core.accesscontrol.useraccess.view.MainLayout", {
     scrollable:'x',
     items: [{
     	split: true,//对模块分开的线条
-    	xtype: "accesscontrol.useraccess.roominfotree",
+    	xtype: "smartcontrol.useraccess.roominfotree",
     	width: 250,
         region: "west",
     }, {
     	split: true,//对模块分开的线条
-        xtype: "accesscontrol.useraccess.mjuserrightgrid",
+        xtype: "smartcontrol.useraccess.mjuserrightgrid",
         region: "center",
     },{
     	split: true,//对模块分开的线条
-        xtype: "accesscontrol.useraccess.maingrid",
+        xtype: "smartcontrol.useraccess.maingrid",
         width: 400,
         region: "east",
 

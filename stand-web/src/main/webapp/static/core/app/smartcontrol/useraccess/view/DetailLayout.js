@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.view.DetailLayout",{
+Ext.define("core.smartcontrol.useraccess.view.DetailLayout",{
 	extend:"core.base.view.BasePanel",
-	alias : 'widget.accesscontrol.useraccess.detaillayout',
+	alias : 'widget.smartcontrol.useraccess.detaillayout',
 	funCode:"useraccess_detail",
 	funData: {
 		action: comm.get('baseUrl') + "/BaseMjUserright", //请求Action
@@ -14,9 +14,9 @@ Ext.define("core.accesscontrol.useraccess.view.DetailLayout",{
 
     layout : "fit",
     /*关联此视图控制器*/
-	controller: 'accesscontrol.useraccess.detailcontroller',
+	controller: 'smartcontrol.useraccess.detailcontroller',
 	
 	items: [{
-		xtype: "accesscontrol.useraccess.useraccessgrid"
+		xtype: "smartcontrol.useraccess.useraccessgrid"
 	}]
 })

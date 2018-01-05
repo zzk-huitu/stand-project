@@ -17,6 +17,17 @@ Ext.define("core.baseset.room.view.AreaGrid", {
       
     },
     title: "区域信息",
+
+    tools: [{
+        type: 'refresh',
+        qtip: '刷新',
+        handler: function(event, toolEl, header) {
+            var tree = header.ownerCt
+            tree.getStore().load();
+            tree.getSelectionModel().deselectAll(true);          
+         }
+    }],
+
     tbar: [/*{
             xtype: 'tbtext',
             html: '区域信息',
@@ -49,12 +60,12 @@ Ext.define("core.baseset.room.view.AreaGrid", {
         ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle',
         disabled: true
-    }, {
+    }/*, {
         xtype: 'button',
         text: '刷新',
         ref: 'gridRefresh',
         iconCls: 'x-fa fa-refresh'
-    }],
+    }*/],
     columns:  {        
         defaults:{
             titleAlign:"center"

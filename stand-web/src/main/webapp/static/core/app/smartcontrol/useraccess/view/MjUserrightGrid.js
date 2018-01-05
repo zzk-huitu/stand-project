@@ -1,6 +1,6 @@
-Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
+Ext.define("core.smartcontrol.useraccess.view.MjUserrightGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.accesscontrol.useraccess.mjuserrightgrid",
+    alias: "widget.smartcontrol.useraccess.mjuserrightgrid",
     al: false,
     dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
@@ -20,8 +20,8 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
         //             uuids.push(temp.uuid);
         //         }
         //         var uuid = uuids.join(",");
-        //         var mainlayout = grid.up('panel[xtype=accesscontrol.useraccess.mainlayout]');
-        //         var baseGrid = mainlayout.down('panel[xtype=accesscontrol.useraccess.maingrid]');
+        //         var mainlayout = grid.up('panel[xtype=smartcontrol.useraccess.mainlayout]');
+        //         var baseGrid = mainlayout.down('panel[xtype=smartcontrol.useraccess.maingrid]');
         //         var stores = baseGrid.getStore();
         //         var proxys = stores.getProxy();
         //         var filter = "[{'type':'string','comparison':'in','value':'"+uuid +"','field':'termId'}]";
@@ -134,8 +134,8 @@ Ext.define("core.accesscontrol.useraccess.view.MjUserrightGrid", {
 
             //var uuid = record.get("uuid");
 
-            var mainlayout = grid.up('panel[xtype=accesscontrol.useraccess.mainlayout]');
-            var baseGrid = mainlayout.down('panel[xtype=accesscontrol.useraccess.maingrid]');
+            var mainlayout = grid.up('panel[xtype=smartcontrol.useraccess.mainlayout]');
+            var baseGrid = mainlayout.down('panel[xtype=smartcontrol.useraccess.maingrid]');
             var stores = baseGrid.getStore();
             var proxys = stores.getProxy();
             var filter = "[{'type':'string','comparison':'in','value':'"+uuid +"','field':'termId'}]";

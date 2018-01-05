@@ -13,6 +13,18 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
         excludes:"checked"
     },
     title: "品牌信息",
+
+    tools: [{
+        type: 'refresh',
+        qtip: '刷新',
+        handler: function(event, toolEl, header) {
+            var tree = header.ownerCt
+            tree.getStore().load();
+            tree.getSelectionModel().deselectAll(true);          
+         }
+    }],
+
+
     tbar: [{
         xtype: 'button',
         text: '添加下级',
@@ -37,12 +49,12 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
         ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle',
         disabled: true
-    }, {
+    }/*, {
         xtype: 'button',
         text: '刷新',
         ref: 'gridRefresh',
         iconCls: 'x-fa fa-refresh'
-    }],
+    }*/],
     columns:  {        
         defaults:{
             titleAlign:"center"

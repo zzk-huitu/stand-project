@@ -13,6 +13,17 @@ Ext.define("core.baseset.dictionary.view.DicGrid", {
     menuCode:"DICTIONARY",
     sortableColumns:false,
     title: "数据字典目录",
+
+    tools: [{
+        type: 'refresh',
+        qtip: '刷新',
+        handler: function(event, toolEl, header) {
+            var tree = header.ownerCt
+            tree.getStore().load();
+            tree.getSelectionModel().deselectAll(true);          
+         }
+    }],
+
     tbar: [{
         xtype: 'button',
         text: '添加下级',
@@ -37,12 +48,12 @@ Ext.define("core.baseset.dictionary.view.DicGrid", {
         ref: 'gridDel',
         iconCls: 'x-fa fa-minus-circle',
         disabled:true
-    }, {
+    }/*, {
         xtype: 'button',
         text: '刷新',
         ref: 'gridRefresh',
         iconCls: 'x-fa fa-refresh'
-    }],
+    }*/],
     columns: [ {
         text: "字典名称",
         dataIndex: "text",

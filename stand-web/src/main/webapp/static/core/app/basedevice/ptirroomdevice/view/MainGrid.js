@@ -83,6 +83,14 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             dataIndex: "deviceTypeCode",
             width: 150,
         }, {
+            text: "品牌名称",
+            dataIndex: "brandname",
+            width:150,
+            renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
+                value= (record.get("deviceBrandName")+" - "+record.get("deviceTypeName"));
+                return value
+            }
+        }, {
             text: "备注",
             dataIndex: "notes",
             flex:1,
