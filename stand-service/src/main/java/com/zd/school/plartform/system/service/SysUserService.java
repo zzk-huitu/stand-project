@@ -171,4 +171,6 @@ public interface SysUserService extends BaseService<SysUser> {
 	public List<ImportNotInfo> doImportUser(List<List<Object>> listObject, SysUser currentUser);
 
 	public Set<BaseOrg> getDeptByUserId(String userId);
+	
+	public String getUserOwnDeptids(SysUser currentUser) ;
 }

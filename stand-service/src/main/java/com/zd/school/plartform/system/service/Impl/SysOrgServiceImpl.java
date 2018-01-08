@@ -2,6 +2,7 @@ package com.zd.school.plartform.system.service.Impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1022,6 +1023,56 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			ps.executeBatch();
 		});
 	}
-	
+	@Override
+	public List<BaseOrg> getUserRightDeptList(SysUser currentUser) {
+		String userId = currentUser.getUuid();
+		Integer rightType = currentUser.getRightType();
+		String hql = "";
+		List<BaseOrg> list = new ArrayList<>();
+		if (rightType == 0) {
+			// 有所有部门权限
+			hql = " from BaseOrg WHERE isDelete=0 order by parentNode,orderIndex asc ";
+			list = this.queryByHql(hql);
+
+			return list;
+		} else {
+			// 指定部门、所在部门及主管的部门
+			String sql = MessageFormat.format(
+					"SELECT DEPT_ID ,CREATE_TIME ,CREATE_USER ,EXT_FIELD01 ,EXT_FIELD02 ,EXT_FIELD03 ,EXT_FIELD04 ,EXT_FIELD05 ,ISDELETE ,ORDER_INDEX ,UPDATE_TIME ,UPDATE_USER ,VERSION ,ISLEAF ,NODE_CODE ,NODE_LEVEL ,NODE_TEXT ,PARENT_NODE ,TREE_IDS ,DEPT_TYPE ,FAX ,IN_PHONE ,ISSYSTEM ,MAIN_LEADER ,OUT_PHONE ,REMARK ,VICE_LEADER ,SUPER_JOB ,SUPER_DEPT ,ALL_DEPTNAME ,SUPERDEPT_NAME ,SUPERJOB_NAME FROM dbo.SYS_V_USERRIGHTDEPT WHERE USER_ID=''{0}'' ORDER BY PARENT_NODE,ORDER_INDEX ASC",
+					userId);
+			List<?> alist = this.querySql(sql);
+			BaseOrg dept = null;
+			Integer length = alist.size();
+			for (int i = 0; i < length; i++) {
+				Object[] obj = (Object[]) alist.get(i);
+				dept = new BaseOrg();
+				dept.setUuid((String) obj[0]);
+				dept.setIsDelete((Integer) obj[8]);
+				dept.setOrderIndex((Integer) obj[9]);
+				dept.setVersion((Integer) obj[12]);
+				dept.setLeaf((Boolean) obj[13]);
+				dept.setNodeLevel((Integer) obj[15]);
+				dept.setNodeText((String) obj[16]);
+				dept.setParentNode((String) obj[17]);
+				dept.setTreeIds((String) obj[18]);
+				dept.setDeptType((String) obj[19]);
+				dept.setFax((String) obj[20]);
+				dept.setInPhone((String) obj[21]);
+				dept.setIssystem((Integer) obj[22]);
+				dept.setMainLeaderName((String) obj[23]);
+				dept.setOutPhone((String) obj[24]);
+				dept.setRemark((String) obj[25]);
+				dept.setViceLeader((String) obj[26]);
+				dept.setSuperJob((String) obj[27]);
+				dept.setSuperDept((String) obj[28]);
+				dept.setAllDeptName((String) obj[29]);
+				dept.setSuperdeptName((String) obj[30]);
+				dept.setSuperjobName((String) obj[31]);
+
+				list.add(dept);
+			}
+			return list;
+		}
+	}
 	
 }
