@@ -177,5 +177,14 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	public void doCreateFuId();
 
 	public void syncAllUserDeptInfoToUP(List<SysUserToUP> userInfos);
+
+	/**
+	 * 获取指定用户有权限的部门列表
+	 * 
+	 * @param currentUser
+	 *            指定的用户对象
+	 * @return
+	 */
+	public List<BaseOrg> getUserRightDeptList(SysUser currentUser);
 	
 }

@@ -2,6 +2,7 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +13,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.zd.school.control.device.model.MjUserright;
-import com.zd.school.plartform.basedevice.service.MjUserrightService;
-import com.zd.school.plartform.system.model.SysUser;
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
+import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.control.device.model.MjUserright;
+import com.zd.school.plartform.basedevice.service.MjUserrightService;
+import com.zd.school.plartform.comm.model.CommTreeChk;
+import com.zd.school.plartform.comm.service.CommTreeService;
+import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.teacher.teacherinfo.model.ViewUserRoom;
 
 /**
  * 
@@ -41,6 +45,9 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 	@Resource
 	MjUserrightService thisService; // service层接口
 
+	@Resource
+	CommTreeService treeService; // 生成树
+
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
@@ -57,9 +64,9 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 
 		writeJSON(response, strData);// 返回数据
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
@@ -71,15 +78,15 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 获取当前操作用户
-        SysUser currentUser = getCurrentSysUser();
-      
-        entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
-        if (ModelUtil.isNotNull(entity))
-            writeJSON(response, jsonBuilder.returnSuccessJson("\"数据增加成功\""));
-        else
-            writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));     
+		SysUser currentUser = getCurrentSysUser();
+
+		entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
+		if (ModelUtil.isNotNull(entity))
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"数据增加成功\""));
+		else
+			writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));
 	}
-	
+
 	/**
 	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
 	 * request @param @param response @param @throws IOException 设定参数 @return
@@ -88,13 +95,13 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 	@Auth("USERACCESS_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String ids=request.getParameter("ids");
+		String ids = request.getParameter("ids");
 		if (StringUtils.isEmpty(ids)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
+			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE, currentUser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
@@ -102,9 +109,10 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 			}
 		}
 	}
-	
+
 	/**
 	 * 给设备增加用户权限
+	 * 
 	 * @param entity
 	 * @param request
 	 * @param response
@@ -114,15 +122,34 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 	 */
 	@Auth("USERACCESS_add")
 	@RequestMapping("/doAddMj")
-	public void doAddMj(@RequestParam("userId") String userId,@RequestParam("termId") String termId, 
+	public void doAddMj(@RequestParam("userId") String userId, @RequestParam("termId") String termId,
 			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, IllegalAccessException, InvocationTargetException {
-		
+					throws IOException, IllegalAccessException, InvocationTargetException {
+
 		// 获取当前操作用户
-        SysUser currentUser = getCurrentSysUser();
-     
-        thisService.doAddMj(userId, termId,currentUser);// 执行增加方法
-      
-        writeJSON(response, jsonBuilder.returnSuccessJson("\"增加权限成功\""));       
+		SysUser currentUser = getCurrentSysUser();
+
+		thisService.doAddMj(userId, termId, currentUser);// 执行增加方法
+
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"增加权限成功\""));
 	}
+
+	@RequestMapping(value = { "/mjrightlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void mjrightlist(@ModelAttribute MjUserright entity, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String strData = ""; // 返回给js的数据
+		String sort = super.sort(request);
+		String querySql = querySql(request);
+		String orderSql = orderSql(request);
+		String sql = " select  *  from PT_V_USERROOM  where 1=1 ";
+		sql = sql + querySql + orderSql;
+		QueryResult qResult = thisService.queryPageResultBySql(sql, super.start(request), super.limit(request),
+				ViewUserRoom.class);
+		// QueryResult qResult = thisService.getDao().getForValuesToSql(start,
+		// limit, querySql,orderSql,sql, sql1);
+		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
+
 }

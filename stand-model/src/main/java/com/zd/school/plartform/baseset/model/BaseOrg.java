@@ -128,17 +128,17 @@ public class BaseOrg extends TreeNodeEntity implements Serializable {
         return remark;
     }
     
-//    @FieldInfo(name = "副负责岗位")
-//	@Column(name = "VICE_LEADER", length = 64, nullable = true)
-//	private String viceLeader;
-//
-//	public void setViceLeader(String viceLeader) {
-//		this.viceLeader = viceLeader;
-//	}
-//
-//	public String getViceLeader() {
-//		return viceLeader;
-//	}
+    @FieldInfo(name = "副负责岗位")
+	@Column(name = "VICE_LEADER", length = 64, nullable = true)
+	private String viceLeader;
+
+	public void setViceLeader(String viceLeader) {
+		this.viceLeader = viceLeader;
+	}
+
+	public String getViceLeader() {
+		return viceLeader;
+	}
 
     @FieldInfo(name = "部门类型 01-学校 02-校区 03-部门  04-年级  05-班级　06-学科")
     @Column(name = "DEPT_TYPE", length = 36, nullable = true)

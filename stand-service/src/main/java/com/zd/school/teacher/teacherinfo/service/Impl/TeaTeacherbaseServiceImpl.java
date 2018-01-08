@@ -1,5 +1,15 @@
 package com.zd.school.teacher.teacherinfo.service.Impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.StringUtils;
@@ -8,17 +18,10 @@ import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysJobService;
 import com.zd.school.plartform.system.service.SysOrgService;
+import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.teacher.teacherinfo.dao.TeaTeacherbaseDao;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * ClassName: TeaTeacherbaseServiceImpl Function: TODO ADD FUNCTION. Reason:
@@ -42,7 +45,8 @@ public class TeaTeacherbaseServiceImpl extends BaseServiceImpl<TeaTeacherbase> i
 
     @Resource
     private SysJobService jobService;
-
+    @Resource
+	private SysUserService userService;
     @Override
     public QueryResult<TeaTeacherbase> getDeptTeacher(Integer start, Integer limit, String sort, String filter,
                                                       String whereSql, String orderSql, String querySql, Boolean isDelete, String deptId, SysUser currentUser) {
@@ -94,7 +98,108 @@ public class TeaTeacherbaseServiceImpl extends BaseServiceImpl<TeaTeacherbase> i
             return null;
         }
     }
-
+	@Override
+	public QueryResult<TeaTeacherbase> getDeptTeacher(Integer start, Integer limit, String sort, String filter,
+			String qureyFilter, Boolean isDelete, String deptId, SysUser currentUser) {
+		StringBuilder hql = new StringBuilder();
+		StringBuilder countHql = new StringBuilder();
+		String filterHql = "";
+		String rightDeptIds = "";
+		if (currentUser.getRightType() != 0) {
+			// 如果当前用户不是所有的部门权限，则取有权限的部门
+			rightDeptIds = userService.getUserOwnDeptids(currentUser);
+		}
+		String queryFilterSql = StringUtils.convertFilterToSql(qureyFilter);
+		// 当前是进行组合查询
+		if (StringUtils.isNotEmpty(qureyFilter)) {
+			if (currentUser.getRightType() == 0) {
+				// 当前用户有所有部门权限
+				hql.append(
+						"select o,k.jobName from TeaTeacherbase as o left join BaseUserdeptjob as r on o.uuid=r.userId and r.isDelete=0 ");
+				hql.append(" left join BaseJob as k on k.uuid=r.jobId where o.isDelete=0  ");
+				hql.append(queryFilterSql);
+			} else {
+				if (StringUtils.isNotEmpty(rightDeptIds)) {
+					// 不是根部门
+					if (deptId.equals("058b21fe-b37f-41c9-ad71-091f97201ff8")) {
+						hql.append(
+								"select o,'临时部门' from TeaTeacherbase o where o.uuid not in(select userId from BaseUserdeptjob where isDelete=0) ");
+						hql.append(queryFilterSql);
+					} else {
+						// 当前用户有指定的部门权限
+						hql.append(
+								"select o,k.jobName from TeaTeacherbase as o left join BaseUserdeptjob as r on o.uuid=r.userId and r.isDelete=0 ");
+						hql.append(" and r.deptId in(" + rightDeptIds + ") ");
+						hql.append(" left join BaseJob as k on k.uuid=r.jobId where o.isDelete=0  ");
+						hql.append(queryFilterSql);
+					}
+				}
+			}
+		} else {
+			// 指定部门显示
+			if (currentUser.getRightType() == 0) {
+				if ("2851655E-3390-4B80-B00C-52C7CA62CB39".equals(deptId)) {
+					// 点击的是根部门，取有权限的部门的数据
+					if (StringUtils.isNotEmpty(rightDeptIds)) {
+						// 当前用户有指定的部门权限
+						hql.append(
+								"select o,k.jobName from TeaTeacherbase as o inner join BaseUserdeptjob as r on o.uuid=r.userId and r.isDelete=0 ");
+						hql.append(" inner join BaseJob as k on k.uuid=r.jobId where o.isDelete=0  ");
+						hql.append(" order by r.jobLevel ");
+					}
+				} else {
+					if (StringUtils.isNotEmpty(deptId)) {
+						// 不是根部门
+						if (deptId.equals("058b21fe-b37f-41c9-ad71-091f97201ff8")) {
+							hql.append(
+									"select o,'临时部门' from TeaTeacherbase o where o.uuid not in(select userId from BaseUserdeptjob where isDelete=0) ");
+						} else {
+							hql.append("SELECT a,d.jobName FROM TeaTeacherbase a ");
+							hql.append(" INNER JOIN BaseUserdeptjob b ON a.uuid=b.userId ");
+							hql.append(" INNER JOIN BaseJob d ON d.uuid=b.jobId ");
+							hql.append(" WHERE PATINDEX('%" + deptId + "%', b.treeIds)>0 ");
+							hql.append(" and a.isDelete=0 and b.isDelete=0 and d.isDelete=0 ");
+							hql.append(" ORDER BY b.jobLevel ");
+						}
+					}
+				}
+			} else {
+				if (StringUtils.isNotEmpty(deptId)) {
+					// 不是根部门
+					if (deptId.equals("058b21fe-b37f-41c9-ad71-091f97201ff8")) {
+						hql.append(
+								"select o,'临时部门' from TeaTeacherbase o where o.uuid not in(select userId from BaseUserdeptjob where isDelete=0) ");
+					} else {
+						hql.append("select o,k.jobName from TeaTeacherbase as o ,BaseUserdeptjob as r,BaseJob as k ");
+						hql.append(
+								"where o.uuid=r.userId and k.uuid=r.jobId and o.isDelete=0 and r.isDelete=0 and patindex('%"
+										+ deptId + "%',r.treeIds)>0 ");
+						hql.append(" and r.deptId in(" + rightDeptIds + ")");
+						hql.append(" order by r.jobLevel ");
+					}
+				}
+			}
+		}
+		if (hql.length() > 0) {
+			QueryResult<TeaTeacherbase> qr = this.queryResult(hql.toString(), start, limit);
+			List<?> alist = qr.getResultList();
+			Integer lenth = alist.size();
+			// Set<TeaTeacherbase> tt = new LinkedHashSet<TeaTeacherbase>();
+			List<TeaTeacherbase> tt = new ArrayList<>();
+			for (int i = 0; i < lenth; i++) {
+				Object[] obj = (Object[]) alist.get(i);
+				TeaTeacherbase teacherbase = (TeaTeacherbase) obj[0];
+				teacherbase.setJobName((String) obj[1]);
+				tt.add(teacherbase);
+			}
+			qr.getResultList().clear();
+			qr.getResultList().addAll(tt);
+			// qr.setTotalCount((long) tt.size());
+			return qr;
+		} else {
+			return null;
+		}
+	}
 
     @Override
     public Boolean batchSetDept(String deptId, String userIds, SysUser currentUser) {

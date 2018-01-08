@@ -87,6 +87,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 	@Resource
 	private BaseDicitemService dicitemService;
+
 	
 	@Override
 	public SysUser doAddUser(SysUser entity, SysUser currentUser) throws Exception, InvocationTargetException {
@@ -987,5 +988,19 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		return listNotExit;
 		
 	}
-
+	@Override
+	public String getUserOwnDeptids(SysUser currentUser) {
+		List<BaseOrg> rightOrg = orgService.getUserRightDeptList(currentUser);
+		StringBuffer orgids = new StringBuffer();
+		if (rightOrg.size() > 0) {
+			for (BaseOrg baseOrg : rightOrg) {
+				orgids.append("'" + baseOrg.getUuid() + "',");
+			}
+		}
+		if (orgids.length() > 0) {
+			orgids = new StringBuffer(StringUtils.trimLast(orgids.toString()));
+			return orgids.toString();
+		} else
+			return "";
+	}
 }
