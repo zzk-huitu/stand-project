@@ -1,7 +1,7 @@
 Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.smartcontrol.roombagrule.maingrid",
-	dataUrl: comm.get("baseUrl") + "/PtRoombagRule/list", //数据获取地址
+	dataUrl: comm.get("baseUrl") + "/BasePtRoomBagRule/list", //数据获取地址
 	model:"com.zd.school.control.device.model.PtRoomBagRule", //对应的数据模型
     menuCode:"CLASSELEGANT",
 	//工具栏操作按钮
@@ -18,6 +18,13 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            disabled:true,
+            iconCls: 'x-fa fa-pencil-square'
+        },{
+            xtype: 'button',
+            text: '费率绑定',
+            ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
             iconCls: 'x-fa fa-pencil-square'
@@ -128,6 +135,25 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
                         break;
                 }
             }
+        },{
+            xtype: 'actiontextcolumn',
+            text: "操作",
+            align: 'center',
+            width: 150,
+            fixed: true,
+            items: [{
+                text:'详情',  
+                style:'font-size:12px;', 
+                tooltip: '详情',
+                ref: 'gridDetail',                
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }]
         }]
     }
 });

@@ -47,6 +47,13 @@ public class PtRoomBagsRuleBind extends BaseEntity implements Serializable {
 	@Formula("(SELECT A.XM FROM dbo.SYS_T_USER A WHERE A.USER_ID=DEDUCTION_USER_ID)")
 	@FieldInfo(name = "姓名")
 	private String xm;
+	
+	@MapperCell(cellName="房间名称")
+	@FieldInfo(name = "房间名称")
+	@Formula("(SELECT A.ROOM_NAME FROM dbo.BUILD_T_ROOMINFO A WHERE A.ROOM_ID=ROOM_ID)")
+	private String roomName;
+	
+	
 	public String getRoomId() {
 		return roomId;
 	}
@@ -87,6 +94,15 @@ public class PtRoomBagsRuleBind extends BaseEntity implements Serializable {
 		this.xm = xm;
 	}
 
+	public String getRoomName() {
+		return roomName;
+	}
+
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
+	}
+
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

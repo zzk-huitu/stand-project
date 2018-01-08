@@ -3,7 +3,7 @@ Ext.define("core.smartcontrol.roombagrule.view.DetailLayout", {
 	alias: 'widget.smartcontrol.roombagrule.detaillayout',
 	funCode: "roombagrule_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/PtRoombagRule", //请求Action	
+		action: comm.get('baseUrl') + "/BasePtRoomBagRule", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
 		}

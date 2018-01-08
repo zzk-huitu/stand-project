@@ -132,13 +132,21 @@ Ext.define("core.util.DetailTabUtil", {
 	createBaseFormTab:function(baseGrid,moduleInfo,tabInfo){		
 		var funData=moduleInfo.funData;         
         var insertObj = funData.defaultObj;
+        var finalObj = funData.finalObj;    //zzk新加入，用于在编辑时，率先处理一次表格record数据，并以此数据为主数据。
+
         var popFunData = Ext.apply(funData, {   //将一些必要的信息，统一存放于此，提高给处理提交代码使用。
             grid: baseGrid
         });
         if(tabInfo.recordData!=null){
-        	insertObj=tabInfo.recordData;
+            //insertObj=tabInfo.recordData;
+
+            /*zzk：加入最终不变值(若finalObj中有数据，则无论表格中的值是什么，都以finalObj中为准)*/
+            insertObj = Ext.apply(insertObj,funData.finalObj,tabInfo.recordData);
+        	
         }
         
+
+
         var currentXtype=[{
             xtype:moduleInfo.detLayout
         }];
@@ -168,12 +176,14 @@ Ext.define("core.util.DetailTabUtil", {
 
 	doInitFormValue:function(item,cmd){
 		var objDetForm = item.down("baseform[funCode=" + item.detCode + "]");
-        var formDeptObj = objDetForm.getForm();              
-        this.setFormValue(formDeptObj, item.insertObj);
-                       
-        if(cmd=="detail"){
-            formDeptObj.setItemsReadOnly(true);
-        }
+        if(objDetForm){
+            var formDeptObj = objDetForm.getForm();              
+            this.setFormValue(formDeptObj, item.insertObj);
+                           
+            if(cmd=="detail"){
+                formDeptObj.setItemsReadOnly(true);
+            }
+        }    
 	}	     
 
 });
