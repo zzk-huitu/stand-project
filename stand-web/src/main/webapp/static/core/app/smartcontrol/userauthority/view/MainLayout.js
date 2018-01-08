@@ -42,14 +42,15 @@ Ext.define("core.smartcontrol.userauthority.view.MainLayout", {
         region: "west",
         width:180,
         split:true,
+        //margin:'0 5 0 0'
 	},{
         xtype: "smartcontrol.userauthority.usergrid",   
         region: "center",
-        margin:5,  
+        margin:'0 5 0 0'  
     },{
         xtype: "smartcontrol.userauthority.maingrid",  
         region: "east", 
-        width:580,
-        margin:5, 
+        width:510,
+        margin:'5'
     }]
 })

@@ -82,21 +82,24 @@ Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
     		text: "编号",
     		dataIndex: "userNumb",
     		flex:1,
-    		minWidth:120
+    		minWidth:80
     	}, {
     		text: "姓名",
     		dataIndex: "xm",
-    		width:120
+    		flex:1,
+            minWidth:80
     	}, {
     		text: "性别",
     		dataIndex: "xbm",
     		columnType: "basecombobox",
     		ddCode: "XBM",
-    		width:80
+    		flex:1,
+            minWidth:80
     	}, {
     		text: "岗位",
     		dataIndex: "allJobName",
-    		width:100
+    		flex:1,
+            minWidth:80
     	}]
     },
 	listeners: {
