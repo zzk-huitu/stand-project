@@ -29,24 +29,20 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
             xtype: "basequeryfield",
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
-            dataType:'date',        //指定查询设置filter时的进行判断的类型，date或者datetime
-            operationType:">=",     
             //fieldLabel: "状态的开始日期",
             name: "statusDate",
             funCode: 'girdFastSearchText',
             emptyText: '状态的开始日期',
-            format: "Y-m-d",
+            //format: "Y-m-d",
         },{
             xtype: "basequeryfield",
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
-            dataType:'date',        //指定查询设置filter时的进行判断的类型，date或者datetime
-            operationType:"<=",     
            // fieldLabel: "状态的终止日期",
             name: "statusDate",
             funCode: 'girdFastSearchText',
             emptyText: '状态的终止日期',
-            format: "Y-m-d",
+           // format: "Y-m-d",
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
@@ -60,6 +56,14 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
     }],*/
     panelButtomBar:{},
     defGroup:"termName",
+    features: [{
+        ftype: 'groupingsummary',
+        groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+        id: 'restaurantGrouping',
+        collapsible :false,
+        enableGroupingMenu:false,
+        enableNoGroups:false,
+    }],
     //扩展参数
     extParams: {
     },
