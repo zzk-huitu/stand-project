@@ -151,68 +151,71 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
             return false;
         }
 
-        //汇率规则
-        var roomRuleId = tabItem.itemPKV;
-        //获取选择的房间
-        var roomIds=new Array();       
-        for(var i=0;i<selectGrid.length;i++){
-            roomIds.push(selectGrid[i].get('uuid'));
-        }
-
-        //获取设置指定扣费的房间
-        var deductionUserIds =new Array();  
-        var deductionRoomIds =new Array();    
-        var gridTwo = basetab.down('panel[xtype=smartcontrol.roombagrule.dormallotfinishgridtwo]');
-        var gridTwoStore=gridTwo.getStore();
-        for(var i=0;i<gridTwoStore.getCount();i++){
-            deductionUserIds.push(gridTwoStore.getAt(i).get('uuid'));
-            deductionRoomIds.push(gridTwoStore.getAt(i).get('roomId'));
-        }
-
-      
-        
-        var loading = new Ext.LoadMask(basetab, {
-            msg: '正在提交，请稍等...',
-            removeMask: true// 完成后移除
-        });
-        loading.show();
-
-        self.asyncAjax({
-            url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/doAdd",
-            params: {
-                roomIds: roomIds.join(","),
-                roomRuleId: roomRuleId,
-                deductionUserIds: deductionUserIds.join(","),
-                deductionRoomIds: deductionRoomIds.join(",")
-            },
-            //回调代码必须写在里面
-            success: function (response) {
-                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                if (data.success) {
-
-            
-                    loading.hide();
-
-                    self.msgbox("保存成功!");        
-
-                    var grid = basetab.funData.grid; //此tab是否保存有grid参数
-                    if (!Ext.isEmpty(grid)) {
-                        var store = grid.getStore();                           
-                        store.load(); //刷新父窗体的grid
-                    }
-
-                } else {
-                    self.Error(data.obj);
-                    loading.hide();
+        Ext.Msg.confirm('提示', "您确定要绑定这些房间的费率或指定扣费人吗？", function (btn2, text) {
+            if (btn2 == 'yes') {
+                 //汇率规则
+                var roomRuleId = tabItem.itemPKV;
+                //获取选择的房间
+                var roomIds=new Array();       
+                for(var i=0;i<selectGrid.length;i++){
+                    roomIds.push(selectGrid[i].get('uuid'));
                 }
-            },
-            failure: function(response) {
-                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                loading.hide();
+
+                //获取设置指定扣费的房间
+                var deductionUserIds =new Array();  
+                var deductionRoomIds =new Array();    
+                var gridTwo = basetab.down('panel[xtype=smartcontrol.roombagrule.dormallotfinishgridtwo]');
+                var gridTwoStore=gridTwo.getStore();
+                for(var i=0;i<gridTwoStore.getCount();i++){
+                    deductionUserIds.push(gridTwoStore.getAt(i).get('deductionUserId'));
+                    deductionRoomIds.push(gridTwoStore.getAt(i).get('roomId'));
+                }
+
+              
+                
+                var loading = new Ext.LoadMask(basetab, {
+                    msg: '正在提交，请稍等...',
+                    removeMask: true// 完成后移除
+                });
+                loading.show();
+
+                self.asyncAjax({
+                    url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/doAdd",
+                    params: {
+                        roomIds: roomIds.join(","),
+                        roomRuleId: roomRuleId,
+                        deductionUserIds: deductionUserIds.join(","),
+                        deductionRoomIds: deductionRoomIds.join(",")
+                    },
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        if (data.success) {
+
+                    
+                            loading.hide();
+
+                            self.msgbox("保存成功!");        
+
+                            var grid = basetab.funData.grid; //此tab是否保存有grid参数
+                            if (!Ext.isEmpty(grid)) {
+                                var store = grid.getStore();                           
+                                store.load(); //刷新父窗体的grid
+                            }
+
+                        } else {
+                            self.Error(data.obj);
+                            loading.hide();
+                        }
+                    },
+                    failure: function(response) {
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });   
             }
         });
-
     },
 
     doSelectUserData:function(btn){
@@ -234,7 +237,7 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
         var data = {
             userNumb: rescords[0].get('userNumb'),
             xm: rescords[0].get('xm'),
-            uuid:rescords[0].get('uuid')
+            deductionUserId:rescords[0].get('uuid')
         };
 
         for(var i=0;i<roomInfos.length;i++){
@@ -292,51 +295,6 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
             });
         }
 
-        /* 
-        var roleInfoContainer = tabItem.down("container[ref=roleInfo]");
-        roleInfoContainer.setData(insertObj);
-
-        self.asyncAjax({
-            url: comm.get("baseUrl") + "/SysRole/roleUserList",
-            params: {
-                page: 1,
-                start: 0,
-                limit: 0,
-                roleId: insertObj.uuid
-            },
-            success: function (response) {
-                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                var roleUserContainer = tabItem.down("container[ref=roleUser]");
-                roleUserContainer.setData(data);
-            }
-        });
-
-
-            var uploadPanel = cmp.down("panel[xtype=uploadpanel]");       
-            //1. 加载文件数据
-            self.asyncAjax({
-                url: comm.get('baseUrl') + "/BaseAttachment/getFileList",
-                params: {
-                    recordId: cmp.insertObj.uuid                   
-                },
-                //回调代码必须写在里面
-                success: function (response) {
-                    var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                    uploadPanel.getStore().loadData(data);                        
-                },
-                failure: function(response) {
-                    Ext.Msg.alert('读取文件数据失败！', '错误信息：\n' + response.responseText);                           
-                }
-            });
-
-       
-            var fileView=cmp.down("dataview[ref=fileView]");
-            fileView.getStore().load({
-                params: {
-                    recordId: cmp.insertObj.uuid
-                }
-            });*/
         
     }
 });

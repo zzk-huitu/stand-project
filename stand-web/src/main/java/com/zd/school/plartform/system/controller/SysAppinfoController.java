@@ -169,10 +169,11 @@ public class SysAppinfoController extends FrameWorkController<SysAppinfo> implem
             if (currentUser != null)
                 userCh = currentUser.getXm();
         
+            /*此文件夹中需要预先放置此文件，否则启用时会报错*/
             String loadUrl="";
         	switch(appType){
-	        	case "1": loadUrl="/static/upload/appUpdate/metting_attendance.apk"; break;
-	        	case "2": loadUrl="/static/upload/appUpdate/course_attendance.apk"; break;
+	        	case "1": loadUrl="/static/upload/appUpdate/padApp.apk"; break;	//平板后其他（根据数据字典进行修改）
+	        	case "2": loadUrl="/static/upload/appUpdate/phoneApp.apk"; break;	//手机或其他（根据数据字典进行修改）
 	    	}
         	String rootPath = request.getSession().getServletContext().getRealPath("/");
 	            //String rootPath="G:\\PSTX_FILE";
@@ -219,7 +220,7 @@ public class SysAppinfoController extends FrameWorkController<SysAppinfo> implem
 			//1.提供读入、写出的文件
 			File file1 = new File(src);
 			File file2 = new File(dest);
-			
+						
 			//2.想创建相应的节点流：FileInputStream、FileOutputStream
 			FileInputStream fis = new FileInputStream(file1);
 			FileOutputStream fos = new FileOutputStream(file2);

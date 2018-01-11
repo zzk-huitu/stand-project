@@ -41,6 +41,10 @@ Ext.define("core.smartcontrol.roombagrule.view.DormAllotFinishGridTwo", {
         dataIndex: "uuid",
         hidden: true
     }, {
+        text: "用户id",
+        dataIndex: "userId",
+        hidden: true
+    },{
         text: "人员编号",
         dataIndex: "userNumb",
         flex:1,

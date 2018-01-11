@@ -18,11 +18,12 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
 
     tbar:[{
         xtype: 'tbtext',
-        html: '选中的设备（双击添加）',
+        html: '选中的设备（双击移除）',
         style: {
             fontSize: '16px',
             color: '#C44444',
-            fontWeight:800
+            fontWeight:800,
+            lineHeight:'32px'
         }
     }],
 
@@ -45,21 +46,21 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
         },*/{
             text: "房间名称",
             dataIndex: "roomName",
-            width:100
+            width:80
         }, {
             text: "设备名称",
             dataIndex: "termName",
-            width:100
+            width:80
         }, {
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE", //字典代码
-            width:100
+            width:80
         }, {
             text: "网关名称",
             dataIndex: "gatewayName",
-            width:100
+            width:80
         }]
     },
     
@@ -70,8 +71,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
 
             var IsSelectStore = grid.getStore();
             IsSelectStore.removeAt(index);
-
-            grid.getStore().removeAt(index); //将选中的移除
+            
             deviceAllotGrid.getStore().insert(0, record); //加入到新的grid
             return false;
         }

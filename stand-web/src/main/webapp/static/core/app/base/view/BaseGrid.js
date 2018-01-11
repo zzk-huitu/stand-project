@@ -17,8 +17,9 @@ Ext.define("core.base.view.BaseGrid", {
         //checkOnly:false,    //如果值为true，则只用点击checkbox列才能选中此条记录
         //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
     },
-    viewConfig: {
-        stripeRows: false
+    viewConfig: {   //用于ext.view的任何配置选项。
+        stripeRows: false,      
+        enableTextSelection:false    //配置列表的文本是否可以复制
     },
     //获取数据的地址
     dataUrl: '',

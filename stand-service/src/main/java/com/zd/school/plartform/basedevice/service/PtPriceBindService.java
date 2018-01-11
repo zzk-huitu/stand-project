@@ -10,4 +10,6 @@ import com.zd.school.control.device.model.PtPriceBind;
  */
 public interface PtPriceBindService extends BaseService<PtPriceBind>{
 
+	void doPriceBind(String[] termId, String[] termSn, String meterId,String xm);
+
 }

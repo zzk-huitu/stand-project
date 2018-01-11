@@ -1,7 +1,7 @@
 Ext.define("core.smartcontrol.watermeter.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.smartcontrol.watermeter.maingrid",
-	dataUrl: comm.get("baseUrl") + "/PtSkMeter/list", //数据获取地址
+	dataUrl: comm.get("baseUrl") + "/BasePtSkMeter/list", //数据获取地址
 	model: "com.zd.school.control.device.model.PtSkMeter", //对应的数据模型
     menuCode:"CLASSELEGANT",
 	//工具栏操作按钮
@@ -14,6 +14,13 @@ Ext.define("core.smartcontrol.watermeter.view.MainGrid", {
             iconCls: 'x-fa fa-plus-circle',
             funCode:'girdFuntionBtn',
             //disabled:true
+        },{
+            xtype: 'button',
+            text: '费率绑定',
+            ref: 'gridBinding',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            disabled:true,
+            iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
             text: '编辑',
@@ -64,6 +71,25 @@ Ext.define("core.smartcontrol.watermeter.view.MainGrid", {
             text: "更新时间",
             dataIndex: "updateTime",
             width:200,
-        }],
+        },{
+            xtype: 'actiontextcolumn',
+            text: "操作",
+            align: 'center',
+            width: 100,
+            fixed: true,
+            items: [{
+                text:'详情',  
+                style:'font-size:12px;', 
+                tooltip: '详情',
+                ref: 'gridDetail',                
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('detailClick_Tab', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
+            }]
+        }]
     }
 });

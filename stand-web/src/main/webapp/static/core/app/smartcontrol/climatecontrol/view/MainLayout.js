@@ -17,7 +17,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainLayout", {
     otherController:'smartcontrol.climatecontrol.othercontroller',
  
 	funData: {
-		action: comm.get('baseUrl') + "/ClassElegant", //请求Action
+		action: comm.get('baseUrl') + "/BasePtIrRoomDevice", //请求Action
 		pkName: "uuid",
 		defaultObj: {
            

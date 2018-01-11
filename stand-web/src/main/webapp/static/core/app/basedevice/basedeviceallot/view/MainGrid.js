@@ -31,7 +31,8 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
             iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
-            text: '删除',
+            text: '移除',
+            msg:'是否要移除此设备？',
             ref: 'gridDelete',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
@@ -157,9 +158,9 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
                     });
                 }
             },{
-                text:'删除',  
+                text:'移除',  
                 style:'font-size:12px;', 
-                tooltip: '删除',
+                tooltip: '移除此设备',
                 ref: 'gridDelete',
                 getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
                     if(comm.get("isAdmin")!="1"){
@@ -175,7 +176,8 @@ Ext.define("core.basedevice.basedeviceallot.view.MainGrid", {
                     var rec = view.getStore().getAt(rowIndex);
                     this.fireEvent('deleteClick', {
                         view: view.grid,
-                        record: rec
+                        record: rec,
+                        msg:'是否要移除此设备？'
                     });
                 }
             }]

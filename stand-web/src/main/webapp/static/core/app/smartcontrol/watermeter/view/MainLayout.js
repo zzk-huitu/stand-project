@@ -17,7 +17,7 @@ Ext.define("core.smartcontrol.watermeter.view.MainLayout", {
     otherController:'smartcontrol.watermeter.othercontroller',
  
 	funData: {
-		action: comm.get('baseUrl') + "/PtSkMeter", //请求Action
+		action: comm.get('baseUrl') + "/BasePtSkMeter", //请求Action
 		pkName: "uuid",
 		defaultObj: {
            
@@ -30,7 +30,7 @@ Ext.define("core.smartcontrol.watermeter.view.MainLayout", {
             detailTitle:'水控流量计详情',
             addXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
             editXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
-            detailXtype:null,	//2018/1/3新加入，用于在公共方法中打开指定的界面
+            detailXtype:'smartcontrol.watermeter.detailhtml',	//2018/1/3新加入，用于在公共方法中打开指定的界面
         }
 	},
 

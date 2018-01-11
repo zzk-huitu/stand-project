@@ -50,29 +50,31 @@ Ext.define("core.basedevice.basedeviceallot.view.RoominfoTree2", {
     
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
-            // var mainLayout = tree.up("panel[xtype=basedevice.basedeviceallot.deviceallotlayout]");
-            // var funData = mainLayout.funData;
-            // var roomId=record.get("id");
-            // var leaf = record.get("leaf");
-            // if(leaf==true){
-            //     // mainLayout.funData = Ext.apply(funData, {
-            //     //     roomId: roomId,
-            //     //     leaf : record.get("leaf"),//true: 房间 false:区域
-            //     //     arealevel: record.get("level"),
-            //     // });
-            //     // 加载信息
-            //     var mianGrid = mainLayout.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
-            //     var store = mianGrid.getStore();
-            //     var proxy = store.getProxy();
-            //     proxy.extraParams.roomId=roomId;
-            //     store.loadPage(1); 
-
-            //      // 加载信息
-            //     var allotGrid = mainLayout.down("panel[xtype=basedevice.basedeviceallot.deviceallotgrid]");
-            //     allotGrid.getStore().loadPage(1); 
-            // }
-            // return false;
-            
+            /*不需要点击树
+            var mainLayout = tree.up("panel[xtype=basedevice.basedeviceallot.deviceallotlayout]");
+            var funData = mainLayout.funData;
+            var roomId=record.get("id");
+            var leaf = record.get("leaf");
+            if(leaf==true){
+                // mainLayout.funData = Ext.apply(funData, {
+                //     roomId: roomId,
+                //     leaf : record.get("leaf"),//true: 房间 false:区域
+                //     arealevel: record.get("level"),
+                // });
+                // 加载信息
+                
+                var mianGrid = mainLayout.down("panel[xtype=basedevice.basedeviceallot.devicesysgrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId=roomId;
+                store.loadPage(1); 
+                
+                 // 加载信息
+                var allotGrid = mainLayout.down("panel[xtype=basedevice.basedeviceallot.deviceallotgrid]");
+                allotGrid.getStore().loadPage(1); 
+            }
+            return false;
+            */
         }
     }
    

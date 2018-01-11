@@ -7,5 +7,14 @@ Ext.define("core.smartcontrol.watermeter.controller.DetailController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
+    	"panel[xtype=smartcontrol.watermeter.roominfotree] button[ref=gridRefresh]": {
+            click: function(btn) {
+                var baseGrid = btn.up("basetreegrid");
+                var store = baseGrid.getStore();
+                store.load(); //刷新父窗体的grid
+                return false;
+            }
+        },
+
     }
 });

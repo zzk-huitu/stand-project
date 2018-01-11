@@ -24,6 +24,15 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分         
             iconCls: 'x-fa fa-pencil-square'
         },{
+            xtype: 'numberfield',
+            text: '温度设定',
+            ref:'tempSet',
+            value:"",
+            emptyText: "温度设定",
+            allowDecimals:false,
+            maxValue:35,
+            minValue:17
+        },{
             xtype: 'button',
             text: '温度',
             ref: 'gridSet',
@@ -95,49 +104,6 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainGrid", {
             text: "楼层",
             dataIndex: "nodeText",
             width:200,
-        },*/{
-            xtype: 'actiontextcolumn',
-            text: "操作",
-            align: 'center',
-            width: 150,
-            fixed: true,
-            items: [{
-                text:'开启',  
-                style:'font-size:12px;', 
-                tooltip: '打开空调',
-                ref: 'gridOpen',                
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('opneClick', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            }, {
-                text:'关闭',  
-                style:'font-size:12px;', 
-                tooltip: '关闭空调',
-                ref: 'gridClose',
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('closeClick', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            },{
-                text:'温度',  
-                style:'font-size:12px;', 
-                tooltip: '调节温度',
-                ref: 'gridSet',              
-                handler: function(view, rowIndex, colIndex, item) {
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('setClick', {
-                        view: view.grid,
-                        record: rec
-                    });
-                }
-            }]
-        }]
+        },*/]
     }
 });

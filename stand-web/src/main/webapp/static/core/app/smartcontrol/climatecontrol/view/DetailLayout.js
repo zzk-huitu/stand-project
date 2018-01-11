@@ -3,7 +3,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.DetailLayout", {
 	alias: 'widget.smartcontrol.climatecontrol.detaillayout',
 	funCode: "classelegant_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/ClassElegant", //请求Action	
+		action: comm.get('baseUrl') + "/BasePtIrRoomDevice", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
 		}

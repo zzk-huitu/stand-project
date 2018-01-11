@@ -63,26 +63,10 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	public void doAdd(String[] termId,String[] termSn, String meterId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		// 获取当前操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		PtPriceBind perEntity = null;
-		for (int i = 0; i < termId.length; i++) {
-			perEntity = thisService.getByProerties("termId",termId[i]);
-			if (perEntity != null) {
-				perEntity.setPriceId(meterId);
-				perEntity.setUpdateTime(new Date());
-				perEntity.setUpdateUser(userCh);
-				thisService.merge(perEntity);
-			} else {
-				perEntity = new PtPriceBind();
-				perEntity.setPriceId(meterId);
-				perEntity.setTermId(termId[i]);
-				perEntity.setTermSn(termSn[i]);
-				thisService.merge(perEntity);
-			}
-		}
+		
+		thisService.doPriceBind(termId,termSn,meterId,currentUser.getXm());
+		
 		writeJSON(response, jsonBuilder.returnSuccessJson("'成功'"));
 	}
 
@@ -91,7 +75,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/dodelete")
+	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String ids = request.getParameter("ids");
 		if (StringUtils.isEmpty(ids)) {
@@ -113,7 +97,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/dorestore")
+	@RequestMapping("/doRestore")
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
@@ -135,7 +119,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 * ContPerimisson @param @param request @param @param
 	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
 	 */
-	@RequestMapping("/doupdate")
+	@RequestMapping("/doUpdate")
 	public void doUpdates(PtPriceBind entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 

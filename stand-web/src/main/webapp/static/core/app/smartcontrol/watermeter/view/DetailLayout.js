@@ -3,7 +3,7 @@ Ext.define("core.smartcontrol.watermeter.view.DetailLayout", {
 	alias: 'widget.smartcontrol.watermeter.detaillayout',
 	funCode: "watermeter_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/PtSkMeter", //请求Action	
+		action: comm.get('baseUrl') + "/BasePtSkMeter", //请求Action	
 		pkName: "uuid",
 		defaultObj: {
 		}

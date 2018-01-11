@@ -24,14 +24,14 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             html:'快速搜索：'
         },{
             xtype:'textfield',
-            width:100,
+            width:80,
             name:'termSN',
             dataType:'string',
             funCode:'girdFastSearchText', 
             emptyText: '序列号'
         },{
             xtype:'numberfield',
-            width:100,
+            width:80,
             name:'termNo',
             dataType:'numeric',
             funCode:'girdFastSearchText', 
@@ -62,7 +62,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
             hidden: true
         },{
             flex:1,
-            minWidth:100,
+            minWidth:80,
             text: "序列号",
             dataIndex: "termSN",
             renderer: function(value, metaData) {
@@ -72,7 +72,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         },{
-            width:100,
+            flex:1,
+            minWidth:80,
             text: "机号",
             dataIndex: "termNo",
             renderer: function(value, metaData) {
@@ -82,7 +83,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         },{
-            width:100,
+            flex:1,
+            minWidth:80,
             text: "设备名称",
             dataIndex: "termName",
             renderer: function(value, metaData) {
@@ -92,7 +94,8 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         }, {
-            width:100,
+            flex:1,
+            minWidth:80,
             text: "网关名称",
             dataIndex: "gatewayName",
             renderer: function(value, metaData) {
@@ -102,13 +105,15 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                 return value;
             }
         }, {
-            width:100,
+            flex:1,
+            minWidth:80,
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE" //字典代码
         }]
     },
+
 
     listeners: {
         beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
@@ -147,7 +152,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceAllotGrid", {
                     var roomId = treelevel.get('id');            
                     record.set("roomName",roomName);
                     record.set("roomId",roomId);
-
+                    record.commit();
                     selectStore.removeAt(index);
                     isSelectStore.insert(0, record);
              }
