@@ -56,6 +56,14 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
     }],*/
     panelButtomBar:{},
     defGroup:"termName",
+    features: [{
+        ftype: 'groupingsummary',
+        groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+        id: 'restaurantGrouping',
+        collapsible :false,
+        enableGroupingMenu:false,
+        enableNoGroups:false,
+    }],
     //扩展参数
     extParams: {
     },
