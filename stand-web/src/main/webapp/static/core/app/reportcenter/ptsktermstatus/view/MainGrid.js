@@ -30,32 +30,32 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
            //fieldLabel: "状态的开始日期",
-            name: "statusDate",
-            funCode: 'girdFastSearchText',
-            emptyText: '状态的开始日期',
+           name: "statusDate",
+           funCode: 'girdFastSearchText',
+           emptyText: '状态的开始日期',
             //format: "Y-m-d",
         },{
             xtype: "basequeryfield",
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
            // fieldLabel: "状态的终止日期",
-            name: "statusDate",
-            funCode: 'girdFastSearchText',
-            emptyText: '状态的终止日期',
+           name: "statusDate",
+           funCode: 'girdFastSearchText',
+           emptyText: '状态的终止日期',
            // format: "Y-m-d",
-        },{
-            xtype: 'button',            
-            ref: 'gridFastSearchBtn',  
+       },{
+        xtype: 'button',            
+        ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型  
             iconCls: 'x-fa fa-search',  
         }]
     },
-/*    defSort: [{
+    defSort: [{
         property: 'updateTime',
         direction: 'DESC'
-    }],*/
+    }],
     panelButtomBar:{},
-    defGroup:"termName",
+/*    defGroup:"termName",
     features: [{
         ftype: 'groupingsummary',
         groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
@@ -63,7 +63,7 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
         collapsible :false,
         enableGroupingMenu:false,
         enableNoGroups:false,
-    }],
+    }],*/
     //扩展参数
     extParams: {
     },
@@ -76,9 +76,9 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
             width: 50,
             text: '序号',
             align: 'center',
-            summaryRenderer: function(value){
+      /*      summaryRenderer: function(value){
                return "<font style='font-weight:bold'>小计:</font>";
-           }
+           }*/
        }, {
         text: "主键",
         dataIndex: "uuid",
@@ -101,107 +101,107 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
 //        summaryRenderer : function (value,cellmeta,record,rowIndex,columnIndex,store) {  
 //            return store.getAt(store.getCount()-1).get('termName');
 //        },
-}, {
-    text: "状态的日期",
-    dataIndex: "statusDate",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-}, {
-    text: "测量单位",
-    dataIndex: "measure",
-    field: {
-        xtype: "textfield"
-    },
-    width:80,
-}, {
-    text: "费率",
-    dataIndex: "price",
-    field: {
-        xtype: "textfield"
-    },
-    width:100,
-}, {
-    text: "冷水当前小时使用水量（升）",
-    dataIndex: "useliter",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-}, {
-    text: "冷水已使用总水量（升）",
-    dataIndex: "totalusedliter",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
+    }, {
+        text: "状态的日期",
+        dataIndex: "statusDate",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+    }, {
+        text: "测量单位",
+        dataIndex: "measure",
+        field: {
+            xtype: "textfield"
+        },
+        width:80,
+    }, {
+        text: "费率",
+        dataIndex: "price",
+        field: {
+            xtype: "textfield"
+        },
+        width:100,
+    }, {
+        text: "冷水当前小时使用水量（升）",
+        dataIndex: "useliter",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+    }, {
+        text: "冷水已使用总水量（升）",
+        dataIndex: "totalusedliter",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+        /* summaryType: 'sum',
+        summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }, {
+        text: "冷水当前小时使用脉冲数",
+        dataIndex: "usepulse",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+    }, {
+        text: "冷水总使用脉冲数",
+        dataIndex: "totalusedpulse",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+         /* summaryType: 'sum',
+        summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }, {
+        text: "热水交易金额",
+        dataIndex: "usemoney",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+         /*summaryType: 'sum',
+        summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }, {
+        text: "热水已交易总额",
+        dataIndex: "totalusedmoney",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+       /* summaryType: 'sum',
+        summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }, {
+        text: "热水已交易流水",
+        dataIndex: "totalrecord",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+        /*  summaryType: 'sum',
+       summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }, {
+        text: "热水已上传流水",
+        dataIndex: "uploadrecord",
+        field: {
+            xtype: "textfield"
+        },
+        width:150,
+         /* summaryType: 'sum',
+        summaryRenderer: function(value){
+            return "<font style='font-weight:bold'>"+value+"</font>";
+        }*/
+    }]
     }
-}, {
-    text: "冷水当前小时使用脉冲数",
-    dataIndex: "usepulse",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-}, {
-    text: "冷水总使用脉冲数",
-    dataIndex: "totalusedpulse",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }
-}, {
-    text: "热水交易金额",
-    dataIndex: "usemoney",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }
-}, {
-    text: "热水已交易总额",
-    dataIndex: "totalusedmoney",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }
-}, {
-    text: "热水已交易流水",
-    dataIndex: "totalrecord",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }
-}, {
-    text: "热水已上传流水",
-    dataIndex: "uploadrecord",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-    summaryType: 'sum',
-    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }
-}]
-}
 });

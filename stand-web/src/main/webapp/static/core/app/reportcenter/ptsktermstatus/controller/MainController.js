@@ -16,14 +16,17 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
     control: {
                  // 树刷新
             "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
-                    beforeclick: function(btn) {
-                    var baseGrid = btn.up("panel[xtype=reportcenter.ptsktermstatus.roominfotree]");
-                    var store = baseGrid.getStore();
-                    store.load(); // 刷新父窗体的grid
+                beforeclick: function(btn) {
+                    btn.up('basetreegrid').getStore().load();
+                    var mainlayout = btn.up("basepanel[xtype=reportcenter.ptmjopendoor.mainlayout]");
+                    var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptmjopendoor.maingrid]");
+                    var store = mianGrid.getStore();
+                    var proxy = store.getProxy();
+                    proxy.extraParams.roomId="";
                     return false;
                 }
             },
-            "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]": {
+/*            "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]": {
                 itemclick: function(tree, record, item, index, e, eOpts) {
                     var self = this;
                     var mainLayout = tree.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
@@ -47,7 +50,7 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                return false;
 
            }
-       },
+       },*/
             "basegrid[xtype=reportcenter.ptsktermstatus.maingrid] button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExport(btn);
@@ -138,28 +141,31 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
           var basepanel = btn.up("basepanel");
           var roominfotree = basepanel.down("basetreegrid");
           var recs = roominfotree.getSelectionModel().getSelection();
-          if(recs.length<=0){
+          /*if(recs.length<=0){
             self.msgbox("至少选择一个房间。");
             return false;
-        }
+        }*/
         var baseGrid = btn.up("basegrid");
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
-        if(girdSearchTexts[0].getValue!=null){
+        if(girdSearchTexts[0].getValue()!=""){
             var value =girdSearchTexts[0].getValue();
-            filter.push({"type": "date", "value": value, "field": "beginDate", "comparison": ">="})
+            filter.push({"type": "date", "value": value, "field": "statusDate", "comparison": ">="})
 
         }
-        if(girdSearchTexts[1].getValue!=null){
+        if(girdSearchTexts[1].getValue()!=""){
              var value =girdSearchTexts[1].getValue();
-            filter.push({'type': 'date', 'value': value, 'field': 'beginDate', 'comparison': '<='})
+            filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})
 
         }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.filter = JSON.stringify(filter);
-        store.loadPage(1);
-
+        if(filter.length>0){
+            proxy.extraParams.filter = JSON.stringify(filter);
+         }else{
+            proxy.extraParams.filter = null;
+         }
+         store.loadPage(1);
     },
 });

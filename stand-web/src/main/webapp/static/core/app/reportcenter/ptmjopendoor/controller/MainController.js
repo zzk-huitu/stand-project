@@ -114,17 +114,21 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
-        if(girdSearchTexts[0].getValue!=null){
+        if(girdSearchTexts[0].getValue()!=""){
             filter.push({"type": "date", "value": girdSearchTexts[0].getValue(), "field": "openDate", "comparison": ">="})
 
         }
-        if(girdSearchTexts[1].getValue!=null){
+        if(girdSearchTexts[1].getValue()!=""){
             filter.push({"type": "date", "value": girdSearchTexts[1].getValue(), "field": "openDate", "comparison": "<="})
 
         }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.filter = JSON.stringify(filter);
+        if(filter.length>0){
+            proxy.extraParams.filter = JSON.stringify(filter);
+        }else{
+            proxy.extraParams.filter = null;
+        }
         store.loadPage(1);
 
     },

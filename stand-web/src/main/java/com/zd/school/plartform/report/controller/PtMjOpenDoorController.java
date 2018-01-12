@@ -77,7 +77,7 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 			}
 			// 房间id
 			if (sb.length() > 0) {
-				if (filter != null) {
+				if (filter != null&&!filter.equals("")) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
 							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}" + "]";
@@ -86,7 +86,7 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}]";
 				}
 			} else {// 区域下没有房间
-				if (filter != null) {
+				if (filter != null&&!filter.equals("")) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}" + "]";
@@ -97,7 +97,7 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 			}
 		} else {// 传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
 			if (filter != null) {
-				if (roomId != null) {
+				if (roomId != null&&!filter.equals("")) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}" + "]";
