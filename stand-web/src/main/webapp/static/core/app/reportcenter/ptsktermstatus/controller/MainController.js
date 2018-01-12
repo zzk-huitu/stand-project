@@ -18,8 +18,8 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
             "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
                     btn.up('basetreegrid').getStore().load();
-                    var mainlayout = btn.up("basepanel[xtype=reportcenter.ptmjopendoor.mainlayout]");
-                    var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptmjopendoor.maingrid]");
+                    var mainlayout = btn.up("basepanel[xtype=reportcenter.ptsktermstatus.mainlayout]");
+                    var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptsktermstatus.maingrid]");
                     var store = mianGrid.getStore();
                     var proxy = store.getProxy();
                     proxy.extraParams.roomId="";
@@ -82,10 +82,20 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         var basepanel = baseGrid.up('basepanel');
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
+        var roomId ="";
         if(records.length>0){
-          var roomId = records[0].get('id');
+           roomId = records[0].get('id');
         }
-      
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var statusDateStart= "";
+        var statusDateEnd = "";
+        if(girdSearchTexts[0].getValue()!=null){
+            statusDateStart = girdSearchTexts[0].getValue();
+        }
+        if(girdSearchTexts[1].getValue()!=null){
+            statusDateEnd = girdSearchTexts[1].getValue();
+        }
         var title = "确定要导出水控使用状态吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
@@ -95,7 +105,7 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

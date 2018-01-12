@@ -2,7 +2,6 @@ package com.zd.school.plartform.report.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,9 +24,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtMjOpenDoor;
 import com.zd.school.control.device.model.PtSkTermStatus;
-import com.zd.school.excel.FastExcel;
 import com.zd.school.plartform.basedevice.service.PtSkTermStatusService;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -223,7 +220,13 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
 		request.getSession().removeAttribute("exporSkTermStatusIsState");
 	    String roomId = request.getParameter("roomId");
-
+	    String statusDateStart = request.getParameter("statusDateStart");
+	    String statusDateEnd = request.getParameter("statusDateEnd");
+	    
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatH = new SimpleDateFormat("H");
+		SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,15, 15, 20, 20,15,15,15,15 };
 		List<PtSkTermStatus> skTermStatusList = null;
@@ -245,12 +248,16 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		} else {
 			hql = " select a from PtSkTermStatus a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
 		}
+		if (StringUtils.isNotEmpty(statusDateStart)) {
+			hql+=" and a.statusDate>='"+statusDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(statusDateEnd)) {
+			hql+=" and a.statusDate<='"+statusDateEnd+"'";
+		}
 		skTermStatusList = thisService.queryByHql(hql);
 
 		List<Map<String, String>> skTermStatusExpList = new ArrayList<>();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatH = new SimpleDateFormat("H");
-		SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		Map<String, String> mjOpenDoorMap = null;
 		int i = 1;
 		for (PtSkTermStatus skTermStatus : skTermStatusList) {

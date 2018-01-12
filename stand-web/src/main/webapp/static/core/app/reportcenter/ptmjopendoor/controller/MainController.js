@@ -55,9 +55,20 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
             var basepanel = baseGrid.up('basepanel');
             var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptmjopendoor.roominfotree]");
             var records = roominfotreegrid.getSelectionModel().getSelection();
+            var roomId ="";
             if(records.length>0){
-              var roomId = records[0].get('id');
-           }
+                roomId = records[0].get('id');
+            }
+            var toolBar = btn.up("toolbar");
+            var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+            var openDateStart= "";
+            var openDateEnd = "";
+            if(girdSearchTexts[0].getValue()!=null){
+                openDateStart = girdSearchTexts[0].getValue();
+            }
+            if(girdSearchTexts[1].getValue()!=null){
+                openDateEnd = girdSearchTexts[1].getValue();
+            }
 
           var title = "确定要导出门禁开门记录吗？";
           Ext.Msg.confirm('提示', title, function (btn, text) {
@@ -68,7 +79,7 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtMjOpenDoor/doExportExcel?roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtMjOpenDoor/doExportExcel?roomId='+roomId+'&openDateStart='+openDateStart+'&openDateEnd="'+openDateEnd+''></iframe>',
                     renderTo: Ext.getBody()
                 });
 

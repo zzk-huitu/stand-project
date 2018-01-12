@@ -172,7 +172,11 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 		request.getSession().setAttribute("exportPtMjOpenDoorIsEnd", "0");
 		request.getSession().removeAttribute("exporPtMjOpenDoorIsState");
 	    String roomId = request.getParameter("roomId");
-
+	    String openDateStart = request.getParameter("openDateStart");
+	    String openDateEnd = request.getParameter("openDateEnd");
+	    
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	    
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15 };
 		List<PtMjOpenDoor> mjOpenDoorList = null;
@@ -194,10 +198,16 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 		} else {
 			hql = " select a from PtMjOpenDoor a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
 		}
+		if (StringUtils.isNotEmpty(openDateStart)) {
+			hql+=" and a.openDate>='"+openDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(openDateEnd)) {
+			hql+=" and a.openDate<='"+openDateEnd+"'";
+		}
         mjOpenDoorList = thisService.queryByHql(hql);
 
 		List<Map<String, String>> mjOpenDoorExpList = new ArrayList<>();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		
 		Map<String, String> mjOpenDoorMap = null;
 		int i = 1;
 		for (PtMjOpenDoor mjOpenDoor : mjOpenDoorList) {

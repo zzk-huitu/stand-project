@@ -39,7 +39,7 @@ public class PtTaskServiceImpl extends BaseServiceImpl<PtTask> implements PtTask
 	
 	@Override
 	public QueryResult<PtTask> list(Integer start, Integer limit, String sort, String filter, Boolean isDelete) {
-		/*String hql1=" select g" ;
+/*		String hql1=" select g" ;
 		String hql= " from PtTask g where g.executetime= "
 				+ "(select Max(executetime) from PtTask s1 where s1.termsn=g.termsn)  ";
 		//QueryResult<PtTask> qResult = this.dao.doQueryCountToHqlCountSql(start, limit, sort, filter,
