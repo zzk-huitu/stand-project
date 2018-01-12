@@ -42,7 +42,7 @@ public class PtSkTermStatus extends BaseEntity implements Serializable{
     @FieldInfo(name = "状态的日期")
     @Temporal(TemporalType.DATE)
   	@JsonSerialize(using = DateTimeSerializer.class)
-      @Column(name = "STATUSDATE", columnDefinition = "date")
+    @Column(name = "STATUSDATE", columnDefinition = "date")
     private Date statusDate;
     
     @MapperCell(cellName="状态的小时",order=2)

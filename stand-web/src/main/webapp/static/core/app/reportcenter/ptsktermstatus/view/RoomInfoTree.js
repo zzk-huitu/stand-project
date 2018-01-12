@@ -1,13 +1,13 @@
 Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptsktermstatus.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
+    model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
     selModel: {
         //mode : 'single',
-   },
+    },
     tbar:{
         xtype:'toolbar',
         items: [{
@@ -27,7 +27,7 @@ Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
         }]
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },

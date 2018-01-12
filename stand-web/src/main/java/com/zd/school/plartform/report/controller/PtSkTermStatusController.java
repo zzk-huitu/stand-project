@@ -21,6 +21,7 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
+import com.zd.school.control.device.model.PtIrRoomDevice;
 import com.zd.school.control.device.model.PtSkTermStatus;
 import com.zd.school.excel.FastExcel;
 import com.zd.school.plartform.basedevice.service.PtSkTermStatusService;
@@ -50,12 +51,71 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute PtSkTermStatus entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String strData = ""; // 返回给js的数据
-		QueryResult<PtSkTermStatus> qr = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), super.filter(request), true);
+		
 
-		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String roomId = request.getParameter("roomId");
+		if (roomId == null) {
+			roomId = "";
+		}
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ roomId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		StringBuffer sb = new StringBuffer();
+		String areaIds = "";
+		for (int i = 0; i < lists.size(); i++) {
+			sb.append(lists.get(i) + ",");
+		}
+		if (sb.length() > 0) {
+			areaIds = sb.substring(0, sb.length() - 1);
+
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
+					+ areaIds.replace(",", "','") + "')";
+			List<String> roomLists = thisService.queryEntityByHql(hql);
+			sb.setLength(0);
+			for (int i = 0; i < roomLists.size(); i++) {
+				sb.append(roomLists.get(i) + ",");
+			}
+			// 房间id
+			if (sb.length() > 0) {
+				if (filter != null) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
+							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
+							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}]";
+				}
+			} else {// 区域下没有房间
+				if (filter != null) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}]";
+				}
+			}
+		} else {// 传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
+			if (filter != null) {
+				if (roomId != null) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}" + "]";
+				}
+			} else {
+				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+						+ "\",\"field\":\"roomId\"}]";
+			}
+
+		}
+
+		QueryResult<PtSkTermStatus> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), filter, true);
+		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
+		
 	}
 	/*
 	@RequestMapping(value = { "/statistics" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
@@ -77,7 +137,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 					+ "LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  where 1=1 ";
 			orderSql=	 " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
 			String sql1=" select count(*) from PT_V_USERROOM where 1=1 ";
-	        QueryResult qResult = thisService.getDao().getForValuesToSql(start, limit, querySql,orderSql,select+sqlsub, " WITH query AS  ("+select+sqlsub+querySql+orderSql+" )  select count(1) from query");
+	        &&&&QueryResult qResult = thisService.getDao().getForValuesToSql(start, limit, querySql,orderSql,select+sqlsub, " WITH query AS  ("+select+sqlsub+querySql+orderSql+" )  select count(1) from query");
 			if (request.getParameter("iden") != null) {
 				String[] strings=new String[]{"useliter","TOTALUSEDLITERmin","TOTALUSEDLITERmax","TERMNAME","ROOM_NAME",
 					"TERMSN","NODE_TEXT","GATEWAYNAME","TERMNO","TERMTYPEID"};
@@ -106,56 +166,5 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 	}
 */
 	
-	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
-	 */
-	@RequestMapping("/dodelete")
-	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String ids=request.getParameter("ids");
-		if (StringUtils.isEmpty(ids)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
-			return;
-		} else {
-			SysUser currentUser=getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
-			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
-			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
-			}
-		}
-	}
-
-	/**
-	 * 修改
-	 * @param entity
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	@RequestMapping("/doupdate")
-	public void doUpdates(PtSkTermStatus entity, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, IllegalAccessException, InvocationTargetException {
-
-		String userCh = "超级管理员";
-		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		// 先拿到已持久化的实体
-		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		PtSkTermStatus perEntity = thisService.get(entity.getUuid());
-		// 将entity中不为空的字段动态加入到perEntity中去。
-		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
-		perEntity.setUpdateUser(userCh);
-
-		entity = thisService.merge(perEntity);// 执行修改方法
-
-		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
-
-	}
 	
 }
