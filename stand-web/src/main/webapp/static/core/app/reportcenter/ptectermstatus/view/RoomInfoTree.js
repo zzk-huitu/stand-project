@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptectermstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptectermstatus.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     expandFirst:true,
     sortableColumns:false,
@@ -28,7 +28,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.RoomInfoTree", {
         }]
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },

@@ -79,7 +79,7 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtMjOpenDoor/doExportExcel?roomId='+roomId+'&openDateStart='+openDateStart+'&openDateEnd="'+openDateEnd+''></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtMjOpenDoor/doExportExcel?roomId='+roomId+'&openDateStart='+openDateStart+'&openDateEnd="'+openDateEnd+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 
