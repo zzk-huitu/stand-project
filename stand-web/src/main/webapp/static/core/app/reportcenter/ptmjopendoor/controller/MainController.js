@@ -15,10 +15,13 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
     control: {
         "basetreegrid[xtype=reportcenter.ptmjopendoor.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
-                var baseGrid = btn.up("basetreegrid[xtype=reportcenter.ptmjopendoor.roominfotree]");
-                var store = baseGrid.getStore();
-                    store.load(); // 刷新父窗体的grid
-                    return false;
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.ptmjopendoor.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptmjopendoor.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                return false;
                 }
             },
              "basegrid[xtype=reportcenter.ptmjopendoor.maingrid] button[ref=gridExport]": {
@@ -54,7 +57,7 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
             var records = roominfotreegrid.getSelectionModel().getSelection();
             if(records.length>0){
               var roomId = records[0].get('id');
-          }
+           }
 
           var title = "确定要导出门禁开门记录吗？";
           Ext.Msg.confirm('提示', title, function (btn, text) {

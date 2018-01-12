@@ -54,7 +54,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
         property: 'updateTime',
         direction: 'DESC'
     }],*/
-    panelButtomBar:{},
+/*    panelButtomBar:{},
     defGroup:"termName",
     features: [{
         ftype: 'groupingsummary',
@@ -63,7 +63,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
         collapsible :false,
         enableGroupingMenu:false,
         enableNoGroups:false,
-    }],
+    }],*/
     //扩展参数
     extParams: {
     },
@@ -76,9 +76,9 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
             width: 50,
             text: '序号',
             align: 'center',
-            summaryRenderer: function(value){
+      /*      summaryRenderer: function(value){
              return "<font style='font-weight:bold'>小计:</font>";
-         }
+         }*/
      }, {
         text: "主键",
         dataIndex: "uuid",
@@ -123,9 +123,9 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
     },
     width:150,
     summaryType: 'sum',
-    summaryRenderer: function(value){
+  /*  summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+value+"</font>";
-    }
+    }*/
 }, {
     text: "已使用总电量",
     dataIndex: "totalusedkwh",
@@ -134,9 +134,9 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
     },
     width:150,
     summaryType: 'sum',
-    summaryRenderer: function(value){
+  /*  summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+parseFloat(value).toFixed(2)+"</font>";
-    }
+    }*/
 }, {
     text: "剩余总电量",
     dataIndex: "surpluskwh",
@@ -145,9 +145,9 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
     },
     width:150,
     summaryType: 'sum',
-    summaryRenderer: function(value){
+/*    summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+value+"</font>";
-    }
+    }*/
 }, {
     text: "电压",
     dataIndex: "voltage",

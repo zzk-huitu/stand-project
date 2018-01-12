@@ -1,4 +1,4 @@
-package com.zd.school.plartform.baseset.controller;
+	package com.zd.school.plartform.baseset.controller;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;

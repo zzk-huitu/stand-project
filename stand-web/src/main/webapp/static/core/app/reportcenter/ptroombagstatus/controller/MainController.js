@@ -5,8 +5,9 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
         suppleUtil: "core.util.SuppleUtil",
         messageUtil: "core.util.MessageUtil",
         formUtil: "core.util.FormUtil",
-        gridActionUtil: "core.util.GridActionUtil",
-        dateUtil: 'core.util.DateUtil'
+      //  gridActionUtil: "core.util.GridActionUtil",
+        //dateUtil: 'core.util.DateUtil',
+        SqlUtil:"core.util.SqlUtil",
     },
     init: function () {
         /*执行一些初始化的代码*/
@@ -66,7 +67,7 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
         },
         "basequeryform[xtype = reportcenter.ptroombagstatus.querypanelgrid] button[ref=gridSearchFormOk]": {
             beforeclick: function(btn) {
-                this.queryFastSearchForm(field);       
+                this.queryFastSearchForm(btn);       
                 return false;   
             }
         },

@@ -2,10 +2,10 @@
 Ext.define("core.reportcenter.sbxx.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.sbxx.maingrid",
-    dataUrl: comm.get('baseUrl') + "/PtTerm/termlist",
+    dataUrl: comm.get('baseUrl') + "/BasePtTerm/termlist",
     model: "com.zd.school.control.device.model.PtTerm",
     menuCode:"SBXX", //new：此表格与权限相关的菜单编码
-    defGroup:"roomName",
+/*    defGroup:"roomName",
     features: [{
         ftype: 'grouping',
         groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
@@ -13,7 +13,7 @@ Ext.define("core.reportcenter.sbxx.view.MainGrid", {
         collapsible :true,
         enableGroupingMenu:false,
         enableNoGroups:false,
-    }],
+    }],*/
     panelTopBar:{
         xtype:'toolbar',
         items: [{
