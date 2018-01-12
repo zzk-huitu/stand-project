@@ -25,6 +25,7 @@ import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.core.util.TLVUtils;
+import com.zd.school.control.device.model.PtMjOpenDoor;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.control.device.model.TLVModel;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
@@ -319,6 +320,16 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
 
+	}
+	@RequestMapping(value = { "/termlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void listterm(@ModelAttribute PtTerm entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		QueryResult<PtTerm> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+        strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
 	}
     @Auth("BASESMARTDEVICE_export")
 	@RequestMapping("/doExportExcel")

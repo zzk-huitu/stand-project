@@ -20,7 +20,7 @@ Ext.define("core.reportcenter.sbxx.view.MainLayout", {
     otherController:'reportcenter.sbxx.othercontroller',
  
     funData: {
-        action: comm.get('baseUrl') + "/PtTerm", //请求Action 
+        action: comm.get('baseUrl') + "/BasePtTerm", //请求Action 
         pkName: "uuid",
         defaultObj: {
          },

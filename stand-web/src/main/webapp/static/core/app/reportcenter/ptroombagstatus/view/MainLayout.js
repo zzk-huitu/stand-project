@@ -22,14 +22,14 @@ Ext.define("core.reportcenter.ptroombagstatus.view.MainLayout", {
 		defaultObj: {
 
         },
-	    tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
-            titleField:'',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-            addTitle:'',
-            editTitle:'',
-            detailTitle:'',
-            addXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
-            editXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
-            detailXtype:null,	//2018/1/3新加入，用于在公共方法中打开指定的界面
+	  tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
+          titleField:'',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
+          addTitle:'',
+          editTitle:'',
+          detailTitle:'',
+          addXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
+          editXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
+          detailXtype:null,	//2018/1/3新加入，用于在公共方法中打开指定的界面
         }
     },
 
@@ -47,9 +47,10 @@ Ext.define("core.reportcenter.ptroombagstatus.view.MainLayout", {
       region: "center",
       items: [{
         xtype: "reportcenter.ptroombagstatus.querypanelgrid",
-        layout: 'form',
+        //layout: 'form',
         region: "north",
-        height: 100,
+        height: 100, 
+       //collapsible:true,
       },{
           xtype: "reportcenter.ptroombagstatus.ptroomwalletform",
           region: "north",

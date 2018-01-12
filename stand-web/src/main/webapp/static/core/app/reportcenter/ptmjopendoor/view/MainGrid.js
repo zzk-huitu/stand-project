@@ -31,7 +31,7 @@ Ext.define("core.reportcenter.ptmjopendoor.view.MainGrid", {
             dateType:'date',        //指定这个组件的格式，date或者datetime
             name: "openDate",
             funCode: 'girdFastSearchText',
-            emptyText: '开门的开始时间',
+            emptyText: '开门的起始时间',
             //format: "Y-m-d",
         },{
             xtype: "basequeryfield",
@@ -50,6 +50,9 @@ Ext.define("core.reportcenter.ptmjopendoor.view.MainGrid", {
     },
     defSort: [{
         property: 'updateTime',
+        direction: 'DESC'
+    },{
+        property: 'openDate',
         direction: 'DESC'
     }],
     panelButtomBar:{},

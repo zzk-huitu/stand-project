@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptmjopendoor.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptmjopendoor.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     expandFirst:true,
     sortableColumns:false,
@@ -26,7 +26,7 @@ Ext.define("core.reportcenter.ptmjopendoor.view.RoomInfoTree", {
         }]
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },
@@ -55,9 +55,8 @@ Ext.define("core.reportcenter.ptmjopendoor.view.RoomInfoTree", {
             var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptmjopendoor.maingrid]");
             var store = storeyGrid.getStore();
             var proxy = store.getProxy();
-            mainLayout.funData.whereSql = " and roomId='" + record.get('id') + "'";
             proxy.extraParams = {
-                whereSql: " and roomId='" + record.get('id') + "'"
+                roomId:record.get('id')
             };
             store.load(); // 给form赋值
             return false;
