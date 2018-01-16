@@ -32,7 +32,7 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                 var store = storeyGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId=record.get("id");
-                store.loadPage(1); // 给form赋值
+                store.loadPage(1); 
                 return false;
             }
        },
@@ -55,12 +55,12 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         },
 
 
-            "basegrid[xtype=reportcenter.ptsktermstatus.maingrid] button[ref=gridExport]": {
-                beforeclick: function(btn) {
-                    this.doExport(btn);
-                    return false;
-                }
-            },
+        "basegrid[xtype=reportcenter.ptsktermstatus.maingrid] button[ref=gridExport]": {
+            beforeclick: function(btn) {
+                this.doExport(btn);
+                return false;
+            }
+        },
   
     
 

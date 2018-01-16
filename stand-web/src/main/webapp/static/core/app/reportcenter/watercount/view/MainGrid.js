@@ -5,6 +5,7 @@ Ext.define("core.reportcenter.watercount.view.MainGrid", {
     model:"com.zd.school.control.device.model.PtSkTermStatus", //对应的数据模型
     menuCode:"WATER_COUNT",
     al: false,
+    remoteSort:false,
     //工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',

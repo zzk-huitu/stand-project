@@ -43,16 +43,17 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 	@Resource
 	CommTreeService treeService; // 生成树
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 水控使用状态列表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void list(@ModelAttribute PtSkTermStatus entity, HttpServletRequest request, HttpServletResponse response)
+	public void list( HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		
-
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
@@ -117,28 +118,73 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		writeJSON(response, strData);// 返回数据
 		
 	}
-	/*
+	
+	/**
+	 * 用水统计表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/statistics" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void statistics(@ModelAttribute PtSkTermStatus entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		  String strData = ""; // 返回给js的数据
 			Integer start = super.start(request);
-			Integer limit = super.limit(request);
-			String sort = super.sort(request);
+			Integer limit = super.limit(request);		
 			String querySql = querySql(request);
 			String orderSql = orderSql(request);
+			String roomId = request.getParameter("roomId");
+			String roomLeaf = request.getParameter("roomLeaf");
+			
+			if (StringUtils.isNotEmpty(roomId)) {
+				if("1".equals(roomLeaf)){	//当选择的区域为房间时
+					
+					querySql+=" and a.room_id = '"+roomId + "'";
+					
+				}else{		//当选择的区域不为房间时
+					String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+							+ roomId + "%'";
+					List<String> lists = thisService.queryEntityByHql(hql);
+					StringBuffer sb = new StringBuffer();
+					String areaIds = "";
+					for (int i = 0; i < lists.size(); i++) {
+						sb.append(lists.get(i) + ",");
+					}
+					if (sb.length() > 0) {
+						areaIds = sb.substring(0, sb.length() - 1);
+		
+						hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
+								+ areaIds.replace(",", "','") + "')";
+						List<String> roomLists = thisService.queryEntityByHql(hql);
+						sb.setLength(0);
+						for (int i = 0; i < roomLists.size(); i++) {
+							sb.append(roomLists.get(i) + ",");
+						}
+						if(sb.length() > 0){
+							String roomIds = sb.substring(0, sb.length() - 1);
+							querySql+=" and a.room_id in ('"+ roomIds.replace(",", "','") + "')";
+						}					
+					}
+				}
+				
+			}
+			
 			String select=" select SUM(a.USELITER) as useliter,MIN(a.TOTALUSEDLITER) as TOTALUSEDLITERmin,MAX(a.TOTALUSEDLITER) as TOTALUSEDLITERmax,"
 					+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,	e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	";
 			String sqlsub=" from dbo.PT_SK_TERMSTATUS a"
 					+ "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
-					+ "LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
-					+ "LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-					+ "LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  where 1=1 ";
+					+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
+					+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
+					+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  "
+					+ "where 1=1 and a.isDelete=0 ";
 			orderSql=	 " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
-			String sql1=" select count(*) from PT_V_USERROOM where 1=1 ";
-	        &&&&QueryResult qResult = thisService.getDao().getForValuesToSql(start, limit, querySql,orderSql,select+sqlsub, " WITH query AS  ("+select+sqlsub+querySql+orderSql+" )  select count(1) from query");
-			if (request.getParameter("iden") != null) {
+			
+			QueryResult<Object> qResult=thisService.queryPageResultBySql(select+sqlsub+querySql+orderSql, start, limit, null);
+			
+			/*
+	    	if (request.getParameter("iden") != null) {
 				String[] strings=new String[]{"useliter","TOTALUSEDLITERmin","TOTALUSEDLITERmax","TERMNAME","ROOM_NAME",
 					"TERMSN","NODE_TEXT","GATEWAYNAME","TERMNO","TERMTYPEID"};
 				List<Map> list=qResult.getResultList();
@@ -159,12 +205,12 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 				FastExcel.exportExcel(response, "水控统计表", newlist);
 				return;
 			}
-	        
+	        */
 	        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	
 	}
-*/
+
 	
 	
 }

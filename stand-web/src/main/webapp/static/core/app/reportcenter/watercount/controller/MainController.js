@@ -14,63 +14,66 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
-                 // 树刷新
-            "basetreegrid[xtype=reportcenter.watercount.roominfotree] button[ref=gridRefresh]": {
-                    beforeclick: function(btn) {
-                    var baseGrid = btn.up("panel[xtype=reportcenter.watercount.roominfotree]");
-                    var store = baseGrid.getStore();
-                    store.load(); // 刷新父窗体的grid
-                    return false;
-                }
-            },
-            "basetreegrid[xtype=reportcenter.watercount.roominfotree]": {
-                itemclick: function(tree, record, item, index, e, eOpts) {
-                    var self = this;
-                    var mainLayout = tree.up("panel[xtype=reportcenter.watercount.mainlayout]");
-                    var funData = mainLayout.funData;
-                    var map = self.eachChildNode(record);
-                    var ids = new Array();
-                    map.eachKey(function (key) {
-                        ids.push (key);
-                    });
-                    var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
-                    mainLayout.funData = Ext.apply(funData, {
-                        roomId: record.get("id"),
-                    });
-                    var storeyGrid = mainLayout.down("basegrid[xtype=reportcenter.watercount.maingrid]");
-                    var store = storeyGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        filter: filter,
-                    };
-                   store.loadPage(1); // 给form赋值
-               return false;
+         // 树刷新
+        "basetreegrid[xtype=reportcenter.watercount.roominfotree] button[ref=gridRefresh]": {
+                beforeclick: function(btn) {
+                var baseGrid = btn.up("panel[xtype=reportcenter.watercount.roominfotree]");
+                var store = baseGrid.getStore();
+                store.load(); // 刷新父窗体的grid
+                return false;
+            }
+        },
+        "basetreegrid[xtype=reportcenter.watercount.roominfotree]": {
+            itemclick: function(tree, record, item, index, e, eOpts) {
+                var self = this;
+                var mainLayout = tree.up("panel[xtype=reportcenter.watercount.mainlayout]");
+                mainLayout.funData.roomId=record.get("id");
 
+                var storeyGrid = mainLayout.down("panel[xtype=reportcenter.watercount.maingrid]");
+                var store = storeyGrid.getStore();
+                var proxy = store.getProxy();
+
+                var roomId="";
+                if( record.get("id")!="2851655E-3390-4B80-B00C-52C7CA62CB39"){
+                    roomId = record.get("id");
+                }
+
+                var roomLeaf=record.get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0"
+
+                proxy.extraParams.roomId=roomId;
+                proxy.extraParams.roomLeaf=roomLeaf;
+
+                store.loadPage(1); 
+                return false;
            }
        },
-            "basegrid[xtype=reportcenter.watercount.maingrid] button[ref=gridExport]": {
-                beforeclick: function(btn) {
-                    this.doExport(btn);
-                    return false;
-                }
-            },
-  
-            "basepanel basegrid button[ref=gridFastSearchBtn]": {
-                beforeclick: function (btn) {
-                   this.queryFastSearchForm(btn);
-                    return false;
-                  }
-            },
-
-            "basepanel basegrid field[funCode=girdFastSearchText]": {
-                specialkey: function (field, e) {
-                    if (e.getKey() == e.ENTER) {
-                       this.queryFastSearchForm(field);
-                       return false;
-
-                   }
-               }
+        "basegrid[xtype=reportcenter.watercount.maingrid] button[ref=gridExport]": {
+            beforeclick: function(btn) {
+                this.doExport(btn);
+                return false;
             }
+        },
+
+        "basepanel basegrid button[ref=gridFastSearchBtn]": {
+            beforeclick: function (btn) {
+               this.queryFastSearchForm(btn);
+                return false;
+              }
+        },
+
+        "basepanel basegrid field[funCode=girdFastSearchText]": {
+            specialkey: function (field, e) {
+                if (e.getKey() == e.ENTER) {
+                   this.queryFastSearchForm(field);
+                   return false;
+
+               }
+           }
+        }
 
     },
     doExport:function(btn){
@@ -141,31 +144,33 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
        return false;
     },
     queryFastSearchForm:function(btn){
-          var self = this;
-          var basepanel = btn.up("basepanel");
-          var roominfotree = basepanel.down("basetreegrid");
-          var recs = roominfotree.getSelectionModel().getSelection();
-          if(recs.length<=0){
-            self.msgbox("至少选择一个房间。");
+        var self = this;
+        var basepanel = btn.up("basepanel");
+        var roominfotree = basepanel.down("basetreegrid");
+        var recs = roominfotree.getSelectionModel().getSelection();
+        if(recs.length!=1){
+            self.msgbox("请选择一个房间！");
             return false;
         }
+
         var baseGrid = btn.up("basegrid");
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
-        var filter=new Array();
-        if(girdSearchTexts[0].getValue!=null){
+
+        var querySql="";
+       
+        if(girdSearchTexts[0].getValue()){
             var value =girdSearchTexts[0].getValue();
-            filter.push({"type": "date", "value": value, "field": "beginDate", "comparison": ">="})
-
+            querySql+=" and a.statusDate>='"+value+"'";
         }
-        if(girdSearchTexts[1].getValue!=null){
-             var value =girdSearchTexts[1].getValue();
-            filter.push({'type': 'date', 'value': value, 'field': 'beginDate', 'comparison': '<='})
-
+        if(girdSearchTexts[1].getValue()){
+            var value =girdSearchTexts[1].getValue();
+            querySql+=" and a.statusDate<='"+value+"'";
         }
+
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.filter = JSON.stringify(filter);
+        proxy.extraParams.querySql =  querySql ;
         store.loadPage(1);
 
     },
