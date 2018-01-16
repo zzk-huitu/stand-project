@@ -24,6 +24,7 @@ import com.zd.school.build.define.model.BuildDormDefine;
 import com.zd.school.control.device.model.PtRoomBags;
 import com.zd.school.plartform.basedevice.service.PtRoomBagsService;
 import com.zd.school.plartform.basedevice.service.PtTermBagsService;
+import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 
@@ -46,8 +47,8 @@ public class PtBagController extends FrameWorkController implements Constant {
 	
 	@Resource
 	BaseStudentDormService studentdormService;
-	//@Resource
-	//JwClassDormAllotService classDormAllotService;
+	@Resource
+	BaseClassDormAllotService classDormAllotService;
 	@Resource
 	BaseDormDefineService dormDefineService;
 
@@ -66,12 +67,8 @@ public class PtBagController extends FrameWorkController implements Constant {
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void termbaglist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
 		String roomid = request.getParameter("roomId");
-		QueryResult<Map> qResult = termBagsService.list(start, limit, sort, filter, true, roomid);
+		QueryResult<Map> qResult = termBagsService.list(super.start(request), super.limit(request), super.sort(request), super.filter(request), true, roomid);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -80,11 +77,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void roombaglist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-		QueryResult<PtRoomBags> qResult = roomBagsService.queryPageResult(start, limit, sort, filter, true);
+		QueryResult<PtRoomBags> qResult = roomBagsService.queryPageResult(super.start(request), super.limit(request), super.sort(request), super.filter(request), true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -96,8 +89,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 		String sql = "select u.*  from PT_V_STUDENTDORM d,SYS_T_USER u where " + "u.USER_ID =d.USER_ID and d.ROOM_ID='"
 				+ roomid + "'";
 		List<Map<String, Object>> list = roomBagsService.queryMapBySql(sql);
-		/*zzk暂时注释
-		 * DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Three);
+		//DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);//DATA_SOURCE_Up6 DATA_SOURCE_Q1 ?
 		List<Map> listmap = new ArrayList<Map>();
 		try {
 			for (Map<String, Object> u : list) {
@@ -105,7 +97,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 				sql = "SELECT		CardValueXF FROM	TC_Employee	LEFT OUTER JOIN "
 						+ "TC_Card ON TC_Employee.CardID = TC_Card.CARDID " + "WHERE	 EmployeeStrID = '" + USER_NUMB
 						+ "'";
-				List<Map<String, Object>> xf = roomBagsService.getForValuesToSql(sql);
+				List<Map<String, Object>> xf = roomBagsService.queryMapBySql(sql);
 				if (xf != null && xf.size() > 0) {
 					u.put("CardValueXF", xf.get(0).get("CardValueXF"));
 				} else {
@@ -122,7 +114,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 
 		String strData = jsonBuilder.buildObjListToJson((long) listmap.size(), listmap, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
-		*/
+		
 	}
 
 	@RequestMapping(value = { "/getUserRoomId" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
@@ -133,9 +125,9 @@ public class PtBagController extends FrameWorkController implements Constant {
 		hql += querySql;
 		List<DormStudentDorm> studentDorms = studentdormService.queryByHql(hql);
 		DormStudentDorm studentDormfirst = studentDorms.get(0);
-		//zzk暂时注释JwClassDormAllot classDormAllot = classDormAllotService.get(studentDormfirst.getCdormId());
-		//BuildDormDefine dormDefine= dormDefineService.get(classDormAllot.getDormId());
-		//return dormDefine;
-		return null;
+		JwClassDormAllot classDormAllot = classDormAllotService.get(studentDormfirst.getCdormId());
+		BuildDormDefine dormDefine= dormDefineService.get(classDormAllot.getDormId());
+		return dormDefine;
+	
 	}
 }

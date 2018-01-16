@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptroombagstatus.view.PtIrRoomDeviceGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.ptroombagstatus.ptirroomdevicegrid",
-    dataUrl: comm.get('baseUrl') + "/PtIrRoomDevice/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/list",
     model: "com.zd.school.control.device.model.PtIrRoomDevice",
     height: 200,
     animCollapse: true,
@@ -33,8 +33,8 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtIrRoomDeviceGrid", {
             iconCls: 'x-fa fa-plus-circle'
         }]
 },
-panelButtomBar:{},
-defSort:[],
+    panelButtomBar:{},
+    defSort:[],
     //title: "红外设备",
     columns: {        
         defaults:{

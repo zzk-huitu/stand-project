@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.ptroombagstatus.userwalletgrid",
-    dataUrl: comm.get('baseUrl') + "/Bag/userbagyue",
+    dataUrl: comm.get('baseUrl') + "/PtBag/userbagyue",
     model: "com.zd.school.teacher.teacherinfo.model.TeaTeacherbase",
     menuCode:"PtRoombagStatus",
     al:false,
@@ -42,11 +42,11 @@ Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
         hidden: true
     },{
         text: "学号",
-        dataIndex: "userNumb",
+        dataIndex: "usernumb",
         flex:1,
         minWidth:120,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            value= record.raw.USER_NUMB;
+            value= record.get("USER_NUMB");
             return value
         }
     }, {
@@ -54,7 +54,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
         dataIndex: "xm",
         width:120,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            value= record.raw.XM;
+            value= record.get("XM");
             return value
         }
     }, {
@@ -62,8 +62,8 @@ Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
         dataIndex: "cardValueXF",
         width:120,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            value= record.raw.CardValueXF;
-            return parseFloat(value).toFixed(2)
+            value= record.get("CardValueXF");
+            return value=="无记录"?"无记录":parseFloat(value).toFixed(2)
         }
     }]
 },

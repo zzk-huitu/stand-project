@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptroombagstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptroombagstatus.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     expandFirst:true,
     sortableColumns:false,
@@ -26,7 +26,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.RoomInfoTree", {
         }]
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },
@@ -83,6 +83,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.RoomInfoTree", {
                     if(success==true){
                         var records=store1.getAt(0);
                         roomNameobj.setValue(roomName);
+                       if(records!=null){
                         roomValueobj.setValue(parseFloat(records.data.roomValue).toFixed(4)+" 元");
                         roomTotalUsedobj.setValue(parseFloat(records.data.roomTotalUsed).toFixed(4)+" 元");
                         roomTotalRechargeobj.setValue(parseFloat(records.data.roomTotalRecharge).toFixed(4)+" 元");
@@ -90,6 +91,8 @@ Ext.define("core.reportcenter.ptroombagstatus.view.RoomInfoTree", {
                         waterUpdateTimeobj.setValue(records.data.waterUpdateTime);
                         ecTotalUsedobj.setValue(parseFloat(records.data.ecTotalUsed).toFixed(4)+" 元");
                         ecUpdateTimeobj.setValue(records.data.ecUpdateTime);
+                       }
+
                     }
                 }
             });             
@@ -114,7 +117,8 @@ Ext.define("core.reportcenter.ptroombagstatus.view.RoomInfoTree", {
             var store3 = storeyGrid3.getStore();
             var proxy3 = store3.getProxy();
             proxy3.extraParams = {
-                    filter:"[{'type':'string','comparison':'=','value':'" + record.get('id') + "','field':'roomId'}]"
+                    //filter:"[{'type':'string','comparison':'=','value':'" + record.get('id') + "','field':'roomId'}]"
+                    roomId:record.get('id')
                 };
             store3.load(); 
             return false;
