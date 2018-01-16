@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.ptroombagstatus.pttermwalletgrid",
-    dataUrl: comm.get('baseUrl') + "/Bag/termbaglist",
+    dataUrl: comm.get('baseUrl') + "/PtBag/termbaglist",
     model: "com.zd.school.control.device.model.PtTermBags",
     extParams: {
         whereSql: "",
@@ -9,44 +9,44 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
     },
     animCollapse: true,
    // collapsible: true,
-    noPagging: true,
+   noPagging: true,
   //  title: "设备钱包",
-    al:false,
-    panelTopBar:{
-        xtype:'toolbar',
-        items: [{
-            xtype: 'tbtext',
-            html: '设备钱包',
-            style: {
-                fontSize: '16px',
-                color: '#C44444',
-                fontWeight:800,
-                lineHeight:'30px',
-            }
-        }]
+  al:false,
+  panelTopBar:{
+    xtype:'toolbar',
+    items: [{
+        xtype: 'tbtext',
+        html: '设备钱包',
+        style: {
+            fontSize: '16px',
+            color: '#C44444',
+            fontWeight:800,
+            lineHeight:'30px',
+        }
+    }]
+},
+panelButtomBar:{},
+defSort:[],
+columns: {        
+    defaults:{
+        titleAlign:"center"
     },
-    panelButtomBar:{},
-    defSort:[],
-    columns: {        
-        defaults:{
-            titleAlign:"center"
-        },
-        items: [{
-            xtype: "rownumberer",
-            width: 50,
-            text: '序号',
-            align: 'center'
-        }, {
-            text: "主键",
-            dataIndex: "uuid",
-            hidden: true
-        }, {
-            text: "设备序列号",
-            dataIndex: "termSn",
-            hidden: true
-        }, {
-            text: "设备类型",
-            dataIndex: "termTypeId",
+    items: [{
+        xtype: "rownumberer",
+        width: 50,
+        text: '序号',
+        align: 'center'
+    }, {
+        text: "主键",
+        dataIndex: "uuid",
+        hidden: true
+    }, {
+        text: "设备序列号",
+        dataIndex: "termSn",
+        hidden: true
+    }, {
+        text: "设备类型",
+        dataIndex: "termTypeId",
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
         flex:1,
@@ -55,22 +55,22 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         text: "设备名称",
         dataIndex: "termName",
         width:100,
-        renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
+       /* renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
             value= record.raw.termName;
             return value
-        }
+        }*/
     }, {
         text: "设备余额",
         dataIndex: "bagValue",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termtypeid= record.raw.termTypeId;
+            var termtypeid= record.get("termTypeId");
             if(termtypeid==8){
-                value =record.raw.bagValue;
+                value =record.get("bagValue");
                 return parseFloat(value).toFixed(2)+" 升"
             }
             if(termtypeid==9){
-                value =record.raw.bagValue;
+               value =record.get("bagValue");
                 return parseFloat(value).toFixed(2)+" 度"
             }
         }
@@ -79,13 +79,13 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         dataIndex: "price",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termTypeId= record.raw.termTypeId;
+             var termtypeid= record.get("termTypeId");
             if(termTypeId==9){
-                value=record.raw.dkprice;
+                value =record.get("dkprice");
                 return value+" 元/度"
             }
             if(termTypeId==8){
-                value=record.raw.skprice;
+                value =record.get("skprice");
                 return value+" 元/升"
             }
         }
@@ -94,13 +94,13 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         dataIndex: "totalBuyedValue",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termtypeid= record.raw.termTypeId;
+             var termtypeid= record.get("termTypeId");
             if(termtypeid==8){
-                value =record.raw.totalBuyedValue;
+                value =record.get("totalBuyedValue");
                 return parseFloat(value).toFixed(2)+" 升"
             }
             if(termtypeid==9){
-                value =record.raw.totalBuyedValue;
+                value =record.get("totalBuyedValue");
                 return parseFloat(value).toFixed(2)+" 度"
             }
         }
@@ -109,13 +109,13 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         dataIndex: "totalUsedValue",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termtypeid= record.raw.termTypeId;
+              var termtypeid= record.get("termTypeId");
             if(termtypeid==8){
-                value =record.raw.totalUsedValue;
+                value =record.get("totalUsedValue");
                 return parseFloat(value).toFixed(2)+" 升"
             }
             if(termtypeid==9){
-                value =record.raw.totalUsedValue;
+                value =record.get("totalUsedValue");
                 return parseFloat(value).toFixed(2)+" 度"
             }
         }
@@ -124,13 +124,13 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         dataIndex: "totalClearValue",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termtypeid= record.raw.termTypeId;
+             var termtypeid= record.get("termTypeId");
             if(termtypeid==8){
-                value =record.raw.totalClearValue;
+                value =record.get("totalClearValue");
                 return parseFloat(value).toFixed(2)+" 升"
             }
             if(termtypeid==9){
-                value =record.raw.totalClearValue;
+                value =record.get("totalClearValue");
                 return parseFloat(value).toFixed(2)+" 度"
             }
         }
@@ -139,13 +139,13 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
         dataIndex: "subValue",
         width:100,
         renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-            var termtypeid= record.raw.termTypeId;
+            var termtypeid= record.get("termTypeId");
             if(termtypeid==8){
-                value =record.raw.subValue;
+                value =record.get("subValue");
                 return parseFloat(value).toFixed(2)+" 升"
             }
             if(termtypeid==9){
-                value =record.raw.subValue;
+                value =record.get("subValue");
                 return parseFloat(value).toFixed(2)+" 度"
             }
         }

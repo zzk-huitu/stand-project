@@ -18,8 +18,8 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
             beforeclick: function(btn) {
                 var baseGrid = btn.up("panel[xtype=reportcenter.ptroombagstatus.roominfotree]");
                 var store = baseGrid.getStore();
-                    store.load(); // 刷新父窗体的grid
-                    return false;
+                store.load(); // 刷新父窗体的grid
+                return false;
                 }
             },
            //查看所有设备按钮
@@ -50,8 +50,7 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
                 var store = grid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams = {
-                    whereSql:" where 1=1",
-                    querySql: " and roomId = '"+roomId+"'"
+                    roomId: roomId
                 };
                 store.load(); 
                 win.show(); 
@@ -77,7 +76,7 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
         var queryPanel = component.up("basequeryform");
         var querySql = self.getQuerySql(queryPanel);
         var resObj = self.ajax({
-            url: comm.get('baseUrl') + "/Bag/getUserRoomId",
+            url: comm.get('baseUrl') + "/PtBag/getUserRoomId",
             params: {
                 querySql: querySql
             }
@@ -115,13 +114,16 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
                 if(success==true){
                     var records=store1.getAt(0);
                     roomNameobj.setValue(roomName);
-                    roomValueobj.setValue(parseFloat(records.data.roomValue).toFixed(4)+" 元");
-                    roomTotalUsedobj.setValue(parseFloat(records.data.roomTotalUsed).toFixed(4)+" 元");
-                    roomTotalRechargeobj.setValue(parseFloat(records.data.roomTotalRecharge).toFixed(4)+" 元");
-                    waterTotalusedobj.setValue(parseFloat(records.data.waterTotalused).toFixed(4)+" 元");
-                    waterUpdateTimeobj.setValue(records.data.waterUpdateTime);
-                    ecTotalUsedobj.setValue(parseFloat(records.data.ecTotalUsed).toFixed(4)+" 元");
-                    ecUpdateTimeobj.setValue(records.data.ecUpdateTime);
+                    if(records!=null){
+                       roomValueobj.setValue(parseFloat(records.data.roomValue).toFixed(4)+" 元");
+                       roomTotalUsedobj.setValue(parseFloat(records.data.roomTotalUsed).toFixed(4)+" 元");
+                       roomTotalRechargeobj.setValue(parseFloat(records.data.roomTotalRecharge).toFixed(4)+" 元");
+                       waterTotalusedobj.setValue(parseFloat(records.data.waterTotalused).toFixed(4)+" 元");
+                       waterUpdateTimeobj.setValue(records.data.waterUpdateTime);
+                       ecTotalUsedobj.setValue(parseFloat(records.data.ecTotalUsed).toFixed(4)+" 元");
+                       ecUpdateTimeobj.setValue(records.data.ecUpdateTime);
+                   }
+                   
                 }
             }
         });

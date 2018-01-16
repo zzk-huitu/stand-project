@@ -12,7 +12,7 @@ Ext.define("core.reportcenter.taskdetail.view.DetailForm", {
         id:'detail',
         xtype: 'textareafield',
         name: 'msg',
-        height:500,
+        height:300,
         fieldStyle:"font-size:14px;",
         readOnly:true
     }], 

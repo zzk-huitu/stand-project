@@ -1,7 +1,7 @@
 Ext.define("core.reportcenter.ptroombagstatus.view.SysDeviceGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.ptroombagstatus.sysdevicegrid",
-    dataUrl: comm.get('baseUrl') + "/PtTerm/list",
+    dataUrl: comm.get('baseUrl') + "/BasePtTerm/list",
     model: "com.zd.school.control.device.model.PtTerm",
     al:false,
     extParams: {

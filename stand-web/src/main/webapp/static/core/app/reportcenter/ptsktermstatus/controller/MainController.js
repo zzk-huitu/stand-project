@@ -71,10 +71,20 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         var basepanel = baseGrid.up('basepanel');
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
+        var roomId ="";
         if(records.length>0){
-          var roomId = records[0].get('id');
+           roomId = records[0].get('id');
         }
-      
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var statusDateStart= "";
+        var statusDateEnd = "";
+        if(girdSearchTexts[0].getValue()!=null){
+            statusDateStart = girdSearchTexts[0].getValue();
+        }
+        if(girdSearchTexts[1].getValue()!=null){
+            statusDateEnd = girdSearchTexts[1].getValue();
+        }
         var title = "确定要导出水控使用状态吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
@@ -84,7 +94,7 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 
@@ -126,6 +136,7 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
        return false;
     },
     queryFastSearchForm:function(btn){
+
         var self = this;
         var basepanel = btn.up("basepanel");
         var roominfotree = basepanel.down("basetreegrid");
@@ -139,11 +150,14 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
 
+
         if(girdSearchTexts[0].getValue()){
+
             var value =girdSearchTexts[0].getValue();
             filter.push({"type": "date", "value": value, "field": "statusDate", "comparison": ">="})
 
         }
+
         if(girdSearchTexts[1].getValue()){
             var value =girdSearchTexts[1].getValue();
             filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})

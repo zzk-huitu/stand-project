@@ -38,28 +38,25 @@ Ext.define("core.reportcenter.taskdetail.controller.MainController", {
     },
    },
      doDetail_Win:function(grid,record){
+        var self = this;
         var basegrid = grid;
-        var popFunData = Ext.apply(funData, {
-            grid: baseGrid
-        });
-        var uuid = record.data.get('uuid');
-        var termsn= record.data.get('termsn');
+        var uuid = record.get('uuid');
+        var termsn= record.get('termsn');
         var win = Ext.create('core.base.view.BaseFormWin', {
             title: "参数详细",
             iconCls:'x-fa fa-plus-circle',
             operType: "detail",
-            width: 1000,
-            height: 600,
+            width: 700,
+            height: 450,
             baseGrid: basegrid,
             uuid: uuid,
             items: [{
-                xtype: "reportcenter.taskdetail.detaillayout"
+                xtype: "reportcenter.taskdetail.detailform"
             }]
         });
        // win.show(); 
         //9电控，4门禁
-        var detPanel = win.down("basepanel[xtype=reportcenter.taskdetail.detaillayout]");
-        var form = detPanel.down("baseform");
+        var form = win.down("baseform[xtype=reportcenter.taskdetail.detailform]");
         form.formData.uuid = uuid;
         var params = form.formData;
         //var formDeptObj = form.getForm();

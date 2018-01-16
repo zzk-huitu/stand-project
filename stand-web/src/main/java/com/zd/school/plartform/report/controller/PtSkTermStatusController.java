@@ -2,8 +2,9 @@ package com.zd.school.plartform.report.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,15 +16,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtIrRoomDevice;
 import com.zd.school.control.device.model.PtSkTermStatus;
-import com.zd.school.excel.FastExcel;
 import com.zd.school.plartform.basedevice.service.PtSkTermStatusService;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -55,13 +57,14 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 			throws IOException {
 		
 		String strData = ""; // 返回给js的数据
-		String filter = request.getParameter("filter");
+	
 		String roomId = request.getParameter("roomId");
-		if (roomId == null) {
-			roomId = "";
+		String filter = request.getParameter("filter");
+		if(roomId==null){
+			roomId="";
 		}
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
+        String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
+
 		List<String> lists = thisService.queryEntityByHql(hql);
 		StringBuffer sb = new StringBuffer();
 		String areaIds = "";
@@ -80,7 +83,8 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 			}
 			// 房间id
 			if (sb.length() > 0) {
-				if (filter != null) {
+
+				if (filter != null&&!filter.equals("")) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
 							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}" + "]";
@@ -89,7 +93,8 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}]";
 				}
 			} else {// 区域下没有房间
-				if (filter != null) {
+
+				if (filter != null&&!filter.equals("")) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}" + "]";
@@ -99,7 +104,8 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 				}
 			}
 		} else {// 传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
-			if (filter != null) {
+
+			if (filter != null&&!filter.equals("")) {
 				if (roomId != null) {
 					filter = filter.substring(0, filter.length() - 1);
 					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
@@ -210,7 +216,139 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		writeJSON(response, strData);// 返回数据
 	
 	}
-
 	
+	/**
+	 * 修改
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/doupdate")
+	public void doUpdates(PtSkTermStatus entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, IllegalAccessException, InvocationTargetException {
+
+		String userCh = "超级管理员";
+		SysUser currentUser = getCurrentSysUser();
+		if (currentUser != null)
+			userCh = currentUser.getXm();
+		// 先拿到已持久化的实体
+		// entity.getSchoolId()要自己修改成对应的获取主键的方法
+		PtSkTermStatus perEntity = thisService.get(entity.getUuid());
+		// 将entity中不为空的字段动态加入到perEntity中去。
+		BeanUtils.copyPropertiesExceptNull(perEntity, entity);
+		perEntity.setUpdateUser(userCh);
+
+		entity = thisService.merge(perEntity);// 执行修改方法
+
+		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
+
+	}
+	@Auth("PtSkTermStatus_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
+		request.getSession().removeAttribute("exporSkTermStatusIsState");
+	    String roomId = request.getParameter("roomId");
+	    String statusDateStart = request.getParameter("statusDateStart");
+	    String statusDateEnd = request.getParameter("statusDateEnd");
+	    
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatH = new SimpleDateFormat("H");
+		SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,15, 15, 20, 20,15,15,15,15 };
+		List<PtSkTermStatus> skTermStatusList = null;
+		String hql = " from PtSkTermStatus a where a.isDelete=0 ";
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {
+				hql += " and a.roomId ='" + roomId + "' ";
+			}
+
+		} else {
+			hql = " select a from PtSkTermStatus a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
+		}
+		if (StringUtils.isNotEmpty(statusDateStart)) {
+			hql+=" and a.statusDate>='"+statusDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(statusDateEnd)) {
+			hql+=" and a.statusDate<='"+statusDateEnd+"'";
+		}
+		skTermStatusList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> skTermStatusExpList = new ArrayList<>();
+		
+		Map<String, String> mjOpenDoorMap = null;
+		int i = 1;
+		for (PtSkTermStatus skTermStatus : skTermStatusList) {
+			mjOpenDoorMap = new LinkedHashMap<>();
+			mjOpenDoorMap.put("statusDate", format.format(skTermStatus.getStatusDate()));
+			mjOpenDoorMap.put("statusHour", formatH.format(skTermStatus.getStatusHour()));
+			mjOpenDoorMap.put("measure",skTermStatus.getMeasure().toString() );
+			mjOpenDoorMap.put("price", skTermStatus.getPrice().toString());
+			mjOpenDoorMap.put("useliter", String.valueOf(skTermStatus.getUseliter()));
+			mjOpenDoorMap.put("totalusedliter", String.valueOf(skTermStatus.getTotalusedliter()));
+			mjOpenDoorMap.put("usepulse", String.valueOf(skTermStatus.getUsepulse()));
+            mjOpenDoorMap.put("totalusedpulse", String.valueOf(skTermStatus.getTotalusedpulse()));
+			mjOpenDoorMap.put("usemoney", skTermStatus.getUsemoney().toString());
+			mjOpenDoorMap.put("totalusedmoney", skTermStatus.getTotalusedmoney().toString());
+			mjOpenDoorMap.put("totalrecord", String.valueOf(skTermStatus.getTotalrecord()));
+			mjOpenDoorMap.put("uploadrecord", String.valueOf(skTermStatus.getUploadrecord()));
+			mjOpenDoorMap.put("statustime", formatS.format(skTermStatus.getStatustime()));
+			mjOpenDoorMap.put("roomName", skTermStatus.getRoomName());
+			mjOpenDoorMap.put("gatewayName", skTermStatus.getGatewayName());
+				
+			skTermStatusExpList.add(mjOpenDoorMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", skTermStatusExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "状态的日期", "状态的小时", "测量单位（脉冲/升）", "费率（元/升）","冷水当前小时使用水量（升）","冷水已使用总水量（升）","冷水当前小时使用脉冲数","冷水总使用脉冲数","热水交易金额","热水已交易总额","热水已交易流水","热水已上传流水","状态的时间","房间名称","网关名称"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 }); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "水控使用状态", "水控使用状态", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportSkTermStatusIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
+			request.getSession().setAttribute("exporSkTermStatusIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportSkTermStatusIsEnd");
+		Object state = request.getSession().getAttribute("exporSkTermStatusIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 	
 }

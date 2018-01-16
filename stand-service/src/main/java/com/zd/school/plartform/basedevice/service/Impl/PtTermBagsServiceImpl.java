@@ -38,7 +38,7 @@ public class PtTermBagsServiceImpl extends BaseServiceImpl<PtTermBags> implement
 				+ "		g.bagValue as bagValue,		g.totalBuyedValue as totalBuyedValue,		g.totalUsedValue as totalUsedValue,"
 				+ "		g.totalClearValue  as totalClearValue,		g.subValue as subValue,t.termName as termName ) ";
 		   QueryResult<Map> qResult = this.dao.doQueryCountToHql(start, limit, sort, filter,
-				   select+ hql, null, null, "select count(1) "+hql);
+				   select+ hql, null, null);
 		   
 		String sql="select count(*) from PT_ROOM_BAGSRULEBIND where ROOM_ID='"+roomId+"' and (ISDELETE=0 or ISDELETE is null)";
 		Integer bdrole=pttermService.getQueryCountBySql(sql);

@@ -30,22 +30,22 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
            //fieldLabel: "状态的开始日期",
-            name: "statusDate",
-            funCode: 'girdFastSearchText',
-            emptyText: '状态的开始日期',
+           name: "statusDate",
+           funCode: 'girdFastSearchText',
+           emptyText: '状态的开始日期',
             //format: "Y-m-d",
         },{
             xtype: "basequeryfield",
             queryType: "datetimefield",
             dateType:'date',        //指定这个组件的格式，date或者datetime
            // fieldLabel: "状态的终止日期",
-            name: "statusDate",
-            funCode: 'girdFastSearchText',
-            emptyText: '状态的终止日期',
+           name: "statusDate",
+           funCode: 'girdFastSearchText',
+           emptyText: '状态的终止日期',
            // format: "Y-m-d",
-        },{
-            xtype: 'button',            
-            ref: 'gridFastSearchBtn',  
+       },{
+        xtype: 'button',            
+        ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型  
             iconCls: 'x-fa fa-search',  
         }]
@@ -55,7 +55,6 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
         direction: 'DESC'
     }],
     panelButtomBar:{},
-    
     //扩展参数
     extParams: {
     },

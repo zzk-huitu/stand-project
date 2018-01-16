@@ -50,4 +50,17 @@ Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
             hidden:true
         }]
     },
+    listeners: {
+        itemclick: function(view, record, item, index, e) {
+            var mainLayout = view.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
+            var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
+            var store = storeyGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams = {
+                roomId:record.get('id')
+            };
+            store.load(); // 给form赋值
+            return false;
+        }
+    }
 })

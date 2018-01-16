@@ -50,11 +50,7 @@ public class PtTaskController extends FrameWorkController<PtTask> implements Con
     public void list(@ModelAttribute PtTask entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-        QueryResult<PtTask> qResult = thisService.list(start, limit, sort, filter,true);
+		QueryResult<PtTask> qResult = thisService.list(super.start(request), super.limit(request), super.sort(request),  super.filter(request),true);
         strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
         writeJSON(response, strData);// 返回数据
     }
