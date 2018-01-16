@@ -40,7 +40,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainLayout", {
 	items: [ {
 		xtype: "reportcenter.ptectermstatus.roominfotree",		
         region: "west",
-        width:200,
+        width:250,
         split:true,
         //margin:'0 5 0 0'
 	},{

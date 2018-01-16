@@ -2,14 +2,13 @@ Ext.define("core.reportcenter.ptectermstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptectermstatus.roominfotree",
     dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
     selModel: {
-      //  mode : 'single',
-
-  },
-  tbar:{
+        //mode : 'single',
+    },
+    tbar:{
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
@@ -51,5 +50,4 @@ Ext.define("core.reportcenter.ptectermstatus.view.RoomInfoTree", {
             hidden:true
         }]
     },
-
 })

@@ -1486,7 +1486,31 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
             query.setMaxResults(limit);
 
         }
-        qr.setResultList(query.setResultTransformer(Transformers.aliasToBean(clz)).list());
+        if(clz!=null){
+        	qr.setResultList(query.setResultTransformer(Transformers.aliasToBean(clz)).list());
+        }else{
+        	//转为hashmap
+        	query.setResultTransformer(new ResultTransformer() {
+
+                @Override
+                public Object transformTuple(Object[] values, String[] columns) {
+                    Map<String, Object> map = new LinkedHashMap<String, Object>(1);
+                    int i = 0;
+                    for (String column : columns) {
+                        map.put(column, values[i++]);
+                    }
+                    return map;
+                }
+
+                @Override
+                public List transformList(List list) {
+                    return list;
+                }
+            });
+        	qr.setResultList(query.list());
+        }
+        
+        
         return qr;
     }
 

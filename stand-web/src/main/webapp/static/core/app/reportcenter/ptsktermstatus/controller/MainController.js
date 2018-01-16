@@ -15,65 +15,54 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
     /** 该视图内的组件事件注册 */
     control: {
                  // 树刷新
-            "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
+        "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
-                    btn.up('basetreegrid').getStore().load();
-                    var mainlayout = btn.up("basepanel[xtype=reportcenter.ptsktermstatus.mainlayout]");
-                    var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptsktermstatus.maingrid]");
-                    var store = mianGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams.roomId="";
-                    return false;
-                }
-            },
-/*            "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]": {
-                itemclick: function(tree, record, item, index, e, eOpts) {
-                    var self = this;
-                    var mainLayout = tree.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
-                    var funData = mainLayout.funData;
-                    var map = self.eachChildNode(record);
-                    var ids = new Array();
-                    map.eachKey(function (key) {
-                        ids.push (key);
-                    });
-                    var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
-                    mainLayout.funData = Ext.apply(funData, {
-                        roomId: record.get("id"),
-                    });
-                    var storeyGrid = mainLayout.down("panel[xtype==reportcenter.ptsktermstatus.maingrid]");
-                    var store = storeyGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        filter: filter,
-                    };
-                   store.loadPage(1); // 给form赋值
-               return false;
-
-           }
-       },*/
-            "basegrid[xtype=reportcenter.ptsktermstatus.maingrid] button[ref=gridExport]": {
-                beforeclick: function(btn) {
-                    this.doExport(btn);
-                    return false;
-                }
-            },
-  
-            "basepanel basegrid button[ref=gridFastSearchBtn]": {
-                beforeclick: function (btn) {
-                   this.queryFastSearchForm(btn);
-                    return false;
-                  }
-            },
-
-            "basepanel basegrid field[funCode=girdFastSearchText]": {
-                specialkey: function (field, e) {
-                    if (e.getKey() == e.ENTER) {
-                       this.queryFastSearchForm(field);
-                       return false;
-
-                   }
-               }
+                var baseGrid = btn.up("panel[xtype=reportcenter.ptsktermstatus.roominfotree]");
+                var store = baseGrid.getStore();
+                store.load(); // 刷新父窗体的grid
+                return false;
             }
+        },
+        "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]": {
+            itemclick: function(tree, record, item, index, e, eOpts) {
+                var self = this;
+                var mainLayout = tree.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
+               
+                var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
+                var store = storeyGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId=record.get("id");
+                store.loadPage(1); 
+                return false;
+            }
+       },
+
+        //快速搜索按按钮
+        "basepanel basegrid button[ref=gridFastSearchBtn]": {
+            beforeclick: function (btn) {
+                this.queryFastSearchForm(btn);
+                return false;
+            }
+        },
+        //快速搜索文本框回车事件
+        "basepanel basegrid field[funCode=girdFastSearchText]": {
+            specialkey: function (field, e) {
+                if (e.getKey() == e.ENTER) {
+                    this.queryFastSearchForm(field);                
+                }
+                return false;
+            }
+        },
+
+
+        "basegrid[xtype=reportcenter.ptsktermstatus.maingrid] button[ref=gridExport]": {
+            beforeclick: function(btn) {
+                this.doExport(btn);
+                return false;
+            }
+        },
+  
+    
 
     },
     doExport:function(btn){
@@ -147,35 +136,42 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
        return false;
     },
     queryFastSearchForm:function(btn){
-          var self = this;
-          var basepanel = btn.up("basepanel");
-          var roominfotree = basepanel.down("basetreegrid");
-          var recs = roominfotree.getSelectionModel().getSelection();
-          /*if(recs.length<=0){
+
+        var self = this;
+        var basepanel = btn.up("basepanel");
+        var roominfotree = basepanel.down("basetreegrid");
+        var recs = roominfotree.getSelectionModel().getSelection();
+        if(recs.length<=0){
             self.msgbox("至少选择一个房间。");
             return false;
-        }*/
+        }
         var baseGrid = btn.up("basegrid");
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
-        if(girdSearchTexts[0].getValue()!=""){
+
+
+        if(girdSearchTexts[0].getValue()){
+
             var value =girdSearchTexts[0].getValue();
             filter.push({"type": "date", "value": value, "field": "statusDate", "comparison": ">="})
 
         }
-        if(girdSearchTexts[1].getValue()!=""){
-             var value =girdSearchTexts[1].getValue();
-            filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})
 
+        if(girdSearchTexts[1].getValue()){
+            var value =girdSearchTexts[1].getValue();
+            filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})
         }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        if(filter.length>0){
+
+        if(filter.length==0)
+            delete proxy.extraParams.filter;
+        else
             proxy.extraParams.filter = JSON.stringify(filter);
-         }else{
-            proxy.extraParams.filter = null;
-         }
-         store.loadPage(1);
+
+        store.loadPage(1);
+
     },
+
 });

@@ -50,20 +50,10 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
             iconCls: 'x-fa fa-search',  
         }]
     },
-/*    defSort: [{
+    defSort: [{
         property: 'updateTime',
         direction: 'DESC'
-    }],*/
-/*    panelButtomBar:{},
-    defGroup:"termName",
-    features: [{
-        ftype: 'groupingsummary',
-        groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
-        id: 'restaurantGrouping',
-        collapsible :false,
-        enableGroupingMenu:false,
-        enableNoGroups:false,
-    }],*/
+    }],
     //扩展参数
     extParams: {
     },
@@ -75,100 +65,83 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
             xtype: "rownumberer",
             width: 50,
             text: '序号',
-            align: 'center',
-      /*      summaryRenderer: function(value){
-             return "<font style='font-weight:bold'>小计:</font>";
-         }*/
-     }, {
-        text: "主键",
-        dataIndex: "uuid",
-        hidden: true
-    }, {
-        text: "房间名称",
-        dataIndex: "roomName",
-        field: {
-            xtype: "textfield"
-        },
-        width:100,
-    }, {
-        text: "设备名称",
-        dataIndex: "termName",
-        field: {
-            xtype: "textfield"
-        },
-        minWidth:100,
-        fles:1
-//        summaryRenderer : function (value,cellmeta,record,rowIndex,columnIndex,store) {  
-//            return store.getAt(store.getCount()-1).get('termName');
-//        },
-}, {
-    text: "状态的日期",
-    dataIndex: "statusDate",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-}, {
-    text: "当前小时用电量",
-    dataIndex: "usekwh",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-}, {
-    text: "已购电总量",
-    dataIndex: "buyedkwh",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-   // summaryType: 'sum',
-  /*  summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }*/
-}, {
-    text: "已使用总电量",
-    dataIndex: "totalusedkwh",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-   // summaryType: 'sum',
-  /*  summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+parseFloat(value).toFixed(2)+"</font>";
-    }*/
-}, {
-    text: "剩余总电量",
-    dataIndex: "surpluskwh",
-    field: {
-        xtype: "textfield"
-    },
-    width:150,
-   // summaryType: 'sum',
-/*    summaryRenderer: function(value){
-        return "<font style='font-weight:bold'>"+value+"</font>";
-    }*/
-}, {
-    text: "电压",
-    dataIndex: "voltage",
-    field: {
-        xtype: "textfield"
-    },
-    width:100,
-}, {
-    text: "电流",
-    dataIndex: "currents",
-    field: {
-        xtype: "textfield"
-    },
-    width:100,
-}, {
-    text: "功率",
-    dataIndex: "power",
-    field: {
-        xtype: "textfield"
-    },
-    width:100,
-}]
-}
+            align: 'center',     
+         }, {
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
+        }, {
+            text: "房间名称",
+            dataIndex: "roomName",
+            field: {
+                xtype: "textfield"
+            },
+            width:100,
+        }, {
+            text: "设备名称",
+            dataIndex: "termName",
+            field: {
+                xtype: "textfield"
+            },
+            minWidth:100,
+            fles:1
+        }, {
+            text: "状态的日期",
+            dataIndex: "statusDate",
+            field: {
+                xtype: "textfield"
+            },
+            width:150,
+        }, {
+            text: "当前小时用电量",
+            dataIndex: "usekwh",
+            field: {
+                xtype: "textfield"
+            },
+            width:150,
+        }, {
+            text: "已购电总量",
+            dataIndex: "buyedkwh",
+            field: {
+                xtype: "textfield"
+            },
+            width:150
+        }, {
+            text: "已使用总电量",
+            dataIndex: "totalusedkwh",
+            field: {
+                xtype: "textfield"
+            },
+            width:150
+        }, {
+            text: "剩余总电量",
+            dataIndex: "surpluskwh",
+            field: {
+                xtype: "textfield"
+            },
+            width:150
+        }, {
+            text: "电压",
+            dataIndex: "voltage",
+            field: {
+                xtype: "textfield"
+            },
+            width:100,
+        }, {
+            text: "电流",
+            dataIndex: "currents",
+            field: {
+                xtype: "textfield"
+            },
+            width:100,
+        }, {
+            text: "功率",
+            dataIndex: "power",
+            field: {
+                xtype: "textfield"
+            },
+            width:100,
+        }]
+    }
+
 });

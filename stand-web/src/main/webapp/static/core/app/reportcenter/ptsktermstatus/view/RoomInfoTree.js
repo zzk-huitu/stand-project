@@ -2,12 +2,12 @@ Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptsktermstatus.roominfotree",
     dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
     selModel: {
         //mode : 'single',
-   },
+    },
     tbar:{
         xtype:'toolbar',
         items: [{

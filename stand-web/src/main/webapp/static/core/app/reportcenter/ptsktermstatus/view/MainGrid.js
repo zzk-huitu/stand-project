@@ -55,15 +55,6 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
         direction: 'DESC'
     }],
     panelButtomBar:{},
-/*    defGroup:"termName",
-    features: [{
-        ftype: 'groupingsummary',
-        groupHeaderTpl: '{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
-        id: 'restaurantGrouping',
-        collapsible :false,
-        enableGroupingMenu:false,
-        enableNoGroups:false,
-    }],*/
     //扩展参数
     extParams: {
     },
@@ -75,133 +66,112 @@ Ext.define("core.reportcenter.ptsktermstatus.view.MainGrid", {
             xtype: "rownumberer",
             width: 50,
             text: '序号',
-            align: 'center',
-      /*      summaryRenderer: function(value){
-               return "<font style='font-weight:bold'>小计:</font>";
-           }*/
+            align: 'center',        
        }, {
-        text: "主键",
-        dataIndex: "uuid",
-        hidden: true
-    }, {
-        text: "房间名称",
-        dataIndex: "roomName",
-        field: {
-            xtype: "textfield"
-        },
-        width:100,
-    }, {
-        text: "设备名称",
-        dataIndex: "termName",
-        field: {
-            xtype: "textfield"
-        },
-        minWidth:100,
-        fles:1
-//        summaryRenderer : function (value,cellmeta,record,rowIndex,columnIndex,store) {  
-//            return store.getAt(store.getCount()-1).get('termName');
-//        },
-    }, {
-        text: "状态的日期",
-        dataIndex: "statusDate",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-    }, {
-        text: "测量单位",
-        dataIndex: "measure",
-        field: {
-            xtype: "textfield"
-        },
-        width:80,
-    }, {
-        text: "费率",
-        dataIndex: "price",
-        field: {
-            xtype: "textfield"
-        },
-        width:100,
-    }, {
-        text: "冷水当前小时使用水量（升）",
-        dataIndex: "useliter",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-    }, {
-        text: "冷水已使用总水量（升）",
-        dataIndex: "totalusedliter",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-        /* summaryType: 'sum',
-        summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }, {
-        text: "冷水当前小时使用脉冲数",
-        dataIndex: "usepulse",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-    }, {
-        text: "冷水总使用脉冲数",
-        dataIndex: "totalusedpulse",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-         /* summaryType: 'sum',
-        summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }, {
-        text: "热水交易金额",
-        dataIndex: "usemoney",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-         /*summaryType: 'sum',
-        summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }, {
-        text: "热水已交易总额",
-        dataIndex: "totalusedmoney",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-       /* summaryType: 'sum',
-        summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }, {
-        text: "热水已交易流水",
-        dataIndex: "totalrecord",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-        /*  summaryType: 'sum',
-       summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }, {
-        text: "热水已上传流水",
-        dataIndex: "uploadrecord",
-        field: {
-            xtype: "textfield"
-        },
-        width:150,
-         /* summaryType: 'sum',
-        summaryRenderer: function(value){
-            return "<font style='font-weight:bold'>"+value+"</font>";
-        }*/
-    }]
+            text: "主键",
+            dataIndex: "uuid",
+            hidden: true
+        }, {
+            text: "房间名称",
+            dataIndex: "roomName",
+            field: {
+                xtype: "textfield"
+            },
+            minWidth:80,
+            flex:1
+        }, {
+            text: "设备名称",
+            dataIndex: "termName",
+            field: {
+                xtype: "textfield"
+            },
+            minWidth:80,
+            flex:1
+        }, {
+            text: "状态日期",
+            dataIndex: "statusDate",
+            field: {
+                xtype: "textfield"
+            },
+            width:100,
+            renderer: function(value, metaData) {
+                var date = value.replace(new RegExp(/-/gm), "/");
+                var title = "状态的日期";
+                var ss = Ext.Date.format(new Date(date), 'Y-m-d')
+                var html = ss;
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
+                return ss;
+            }
+        }, {
+            text: "测量单位",
+            dataIndex: "measure",
+            field: {
+                xtype: "textfield"
+            },
+            width:80,
+        }, {
+            text: "费率",
+            dataIndex: "price",
+            field: {
+                xtype: "textfield"
+            },
+            width:80,
+        }, {
+            text: "冷水当前小时使用水量（升）",
+            dataIndex: "useliter",
+            field: {
+                xtype: "textfield"
+            },
+            width:190,
+        }, {
+            text: "冷水已使用总水量（升）",
+            dataIndex: "totalusedliter",
+            field: {
+                xtype: "textfield"
+            },
+            width:180,            
+        }, {
+            text: "冷水当前小时使用脉冲数",
+            dataIndex: "usepulse",
+            field: {
+                xtype: "textfield"
+            },
+            width:170,
+        }, {
+            text: "冷水总使用脉冲数",
+            dataIndex: "totalusedpulse",
+            field: {
+                xtype: "textfield"
+            },
+            width:150,            
+        }, {
+            text: "热水交易金额",
+            dataIndex: "usemoney",
+            field: {
+                xtype: "textfield"
+            },
+            width:120,            
+        }, {
+            text: "热水已交易总额",
+            dataIndex: "totalusedmoney",
+            field: {
+                xtype: "textfield"
+            },
+            width:120,            
+        }, {
+            text: "热水已交易流水",
+            dataIndex: "totalrecord",
+            field: {
+                xtype: "textfield"
+            },
+            width:120
+        }, {
+            text: "热水已上传流水",
+            dataIndex: "uploadrecord",
+            field: {
+                xtype: "textfield"
+            },
+            width:120
+        }]
     }
 });

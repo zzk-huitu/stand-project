@@ -26,22 +26,11 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
                 itemclick: function(tree, record, item, index, e, eOpts) {
                     var self = this;
                     var mainLayout = tree.up("panel[xtype=reportcenter.ptectermstatus.mainlayout]");
-                    var funData = mainLayout.funData;
-                    var map = self.eachChildNode(record);
-                    var ids = new Array();
-                    map.eachKey(function (key) {
-                        ids.push (key);
-                    });
-                    var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
-                    mainLayout.funData = Ext.apply(funData, {
-                        roomId: record.get("id"),
-                    });
-                    var storeyGrid = mainLayout.down("panel[xtype==reportcenter.ptectermstatus.maingrid]");
+                   
+                    var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptectermstatus.maingrid]");
                     var store = storeyGrid.getStore();
                     var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        filter: filter,
-                    };
+                    proxy.extraParams.roomId=record.get("id");
                     store.loadPage(1); 
                     return false;
 
@@ -68,16 +57,19 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
                        return false;
                        
                    }
-               }
-            }
+           }
+        }
 
-        },
+
+    },
+
     doExport:function(btn){
         var self = this;
         var baseGrid = btn.up("basegrid[xtype=reportcenter.ptectermstatus.maingrid]");
         var basepanel = baseGrid.up('basepanel');
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptectermstatus.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
+
         var roomId="";
         if(records.length>0){
            roomId = records[0].get('id');
@@ -106,67 +98,75 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
                     renderTo: Ext.getBody()
                 });
 
-                var time = function () {
-                    self.syncAjax({
-                        url: comm.get('baseUrl') + '/PtEcTermStatus/checkExportEnd',
-                        timeout: 1000 * 60 * 30,      
-                        success: function (response) {
-                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                            if (data.success) {
+
+            var time = function () {
+                self.syncAjax({
+                    url: comm.get('baseUrl') + '/PtEcTermStatus/checkExportEnd',
+                    timeout: 1000 * 60 * 30,      
+                    success: function (response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if (data.success) {
+                            Ext.Msg.hide();
+                            self.msgbox(data.obj);
+                            component.destroy();
+                        } else {
+                            if (data.obj == 0) {    
                                 Ext.Msg.hide();
-                                self.msgbox(data.obj);
+                                self.Error("导出失败，请重试或联系管理员！");
                                 component.destroy();
                             } else {
-                                if (data.obj == 0) {    
-                                    Ext.Msg.hide();
-                                    self.Error("导出失败，请重试或联系管理员！");
-                                    component.destroy();
-                                } else {
-                                    setTimeout(function () {
-                                        time()
-                                    }, 1000);
-                                }
+                                setTimeout(function () {
+                                    time()
+                                }, 1000);
                             }
-                        },
-                        failure: function (response) {
-                            Ext.Msg.hide();
-                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                            component.destroy();
                         }
-                    });
-                };
-                setTimeout(function () {
-                    time()
-                }, 1000);   
-              }
-          });
-            return false;
-       },
+                    },
+                    failure: function (response) {
+                        Ext.Msg.hide();
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        component.destroy();
+                    }
+                });
+            };
+            setTimeout(function () {
+                time()
+            }, 1000);   
+          }
+      });
+        return false;
+   },
     queryFastSearchForm:function(btn){
-          var self = this;
-          var basepanel = btn.up("basepanel");
-          var roominfotree = basepanel.down("basetreegrid");
-          var recs = roominfotree.getSelectionModel().getSelection();
-          if(recs.length<=0){
-            self.msgbox("至少选择一个房间。");
+        var self = this;
+        var basepanel = btn.up("basepanel");
+        var roominfotree = basepanel.down("basetreegrid");
+        var recs = roominfotree.getSelectionModel().getSelection();
+        if(recs.length!=1){
+            self.msgbox("请选择一个房间！");
             return false;
         }
         var baseGrid = btn.up("basegrid");
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
-        if(girdSearchTexts[0].getValue!=null){
-            filter.push({"type": "date", "value": girdSearchTexts[0].getValue(), "field": "beginDate", "comparison": ">="})
+
+        if(girdSearchTexts[0].getValue()){
+            var value =girdSearchTexts[0].getValue();
+            filter.push({"type": "date", "value": value, "field": "statusDate", "comparison": ">="})
 
         }
-        if(girdSearchTexts[1].getValue!=null){
-            filter.push({"type": "date", "value": girdSearchTexts[1].getValue(), "field": "beginDate", "comparison": "<="})
-
+        if(girdSearchTexts[1].getValue()){
+            var value =girdSearchTexts[1].getValue();
+            filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})
         }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.filter = JSON.stringify(filter);
-        store.loadPage(1);
+
+        if(filter.length==0)
+            delete proxy.extraParams.filter;
+        else
+            proxy.extraParams.filter = JSON.stringify(filter);
+
+        store.loadPage(1);    
 
     },
 });
