@@ -178,7 +178,7 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	    
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15 };
+		Integer[] columnWidth = new Integer[] { 10,15, 15, 20, 20,15,15 };
 		List<PtMjOpenDoor> mjOpenDoorList = null;
 		String hql = " from PtMjOpenDoor a where a.isDelete=0 ";
 		if (StringUtils.isNotEmpty(roomId)) {
@@ -212,20 +212,22 @@ public class PtMjOpenDoorController extends FrameWorkController<PtMjOpenDoor> im
 		int i = 1;
 		for (PtMjOpenDoor mjOpenDoor : mjOpenDoorList) {
 			mjOpenDoorMap = new LinkedHashMap<>();
-		    mjOpenDoorMap.put("termName", mjOpenDoor.getTermName());
+			mjOpenDoorMap.put("xh",i+"");
+			mjOpenDoorMap.put("roomName", mjOpenDoor.getRoomName());
+			mjOpenDoorMap.put("termName", mjOpenDoor.getTermName());
 			mjOpenDoorMap.put("userName", mjOpenDoor.getUserName());
 			mjOpenDoorMap.put("openDate",format.format(mjOpenDoor.getOpenDate()));
-			mjOpenDoorMap.put("roomName", mjOpenDoor.getRoomName());
-			mjOpenDoorMap.put("roomArea", mjOpenDoor.getRoomArea());
+		    mjOpenDoorMap.put("roomArea", mjOpenDoor.getRoomArea());
 			mjOpenDoorMap.put("inoutType", mjOpenDoor.getInoutType());
 			mjOpenDoorMap.put("openType", mjOpenDoor.getOpenType());
+			i++;
 			mjOpenDoorExpList.add(mjOpenDoorMap);
 		}
 
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", mjOpenDoorExpList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "设备名称", "开门人员姓名", "开门时间", "房间名称","房间所在区域","进出标识","开门类型"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] { "序号","房间名称","设备名称", "开门人员姓名", "开门时间","房间所在区域","进出标识","开门类型"}); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
 		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件

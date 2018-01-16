@@ -2,8 +2,11 @@ package com.zd.school.plartform.report.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +16,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtEcTermStatus;
+import com.zd.school.control.device.model.PtSkTermStatus;
 import com.zd.school.excel.FastExcel;
 import com.zd.school.plartform.basedevice.service.PtEcTermStatusService;
 import com.zd.school.plartform.comm.model.CommTreeChk;
@@ -192,5 +198,102 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(perEntity)));
 
 	}
+	@Auth("PtEcTermStatus_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
+		request.getSession().removeAttribute("exporEcTermStatusIsState");
+	    String roomId = request.getParameter("roomId");
+	    String statusDateStart = request.getParameter("statusDateStart");
+	    String statusDateEnd = request.getParameter("statusDateEnd");
+	    
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,15, 15, 20, 20};
+		List<PtEcTermStatus> ecTermStatusList = null;
+		String hql = " from PtEcTermStatus a where a.isDelete=0 ";
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {
+				hql += " and a.roomId ='" + roomId + "' ";
+			}
+
+		} else {
+			hql = " select a from PtEcTermStatus a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
+		}
+		if (StringUtils.isNotEmpty(statusDateStart)) {
+			hql+=" and a.statusDate>='"+statusDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(statusDateEnd)) {
+			hql+=" and a.statusDate<='"+statusDateEnd+"'";
+		}
+		ecTermStatusList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
+		
+		Map<String, String> ecTermStatusMap = null;
+		int i = 1;
+		for (PtEcTermStatus ecTermStatus : ecTermStatusList) {
+			ecTermStatusMap = new LinkedHashMap<>();
+			ecTermStatusMap.put("xh",i+"");
+			ecTermStatusMap.put("roomName", ecTermStatus.getRoomName());
+			ecTermStatusMap.put("termName", ecTermStatus.getTermName());
+			ecTermStatusMap.put("statusDate", format.format(ecTermStatus.getStatusDate()));
+			ecTermStatusMap.put("usekwh",String.valueOf(ecTermStatus.getUsekwh()));
+			ecTermStatusMap.put("buyedkwh", String.valueOf(ecTermStatus.getBuyedkwh()));
+			ecTermStatusMap.put("totalusedkwh", String.valueOf(ecTermStatus.getTotalusedkwh()));
+			ecTermStatusMap.put("surpluskwh", String.valueOf(ecTermStatus.getSurpluskwh()));
+			ecTermStatusMap.put("voltage", String.valueOf(ecTermStatus.getVoltage()));
+			ecTermStatusMap.put("currents", String.valueOf(ecTermStatus.getCurrents()));
+			ecTermStatusMap.put("power", String.valueOf(ecTermStatus.getPower()));
+		 	i++;
+			ecTermStatusExpList.add(ecTermStatusMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", ecTermStatusExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] {"序号","房间名称","设备名称","状态的日期", "当前小时用电量", "已购电总量","已使用总电量","剩余总电量","电压","电流","功率"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "电控使用状态", "电控使用状态", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportEcTermStatusIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
+			request.getSession().setAttribute("exporEcTermStatusIsState", "0");
+		}
+
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportEcTermStatusIsEnd");
+		Object state = request.getSession().getAttribute("exporEcTermStatusIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 }

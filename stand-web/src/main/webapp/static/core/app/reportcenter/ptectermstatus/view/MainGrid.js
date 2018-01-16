@@ -122,7 +122,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
         xtype: "textfield"
     },
     width:150,
-    summaryType: 'sum',
+   // summaryType: 'sum',
   /*  summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+value+"</font>";
     }*/
@@ -133,7 +133,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
         xtype: "textfield"
     },
     width:150,
-    summaryType: 'sum',
+   // summaryType: 'sum',
   /*  summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+parseFloat(value).toFixed(2)+"</font>";
     }*/
@@ -144,7 +144,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
         xtype: "textfield"
     },
     width:150,
-    summaryType: 'sum',
+   // summaryType: 'sum',
 /*    summaryRenderer: function(value){
         return "<font style='font-weight:bold'>"+value+"</font>";
     }*/
