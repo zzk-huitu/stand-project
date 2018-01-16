@@ -69,36 +69,32 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
         var basepanel = baseGrid.up('basepanel');
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptectermstatus.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
-
-        var roomId="";
+        var roomId ="";
         if(records.length>0){
            roomId = records[0].get('id');
-        }
-         var toolBar = btn.up("toolbar");
-         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
-         var statusDateStart= "";
-         var statusDateEnd = "";
-         if(girdSearchTexts[0].getValue()!=null){
+       }
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var statusDateStart= "";
+        var statusDateEnd = "";
+        if(girdSearchTexts[0].getValue()!=null){
             statusDateStart = girdSearchTexts[0].getValue();
         }
         if(girdSearchTexts[1].getValue()!=null){
             statusDateEnd = girdSearchTexts[1].getValue();
         }
-
-        var title = "确定要导出电控使用状态吗？";
-        Ext.Msg.confirm('提示', title, function (btn, text) {
-            if (btn == "yes") {
-                Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
-                var component = Ext.create('Ext.Component', {
-                    title: 'HelloWorld',
-                    width: 0,
-                    height: 0,
-                    hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'statusDateEnd='+statusDateEnd+'"></iframe>',
-                    renderTo: Ext.getBody()
-                });
-
-
+      var title = "确定要导出电控使用状态吗？";
+      Ext.Msg.confirm('提示', title, function (btn, text) {
+        if (btn == "yes") {
+            Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+            var component = Ext.create('Ext.Component', {
+                title: 'HelloWorld',
+                width: 0,
+                height: 0,
+                hidden: true,
+                html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doExportExcel?roomId='+roomId+'&statusDateStart="'+statusDateStart+'&statusDateEnd='+statusDateStart+'></iframe>',
+                renderTo: Ext.getBody()
+            });
             var time = function () {
                 self.syncAjax({
                     url: comm.get('baseUrl') + '/PtEcTermStatus/checkExportEnd',

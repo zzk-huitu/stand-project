@@ -82,16 +82,21 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
         var basepanel = baseGrid.up('basepanel');
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.watercount.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
-        if(records.length<=0){
-          self.msgbox("至少选择一个房间。");
-          return ;
+        var roomId ="";
+        if(records.length>0){
+           roomId = records[0].get('id');
+       }
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var statusDateStart= "";
+        var statusDateEnd = "";
+        if(girdSearchTexts[0].getValue()!=null){
+            statusDateStart = girdSearchTexts[0].getValue();
         }
-        var selRecords = new Array();
-        Ext.each(records, function(rec) {
-          if (!rec.raw.disabled) {
-              selRecords.push("'"+rec.data.id+"'");
-          }
-       });
+        if(girdSearchTexts[1].getValue()!=null){
+            statusDateEnd = girdSearchTexts[1].getValue();
+        }
+  
       
         var title = "确定要导出水控统计表吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
@@ -102,7 +107,7 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExpWaterCountExcel?dormId='+selRecords.join(',')+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExpWaterCountExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

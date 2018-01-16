@@ -335,32 +335,43 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 	public void doExpWaterCountExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
 		request.getSession().removeAttribute("exporSkTermStatusIsState");
-	    String dormId = request.getParameter("dormId");
+	    String roomId = request.getParameter("roomId");
 	    String statusDateStart = request.getParameter("statusDateStart");
 	    String statusDateEnd = request.getParameter("statusDateEnd");
-	    
+		
 	    String sql=" select SUM(a.USELITER) as useliter,MIN(a.TOTALUSEDLITER) as TOTALUSEDLITERmin,MAX(a.TOTALUSEDLITER) as TOTALUSEDLITERmax,"
-				+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	"
+				+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,	e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	"
 	        	+ " from dbo.PT_SK_TERMSTATUS a"
-				+ "LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
-				+ "LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
-				+ "LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ "LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  where 1=1 ";
-	    String groupSql= " GROUP BY c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
-	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				+ "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
+				+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
+				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  "
+				+ "where 1=1 and a.isDelete=0 ";
+		String groupSql=	 " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
 	
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10,20,20,15,15,15,15, 15, 20};
+		Integer[] columnWidth = new Integer[] { 10,20,20,15,15,15,15, 15, 20,20};
 		List<Map<String,Object>> skTermStatusList = null;
-		
-		if (StringUtils.isNotEmpty(dormId)) {
-			sql+=" and D.dormId in ("+dormId+")";
-	    }
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				sql += " and a.ROOM_ID in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {
+				sql += " and a.ROOM_ID ='" + roomId + "' ";
+			}
+
+		}
 		if (StringUtils.isNotEmpty(statusDateStart)) {
-			sql+=" and a.statusDate>='"+statusDateStart+"'";
+			sql+=" and a.STATUSDATE>='"+statusDateStart+"'";
 		}
 		if (StringUtils.isNotEmpty(statusDateEnd)) {
-			sql+=" and a.statusDate<='"+statusDateEnd+"'";
+			sql+=" and a.STATUSDATE<='"+statusDateEnd+"'";
 		}
 		skTermStatusList = thisService.queryMapBySql(sql+groupSql);
 
@@ -377,9 +388,9 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 			skTermStatusMap.put("GATEWAYNAME", (String) map.get("GATEWAYNAME"));
 			skTermStatusMap.put("ROOM_NAME", (String) map.get("ROOM_NAME"));
 			skTermStatusMap.put("NODE_TEXT",(String) map.get("NODE_TEXT"));
-			skTermStatusMap.put("TOTALUSEDLITERmin",(String)map.get("TOTALUSEDLITERmin"));
-			skTermStatusMap.put("TOTALUSEDLITERmax", (String)map.get("TOTALUSEDLITERmax"));
-			skTermStatusMap.put("useliter", (String) map.get("useliter"));
+			skTermStatusMap.put("TOTALUSEDLITERmin",map.get("TOTALUSEDLITERmin").toString());
+			skTermStatusMap.put("TOTALUSEDLITERmax", map.get("TOTALUSEDLITERmax").toString());
+			skTermStatusMap.put("useliter", map.get("useliter").toString());
 			i++;
 			skTermStatusExpList.add(skTermStatusMap);
 		}
@@ -389,7 +400,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		courseAllMap.put("title", null);
 		courseAllMap.put("head", new String[] {"序号","设备机号","设备名称","设备类型", "网关名称", "房间名称","楼层名称","最初用水量","最终用水量","累积用水量"}); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0,0, 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0,0, 0, 0, 0, 0, 0, 0, 0,0}); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 

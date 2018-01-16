@@ -273,7 +273,82 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		}
 
 	}
+	@Auth("ELEC_COUNT_export")
+	@RequestMapping("/doEcExportExcel")
+	public void doEcExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
+		request.getSession().removeAttribute("exporEcTermStatusIsState");
+	    String roomId = request.getParameter("roomId");
+	    String statusDateStart = request.getParameter("statusDateStart");
+	    String statusDateEnd = request.getParameter("statusDateEnd");
+	  
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,20,20};
+		List<Map<String,Object>> ecTermStatusList = null;
+		String sql1 = "";
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				sql1 += " and b.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {
+				sql1 += " and b.roomId ='" + roomId + "' ";
+			}
 
+		}
+		if (StringUtils.isNotEmpty(statusDateStart)) {
+			sql1+=" and b.statusDate>='"+statusDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(statusDateEnd)) {
+			sql1+=" and b.statusDate<='"+statusDateEnd+"'";
+		}
+		StringBuffer sql = new StringBuffer("EXEC PT_EC_TERMSTATUS_INFO ");
+		sql.append("'" + sql1.replace("'", "''") + "',");
+		ecTermStatusList = thisService.queryMapBySql(sql.toString());
+
+		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
+		
+		Map<String, String> ecTermStatusMap = null;
+		int i = 1;
+		for (Map map : ecTermStatusList) {
+			ecTermStatusMap = new LinkedHashMap<>();
+			ecTermStatusMap.put("xh",i+"");
+			ecTermStatusMap.put("TERMNO",(String) map.get("TERMNO"));
+			ecTermStatusMap.put("TERMNAME",(String) map.get("TERMNAME"));
+			ecTermStatusMap.put("TERMSN",(String) map.get("TERMNAME"));
+			ecTermStatusMap.put("TERMTYPEID",(String) map.get("TERMNAME"));
+			ecTermStatusMap.put("GATEWAYNAME", (String) map.get("TERMNAME"));
+			ecTermStatusMap.put("ROOM_NAME",(String) map.get("TERMNAME"));
+			ecTermStatusMap.put("NODE_TEXT",(String) map.get("TERMNAME"));
+			ecTermStatusMap.put("sumdl",map.get("TERMNAME").toString());
+		    i++;
+			ecTermStatusExpList.add(ecTermStatusMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", ecTermStatusExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] {"序号","设备机号","设备名称","设备序列号","设备类型","网关名称","房间名称","楼层名称","总电量"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0,0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "电控使用状态", "电控使用状态", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportEcTermStatusIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
+			request.getSession().setAttribute("exporEcTermStatusIsState", "0");
+		}
+
+	}
 	@RequestMapping("/checkExportEnd")
 	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
