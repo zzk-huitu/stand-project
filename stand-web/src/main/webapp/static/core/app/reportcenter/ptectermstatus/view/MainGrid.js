@@ -143,4 +143,5 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
             width:100,
         }]
     }
+
 });

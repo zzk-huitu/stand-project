@@ -16,6 +16,12 @@ Ext.define("core.reportcenter.taskdetail.view.MainGrid", {
                 fontWeight:800,
                 lineHeight:'30px',
             }
+        },{
+            xtype: 'button',
+            text: '导出',
+            ref: 'gridExport',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-file'
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
@@ -83,7 +89,7 @@ Ext.define("core.reportcenter.taskdetail.view.MainGrid", {
             dataIndex: "devicetype",
             columnType: "basecombobox", //列类型
             ddCode: "PTTERMTYPE",//字典代码
-            width:120,
+            width:150,
         },{
             text: "设备序列号",
             dataIndex: "termsn",

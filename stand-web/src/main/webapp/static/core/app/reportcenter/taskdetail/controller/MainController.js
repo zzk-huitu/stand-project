@@ -36,6 +36,13 @@ Ext.define("core.reportcenter.taskdetail.controller.MainController", {
             return false;
         }
     },
+    "basegrid[xtype=reportcenter.taskdetail.maingrid] button[ref=gridExport]": {
+        beforeclick: function(btn) {
+            this.doExport(btn);
+            return false;
+        }
+    },
+
    },
      doDetail_Win:function(grid,record){
         var self = this;
@@ -90,6 +97,66 @@ Ext.define("core.reportcenter.taskdetail.controller.MainController", {
          msgobj.setValue(msg);
          win.show();
      },
+    doExport:function(btn){
+        var self = this;
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var tasktype= "";
+        var termsn = "";
+        if(girdSearchTexts[0].getValue()!=null){
+            tasktype = girdSearchTexts[0].getValue();
+        }
+        if(girdSearchTexts[1].getValue()!=null){
+            termsn = girdSearchTexts[1].getValue();
+        }
+      var title = "确定要导出任务详细吗？";
+      Ext.Msg.confirm('提示', title, function (btn, text) {
+        if (btn == "yes") {
+            Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+            var component = Ext.create('Ext.Component', {
+                title: 'HelloWorld',
+                width: 0,
+                height: 0,
+                hidden: true,
+                html: '<iframe src="' + comm.get('baseUrl') + '/PtTask/doExportExcel?tasktype='+tasktype+'&termsn='+termsn+'"></iframe>',
+                renderTo: Ext.getBody()
+            });
+            var time = function () {
+                self.syncAjax({
+                    url: comm.get('baseUrl') + '/PtTask/checkExportEnd',
+                    timeout: 1000 * 60 * 30,      
+                    success: function (response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if (data.success) {
+                            Ext.Msg.hide();
+                            self.msgbox(data.obj);
+                            component.destroy();
+                        } else {
+                            if (data.obj == 0) {    
+                                Ext.Msg.hide();
+                                self.Error("导出失败，请重试或联系管理员！");
+                                component.destroy();
+                            } else {
+                                setTimeout(function () {
+                                    time()
+                                }, 1000);
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        Ext.Msg.hide();
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        component.destroy();
+                    }
+                });
+            };
+            setTimeout(function () {
+                time()
+            }, 1000);   
+          }
+      });
+        return false;
+   },
     doFastSearch: function (component) {
   //得到组件                 
         var baseGrid = component.up("basegrid");

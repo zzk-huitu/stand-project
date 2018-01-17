@@ -17,9 +17,13 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
         // 树刷新
         "basetreegrid[xtype=reportcenter.eleccount.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
-                var baseGrid = btn.up("panel[xtype=reportcenter.eleccount.roominfotree]");
-                var store = baseGrid.getStore();
-                store.load(); // 刷新父窗体的grid
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.eleccount.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.eleccount.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
@@ -80,8 +84,26 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid[xtype=reportcenter.eleccount.maingrid]");
         var mainlayout = baseGrid.up('basepanel');
-        var wheresql1 = mainlayout.funData.wheresql1;
-        var wheresql2 = mainlayout.funData.wheresql2;
+        var roominfotreegrid = mainlayout.down("basetreegrid[xtype=reportcenter.eleccount.roominfotree]");
+        var records = roominfotreegrid.getSelectionModel().getSelection();
+        var roomId ="";
+        if(records.length!=1){
+            self.msgbox("请选择一个房间！");
+            return;
+        }else{
+             roomId = records[0].get('id');
+        }
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var statusDateStart= "";
+        var statusDateEnd = "";
+        if(girdSearchTexts[0].getValue()!=null){
+            statusDateStart = girdSearchTexts[0].getValue();
+        }
+        if(girdSearchTexts[1].getValue()!=null){
+            statusDateEnd = girdSearchTexts[1].getValue();
+        }
+  
         var title = "确定要导出用电统计表吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
@@ -91,7 +113,7 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
                 width: 0,
                 height: 0,
                 hidden: true,
-                html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doExportExcel?wheresql1='+wheresql1+'"></iframe>',
+                html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doEcExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                 renderTo: Ext.getBody()
             });
 

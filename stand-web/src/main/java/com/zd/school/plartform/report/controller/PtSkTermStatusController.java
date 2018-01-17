@@ -18,13 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtIrRoomDevice;
 import com.zd.school.control.device.model.PtSkTermStatus;
 import com.zd.school.plartform.basedevice.service.PtSkTermStatusService;
 import com.zd.school.plartform.comm.service.CommTreeService;
@@ -256,11 +254,9 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 	    String statusDateEnd = request.getParameter("statusDateEnd");
 	    
 	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatH = new SimpleDateFormat("H");
-		SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+	
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,15, 15, 20, 20,15,15,15,15 };
+		Integer[] columnWidth = new Integer[] { 10,15, 15, 20, 20,15,15,15,15, 15, 20, 20,15,15,15,15 };
 		List<PtSkTermStatus> skTermStatusList = null;
 		String hql = " from PtSkTermStatus a where a.isDelete=0 ";
 		if (StringUtils.isNotEmpty(roomId)) {
@@ -290,35 +286,34 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 
 		List<Map<String, String>> skTermStatusExpList = new ArrayList<>();
 		
-		Map<String, String> mjOpenDoorMap = null;
+		Map<String, String> skTermStatusMap = null;
 		int i = 1;
 		for (PtSkTermStatus skTermStatus : skTermStatusList) {
-			mjOpenDoorMap = new LinkedHashMap<>();
-			mjOpenDoorMap.put("statusDate", format.format(skTermStatus.getStatusDate()));
-			mjOpenDoorMap.put("statusHour", formatH.format(skTermStatus.getStatusHour()));
-			mjOpenDoorMap.put("measure",skTermStatus.getMeasure().toString() );
-			mjOpenDoorMap.put("price", skTermStatus.getPrice().toString());
-			mjOpenDoorMap.put("useliter", String.valueOf(skTermStatus.getUseliter()));
-			mjOpenDoorMap.put("totalusedliter", String.valueOf(skTermStatus.getTotalusedliter()));
-			mjOpenDoorMap.put("usepulse", String.valueOf(skTermStatus.getUsepulse()));
-            mjOpenDoorMap.put("totalusedpulse", String.valueOf(skTermStatus.getTotalusedpulse()));
-			mjOpenDoorMap.put("usemoney", skTermStatus.getUsemoney().toString());
-			mjOpenDoorMap.put("totalusedmoney", skTermStatus.getTotalusedmoney().toString());
-			mjOpenDoorMap.put("totalrecord", String.valueOf(skTermStatus.getTotalrecord()));
-			mjOpenDoorMap.put("uploadrecord", String.valueOf(skTermStatus.getUploadrecord()));
-			mjOpenDoorMap.put("statustime", formatS.format(skTermStatus.getStatustime()));
-			mjOpenDoorMap.put("roomName", skTermStatus.getRoomName());
-			mjOpenDoorMap.put("gatewayName", skTermStatus.getGatewayName());
-				
-			skTermStatusExpList.add(mjOpenDoorMap);
+			skTermStatusMap = new LinkedHashMap<>();
+			skTermStatusMap.put("xh",i+"");
+			skTermStatusMap.put("roomName", skTermStatus.getRoomName());
+			skTermStatusMap.put("termName", skTermStatus.getTermName());
+			skTermStatusMap.put("statusDate", format.format(skTermStatus.getStatusDate()));
+			skTermStatusMap.put("measure",skTermStatus.getMeasure().toString() );
+			skTermStatusMap.put("price", skTermStatus.getPrice().toString());
+			skTermStatusMap.put("useliter", String.valueOf(skTermStatus.getUseliter()));
+			skTermStatusMap.put("totalusedliter", String.valueOf(skTermStatus.getTotalusedliter()));
+			skTermStatusMap.put("usepulse", String.valueOf(skTermStatus.getUsepulse()));
+			skTermStatusMap.put("totalusedpulse", String.valueOf(skTermStatus.getTotalusedpulse()));
+			skTermStatusMap.put("usemoney", skTermStatus.getUsemoney().toString());
+			skTermStatusMap.put("totalusedmoney", skTermStatus.getTotalusedmoney().toString());
+			skTermStatusMap.put("totalrecord", String.valueOf(skTermStatus.getTotalrecord()));
+			skTermStatusMap.put("uploadrecord", String.valueOf(skTermStatus.getUploadrecord()));
+			i++;
+			skTermStatusExpList.add(skTermStatusMap);
 		}
 
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", skTermStatusExpList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "状态的日期", "状态的小时", "测量单位（脉冲/升）", "费率（元/升）","冷水当前小时使用水量（升）","冷水已使用总水量（升）","冷水当前小时使用脉冲数","冷水总使用脉冲数","热水交易金额","热水已交易总额","热水已交易流水","热水已上传流水","状态的时间","房间名称","网关名称"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] {"序号","房间名称","设备名称","状态的日期", "测量单位（脉冲/升）", "费率（元/升）","冷水当前小时使用水量（升）","冷水已使用总水量（升）","冷水当前小时使用脉冲数","冷水总使用脉冲数","热水交易金额","热水已交易总额","热水已交易流水","热水已上传流水"}); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 }); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 
@@ -332,7 +327,90 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		}
 
 	}
+	@Auth("WATER_COUNT_export")
+	@RequestMapping("/doExpWaterCountExcel")
+	public void doExpWaterCountExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
+		request.getSession().removeAttribute("exporSkTermStatusIsState");
+	    String roomId = request.getParameter("roomId");
+	    String statusDateStart = request.getParameter("statusDateStart");
+	    String statusDateEnd = request.getParameter("statusDateEnd");
+		
+	    String sql=" select SUM(a.USELITER) as useliter,MIN(a.TOTALUSEDLITER) as TOTALUSEDLITERmin,MAX(a.TOTALUSEDLITER) as TOTALUSEDLITERmax,"
+				+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,	e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	"
+	        	+ " from dbo.PT_SK_TERMSTATUS a"
+				+ "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
+				+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
+				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  "
+				+ "where 1=1 and a.isDelete=0 ";
+		String groupSql=	 " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
+	
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10,20,20,15,15,15,15, 15, 20,20};
+		List<Map<String,Object>> skTermStatusList = null;
+		if (StringUtils.isNotEmpty(roomId)) {
+			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
+					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
+			List<String> roomLists = thisService.queryEntityByHql(roomHql);
+			if (roomLists.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < roomLists.size(); i++) {
+					sb.append(roomLists.get(i) + ",");
+				}
+				sql += " and a.ROOM_ID in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
+			} else {
+				sql += " and a.ROOM_ID ='" + roomId + "' ";
+			}
 
+		}
+		if (StringUtils.isNotEmpty(statusDateStart)) {
+			sql+=" and a.STATUSDATE>='"+statusDateStart+"'";
+		}
+		if (StringUtils.isNotEmpty(statusDateEnd)) {
+			sql+=" and a.STATUSDATE<='"+statusDateEnd+"'";
+		}
+		skTermStatusList = thisService.queryMapBySql(sql+groupSql);
+
+		List<Map<String, String>> skTermStatusExpList = new ArrayList<>();
+		
+		Map<String, String> skTermStatusMap = null;
+		int i = 1;
+		for (Map map : skTermStatusList) {
+			skTermStatusMap = new LinkedHashMap<>();
+			skTermStatusMap.put("xh",i+"");
+			skTermStatusMap.put("TERMNO",(String) map.get("TERMNO"));
+			skTermStatusMap.put("TERMNAME", (String) map.get("TERMNAME"));
+			skTermStatusMap.put("TERMTYPEID", (String) map.get("TERMTYPEID"));
+			skTermStatusMap.put("GATEWAYNAME", (String) map.get("GATEWAYNAME"));
+			skTermStatusMap.put("ROOM_NAME", (String) map.get("ROOM_NAME"));
+			skTermStatusMap.put("NODE_TEXT",(String) map.get("NODE_TEXT"));
+			skTermStatusMap.put("TOTALUSEDLITERmin",map.get("TOTALUSEDLITERmin").toString());
+			skTermStatusMap.put("TOTALUSEDLITERmax", map.get("TOTALUSEDLITERmax").toString());
+			skTermStatusMap.put("useliter", map.get("useliter").toString());
+			i++;
+			skTermStatusExpList.add(skTermStatusMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", skTermStatusExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] {"序号","设备机号","设备名称","设备类型", "网关名称", "房间名称","楼层名称","最初用水量","最终用水量","累积用水量"}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0,0, 0, 0, 0, 0, 0, 0, 0,0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "用水统计表", "用水统计表", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportSkTermStatusIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportSkTermStatusIsEnd", "0");
+			request.getSession().setAttribute("exporSkTermStatusIsState", "0");
+		}
+
+	}
 	@RequestMapping("/checkExportEnd")
 	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
