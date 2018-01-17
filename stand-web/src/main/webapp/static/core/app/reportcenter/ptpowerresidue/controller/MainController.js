@@ -27,6 +27,34 @@ Ext.define("core.reportcenter.ptpowerresidue.controller.MainController", {
                     return false;
                 }
             },
+            "basetreegrid[xtype=reportcenter.ptpowerresidue.roominfotree]": {
+                itemclick: function(tree, record, item, index, e, eOpts) {
+                    var self = this;
+                    var mainLayout = tree.up("panel[xtype=reportcenter.ptpowerresidue.mainlayout]");
+                    mainLayout.funData.roomId=record.get("id");
+
+                    var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptpowerresidue.maingrid]");
+                    var store = storeyGrid.getStore();
+                    var proxy = store.getProxy();
+
+                    var roomId="";
+                    if( record.get("id")!="2851655E-3390-4B80-B00C-52C7CA62CB39"){
+                        roomId = record.get("id");
+                    }
+
+                    var roomLeaf=record.get("leaf");
+                    if(roomLeaf==true)
+                        roomLeaf="1";
+                    else
+                        roomLeaf="0"
+
+                    proxy.extraParams.roomId=roomId;
+                    proxy.extraParams.roomLeaf=roomLeaf;
+
+                    store.loadPage(1); 
+                    return false;
+                }
+            },
 
    
            

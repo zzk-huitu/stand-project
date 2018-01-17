@@ -5,6 +5,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
     model: "com.zd.school.control.device.model.PtPowerResidue",
     menuCode:"PtPowerResidue",
     al: false,
+    remoteSort: false,   //是否远程排序
+    noPagging: true,   //是否要在这里装载分页栏
     //工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',
@@ -22,7 +24,7 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-file'
-        },'->',{
+        },'->'/*,{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -35,7 +37,7 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
             ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型  
             iconCls: 'x-fa fa-search',  
-        }]
+        }*/]
     },
 /*    defSort: [{
         property: 'updateTime',
@@ -65,14 +67,15 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
             xtype: "textfield"
         },
         flex:1,
-        minWidth:120,
+        minWidth:100,
     }, {
         text: "剩余电量",
         dataIndex: "powerResidue",
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
     },/* {
         text: "剩余金额",
         dataIndex: "moneyResidue",
@@ -85,7 +88,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员1卡余";
             var html = value;
@@ -98,7 +102,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员2卡余";
             var html = value;
@@ -111,7 +116,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员3卡余";
             var html = value;
@@ -124,7 +130,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员4卡余";
             var html = value;
@@ -137,7 +144,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员5卡余";
             var html = value;
@@ -150,7 +158,8 @@ Ext.define("core.reportcenter.ptpowerresidue.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        width:120,
+        flex:1,
+        minWidth:100,
         renderer: function(value, metaData) {
             var title = "宿舍人员6卡余";
             var html = value;

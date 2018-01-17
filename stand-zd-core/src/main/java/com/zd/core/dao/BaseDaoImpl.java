@@ -1395,8 +1395,10 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
     @SuppressWarnings({"unchecked"})
     public <T> List<T> queryEntityBySql(String sql, Class<T> clz) {
         Query query = getSession().createSQLQuery(sql);
-        List<T> values = query.setResultTransformer(Transformers.aliasToBean(clz)).list();
-
+        if(clz!=null)
+        	query.setResultTransformer(Transformers.aliasToBean(clz));
+        
+        List<T> values = query.list();
         return values;
     }
 

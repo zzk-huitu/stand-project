@@ -23,6 +23,7 @@ import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.MjUserright;
 import com.zd.school.plartform.basedevice.service.MjUserrightService;
+import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -66,6 +67,39 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 		writeJSON(response, strData);// 返回数据
 
 	}
+	
+	/**
+	 * 生成树
+	 * 获取所有区域 与 房间的数据
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping("/treelist")
+	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String strData = "";
+		String whereSql = request.getParameter("whereSql");
+		List<CommTree> lists = treeService.getCommTree("JW_V_AREAROOMINFOTREE", whereSql);
+		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
+	
+	/**
+	 * 生成树
+	 * 获取分配了学生宿舍的班级房间数据
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping("/treeStuDormList")
+	public void getStuDormList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String strData = "";
+		String whereSql = request.getParameter("whereSql");
+		List<CommTree> lists = treeService.getCommTree("JW_V_STU_DORMALLOTTREE", whereSql);
+		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
+	
 
 	/**
 	 * 
