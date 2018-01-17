@@ -27,7 +27,10 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
                   }
                 querySql1 = " and ROOM_ID in (" + uuids.join(",") + ")";
                 }
-                proxy.extraParams.querySql = querySql1;
+                proxy.extraParams={
+                    querySql:querySql1,
+                };
+               // proxy.extraParams.querySql = querySql1;
                 stores.load(); //刷新
             }
         }

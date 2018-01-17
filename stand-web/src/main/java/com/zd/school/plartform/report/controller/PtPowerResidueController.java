@@ -18,14 +18,12 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import  com.zd.core.util.JsonBuilder;
+
 import com.zd.core.annotation.Auth;
-import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtMjOpenDoor;
 import com.zd.school.control.device.model.PtPowerResidue;
 import com.zd.school.control.device.model.PtRoomBags;
 import com.zd.school.control.device.model.PtTerm;

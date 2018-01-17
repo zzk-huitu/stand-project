@@ -33,7 +33,10 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
                     var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptectermstatus.maingrid]");
                     var store = storeyGrid.getStore();
                     var proxy = store.getProxy();
-                    proxy.extraParams.roomId=record.get("id");
+                    proxy.extraParams={
+                        roomId:record.get("id"),
+                    };
+                   // proxy.extraParams.roomId=record.get("id");
                     store.loadPage(1); 
                     return false;
 

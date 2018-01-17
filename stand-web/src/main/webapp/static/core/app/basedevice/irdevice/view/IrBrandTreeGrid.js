@@ -93,8 +93,12 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams.brandId=brandId;
-            proxy.extraParams.level=level;
+            proxy.extraParams={
+                brandId:brandId,
+                level:level
+            };
+          /*  proxy.extraParams.brandId=brandId;
+            proxy.extraParams.level=level;*/
             store.loadPage(1); // 给form赋值
             return false;
         }

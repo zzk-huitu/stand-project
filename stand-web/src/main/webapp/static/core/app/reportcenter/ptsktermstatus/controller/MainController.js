@@ -34,7 +34,10 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                 var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
                 var store = storeyGrid.getStore();
                 var proxy = store.getProxy();
-                proxy.extraParams.roomId=record.get("id");
+                proxy.extraParams={
+                    roomId:record.get("id"),
+                };
+               // proxy.extraParams.roomId=record.get("id");
                 store.loadPage(1); 
                 return false;
             }
