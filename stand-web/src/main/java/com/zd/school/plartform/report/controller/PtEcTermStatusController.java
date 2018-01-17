@@ -297,9 +297,10 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 			sql1+=" and b.statusDate<='"+statusDateEnd+"'";
 		}
 		StringBuffer sql = new StringBuffer("EXEC PT_EC_TERMSTATUS_INFO ");
+		Integer pageIndex=Integer.parseInt(request.getParameter("page"));;	//page
 		sql.append("'" + sql1.replace("'", "''") + "',");
 		sql.append("'" + 1 + "',");
-		sql.append("'" + 200 + "'");
+		sql.append("'" + 20 + "'");
 		ecTermStatusList = thisService.queryMapBySql(sql.toString());
 
 		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
@@ -316,7 +317,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 			ecTermStatusMap.put("GATEWAYNAME", (String) map.get("GATEWAYNAME"));
 			ecTermStatusMap.put("ROOM_NAME",(String) map.get("ROOM_NAME"));
 			ecTermStatusMap.put("NODE_TEXT",(String) map.get("NODE_TEXT"));
-			ecTermStatusMap.put("sumdl",(String)map.get("sumdl"));
+			ecTermStatusMap.put("sumdl",map.get("sumdl")==null?"":map.get("sumdl").toString());
 		    i++;
 			ecTermStatusExpList.add(ecTermStatusMap);
 		}

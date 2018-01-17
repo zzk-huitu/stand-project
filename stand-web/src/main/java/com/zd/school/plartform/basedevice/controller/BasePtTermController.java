@@ -2,6 +2,7 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,7 +26,6 @@ import com.zd.core.util.ModelUtil;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.core.util.TLVUtils;
-import com.zd.school.control.device.model.PtMjOpenDoor;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.control.device.model.TLVModel;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
@@ -34,6 +34,7 @@ import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.ykt.model.PtTask;
 
 /**
  * 房间设备
@@ -232,7 +233,8 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 		writeJSON(response, strData);// 返回数据
 	}
-    @Auth("BASESMARTDEVICE_setHigh")
+
+	@Auth("BASESMARTDEVICE_setHigh")
 	@RequestMapping("/doSetHighParam")
 	public void doSetHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -291,7 +293,8 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		writeJSON(response, strData);// 返回数据
 
 	}
-    @Auth("BASESMARTDEVICE_setBase")
+
+	@Auth("BASESMARTDEVICE_setBase")
 	@RequestMapping("/doSetBaseParam")
 	public void doSetBaseParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -321,6 +324,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设备参数设置成功！\""));
 
 	}
+
 	@RequestMapping(value = { "/termlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void listterm(@ModelAttribute PtTerm entity, HttpServletRequest request, HttpServletResponse response)
@@ -328,10 +332,11 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		String strData = ""; // 返回给js的数据
 		QueryResult<PtTerm> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), super.filter(request), true);
-        strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-    @Auth("BASESMARTDEVICE_export")
+
+	@Auth("BASESMARTDEVICE_export")
 	@RequestMapping("/doExportExcel")
 	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermIsEnd", "0");
@@ -413,6 +418,73 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 	}
 
+	@Auth("TASK_DETAIL_export")
+	@RequestMapping("/doSbxxExportExcel")
+	public void doSbxxExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportPtTermIsEnd", "0");
+		request.getSession().removeAttribute("exportPtTermIsState");
+
+		String termName = request.getParameter("termName");
+		String roomName = request.getParameter("roomName");
+
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 10, 25, 30, 20, 20, 25 };
+		// 数据字典项
+		String mapKey = null;
+		String[] propValue = { "PTTERMTYPE" };
+		Map<String, String> mapDicItem = new HashMap<>();
+		List<BaseDicitem> listDicItem = dicitemService.queryByProerties("dicCode", propValue);
+		for (BaseDicitem baseDicitem : listDicItem) {
+			mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
+			mapDicItem.put(mapKey, baseDicitem.getItemName());
+		}
+		List<PtTerm> ptTermList = null;
+		String hql = " from PtTerm a where a.isDelete=0 ";
+
+		if (StringUtils.isNotEmpty(termName)) {
+			hql += " and a.termName like'%" + termName + "%'";
+		}
+		if (StringUtils.isNotEmpty(roomName)) {
+			hql += " and a.roomName like'%" + roomName + "%'";
+		}
+		ptTermList = thisService.queryByHql(hql);
+
+		List<Map<String, String>> ptTermExpList = new ArrayList<>();
+
+		Map<String, String> ptTermMap = null;
+		int i = 1;
+		for (PtTerm ptTerm : ptTermList) {
+			ptTermMap = new LinkedHashMap<>();
+			ptTermMap.put("xh", i + "");
+			ptTermMap.put("termName", ptTerm.getTermName());
+			ptTermMap.put("termSN", ptTerm.getTermSN());
+			ptTermMap.put("roomName", ptTerm.getRoomName());
+			ptTermMap.put("gatewayName", ptTerm.getGatewayName());
+			ptTermMap.put("termTypeID", mapDicItem.get(ptTerm.getTermTypeID() + "PTTERMTYPE"));
+			i++;
+			ptTermExpList.add(ptTermMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", ptTermExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] { "序号", "设备名称", "序列号", "房间名称", "网关名称", "设备类型" }); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "设备序列号", "设备序列号", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportPtTermIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportPtTermIsEnd", "0");
+			request.getSession().setAttribute("exportPtTermIsState", "0");
+		}
+
+	}
+
 	@RequestMapping("/checkExportEnd")
 	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -430,7 +502,8 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-    @Auth("DEVICEALLOT_export")
+
+	@Auth("DEVICEALLOT_export")
 	@RequestMapping("/doExportPtTermAllotExcel")
 	public void doExportPtTermAllotExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportPtTermAllotIsEnd", "0");
