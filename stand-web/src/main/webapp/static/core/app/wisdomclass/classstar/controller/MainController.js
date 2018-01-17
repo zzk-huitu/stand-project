@@ -41,7 +41,10 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
 				});
                 var store = baseGrid.getStore();
                 var proxy = store.getProxy();
-                proxy.extraParams.starLevel=record.get("itemCode");
+                proxy.extraParams={
+                    starLevel:record.get("itemCode"),
+                };
+               // proxy.extraParams.starLevel=record.get("itemCode");
                 store.load(); 
 
                 return false;

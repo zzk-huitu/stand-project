@@ -47,9 +47,13 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
                     roomLeaf="1";
                 else
                     roomLeaf="0"
-
-                proxy.extraParams.roomId=roomId;
-                proxy.extraParams.roomLeaf=roomLeaf;
+                
+                proxy.extraParams={
+                    roomId:roomId,
+                    roomLeaf:roomLeaf
+                };
+               /* proxy.extraParams.roomId=roomId;
+                proxy.extraParams.roomLeaf=roomLeaf;*/
 
                 store.loadPage(1); 
                 return false;

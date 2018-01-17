@@ -61,7 +61,10 @@ Ext.define("core.basedevice.smartdevice.view.RoominfoTree", {
             var mianGrid = mainLayout.down("panel[xtype=basedevice.smartdevice.maingrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams.roomId=roomId;
+            proxy.extraParams={
+                roomId:roomId,
+            };
+           // proxy.extraParams.roomId=roomId;
             store.loadPage(1); // 给form赋值
             return false;
         	

@@ -41,7 +41,10 @@ Ext.define("core.wisdomclass.redflag.controller.MainController", {
                 });
                 var store = baseGrid.getStore();
                 var proxy = store.getProxy();
-                proxy.extraParams.redflagType=record.get("itemCode");
+                proxy.extraParams={
+                    redflagType:record.get("itemCode"),
+                };
+                //proxy.extraParams.redflagType=record.get("itemCode");
                 store.load(); 
 
                 return false;

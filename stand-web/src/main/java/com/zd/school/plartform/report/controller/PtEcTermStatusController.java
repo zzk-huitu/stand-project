@@ -301,7 +301,8 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		sql.append("'" + 1 + "',");
 		sql.append("'" + 20 + "'");
 		ecTermStatusList = thisService.queryMapBySql(sql.toString());
-
+		int count=Integer.parseInt(ecTermStatusList.get(ecTermStatusList.size()-1).get("rownum").toString());
+		ecTermStatusList.remove(ecTermStatusList.size()-1);
 		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
 		
 		Map<String, String> ecTermStatusMap = null;
