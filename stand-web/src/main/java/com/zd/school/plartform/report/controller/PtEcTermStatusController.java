@@ -297,7 +297,6 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 			sql1+=" and b.statusDate<='"+statusDateEnd+"'";
 		}
 		StringBuffer sql = new StringBuffer("EXEC PT_EC_TERMSTATUS_INFO ");
-		Integer pageIndex=Integer.parseInt(request.getParameter("page"));;	//page
 		sql.append("'" + sql1.replace("'", "''") + "',");
 		sql.append("'" + 1 + "',");
 		sql.append("'" + 20 + "'");
