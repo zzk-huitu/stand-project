@@ -40,7 +40,7 @@ Ext.define("core.reportcenter.ptmjopendoor.view.MainLayout", {
 	items: [ {
 		xtype: "reportcenter.ptmjopendoor.roominfotree",		
         region: "west",
-        width:200,
+        width:250,
         split:true,
         //margin:'0 5 0 0'
 	},{

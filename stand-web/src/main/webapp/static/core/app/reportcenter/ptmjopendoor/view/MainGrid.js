@@ -49,9 +49,6 @@ Ext.define("core.reportcenter.ptmjopendoor.view.MainGrid", {
         }]
     },
     defSort: [{
-        property: 'updateTime',
-        direction: 'DESC'
-    },{
         property: 'openDate',
         direction: 'DESC'
     }],
