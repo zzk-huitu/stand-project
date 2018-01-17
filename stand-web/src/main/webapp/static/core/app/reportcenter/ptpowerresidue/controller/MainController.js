@@ -65,11 +65,19 @@ Ext.define("core.reportcenter.ptpowerresidue.controller.MainController", {
             var basepanel = baseGrid.up('basepanel');
             var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptpowerresidue.roominfotree]");
             var records = roominfotreegrid.getSelectionModel().getSelection();
+            var roomId="";
             if(records.length>0){
-              var roomId = records[0].get('id');
-          }
+              if(records[0].get("id")!="2851655E-3390-4B80-B00C-52C7CA62CB39"){
+                roomId = records[0].get("id");
+            }
+            var roomLeaf=records[0].get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0"
+            }
 
-          var title = "确定要导出电控使用状态吗？";
+          var title = "确定要导出剩余电量吗？";
           Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
                 Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
@@ -78,7 +86,7 @@ Ext.define("core.reportcenter.ptpowerresidue.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtPowerResidue/doExportExcel?roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtPowerResidue/doExportExcel?roomId='+roomId+'&roomLeaf='+roomLeaf+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

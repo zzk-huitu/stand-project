@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,14 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.zd.core.security.MyExceptionHandler;
+import  com.zd.core.util.JsonBuilder;
+import com.zd.core.annotation.Auth;
+import com.zd.core.constant.Constant;
+import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DBContextHolder;
+import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtEcTermStatus;
+import com.zd.school.control.device.model.PtMjOpenDoor;
 import com.zd.school.control.device.model.PtPowerResidue;
 import com.zd.school.control.device.model.PtRoomBags;
 import com.zd.school.control.device.model.PtTerm;
@@ -33,12 +36,11 @@ import com.zd.school.plartform.basedevice.service.PtTermBagsService;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
-import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysUserService;
 
 @Controller
 @RequestMapping("/PtPowerResidue")
-public class PtPowerResidueController {
+public class PtPowerResidueController extends FrameWorkController<PtPowerResidue> {
 
 	private static Logger logger = Logger.getLogger(PtPowerResidueController.class);
 
@@ -147,5 +149,72 @@ public class PtPowerResidueController {
 
 		return returnlist;
 	}
+	@Auth("PtPowerResidue_export")
+	@RequestMapping("/doExportExcel")
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+	InvocationTargetException{
+		request.getSession().setAttribute("exportPowerResidueIsEnd", "0");
+		request.getSession().removeAttribute("exporPowerResidueIsState");
+	    String roomId = request.getParameter("roomId");
+	   
 
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15, 20, 20};
+		List<PtPowerResidue> list =  list(request,response);
+
+		List<Map<String, String>> powerResidueExpList = new ArrayList<>();
+		
+		Map<String, String> powerResidueMap = null;
+		int i = 1;
+		for (PtPowerResidue entity : list) {
+			powerResidueMap = new LinkedHashMap<>();
+			powerResidueMap.put("xh",i+"");
+			powerResidueMap.put("roomName", entity.getRoomName());
+			powerResidueMap.put("powerResidue", entity.getPowerResidue());
+			powerResidueMap.put("cardResidue1", entity.getCardResidue1());
+			powerResidueMap.put("cardResidue2", entity.getCardResidue2());
+			powerResidueMap.put("cardResidue3", entity.getCardResidue3());
+			powerResidueMap.put("cardResidue4", entity.getCardResidue4());
+			powerResidueMap.put("cardResidue5", entity.getCardResidue5());
+			powerResidueMap.put("cardResidue6", entity.getCardResidue6());
+            i++;
+            powerResidueExpList.add(powerResidueMap);
+		}
+
+		Map<String, Object> courseAllMap = new LinkedHashMap<>();
+		courseAllMap.put("data", powerResidueExpList);
+		courseAllMap.put("title", null);
+		courseAllMap.put("head", new String[] {"序号","宿舍名称","剩余电量","宿舍人员1卡余", "宿舍人员2卡余", "宿舍人员3卡余","宿舍人员4卡余","宿舍人员5卡余","宿舍人员6卡余",}); // 规定名字相同的，设定为合并
+		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0, 0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
+		allList.add(courseAllMap);
+
+		// 在导出方法中进行解析
+		boolean result = PoiExportExcel.exportExcel(response, "剩余电量", "剩余电量", allList);
+		if (result == true) {
+			request.getSession().setAttribute("exportPowerResidueIsEnd", "1");
+		} else {
+			request.getSession().setAttribute("exportPowerResidueIsEnd", "0");
+			request.getSession().setAttribute("exporPowerResidueIsState", "0");
+		}
+
+	}
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportPowerResidueIsEnd");
+		Object state = request.getSession().getAttribute("exporPowerResidueIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
 }
