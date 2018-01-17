@@ -76,49 +76,52 @@ Ext.define("core.reportcenter.ptmjopendoor.view.MainGrid", {
             xtype: "textfield"
         },
         flex:1,
-        minWidth:120
+        minWidth:100
     }, {
         text: "设备名称",
         dataIndex: "termName",
         field: {
             xtype: "textfield"
         },
-        width:120
+        flex:1,
+        minWidth:100
     }, {
         text: "开门人员姓名",
         dataIndex: "userName",
         field: {
             xtype: "textfield"
         },
-        width:120
+        flex:1,
+        minWidth:100
     }, {
         text: "开门时间",
         dataIndex: "openDate",
         field: {
             xtype: "textfield"
         },
-        width:150
+        width:140
     }, {
         text: "房间所在区域",
         dataIndex: "roomArea",
         field: {
             xtype: "textfield"
         },
-        width:120
+        flex:2,
+        minWidth:200
     }, {
         text: "进出标识",
         dataIndex: "inoutType",
         field: {
             xtype: "textfield"
         },
-        width:120
+        width:80
     }, {
         text: "开门类型",
         dataIndex: "openType",
         field: {
             xtype: "textfield"
         },
-        width:120
+        width:100
     }]
     }
 });

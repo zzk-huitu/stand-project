@@ -1,10 +1,11 @@
 Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.ptsktermstatus.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
+    dataUrl: comm.get('baseUrl') + "/BaseMjUserright/treelist",
     model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
+    multiSelect:false,
     selModel: {
         //mode : 'single',
     },
@@ -50,17 +51,4 @@ Ext.define("core.reportcenter.ptsktermstatus.view.RoomInfoTree", {
             hidden:true
         }]
     },
-/*    listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
-            var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
-            var store = storeyGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                roomId:record.get('id')
-            };
-            store.load(); // 给form赋值
-            return false;
-        }
-    }*/
 })

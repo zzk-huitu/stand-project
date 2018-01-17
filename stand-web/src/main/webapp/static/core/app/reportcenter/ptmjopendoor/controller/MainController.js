@@ -39,6 +39,9 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
                 mainLayout.funData.roomId=record.get("id");
 
                 var storeGrid = mainLayout.down("panel[xtype=reportcenter.ptmjopendoor.maingrid]");
+                var store = storeGrid.getStore();
+                var proxy = store.getProxy();
+
                 //获取右边筛选框中的条件数据
                 var filter=self.getFastSearchFilter(storeGrid);       
                 if(filter.length==0)
@@ -53,9 +56,7 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
                     roomLeaf="1";
                 else
                     roomLeaf="0";
-
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
+                
                 //附带参赛
                 proxy.extraParams={
                     roomId:roomId,
@@ -67,6 +68,10 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
            }
         },
         "basegrid[xtype=reportcenter.ptmjopendoor.maingrid] button[ref=gridExport]": {
+            /*
+                目前的导出原则，界面上面筛选的什么条件，就查询出什么条件
+                不分页，一次性导出符合条件的数据
+            */
             beforeclick: function(btn) {
                 this.doExport(btn);
                 return false;
@@ -91,7 +96,6 @@ Ext.define("core.reportcenter.ptmjopendoor.controller.MainController", {
         }
            
     },
-
     doExport:function(btn){
         var self = this;
         var baseGrid = btn.up("basegrid[xtype=reportcenter.ptmjopendoor.maingrid]");

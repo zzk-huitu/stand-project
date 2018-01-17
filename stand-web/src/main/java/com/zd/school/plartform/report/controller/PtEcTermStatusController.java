@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -54,59 +57,39 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
-		if (roomId == null) {
-			roomId = "";
-		}
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		String areaIds = "";
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-			areaIds = sb.substring(0, sb.length() - 1);
-
-			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
-					+ areaIds.replace(",", "','") + "')";
-			List<String> roomLists = thisService.queryEntityByHql(hql);
-			sb.setLength(0);
-			for (int i = 0; i < roomLists.size(); i++) {
-				sb.append(roomLists.get(i) + ",");
-			}
-			// 房间id
-			if (sb.length() > 0) {
-				if (filter != null) {
+		String roomLeaf = request.getParameter("roomLeaf");
+		
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
 					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
-							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}" + "]";
-				} else {
-					filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
-							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}]";
-				}
-			} else {// 区域下没有房间
-				if (filter != null) {
-					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}" + "]";
 				} else {
 					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}]";
 				}
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId, roomLeaf);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-		} else {// 传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
-			if (filter != null) {
-				if (roomId != null) {
-					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
-							+ "\",\"field\":\"roomId\"}" + "]";
-				}
-			} else {
-				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
-						+ "\",\"field\":\"roomId\"}]";
-			}
-
 		}
 
 		QueryResult<PtEcTermStatus> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
@@ -136,38 +119,27 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		String roomId = request.getParameter("roomId");
 		String roomLeaf = request.getParameter("roomLeaf");
 		
-		if (StringUtils.isNotEmpty(roomId)) {
-			if("1".equals(roomLeaf)){	//当选择的区域为房间时
-				
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
 				querySql+=" and b.room_id = '"+roomId + "'";
 				
-			}else{		//当选择的区域不为房间时
-				String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-						+ roomId + "%'";
-				List<String> lists = thisService.queryEntityByHql(hql);
-				StringBuffer sb = new StringBuffer();
-				String areaIds = "";
-				for (int i = 0; i < lists.size(); i++) {
-					sb.append(lists.get(i) + ",");
-				}
-				if (sb.length() > 0) {
-					areaIds = sb.substring(0, sb.length() - 1);
-	
-					hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
-							+ areaIds.replace(",", "','") + "')";
-					List<String> roomLists = thisService.queryEntityByHql(hql);
-					sb.setLength(0);
-					for (int i = 0; i < roomLists.size(); i++) {
-						sb.append(roomLists.get(i) + ",");
-					}
-					if(sb.length() > 0){
-						String roomIds = sb.substring(0, sb.length() - 1);
-						querySql+=" and b.room_id in ('"+ roomIds.replace(",", "','") + "')";
-					}					
-				}
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId, roomLeaf);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));	
+
+					querySql+=" and b.room_id in ("+ roomIds + ")";
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-			
 		}
+		
 		
 		// hql语句
 		StringBuffer sql = new StringBuffer("EXEC PT_EC_TERMSTATUS_INFO ");
@@ -182,12 +154,14 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
+	
 	@Auth("PtEcTermStatus_export")
 	@RequestMapping("/doExportExcel")
 	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
 		request.getSession().removeAttribute("exporEcTermStatusIsState");
 	    String roomId = request.getParameter("roomId");
+	    String roomLeaf = request.getParameter("roomLeaf");
 	    String statusDateStart = request.getParameter("statusDateStart");
 	    String statusDateEnd = request.getParameter("statusDateEnd");
 	    
@@ -197,23 +171,24 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,15, 15, 20, 20};
 		List<PtEcTermStatus> ecTermStatusList = null;
 		String hql = " from PtEcTermStatus a where a.isDelete=0 ";
-		if (StringUtils.isNotEmpty(roomId)) {
-			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
-					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
-			List<String> roomLists = thisService.queryEntityByHql(roomHql);
-			if (roomLists.size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < roomLists.size(); i++) {
-					sb.append(roomLists.get(i) + ",");
-				}
-				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
-			} else {
-				hql += " and a.roomId ='" + roomId + "' ";
+		
+		//组装房间id参数
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				hql += " and a.roomId='"+roomId+"'";
+				
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId, roomLeaf);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));				
+					hql += " and a.roomId in (" + roomIds + ") ";
+				} else {
+					hql += " and 1=2 ";						//区域之下没有房间，则显示空数据
+				}					
 			}
-
-		} else {
-			hql = " select a from PtEcTermStatus a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
 		}
+		
 		if (StringUtils.isNotEmpty(statusDateStart)) {
 			hql+=" and a.statusDate>='"+statusDateStart+"'";
 		}
@@ -223,7 +198,6 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		ecTermStatusList = thisService.queryByHql(hql);
 
 		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
-		
 		Map<String, String> ecTermStatusMap = null;
 		int i = 1;
 		for (PtEcTermStatus ecTermStatus : ecTermStatusList) {
@@ -260,14 +234,32 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 			request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
 			request.getSession().setAttribute("exporEcTermStatusIsState", "0");
 		}
-
 	}
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Object isEnd = request.getSession().getAttribute("exportEcTermStatusIsEnd");
+		Object state = request.getSession().getAttribute("exporEcTermStatusIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
+	
 	@Auth("ELEC_COUNT_export")
-	@RequestMapping("/doEcExportExcel")
-	public void doEcExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
-		request.getSession().removeAttribute("exporEcTermStatusIsState");
+	@RequestMapping("/doEcCountExportExcel")
+	public void doEcCountExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().setAttribute("exportEcTermCountIsEnd", "0");
+		request.getSession().removeAttribute("exporEcTermCountIsState");
 	    String roomId = request.getParameter("roomId");
+	    String roomLeaf = request.getParameter("roomLeaf");
 	    String statusDateStart = request.getParameter("statusDateStart");
 	    String statusDateEnd = request.getParameter("statusDateEnd");
 	  
@@ -275,21 +267,25 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		Integer[] columnWidth = new Integer[] { 15, 15, 20, 20,15,15,15,20,20};
 		List<Map<String,Object>> ecTermStatusList = null;
 		String sql1 = "";
-		if (StringUtils.isNotEmpty(roomId)) {
-			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
-					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
-			List<String> roomLists = thisService.queryEntityByHql(roomHql);
-			if (roomLists.size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < roomLists.size(); i++) {
-					sb.append(roomLists.get(i) + ",");
-				}
-				sql1 += " and b.room_id in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
-			} else {
+		
+		//组装房间id参数
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
 				sql1 += " and b.room_id ='" + roomId + "' ";
+				
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId, roomLeaf);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));	
+					sql1 += " and b.room_id in (" + roomIds + ") ";
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据				
+					sql1 += " and 1=2 ";
+				}				
 			}
-
 		}
+			
 		if (StringUtils.isNotEmpty(statusDateStart)) {
 			sql1+=" and b.statusDate>='"+statusDateStart+"'";
 		}
@@ -301,10 +297,10 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		sql.append("'" + 1 + "',");
 		sql.append("'" + 20 + "'");
 		ecTermStatusList = thisService.queryMapBySql(sql.toString());
-		int count=Integer.parseInt(ecTermStatusList.get(ecTermStatusList.size()-1).get("rownum").toString());
+		//int count=Integer.parseInt(ecTermStatusList.get(ecTermStatusList.size()-1).get("rownum").toString());
 		ecTermStatusList.remove(ecTermStatusList.size()-1);
-		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
 		
+		List<Map<String, String>> ecTermStatusExpList = new ArrayList<>();
 		Map<String, String> ecTermStatusMap = null;
 		int i = 1;
 		for (Map map : ecTermStatusList) {
@@ -334,18 +330,18 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		// 在导出方法中进行解析
 		boolean result = PoiExportExcel.exportExcel(response, "用电统计状态", "用电统计状态", allList);
 		if (result == true) {
-			request.getSession().setAttribute("exportEcTermStatusIsEnd", "1");
+			request.getSession().setAttribute("exportEcTermCountIsEnd", "1");
 		} else {
-			request.getSession().setAttribute("exportEcTermStatusIsEnd", "0");
-			request.getSession().setAttribute("exporEcTermStatusIsState", "0");
+			request.getSession().setAttribute("exportEcTermCountIsEnd", "0");
+			request.getSession().setAttribute("exporEcTermCountIsState", "0");
 		}
 
 	}
-	@RequestMapping("/checkExportEnd")
-	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping("/checkEcCountExportEnd")
+	public void checkEcCountExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		Object isEnd = request.getSession().getAttribute("exportEcTermStatusIsEnd");
-		Object state = request.getSession().getAttribute("exporEcTermStatusIsState");
+		Object isEnd = request.getSession().getAttribute("exportEcTermCountIsEnd");
+		Object state = request.getSession().getAttribute("exporEcTermCountIsState");
 		if (isEnd != null) {
 			if ("1".equals(isEnd.toString())) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
@@ -357,5 +353,28 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		} else {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
+	}
+	
+	/**
+	 * 获取某个区域下的所有房间数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getRoomIds(String roomId, String roomLeaf) {
+		List<String> result = new ArrayList<>();
+
+		// 当选择的区域不为房间时
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ roomId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		if (lists.size() > 0) {
+			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.areaId in (" + areaIds + ")";
+			result = thisService.queryEntityByHql(hql);
+		}
+
+		return result;
 	}
 }

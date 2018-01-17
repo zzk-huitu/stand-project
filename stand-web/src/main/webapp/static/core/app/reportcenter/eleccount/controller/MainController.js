@@ -28,33 +28,39 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
             }
         },
         "basetreegrid[xtype=reportcenter.eleccount.roominfotree]": {
+            /*
+                当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                1. 附带树节点的相关参数
+                2. 当存在basegrid的默认参数，则附带上去
+                3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+            */
             itemclick: function(tree, record, item, index, e, eOpts) {
                 var self = this;
                 var mainLayout = tree.up("panel[xtype=reportcenter.eleccount.mainlayout]");
                 mainLayout.funData.roomId=record.get("id");
 
-                var storeyGrid = mainLayout.down("panel[xtype=reportcenter.eleccount.maingrid]");
-                var store = storeyGrid.getStore();
+                var storeGrid = mainLayout.down("panel[xtype=reportcenter.eleccount.maingrid]");
+                var store = storeGrid.getStore();
                 var proxy = store.getProxy();
 
-                var roomId="";
-                if( record.get("id")!="2851655E-3390-4B80-B00C-52C7CA62CB39"){
-                    roomId = record.get("id");
-                }
+                //获取右边筛选框中的条件数据
+                var querySql=self.getFastSearchFilter(storeGrid);            
 
+                //获取点击树节点的参数            
+                var roomId= record.get("id");
                 var roomLeaf=record.get("leaf");
                 if(roomLeaf==true)
                     roomLeaf="1";
                 else
-                    roomLeaf="0"
+                    roomLeaf="0";
 
+                //附带参赛
                 proxy.extraParams={
                     roomId:roomId,
-                    roomLeaf:roomLeaf
-                };
-               /* proxy.extraParams.roomId=roomId;
-                proxy.extraParams.roomLeaf=roomLeaf;*/
-
+                    roomLeaf:roomLeaf,
+                    querySql:querySql
+                }
                 store.loadPage(1); 
                 return false;
            }
@@ -91,20 +97,24 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
         var roominfotreegrid = mainlayout.down("basetreegrid[xtype=reportcenter.eleccount.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
         var roomId ="";
-        if(records.length!=1){
-            self.msgbox("请选择一个房间！");
-            return;
-        }else{
-             roomId = records[0].get('id');
+        var roomLeaf ="";
+        if(records.length>0){
+            roomId = records[0].get('id');
+            roomLeaf = records[0].get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
         }
+
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var statusDateStart= "";
         var statusDateEnd = "";
-        if(girdSearchTexts[0].getValue()!=null){
+        if(girdSearchTexts[0].getValue()){
             statusDateStart = girdSearchTexts[0].getValue();
         }
-        if(girdSearchTexts[1].getValue()!=null){
+        if(girdSearchTexts[1].getValue()){
             statusDateEnd = girdSearchTexts[1].getValue();
         }
   
@@ -113,17 +123,19 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
             if (btn == "yes") {
                 Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
             var component = Ext.create('Ext.Component', {
-                title: 'HelloWorld',
+                title: null,
                 width: 0,
                 height: 0,
                 hidden: true,
-                html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doEcExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
+                html: '<iframe src="' + comm.get('baseUrl') + '/PtEcTermStatus/doEcCountExportExcel?'+
+                    'roomId='+roomId+'&roomLeaf='+roomLeaf+
+                    '&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                 renderTo: Ext.getBody()
             });
 
             var time = function () {
                 self.syncAjax({
-                    url: comm.get('baseUrl') + '/PtEcTermStatus/checkExportEnd',
+                    url: comm.get('baseUrl') + '/PtEcTermStatus/checkEcCountExportEnd',
                     timeout: 1000 * 60 * 30,      
                     success: function (response) {
                         data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
@@ -159,32 +171,29 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
     },
     queryFastSearchForm:function(btn){
         var self = this;
-        var basepanel = btn.up("basepanel");
-        var roominfotree = basepanel.down("basetreegrid");
-        var recs = roominfotree.getSelectionModel().getSelection();
-        if(recs.length!=1){
-            self.msgbox("请选择一个房间！");
-            return false;
-        }
 
         var baseGrid = btn.up("basegrid");
-        var toolBar = btn.up("toolbar");
-        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
+        var toolBar = btn.up("toolbar");    
 
-        var querySql="";
-       
-        if(girdSearchTexts[0].getValue()){
-            var value =girdSearchTexts[0].getValue();
-            querySql+=" and b.statusDate>='"+value+"'";
-        }
-        if(girdSearchTexts[1].getValue()){
-            var value =girdSearchTexts[1].getValue();
-            querySql+=" and b.statusDate<='"+value+"'";
-        }
-
+        var querySql=self.getFastSearchFilter(toolBar);
+        
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
         proxy.extraParams.querySql =  querySql ;
         store.loadPage(1);
     },
+
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var querySql="";
+        var value1 =girdSearchTexts[0].getValue();
+        var value2 =girdSearchTexts[1].getValue();
+        if(value1){    
+            querySql+=" and b.statusDate>='"+value1+"'";
+        }
+        if(value2){
+            querySql+=" and b.statusDate<='"+value2+"'";
+        }
+        return querySql;
+    }
 });

@@ -14,34 +14,60 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
-                 // 树刷新
+        // 树刷新
         "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
-                beforeclick: function(btn) {
+            beforeclick: function(btn) {
                 btn.up('basetreegrid').getStore().load();
                 var mainlayout = btn.up("basepanel[xtype=reportcenter.ptsktermstatus.mainlayout]");
                 var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptsktermstatus.maingrid]");
                 var store = mianGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
         "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]": {
+            /*
+                当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                1. 附带树节点的相关参数
+                2. 当存在basegrid的默认参数，则附带上去
+                3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+            */
             itemclick: function(tree, record, item, index, e, eOpts) {
                 var self = this;
                 var mainLayout = tree.up("panel[xtype=reportcenter.ptsktermstatus.mainlayout]");
                
-                var storeyGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
-                var store = storeyGrid.getStore();
+                var storeGrid = mainLayout.down("panel[xtype=reportcenter.ptsktermstatus.maingrid]");
+                var store = storeGrid.getStore();
                 var proxy = store.getProxy();
+
+                 //获取右边筛选框中的条件数据
+                var filter=self.getFastSearchFilter(storeGrid);       
+                if(filter.length==0)
+                    filter=null;
+                else
+                    filter = JSON.stringify(filter);
+
+                //获取点击树节点的参数
+                var roomId= record.get("id");
+                var roomLeaf=record.get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0";
+
+                //附带参赛
                 proxy.extraParams={
-                    roomId:record.get("id"),
-                };
-               // proxy.extraParams.roomId=record.get("id");
+                    roomId:roomId,
+                    roomLeaf:roomLeaf,
+                    filter:filter
+                }
                 store.loadPage(1); 
                 return false;
             }
-       },
+        },
 
         //快速搜索按按钮
         "basepanel basegrid button[ref=gridFastSearchBtn]": {
@@ -78,31 +104,41 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
         var roomId ="";
+        var roomLeaf ="";
         if(records.length>0){
-           roomId = records[0].get('id');
+            roomId = records[0].get('id');
+            roomLeaf = records[0].get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
         }
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var statusDateStart= "";
         var statusDateEnd = "";
-        if(girdSearchTexts[0].getValue()!=null){
+        if(girdSearchTexts[0].getValue()){
             statusDateStart = girdSearchTexts[0].getValue();
         }
-        if(girdSearchTexts[1].getValue()!=null){
+        if(girdSearchTexts[1].getValue()){
             statusDateEnd = girdSearchTexts[1].getValue();
         }
+
         var title = "确定要导出水控使用状态吗？";
         Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
                 Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
                 var component = Ext.create('Ext.Component', {
-                    title: 'HelloWorld',
+                    title: null,
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?roomId='+roomId+'&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/PtSkTermStatus/doExportExcel?'+
+                        'roomId='+roomId+'&roomLeaf='+roomLeaf+
+                        '&statusDateStart='+statusDateStart+'&statusDateEnd='+statusDateEnd+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
+
 
                 var time = function () {
                     self.syncAjax({
@@ -144,33 +180,14 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
     queryFastSearchForm:function(btn){
 
         var self = this;
-        var basepanel = btn.up("basepanel");
-        var roominfotree = basepanel.down("basetreegrid");
-        var recs = roominfotree.getSelectionModel().getSelection();
-        if(recs.length<=0){
-            self.msgbox("至少选择一个房间。");
-            return false;
-        }
+       
         var baseGrid = btn.up("basegrid");
         var toolBar = btn.up("toolbar");
-        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
-        var filter=new Array();
 
+        var filter=self.getFastSearchFilter(toolBar);
 
-        if(girdSearchTexts[0].getValue()){
-
-            var value =girdSearchTexts[0].getValue();
-            filter.push({"type": "date", "value": value, "field": "statusDate", "comparison": ">="})
-
-        }
-
-        if(girdSearchTexts[1].getValue()){
-            var value =girdSearchTexts[1].getValue();
-            filter.push({'type': 'date', 'value': value, 'field': 'statusDate', 'comparison': '<='})
-        }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-
         if(filter.length==0)
             delete proxy.extraParams.filter;
         else
@@ -179,5 +196,17 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
         store.loadPage(1);
 
     },
+
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "date", "value": girdSearchTexts[0].getValue(), "field": "statusDate", "comparison": ">="})
+        }
+        if(girdSearchTexts[1].getValue()){
+            filter.push({"type": "date", "value": girdSearchTexts[1].getValue(), "field": "statusDate", "comparison": "<="})
+        }
+        return filter;
+    }
 
 });

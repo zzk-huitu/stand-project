@@ -1,10 +1,11 @@
 Ext.define("core.reportcenter.watercount.view.RoomInfoTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.reportcenter.watercount.roominfotree",
-    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
+    dataUrl: comm.get('baseUrl') + "/BaseMjUserright/treelist",
     model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
+    multiSelect:false,
     selModel: {
         //mode : 'single',
    },
