@@ -2,7 +2,7 @@ Ext.define("core.reportcenter.eleccount.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.reportcenter.eleccount.maingrid",
     dataUrl: comm.get('baseUrl') + "/PtEcTermStatus/listCount",
-    model: "com.zd.school.control.device.model.PtEcTermStatusDk",
+    model: "com.zd.school.control.device.model.PtEcTermStatus",
     menuCode:"ELEC_COUNT",
     al: false,
     remoteSort:false,

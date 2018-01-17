@@ -17,9 +17,13 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
          // 树刷新
         "basetreegrid[xtype=reportcenter.watercount.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
-                var baseGrid = btn.up("panel[xtype=reportcenter.watercount.roominfotree]");
-                var store = baseGrid.getStore();
-                store.load(); // 刷新父窗体的grid
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.watercount.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.watercount.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },

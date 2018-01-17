@@ -17,9 +17,13 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
         // 树刷新
         "basetreegrid[xtype=reportcenter.eleccount.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
-                var baseGrid = btn.up("panel[xtype=reportcenter.eleccount.roominfotree]");
-                var store = baseGrid.getStore();
-                store.load(); // 刷新父窗体的grid
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.eleccount.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.eleccount.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
@@ -80,12 +84,15 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid[xtype=reportcenter.eleccount.maingrid]");
         var mainlayout = baseGrid.up('basepanel');
-        var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.eleccount.roominfotree]");
+        var roominfotreegrid = mainlayout.down("basetreegrid[xtype=reportcenter.eleccount.roominfotree]");
         var records = roominfotreegrid.getSelectionModel().getSelection();
         var roomId ="";
-        if(records.length>0){
-           roomId = records[0].get('id');
-       }
+        if(records.length!=1){
+            self.msgbox("请选择一个房间！");
+            return;
+        }else{
+             roomId = records[0].get('id');
+        }
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var statusDateStart= "";

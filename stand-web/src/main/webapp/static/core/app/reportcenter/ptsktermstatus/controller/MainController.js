@@ -17,9 +17,12 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                  // 树刷新
         "basetreegrid[xtype=reportcenter.ptsktermstatus.roominfotree] button[ref=gridRefresh]": {
                 beforeclick: function(btn) {
-                var baseGrid = btn.up("panel[xtype=reportcenter.ptsktermstatus.roominfotree]");
-                var store = baseGrid.getStore();
-                store.load(); // 刷新父窗体的grid
+                btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.ptsktermstatus.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptsktermstatus.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
                 return false;
             }
         },

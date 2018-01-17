@@ -2,7 +2,6 @@ package com.zd.school.plartform.report.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,13 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtIrRoomDevice;
 import com.zd.school.control.device.model.PtSkTermStatus;
 import com.zd.school.plartform.basedevice.service.PtSkTermStatusService;
 import com.zd.school.plartform.comm.service.CommTreeService;

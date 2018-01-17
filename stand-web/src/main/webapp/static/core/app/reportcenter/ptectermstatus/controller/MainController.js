@@ -16,10 +16,13 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
     control: {
         "basetreegrid[xtype=reportcenter.ptectermstatus.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
-                var baseGrid = btn.up("panel[xtype=reportcenter.ptectermstatus.roominfotree]");
-                var store = baseGrid.getStore();
-                    store.load(); // 刷新父窗体的grid
-                    return false;
+                 btn.up('basetreegrid').getStore().load();
+                var mainlayout = btn.up("basepanel[xtype=reportcenter.ptectermstatus.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptectermstatus.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                return false;
                 }
             },
             "basetreegrid[xtype=reportcenter.ptectermstatus.roominfotree]": {
