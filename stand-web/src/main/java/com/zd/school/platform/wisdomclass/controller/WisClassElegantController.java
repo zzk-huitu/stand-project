@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -60,33 +62,45 @@ public class WisClassElegantController extends FrameWorkController<EccClasselega
 		String strData = ""; // 返回给js的数据
 		String filter=request.getParameter("filter");;
 		String claiId = request.getParameter("claiId");
-		if(claiId==null){
-			claiId="";
-		}
-		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
-				+ claiId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-			if(filter!=null &&filter.length()>0){
-				filter = filter.substring(0, filter.length()-1);
-				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"claiId\"}"+"]";
-			}else{
-				   filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
-					+ "\",\"field\":\"claiId\"}]";
-			}
+		String claiIdLeaf = request.getParameter("claiIdLeaf");
+		
+		if (StringUtils.isNotEmpty(claiId) && !AdminType.ADMIN_ORG_ID.equals(claiId)) {
+			if ("1".equals(claiIdLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId
+							+ "\",\"field\":\"claiId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId
+							+ "\",\"field\":\"claiId\"}]";
+				}
+			} else {					// 当选择的区域不为房间时
+				// 当选择的区域不为房间时
+				List<String> claiIdList = new ArrayList<>();
+				String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
+						+ claiId + "%'";
+		    	claiIdList = thisService.queryEntityByHql(hql);
 			
-		} else {
-			if(filter!=null &&filter.length()>0){
-				filter = filter.substring(0, filter.length()-1);
-				filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ claiId+"\",\"field\":\"claiId\"}"+"]";
-			}else{
-				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId + "\",\"field\":\"claiId\"}]";
+				if(!claiIdList.isEmpty()){
+					String roomIds=claiIdList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"claiId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"claiId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-		}
+		}	
+
 		QueryResult<EccClasselegant> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据

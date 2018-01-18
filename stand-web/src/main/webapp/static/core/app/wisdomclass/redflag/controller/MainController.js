@@ -30,6 +30,7 @@ Ext.define("core.wisdomclass.redflag.controller.MainController", {
             },
 		"basegrid[xtype=wisdomclass.redflag.flagtypegrid]": {
 			beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                var self = this;
 				var filter = "[{'type':'string','comparison':'=','value':'" + record.get("itemCode") + "','field':'starLevel'}]";
 				var mainLayout = grid.up("panel[xtype=wisdomclass.redflag.mainlayout]");
 				var baseGrid = mainLayout.down("basegrid[xtype=wisdomclass.redflag.maingrid]");
@@ -39,12 +40,18 @@ Ext.define("core.wisdomclass.redflag.controller.MainController", {
                     redflagTypeName: record.get("itemName"),
                     filter: filter
                 });
+                    //获取右边筛选框中的条件数据
+                filter=self.getFastSearchFilter(baseGrid);       
+                if(filter.length==0)
+                    filter=null;
+                else
+                    filter = JSON.stringify(filter);
                 var store = baseGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams={
                     redflagType:record.get("itemCode"),
+                    filter:filter
                 };
-                //proxy.extraParams.redflagType=record.get("itemCode");
                 store.load(); 
 
                 return false;
@@ -315,7 +322,15 @@ Ext.define("core.wisdomclass.redflag.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);   
     },
-        queryHignSearchForm:function(component){
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "className", "comparison": ""})
+        }
+        return filter;
+    },
+    queryHignSearchForm:function(component){
         var self=this;
         var queryPanel = component.up("basequeryform");
         var querySql = self.getQuerySql(queryPanel);

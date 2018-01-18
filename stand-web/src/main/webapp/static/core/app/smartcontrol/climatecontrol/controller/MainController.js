@@ -23,10 +23,43 @@ Ext.define("core.smartcontrol.climatecontrol.controller.MainController", {
                 var store = mianGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
+      "basetreegrid[xtype=smartcontrol.climatecontrol.maintree]": {
+            itemclick: function(tree, record, item, index, e, eOpts) {
+                var self = this;
+                var mainLayout = tree.up("panel[xtype=smartcontrol.climatecontrol.mainlayout]");
+                var funData = mainLayout.funData;
+                mainLayout.funData = Ext.apply(funData, {
+                    roomId: record.get("id"),
+                    roomLevel: record.get("level")
+               });
+                var storeGrid = mainLayout.down("panel[xtype=smartcontrol.climatecontrol.maingrid]");
+                var store = storeGrid.getStore();
+                var proxy = store.getProxy();
 
+                //获取右边筛选框中的条件数据
+                var filter=self.getFastSearchFilter(storeGrid); 
+                filter.push({"type":"string","comparison":"","value":"空调","field":"deviceTypeName"});      
+                filter = JSON.stringify(filter);
+                //获取点击树节点的参数       
+                var roomId= record.get("id");
+                var roomLeaf=record.get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0";
+                proxy.extraParams = {
+                    roomId: roomId,
+                    roomLeaf:roomLeaf,
+                    filter :filter
+                };  
+                store.loadPage(1); 
+                return false;
+            }
+        },
 
         "basegrid button[ref=gridOpen]": {
             beforeclick: function(btn) {
@@ -123,6 +156,15 @@ Ext.define("core.smartcontrol.climatecontrol.controller.MainController", {
                 loading.hide();
             }
         });
+
+    },
+     getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "deviceTypeCode", "comparison": ""})
+        }
+        return filter;
 
     }
     

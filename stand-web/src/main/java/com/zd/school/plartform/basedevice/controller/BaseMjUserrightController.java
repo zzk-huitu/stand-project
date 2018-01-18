@@ -176,8 +176,9 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 		String sort = super.sort(request);
 		String querySql = querySql(request);
 		String orderSql = orderSql(request);
+		String querySql2 = request.getParameter("querySql2");//快速搜索框中的参数
 		String sql = " select  *  from PT_V_USERROOM  where 1=1 ";
-		sql = sql + querySql + orderSql;
+		sql = sql + querySql +querySql2+ orderSql;
 		QueryResult qResult = thisService.queryPageResultBySql(sql, super.start(request), super.limit(request),
 				ViewUserRoom.class);
 		// QueryResult qResult = thisService.getDao().getForValuesToSql(start,

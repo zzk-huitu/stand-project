@@ -33,6 +33,7 @@ import com.zd.school.build.define.model.BuildRoomarea;
 import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.jw.eduresources.model.JwClassteacher;
 import com.zd.school.jw.eduresources.model.JwGradeteacher;
+import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwClassteacherService;
 import com.zd.school.jw.eduresources.service.JwGradeteacherService;
 import com.zd.school.oa.notice.model.OaNotice;
@@ -113,11 +114,20 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 	public void list(@ModelAttribute OaNotice entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-		QueryResult<OaNotice> qResult = thisService.list(start, limit, sort, filter, true);
+		String filter = request.getParameter("filter");
+		String noticeType = request.getParameter("noticeType");
+		if (StringUtils.isNotEmpty(noticeType)) {
+			if (StringUtils.isNotEmpty(filter)) {
+				filter = filter.substring(0, filter.length() - 1);
+				filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + noticeType
+						+ "\",\"field\":\"noticeType\"}" + "]";
+			} else {
+				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + noticeType
+						+ "\",\"field\":\"noticeType\"}]";
+			}
+		}
+		QueryResult<OaNotice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

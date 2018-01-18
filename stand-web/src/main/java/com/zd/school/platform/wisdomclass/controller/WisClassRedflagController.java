@@ -41,7 +41,7 @@ public class WisClassRedflagController extends FrameWorkController<EccClassredfl
 		if (redflagType == null) {
 			redflagType = "";
 		}
-		if(filter!=null){
+		if(StringUtils.isNotEmpty(filter)){
 			filter = filter.substring(0, filter.length()-1);
 			filter+=",{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ redflagType+"\",\"field\":\"redflagType\"}"+"]";
 		}else{
