@@ -8,31 +8,33 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtIrRoomDeviceGrid", {
    // collapsible: true,
     noPagging: true,
     al:false,
+    remoteSort:false,
+    selModel:false,
  /*   tools: [{
       xtype: 'button',
       text: '查看所有设备',
       ref: 'gridfind',
       iconCls: 'x-fa fa-plus-circle',
   }],*/
-  panelTopBar:{
-    xtype:'toolbar',
-    items: [{
-        xtype: 'tbtext',
-        html: '红外设备',
-        style: {
-            fontSize: '16px',
-            color: '#C44444',
-            fontWeight:800,
-           // lineHeight:'30px',
-        }
-    },'->',{
+    panelTopBar:{
+        xtype:'toolbar',
+        items: [{
+            xtype: 'tbtext',
+            html: '红外设备',
+            style: {
+                fontSize: '16px',
+                color: '#C44444',
+                fontWeight:800,
+               // lineHeight:'30px',
+            }
+        },'->',{
             xtype: 'button',
             text: '查看所有设备',
             ref: 'gridfind',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle'
         }]
-},
+    },
     panelButtomBar:{},
     defSort:[],
     //title: "红外设备",
@@ -56,21 +58,23 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtIrRoomDeviceGrid", {
                 xtype: "textfield"
             },
             flex:1,
-            minWidth:120
+            minWidth:100
         }, {
             text: "型号名称",
             dataIndex: "deviceTypeCode",
             field: {
                 xtype: "textfield"
             },
-            width:120
+            flex:1,
+            minWidth:100
         }, {
             text: "备注",
             dataIndex: "notes",
             field: {
                 xtype: "textfield"
             },
-            width:120
+            flex:1,
+            minWidth:100
         }]
     },
 });

@@ -120,14 +120,16 @@ public class PtBagController extends FrameWorkController implements Constant {
 	@RequestMapping(value = { "/getUserRoomId" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public @ResponseBody BuildDormDefine getUserRoomId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		BuildDormDefine dormDefine= null;
 		String querySql = super.querySql(request);
 		String hql = "from DormStudentDorm where isDelete=0 ";
 		hql += querySql;
 		List<DormStudentDorm> studentDorms = studentdormService.queryByHql(hql);
-		DormStudentDorm studentDormfirst = studentDorms.get(0);
-		JwClassDormAllot classDormAllot = classDormAllotService.get(studentDormfirst.getCdormId());
-		BuildDormDefine dormDefine= dormDefineService.get(classDormAllot.getDormId());
+		if(studentDorms.size()!=0){
+			DormStudentDorm studentDormfirst = studentDorms.get(0);
+			JwClassDormAllot classDormAllot = classDormAllotService.get(studentDormfirst.getCdormId());
+			dormDefine= dormDefineService.get(classDormAllot.getDormId());
+		}
 		return dormDefine;
-	
 	}
 }
