@@ -40,7 +40,7 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 		if (starLevel == null) {
 			starLevel = "";
 		}
-		if(filter!=null){
+		if(StringUtils.isNotEmpty(filter)){
 			filter = filter.substring(0, filter.length()-1);
 			filter+=",{\"type\":\"string\",\"comparison\":\"\",\"value\":\""+ starLevel+"\",\"field\":\"starLevel\"}"+"]";
 		}else{
@@ -48,7 +48,7 @@ public class WisClassStarController extends FrameWorkController<EccClassstar> im
 		}
 		/*QueryResult<EccClassstar> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);*/
-		 QueryResult<EccClassstar> qResult = thisService.list(super.start(request), super.limit(request), super.sort(request), filter, whereSql, orderSql, currentUser);
+		QueryResult<EccClassstar> qResult = thisService.list(super.start(request), super.limit(request), super.sort(request), filter, whereSql, orderSql, currentUser);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}

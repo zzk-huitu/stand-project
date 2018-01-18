@@ -2,8 +2,10 @@ package com.zd.school.platform.wisdomclass.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.StringUtils;
 import com.zd.school.jw.eduresources.model.JwClassteacher;
 import com.zd.school.jw.eduresources.model.JwGradeteacher;
 import com.zd.school.jw.eduresources.model.JwTGradeclass;
@@ -53,39 +57,46 @@ public class WisTGradeClassController extends FrameWorkController<JwTGradeclass>
 	public void classmottolist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
-		;
 		String claiId = request.getParameter("claiId");
-		if (claiId == null) {
-			claiId = "";
-		}
-		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
-				+ claiId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-			if (filter != null && filter.length() > 0) {
-				filter = filter.substring(0, filter.length() - 1);
-				filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
-						+ "\",\"field\":\"uuid\"}" + "]";
-			} else {
-				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
-						+ "\",\"field\":\"uuid\"}]";
+		String claiIdLeaf = request.getParameter("claiIdLeaf");
+		
+		if (StringUtils.isNotEmpty(claiId) && !AdminType.ADMIN_ORG_ID.equals(claiId)) {
+			if ("1".equals(claiIdLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId
+							+ "\",\"field\":\"uuid\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId
+							+ "\",\"field\":\"uuid\"}]";
+				}
+			} else {					// 当选择的区域不为房间时
+				// 当选择的区域不为房间时
+				List<String> claiIdList = new ArrayList<>();
+				String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
+						+ claiId + "%'";
+		    	claiIdList = thisService.queryEntityByHql(hql);
+			
+				if(!claiIdList.isEmpty()){
+					String roomIds=claiIdList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"uuid\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"uuid\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-
-		} else {
-			if (filter != null && filter.length() > 0) {
-				filter = filter.substring(0, filter.length() - 1);
-				filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + claiId + "\",\"field\":\"uuid\"}"
-						+ "]";
-			} else {
-				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + claiId + "\",\"field\":\"uuid\"}]";
-			}
-
 		}
-		// String hql="from JwTGradeclass where uuid='"+claiId+"'";
+		
 		QueryResult<JwTGradeclass> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
@@ -155,6 +166,8 @@ public class WisTGradeClassController extends FrameWorkController<JwTGradeclass>
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
+	
+
 	/*
 	 * @RequestMapping("/doAdd") public void doadd(JwTGradeclass entity,
 	 * HttpServletRequest request, HttpServletResponse response) throws

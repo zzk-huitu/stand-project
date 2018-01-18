@@ -29,7 +29,15 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
                 }
             },
 		"basegrid[xtype=wisdomclass.classstar.starlevelgrid]": {
+              /*
+                当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                1. 附带树节点的相关参数
+                2. 当存在basegrid的默认参数，则附带上去
+                3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+            */
 			beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                var self = this;
 				var filter = "[{'type':'string','comparison':'=','value':'" + record.get("itemCode") + "','field':'starLevel'}]";
 				var mainLayout = grid.up("panel[xtype=wisdomclass.classstar.mainlayout]");
 				var baseGrid = mainLayout.down("basegrid[xtype=wisdomclass.classstar.maingrid]");
@@ -39,12 +47,18 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
 					starLevelName: record.get("itemName"),
 					filter: filter
 				});
+                  //获取右边筛选框中的条件数据
+                filter=self.getFastSearchFilter(baseGrid);       
+                if(filter.length==0)
+                    filter=null;
+                else
+                    filter = JSON.stringify(filter);
                 var store = baseGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams={
                     starLevel:record.get("itemCode"),
+                    filter:filter
                 };
-               // proxy.extraParams.starLevel=record.get("itemCode");
                 store.load(); 
 
                 return false;
@@ -314,6 +328,15 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);   
     },
+
+    getFastSearchFilter:function(cpt){
+        var filter=new Array();
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "className", "comparison": ""})
+        }
+        return filter;
+    },
     queryHignSearchForm:function(component){
         var self=this;
         var queryPanel = component.up("basequeryform");
@@ -329,7 +352,8 @@ Ext.define("core.wisdomclass.classstar.controller.MainController", {
         proxy.extraParams.whereSql = querySql;
         store.loadPage(1);
     },
-    resetHignSearchForm:function(component){
+
+  resetHignSearchForm:function(component){
         var self=this;
 
         var queryPanel=component.up("basequeryform");

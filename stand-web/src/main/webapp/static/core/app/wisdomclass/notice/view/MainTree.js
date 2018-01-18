@@ -34,33 +34,4 @@ Ext.define("core.wisdomclass.notice.view.MainTree", {
          }
     }],
 
-    listeners: {
-        itemclick: function(grid, record, item, index, e) {
-
-            var mainLayout = grid.up("panel[xtype=wisdomclass.notice.mainlayout]");
-            var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'noticeType'}]"
-            if(record.get("level")==1){
-                filter = "";
-            }
-
-            var funData = mainLayout.funData;
-            funData = Ext.apply(funData, {
-                noticeType: record.get("id"),
-                noticeTypeName: record.get("text"),
-                noticeLevel: record.get("level"),
-                filter: filter
-            });
-
-            //加载表格信息
-            var mainGrid = mainLayout.down("panel[xtype=wisdomclass.notice.maingrid]");
-            var store = mainGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                filter: filter,
-                noticeLevel: record.get("level"),
-            };
-            store.loadPage(1);
-
-        }
-    }
 });

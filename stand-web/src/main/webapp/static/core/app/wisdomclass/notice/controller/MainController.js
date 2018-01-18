@@ -35,7 +35,46 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
         //         }            
         //      }
         // },
+        "basetreegrid[xtype=wisdomclass.notice.maintree]": {
+            itemclick: function(grid, record, item, index, e, eOpts) {
+                var self = this;
+                var noticeType = "";
+                var mainLayout = grid.up("panel[xtype=wisdomclass.notice.mainlayout]");
+                var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'noticeType'}]"
+                if(record.get("level")==1){
+                    filter = "";
+                }
+                var mainGrid = mainLayout.down("panel[xtype=wisdomclass.notice.maingrid]");
+                var store = mainGrid.getStore();
+                var proxy = store.getProxy();
 
+                var funData = mainLayout.funData;
+                funData = Ext.apply(funData, {
+                    noticeType: record.get("id"),
+                    noticeTypeName: record.get("text"),
+                    noticeLevel: record.get("level"),
+                    filter: filter
+                });
+
+                 //获取右边筛选框中的条件数据
+                 filter=self.getFastSearchFilter(mainGrid);
+                 if(filter.length==0)
+                    filter=null;
+                else
+                    filter = JSON.stringify(filter);
+                if(record.get("level")!=1)
+                    noticeType = record.get("id");
+                  
+                //加载表格信息
+                proxy.extraParams = {
+                    filter: filter,
+                    noticeLevel: record.get("level"),
+                    noticeType: noticeType
+                };
+                store.loadPage(1);
+                return false;
+        }
+     },
     	/*可以直接使用公共方法*/
         "basegrid button[ref=gridAdd_Tab]": {
             beforeclick: function(btn) {
@@ -385,5 +424,13 @@ Ext.define("core.wisdomclass.notice.controller.MainController", {
             }
         });
        return false;
- 	}
+ 	},
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "noticeTitle", "comparison": ""})
+        }
+        return filter;
+    },
 });

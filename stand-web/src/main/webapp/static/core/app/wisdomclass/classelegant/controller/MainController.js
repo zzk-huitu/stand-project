@@ -26,7 +26,40 @@ Ext.define("core.wisdomclass.classelegant.controller.MainController", {
                 return false;
             }
         },
+       "basetreegrid[xtype=wisdomclass.classelegant.classtree]": {
+            itemclick: function(tree, record, item, index, e, eOpts) {
+                var self = this;
+                var mainLayout = tree.up("panel[xtype=wisdomclass.classelegant.mainlayout]");
+                mainLayout.funData.claiId=record.get("id");
 
+                var storeGrid = mainLayout.down("panel[xtype=wisdomclass.classelegant.maingrid]");
+                var store = storeGrid.getStore();
+                var proxy = store.getProxy();
+
+                //获取右边筛选框中的条件数据
+                var filter=self.getFastSearchFilter(storeGrid);       
+                if(filter.length==0)
+                    filter=null;
+                else
+                    filter = JSON.stringify(filter);
+                //获取点击树节点的参数            
+                var claiId= record.get("id");
+                var claiIdLeaf=record.get("leaf");
+                if(claiIdLeaf==true)
+                    claiIdLeaf="1";
+                else
+                    claiIdLeaf="0";
+
+                //附带参赛
+                proxy.extraParams={
+                    claiId: record.get("id"),
+                    claiIdLeaf:claiIdLeaf,
+                    filter:filter
+                }
+                store.loadPage(1); 
+                return false;
+            }
+        },
 
         "basegrid button[ref=gridAdd_Tab]": {
             beforeclick: function(btn) {
@@ -61,5 +94,14 @@ Ext.define("core.wisdomclass.classelegant.controller.MainController", {
         };
 
         return true;
+    },
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "title", "comparison": ""})
+        }
+        return filter;
+
     }
 });

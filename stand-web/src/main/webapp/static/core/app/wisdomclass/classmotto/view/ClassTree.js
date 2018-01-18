@@ -48,22 +48,4 @@ Ext.define("core.wisdomclass.classmotto.view.ClassTree", {
             hidden:true
         }]
     },
-    listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("panel[xtype=wisdomclass.classmotto.mainlayout]");
-            var funData = mainLayout.funData;
-            mainLayout.funData = Ext.apply(funData, {
-                claiId: record.get("id"),
-                claiLevel: record.get("level")
-            });
-            // 加载人员信息
-            var grid = mainLayout.down("panel[xtype=wisdomclass.classmotto.maingrid]");
-            var store = grid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                claiId: record.get("id"),
-            };
-            store.load(); // 给form赋值        
-        }
-    }
 });
