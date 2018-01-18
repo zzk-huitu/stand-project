@@ -115,14 +115,14 @@ Ext.define("core.reportcenter.taskdetail.view.MainGrid", {
             dataIndex: "executeresult",
             width:120,
             renderer:function(v){
-               return v==true?"<font color=red>成功</font>":"<font color=green>失败</font>"
+               return v==true?"<font color=green>成功</font>":"<font color=red>失败</font>"
            }
        },{
         text: "任务是否结束",
         dataIndex: "istaskover",
         width:120,
         renderer:function(v){
-           return v==true?"<font color=red>是</font>":"<font color=green>否</font>"
+           return v==true?"<font color=green>是</font>":"<font color=red>否</font>"
        }
     },{
         text: "结果消息",

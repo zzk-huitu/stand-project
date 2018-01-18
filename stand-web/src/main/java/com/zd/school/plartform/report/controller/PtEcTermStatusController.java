@@ -70,7 +70,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 							+ "\",\"field\":\"roomId\"}]";
 				}
 			} else {					// 当选择的区域不为房间时
-				List<String> roomList = getRoomIds(roomId, roomLeaf);
+				List<String> roomList = getRoomIds(roomId);
 					
 				if(!roomList.isEmpty()){
 					String roomIds=roomList.stream().collect(Collectors.joining(","));		
@@ -124,7 +124,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 				querySql+=" and b.room_id = '"+roomId + "'";
 				
 			} else {					// 当选择的区域不为房间时
-				List<String> roomList = getRoomIds(roomId, roomLeaf);
+				List<String> roomList = getRoomIds(roomId);
 					
 				if(!roomList.isEmpty()){
 					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));	
@@ -178,7 +178,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 				hql += " and a.roomId='"+roomId+"'";
 				
 			} else {					// 当选择的区域不为房间时
-				List<String> roomList = getRoomIds(roomId, roomLeaf);
+				List<String> roomList = getRoomIds(roomId);
 					
 				if(!roomList.isEmpty()){
 					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));				
@@ -274,7 +274,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 				sql1 += " and b.room_id ='" + roomId + "' ";
 				
 			} else {					// 当选择的区域不为房间时
-				List<String> roomList = getRoomIds(roomId, roomLeaf);
+				List<String> roomList = getRoomIds(roomId);
 					
 				if(!roomList.isEmpty()){
 					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));	
@@ -362,12 +362,12 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 	 * @param roomLeaf
 	 * @return
 	 */
-	private List<String> getRoomIds(String roomId, String roomLeaf) {
+	private List<String> getRoomIds(String areaId) {
 		List<String> result = new ArrayList<>();
 
 		// 当选择的区域不为房间时
 		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
+				+ areaId + "%'";
 		List<String> lists = thisService.queryEntityByHql(hql);
 		if (lists.size() > 0) {
 			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));

@@ -83,30 +83,30 @@ Ext.define("core.reportcenter.sbxx.view.MainGrid", {
         field: {
             xtype: "textfield"
         },
-        flex:2,
+        flex:1.5,
         minWidth:150
     },{
         text: "序列号",
         dataIndex: "termSN",
-        flex:1,
+        flex:1.2,
         minWidth:120         
     },{
         text: "房间名称",
         dataIndex: "roomName",
-        flex:1,
+        flex:1.5,
         minWidth:150
     },  {
         text: "网关名称",
         dataIndex: "gatewayName",
         flex:1,
-        minWidth:150
+        minWidth:100
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
         flex:1,
-        minWidth:150
+        minWidth:100
     }]
     }    
 });
