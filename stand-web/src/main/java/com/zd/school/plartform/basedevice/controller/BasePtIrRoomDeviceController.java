@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -100,61 +102,40 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
-		if (roomId == null) {
-			roomId = "";
-		}
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		String areaIds = "";
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-			areaIds = sb.substring(0, sb.length() - 1);
-
-			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0  and a.areaId in ('"
-					+ areaIds.replace(",", "','") + "')";
-			List<String> roomLists = thisService.queryEntityByHql(hql);
-			sb.setLength(0);
-			for (int i = 0; i < roomLists.size(); i++) {
-				sb.append(roomLists.get(i) + ",");
-			}
-			// 房间id
-			if (sb.length() > 0) {
-				if (filter != null) {
+		String roomLeaf = request.getParameter("roomLeaf");
+		
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
 					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
-							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}" + "]";
-				} else {
-					filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""
-							+ sb.substring(0, sb.length() - 1) + "\",\"field\":\"roomId\"}]";
-				}
-			} else {// 区域下没有房间
-				if (filter != null) {
-					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}" + "]";
 				} else {
 					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}]";
 				}
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-		} else {// 传进来的是房间id 或者 roomId为空时，即直接点击快速搜索查询
-			if (filter != null) {
-				if (roomId != null) {
-					filter = filter.substring(0, filter.length() - 1);
-					filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId
-							+ "\",\"field\":\"roomId\"}" + "]";
-				}
-			} else {
-				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
-						+ "\",\"field\":\"roomId\"}]";
-			}
-
 		}
-
 		QueryResult<PtIrRoomDevice> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
@@ -395,5 +376,26 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		}
 		return "失败";
 	}
+	/**
+	 * 获取某个区域下的所有房间数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getRoomIds(String areaId) {
+		List<String> result = new ArrayList<>();
 
+		// 当选择的区域不为房间时
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ areaId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		if (lists.size() > 0) {
+			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.areaId in (" + areaIds + ")";
+			result = thisService.queryEntityByHql(hql);
+		}
+
+		return result;
+	}
 }

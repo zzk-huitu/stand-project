@@ -23,21 +23,6 @@ Ext.define("core.smartcontrol.userauthority.view.DeptTree", {
     viewConfig: {
         stripeRows: false
     },
-/*
-    tools: [{
-        type: 'refresh',
-        qtip: '刷新',
-        handler: function(event, toolEl, header) {
-            var tree = header.ownerCt
-            tree.getStore().load();
-            tree.getSelectionModel().deselectAll(true);
-            var mainlayout = tree.up("basepanel[xtype=system.user.mainlayout]");
-            var mianGrid = mainlayout.down("basegrid[xtype=system.user.usergrid]");
-            var store = mianGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams.deptId="";
-         }
-    }],*/
      tbar:{
         xtype:'toolbar',
         items: [{
@@ -75,24 +60,4 @@ Ext.define("core.smartcontrol.userauthority.view.DeptTree", {
             hidden:true
         }]
     },
-    listeners: {
-        itemclick: function(grid, record, item, index, e) {
-            var mainLayout = grid.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
-            var funData = mainLayout.funData;
-            funData = Ext.apply(funData, {
-                deptId: record.get("id"),
-                /*isRight:record.get("isRight"),
-                deptType:record.get("deptType")*/
-            });
-            //加载人员信息
-            var userGrid = mainLayout.down("panel[xtype=smartcontrol.userauthority.usergrid]");
-            var store = userGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                deptId: record.get("id")
-            };
-            store.load();
-
-        }
-    }
 });

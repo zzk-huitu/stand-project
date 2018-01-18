@@ -12,10 +12,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
                 var grid=model.view;
                 var selectRow=model.getSelection();
                 var querySql1="";
-                var mainlayout = grid.up('panel[xtype=smartcontrol.roomuserauthority.mainlayout]');
-                var baseGrid = mainlayout.down('basegrid[xtype=smartcontrol.roomuserauthority.maingrid]');
-                var stores = baseGrid.getStore();
-                var proxy = stores.getProxy();
+                var querySql2="";
                 var uuids=new Array();
                 if(selectRow.length==1){
                 	querySql1 = " and ROOM_ID ="+"'"+selectRow[0].data.id+"'";
@@ -27,8 +24,25 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
                   }
                 querySql1 = " and ROOM_ID in (" + uuids.join(",") + ")";
                 }
+                var mainlayout = grid.up('panel[xtype=smartcontrol.roomuserauthority.mainlayout]');
+                var baseGrid = mainlayout.down('basegrid[xtype=smartcontrol.roomuserauthority.maingrid]');
+                //获取快速搜索框的值
+                var girdSearchTexts = baseGrid.query("field[funCode=girdFastSearchText]");
+                var filter=new Array();
+                if(girdSearchTexts[0].getValue()){
+                    querySql2+=" and XM like "+"'%"+girdSearchTexts[0].getValue()+"%'";
+                    //filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "XM", "comparison": ""});
+                }
+                if(girdSearchTexts[1].getValue()){
+                    querySql2+=" and ROOM_NAME like "+"'%"+girdSearchTexts[1].getValue()+"%'";
+                   // filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "ROOM_NAME", "comparison": ""});
+                }
+
+                var stores = baseGrid.getStore();
+                var proxy = stores.getProxy();
                 proxy.extraParams={
                     querySql:querySql1,
+                    querySql2:querySql2
                 };
                // proxy.extraParams.querySql = querySql1;
                 stores.load(); //刷新

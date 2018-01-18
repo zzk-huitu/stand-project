@@ -30,7 +30,8 @@ Ext.define("core.wisdomclass.notice.view.MainTree", {
             var mianGrid = mainlayout.down("basegrid[xtype=wisdomclass.notice.maingrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams=null;
+            proxy.extraParams.noticeType=""; 
+            proxy.extraParams.noticeLevel="";
          }
     }],
 

@@ -49,25 +49,4 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainTree", {
             hidden:true
         }]
     },
-    listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("panel[xtype=smartcontrol.climatecontrol.mainlayout]");
-            var funData = mainLayout.funData;
-            mainLayout.funData = Ext.apply(funData, {
-                roomId: record.get("id"),
-                roomLevel: record.get("level")
-            });
-            // 加载人员信息
-            var grid = mainLayout.down("panel[xtype=smartcontrol.climatecontrol.maingrid]");
-            var store = grid.getStore();
-            var proxy = store.getProxy();
-
-            var filter = '[{"type":"string","comparison":"","value":"空调","field":"deviceTypeName"}]';
-            proxy.extraParams = {
-                roomId: record.get("id"),
-                filter :filter
-            };            
-            store.load(); // 给form赋值        
-        }
-    }
 });
