@@ -65,20 +65,20 @@ Ext.define("core.reportcenter.ptpowerresidue.controller.MainController", {
             var basepanel = baseGrid.up('basepanel');
             var roominfotreegrid = basepanel.down("basetreegrid[xtype=reportcenter.ptpowerresidue.roominfotree]");
             var records = roominfotreegrid.getSelectionModel().getSelection();
-            var roomId="";
+            var roomId ="";
+            var roomLeaf ="";
             if(records.length>0){
-              if(records[0].get("id")!="2851655E-3390-4B80-B00C-52C7CA62CB39"){
-                roomId = records[0].get("id");
-            }
-            var roomLeaf=records[0].get("leaf");
-            if(roomLeaf==true)
-                roomLeaf="1";
-            else
-                roomLeaf="0"
+                roomId = records[0].get('id');
+                roomLeaf = records[0].get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0";
             }
 
-          var title = "确定要导出剩余电量吗？";
-          Ext.Msg.confirm('提示', title, function (btn, text) {
+
+            var title = "确定要导出剩余电量吗？";
+            Ext.Msg.confirm('提示', title, function (btn, text) {
             if (btn == "yes") {
                 Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
                 var component = Ext.create('Ext.Component', {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.PoiExportExcel;
@@ -70,7 +71,7 @@ public class PtPowerResidueController extends FrameWorkController<PtPowerResidue
 		String roomLeaf = request.getParameter("roomLeaf");
 		List<String> roomIdList = new ArrayList<String>();
 
-		if (StringUtils.isNotEmpty(roomID)) {
+		if (StringUtils.isNotEmpty(roomID) && !AdminType.ADMIN_ORG_ID.equals(roomID)) {
 			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
 				roomIdList.add(roomID);
 			} else { // 当选择的区域不为房间时,查询出子房间
@@ -153,7 +154,7 @@ public class PtPowerResidueController extends FrameWorkController<PtPowerResidue
 	InvocationTargetException{
 		request.getSession().setAttribute("exportPowerResidueIsEnd", "0");
 		request.getSession().removeAttribute("exporPowerResidueIsState");
-	    String roomId = request.getParameter("roomId");
+	    //String roomId = request.getParameter("roomId");
 	   
 
 		List<Map<String, Object>> allList = new ArrayList<>();
@@ -215,4 +216,6 @@ public class PtPowerResidueController extends FrameWorkController<PtPowerResidue
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
+	
+	
 }

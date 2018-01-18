@@ -28,10 +28,10 @@ Ext.define("core.reportcenter.sbxx.controller.MainController", {
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var termName= "";
         var roomName = "";
-        if(girdSearchTexts[0].getValue()!=null){
+        if(girdSearchTexts[0].getValue()){
             termName = girdSearchTexts[0].getValue();
         }
-        if(girdSearchTexts[1].getValue()!=null){
+        if(girdSearchTexts[1].getValue()){
             roomName = girdSearchTexts[1].getValue();
         }
       var title = "确定要导出电控使用状态吗？";

@@ -97,20 +97,20 @@ Ext.define("core.reportcenter.taskdetail.controller.MainController", {
          msgobj.setValue(msg);
          win.show();
      },
-    doExport:function(btn){
+     doExport:function(btn){
         var self = this;
         var toolBar = btn.up("toolbar");
         var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var tasktype= "";
         var termsn = "";
-        if(girdSearchTexts[0].getValue()!=null){
+        if(girdSearchTexts[0].getValue()){
             tasktype = girdSearchTexts[0].getValue();
         }
-        if(girdSearchTexts[1].getValue()!=null){
+        if(girdSearchTexts[1].getValue()){
             termsn = girdSearchTexts[1].getValue();
         }
-      var title = "确定要导出任务详细吗？";
-      Ext.Msg.confirm('提示', title, function (btn, text) {
+        var title = "确定要导出任务详细吗？";
+        Ext.Msg.confirm('提示', title, function (btn, text) {
         if (btn == "yes") {
             Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
             var component = Ext.create('Ext.Component', {
