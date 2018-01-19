@@ -22,9 +22,15 @@ Ext.define("core.baseset.room.view.AreaGrid", {
         type: 'refresh',
         qtip: '刷新',
         handler: function(event, toolEl, header) {
-            var tree = header.ownerCt
+            var tree = header.ownerCt;
             tree.getStore().load();
-            tree.getSelectionModel().deselectAll(true);          
+            tree.getSelectionModel().deselectAll(true); 
+            var mainlayout = tree.up("basepanel[xtype=baseset.room.mainlayout]");
+            var mianGrid = mainlayout.down("basegrid[xtype=baseset.room.maingrid]");
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams.areaId= "";
+            proxy.extraParams.areaType= "";         
          }
     }],
 

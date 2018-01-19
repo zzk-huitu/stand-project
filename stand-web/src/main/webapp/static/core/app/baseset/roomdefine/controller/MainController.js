@@ -16,27 +16,30 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     var mainLayout = tree.up("panel[xtype=baseset.roomdefine.mainlayout]");
                     var areaType = record.get("areaType");
                     var areaId = record.get("id");
-                    var filter = [];
-                    filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});
-
-                    if(areaType=="04")
-                        filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
-                    
                     var funData = mainLayout.funData;
                     mainLayout.funData = Ext.apply(funData, {
                         areaId: record.get("id"),
                         areaType: record.get("areaType"),
                         areaName: record.get("text"),
-                        filter: JSON.stringify(filter),
+                        //filter: JSON.stringify(filter),
                     });
                     // 加载对应的房间信息
                     var roomGrid = mainLayout.down("panel[xtype=baseset.roomdefine.maingrid]");
+                     //获取右边筛选框中的条件数据
+                     var filter=self.getFastSearchFilter(roomGrid);       
+                     filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});
+                     if(areaType=="04")
+                        filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
+                    filter = JSON.stringify(filter);
+
                     var store = roomGrid.getStore();
                     var proxy = store.getProxy();
-
-                    proxy.extraParams.filter = JSON.stringify(filter);
-                    proxy.extraParams.areaId= areaId;
-                    proxy.extraParams.areaType= areaType;
+                    //附带参赛
+                    proxy.extraParams={
+                        areaId:areaId,
+                        areaType:areaType,
+                        filter:filter
+                    }
                     store.loadPage(1); // 给form赋值
                     return false;
                 }
@@ -405,16 +408,10 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
          * @param component
          * @returns {boolean}
          */
-        doFastSearch: function (component) {
+  doFastSearch: function (component) {
   //得到组件                 
         var baseGrid = component.up("basegrid");
-        if (!baseGrid)
-            return false;
-
         var toolBar = component.up("toolbar");
-        if (!toolBar)
-            return false;
-
         var filter = [];
         var gridFilter=[];
         //获取baseGrid中编写的默认filter值
@@ -447,9 +444,19 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
 
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        //proxy.extraParams={};
         proxy.extraParams.filter = JSON.stringify(filter);
         store.loadPage(1);
+     },
 
-        },
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "roomType", "comparison": ""})
+        }
+        if(girdSearchTexts[1].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "roomName", "comparison": ""})
+        }
+        return filter;
+    }
 });
