@@ -1,17 +1,65 @@
+.rightTreeIconCls{
+    width: 16px;
+    height: 16px;
+    top: 8px;
+    left: 10px;
+}
 
-.icon_banjiguanli
+.icon_accessControl
 {
-    background-image: url(../images/icon/index_banjiguanli.png) !important;
+    background-image: url(../images/icon/index_accessControl.png) !important;
     background-size: cover;
 }
 
 
-.icon_bumenguanli
+.icon_appUpdate
 {
-    background-image: url(../images/icon/index_bumenguanli.png) !important;
+    background-image: url(../images/icon/index_appUpdate.png) !important;
     background-size: cover;
 }
 
+
+.icon_baseCampus
+{
+    background-image: url(../images/icon/index_baseCampus.png) !important;
+    background-size: cover;
+}
+
+.icon_baseDevice
+{
+    background-image: url(../images/icon/index_baseDevice.png) !important;
+    background-size: cover;
+}
+
+.icon_baseFrontServer
+{
+    background-image: url(../images/icon/index_baseFrontServer.png) !important;
+    background-size: cover;
+}
+
+.icon_baseGateway
+{
+    background-image: url(../images/icon/index_baseGateway.png) !important;
+    background-size: cover;
+}
+
+.icon_baseRate
+{
+    background-image: url(../images/icon/index_baseRate.png) !important;
+    background-size: cover;
+}
+
+.icon_basetSmartDevice
+{
+    background-image: url(../images/icon/index_basetSmartDevice.png) !important;
+    background-size: cover;
+}
+
+.icon_caidanguanli
+{
+    background-image: url(../images/icon/index_caidanguanli.png) !important;
+    background-size: cover;
+}
 
 .icon_caidanshouquan
 {
@@ -19,40 +67,83 @@
     background-size: cover;
 }
 
-
-.icon_disanfang
+.icon_classElegant
 {
-    background-image: url(../images/icon/index_disanfang.png) !important;
+    background-image: url(../images/icon/index_classElegant.png) !important;
     background-size: cover;
 }
 
-
-.icon_fangjianguanli
+.icon_classMotto
 {
-    background-image: url(../images/icon/index_fangjianguanli.png) !important;
+    background-image: url(../images/icon/index_classMotto.png) !important;
     background-size: cover;
 }
 
-
-.icon_fanjianxixin
+.icon_classRedFlag
 {
-    background-image: url(../images/icon/index_fanjianxixin.png) !important;
+    background-image: url(../images/icon/index_classRedFlag.png) !important;
     background-size: cover;
 }
 
-.icon_huiyidaoru
+.icon_classStar
 {
-    background-image: url(../images/icon/index_huiyidaoru.png) !important;
+    background-image: url(../images/icon/index_classStar.png) !important;
     background-size: cover;
 }
 
-
-.icon_huiyiguanli
+.icon_climateControl
 {
-    background-image: url(../images/icon/index_huiyiguanli.png) !important;
+    background-image: url(../images/icon/index_climateControl.png) !important;
     background-size: cover;
 }
 
+.icon_deviceAllot
+{
+    background-image: url(../images/icon/index_deviceAllot.png) !important;
+    background-size: cover;
+}
+
+.icon_dkTermStatus
+{
+    background-image: url(../images/icon/index_dkTermStatus.png) !important;
+    background-size: cover;
+}
+
+.icon_eccClass
+{
+    background-image: url(../images/icon/index_eccClass.png) !important;
+    background-size: cover;
+}
+
+.icon_eccSet
+{
+    background-image: url(../images/icon/index_eccSet.png) !important;
+    background-size: cover;
+}
+
+.icon_elecCount
+{
+    background-image: url(../images/icon/index_elecCount.png) !important;
+    background-size: cover;
+}
+
+.icon_infoTerm
+{
+    background-image: url(../images/icon/index_infoTerm.png) !important;
+    background-size: cover;
+}
+
+.icon_IR_Dever
+{
+    background-image: url(../images/icon/index_IR_Dever.png) !important;
+    background-size: cover;
+}
+
+.icon_IR_roomDevice
+{
+    background-image: url(../images/icon/index_IR_roomDevice.png) !important;
+    background-size: cover;
+}
 
 .icon_jiaoseguanli
 {
@@ -60,99 +151,93 @@
     background-size: cover;
 }
 
-
-.icon_jiaozhigong
+.icon_JLCS
 {
-    background-image: url(../images/icon/index_jiaozhigong.png) !important;
+    background-image: url(../images/icon/index_JLCS.png) !important;
     background-size: cover;
 }
 
-
-.icon_jiaozhigongcanshu
+.icon_jobInfo
 {
-    background-image: url(../images/icon/index_jiaozhigongcanshu.png) !important;
+    background-image: url(../images/icon/index_jobInfo.png) !important;
     background-size: cover;
 }
 
-
-.icon_jiaozhigongtongji
+.icon_mjOpenDoor
 {
-    background-image: url(../images/icon/index_jiaozhigongtongji.png) !important;
+    background-image: url(../images/icon/index_mjOpenDoor.png) !important;
     background-size: cover;
 }
 
-
-.icon_jixujiaoyu
+.icon_oaNotice
 {
-    background-image: url(../images/icon/index_jixujiaoyu.png) !important;
+    background-image: url(../images/icon/index_oaNotice.png) !important;
     background-size: cover;
 }
 
-
-.icon_kaoqinguize
+.icon_powerResidue
 {
-    background-image: url(../images/icon/index_kaoqinguize.png) !important;
+    background-image: url(../images/icon/index_powerResidue.png) !important;
     background-size: cover;
 }
 
-.icon_kaoqinjieguo
+.icon_reportCenter
 {
-    background-image: url(../images/icon/index_kaoqinjieguo.png) !important;
+    background-image: url(../images/icon/index_reportCenter.png) !important;
     background-size: cover;
 }
 
-
-.icon_kaoqinjilu
+.icon_roomAccessInfo
 {
-    background-image: url(../images/icon/index_kaoqinjilu.png) !important;
+    background-image: url(../images/icon/index_roomAccessInfo.png) !important;
     background-size: cover;
 }
 
-.icon_kaoqintongji
+.icon_roomAllot
 {
-    background-image: url(../images/icon/index_kaoqintongji.png) !important;
+    background-image: url(../images/icon/index_roomAllot.png) !important;
     background-size: cover;
 }
 
-.icon_kechengguanli
+.icon_roomBagRule
 {
-    background-image: url(../images/icon/index_kechengguanli.png) !important;
+    background-image: url(../images/icon/index_roomBagRule.png) !important;
     background-size: cover;
 }
 
-.icon_kechenguanli
+.icon_roomBagStatus
 {
-    background-image: url(../images/icon/index_kechenguanli.png) !important;
+    background-image: url(../images/icon/index_roomBagStatus.png) !important;
     background-size: cover;
 }
 
-.icon_kechenkaoqin
+.icon_roomDefine
 {
-    background-image: url(../images/icon/index_kechenkaoqin.png) !important;
+    background-image: url(../images/icon/index_roomDefine.png) !important;
     background-size: cover;
 }
 
-.icon_paikeguanli
+.icon_roomInfo
 {
-    background-image: url(../images/icon/index_paikeguanli.png) !important;
+    background-image: url(../images/icon/index_roomInfo.png) !important;
     background-size: cover;
 }
 
-.icon_renyuanguanli
+.icon_roomTerm
 {
-    background-image: url(../images/icon/index_renyuanguanli.png) !important;
+    background-image: url(../images/icon/index_roomTerm.png) !important;
     background-size: cover;
 }
 
-.icon_renyuanxinxi
+.icon_schoolCalendar
 {
-    background-image: url(../images/icon/index_renyuanxinxi.png) !important;
+    background-image: url(../images/icon/index_schoolCalendar.png) !important;
     background-size: cover;
 }
 
-.icon_shiziguanli
+.icon_schoolInfo
 {
-    background-image: url(../images/icon/index_shiziguanli.png) !important;
+    background-image: url(../images/icon/index_schoolInfo.png) !important;
     background-size: cover;
 }
 
@@ -162,51 +247,70 @@
     background-size: cover;
 }
 
-.icon_tongjibaobiao
+.icon_skTermStatus
 {
-    background-image: url(../images/icon/index_tongjibaobiao.png) !important;
+    background-image: url(../images/icon/index_skTermStatus.png) !important;
     background-size: cover;
 }
 
-.icon_xiaoquxinxi
+.icon_smartControl
 {
-    background-image: url(../images/icon/index_xiaoquxinxi.png) !important;
+    background-image: url(../images/icon/index_smartControl.png) !important;
     background-size: cover;
 }
 
-.icon_xinxizhongduan
+.icon_studentManager
 {
-    background-image: url(../images/icon/index_xinxizhongduan.png) !important;
+    background-image: url(../images/icon/index_studentManager.png) !important;
     background-size: cover;
 }
 
-.icon_xuexiaoxinxi
+.icon_sysPerimission
 {
-    background-image: url(../images/icon/index_xuexiaoxinxi.png) !important;
+    background-image: url(../images/icon/index_sysPerimission.png) !important;
     background-size: cover;
 }
 
-.icon_xueyuancanshu
+.icon_taskDetail
 {
-    background-image: url(../images/icon/index_xueyuancanshu.png) !important;
+    background-image: url(../images/icon/index_taskDetail.png) !important;
     background-size: cover;
 }
 
-.icon_xueyuanguanli
+.icon_teacherManager
 {
-    background-image: url(../images/icon/index_xueyuanguanli.png) !important;
+    background-image: url(../images/icon/index_teacherManager.png) !important;
     background-size: cover;
 }
 
-.icon_xueyuantongji
+.icon_termSN
 {
-    background-image: url(../images/icon/index_xueyuantongji.png) !important;
+    background-image: url(../images/icon/index_termSN.png) !important;
     background-size: cover;
 }
 
-.icon_xueyuanxinxi
+.icon_userAccess
 {
-    background-image: url(../images/icon/index_xueyuanxinxi.png) !important;
+    background-image: url(../images/icon/index_userAccess.png) !important;
+    background-size: cover;
+}
+
+
+.icon_userAccessInfo
+{
+    background-image: url(../images/icon/index_userAccessInfo.png) !important;
+    background-size: cover;
+}
+
+.icon_waterCount
+{
+    background-image: url(../images/icon/index_waterCount.png) !important;
+    background-size: cover;
+}
+
+.icon_waterMeter
+{
+    background-image: url(../images/icon/index_waterMeter.png) !important;
     background-size: cover;
 }
 
@@ -216,133 +320,38 @@
     background-size: cover;
 }
 
-.icon_zhiwuguanli
-{
-    background-image: url(../images/icon/index_zhiwuguanli.png) !important;
-    background-size: cover;
-}
-
-.icon_zhongduanfenpei
-{
-    background-image: url(../images/icon/index_zhongduanfenpei.png) !important;
-    background-size: cover;
-}
-
 .icon_zuzhijiagou
 {
     background-image: url(../images/icon/index_zuzhijiagou.png) !important;
     background-size: cover;
 }
 
-
-.icon_jisuanguize
+.icon_studentDorm
 {
-    background-image: url(../images/icon/index_jisuanguize.png) !important;
+    background-image: url(../images/icon/index_studentDorm.png) !important;
     background-size: cover;
 }
 
-
-.icon_xuefenjisuan
+.icon_teacherDorm
 {
-    background-image: url(../images/icon/index_xuefenjisuan.png) !important;
+    background-image: url(../images/icon/index_teacherDorm.png) !important;
     background-size: cover;
 }
 
-
-.icon_bianji
+.icon_jichu
 {
-    background-image: url(../images/icon/index_bianji.png) !important;
-    background-size: cover;
-    width: 28px;
-    height: 13px;
-}
-
-.icon_shanchu
-{
-    background-image: url(../images/icon/index_shanchu.png) !important;
-    background-size: cover;
-    width: 28px;
-    height: 13px;
-}
-
-.icon_xiangqing
-{
-    background-image: url(../images/icon/index_xiangqing.png) !important;
-    background-size: cover;
-    width: 28px;
-    height: 13px;
-}
-
-
-.icon_xinjian
-{
-    background-image: url(../images/icon/xinjian_icon.png) !important;
+    background-image: url(../images/icon/jichu_icon.png) !important;
     background-size: cover;
 }
-
-.icon_shanchu
-{
-    background-image: url(../images/icon/shanchu_icon.png) !important;
-    background-size: cover;
-}
-
-.icon_bianji
-{
-    background-image: url(../images/icon/bianji_icon.png) !important;
-    background-size: cover;
-}
-.rightTreeIconCls{
-    width: 16px;
-    height: 16px;
-    top: 8px;
-    left: 10px;
-}
-.icon_fenlei
-{
-    background-image: url(../images/icon/fenlei.png) !important;
-    background-size: cover;
-}
-
-.icon_liebiao
-{
-    background-image: url(../images/icon/liebiao.png) !important;
-    background-size: cover;
-}
-
-.icon_peixunpingjia{
-    background-image: url(../images/icon/peixunpingjia.png) !important;
-    background-size: cover;
-}
-.icon_pingjiazhibiao{
-    background-image: url(../images/icon/pingjiazhibiao.png) !important;
-    background-size: cover;
-}
-.icon_zongtipingjia{
-    background-image: url(../images/icon/zongtipingjia.png) !important;
-    background-size: cover;
-}
-
-.icon_kechengpingjia{
-    background-image: url(../images/icon/kechengpingjia.png) !important;
-    background-size: cover;
-}
-.icon_peixunanpai{
-    background-image: url(../images/icon/peixunanpai.png) !important;
-    background-size: cover;
-}
-.icon_kaoqin{
-    background-image: url(../images/icon/kaoqin_icon.png) !important;
-    background-size: cover;
-}
-
 
 .icon_xitong
 {
     background-image: url(../images/icon/xitong_icon.png) !important;
     background-size: cover;
 }
-.icon_jichu
+
+.icon_moreMenu
 {
-    background-image: url(../images/icon/jichu_icon.png) !important;
+    background-image: url(../images/icon/index_moreMenu.png) !important;
     background-size: cover;
 }

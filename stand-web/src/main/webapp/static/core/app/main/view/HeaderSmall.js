@@ -169,7 +169,7 @@ Ext.define("core.main.view.HeaderSmall",{
                 //arrowAlign: 'bottom',
                 tooltip: "更多", 
                 text: '<span style="color:#fff;font-size: 14px;">更多</span>',
-                iconCls: 'icon_kaoqin header-button-color core-header-icon-size20', 
+                iconCls: 'icon_moreMenu header-button-color core-header-icon-size20', 
                 iconAlign:'left',
                 cls: 'core-header-button', 
                 //overCls: '', 
