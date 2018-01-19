@@ -3,7 +3,7 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
 	alias: "widget.smartcontrol.roombagrule.maingrid",
 	dataUrl: comm.get("baseUrl") + "/BasePtRoomBagRule/list", //数据获取地址
 	model:"com.zd.school.control.device.model.PtRoomBagRule", //对应的数据模型
-    menuCode:"CLASSELEGANT",
+    menuCode:"ROOM_BAG_RULE",
 	//工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',

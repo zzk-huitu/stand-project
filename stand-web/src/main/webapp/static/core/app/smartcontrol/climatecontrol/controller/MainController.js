@@ -13,6 +13,30 @@ Ext.define("core.smartcontrol.climatecontrol.controller.MainController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
+        "basepanel basegrid": {
+            beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                var basePanel = grid.up("basepanel");
+                var funCode = basePanel.funCode;
+                var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+                var records = baseGrid.getSelectionModel().getSelection();
+                var btnOpen = baseGrid.down("button[ref=gridOpen]");
+                var btnClose = baseGrid.down("button[ref=gridClose]");
+                var btnSet = baseGrid.down("button[ref=gridSet]");
+                if (records.length == 0) {
+                    btnOpen.setDisabled(true);     
+                    btnClose.setDisabled(true);                   
+                    btnSet.setDisabled(true);       
+                }else if (records.length == 1) {
+                   btnOpen.setDisabled(false);     
+                   btnClose.setDisabled(false);                   
+                   btnSet.setDisabled(false);  
+               }else {
+                  btnOpen.setDisabled(false);     
+                  btnClose.setDisabled(false);                   
+                  btnSet.setDisabled(false);                 
+            }
+        }
+    },
     	"panel[xtype=smartcontrol.climatecontrol.maintree] button[ref=gridRefresh]": {
     		click: function(btn) {
     			var baseGrid = btn.up("basetreegrid");

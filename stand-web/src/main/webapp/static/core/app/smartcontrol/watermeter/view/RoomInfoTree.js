@@ -54,20 +54,32 @@ Ext.define("core.smartcontrol.watermeter.view.RoomInfoTree", {
             //var funData = mainLayout.funData;
             var roomId=record.get("id");
             var leaf = record.get("leaf");
-         
-                /*
-                mainLayout.funData = Ext.apply(funData, {
-                    roomId: roomId,
-                    leaf : record.get("leaf"),//true: 房间 false:区域
-                    arealevel: record.get("level"),
-                });
-                */
-                // 加载信息
-                var mianGrid = mainLayout.down("panel[xtype=smartcontrol.watermeter.devicegrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId=roomId;
-                store.loadPage(1); 
+            // 加载信息
+            var mianGrid = mainLayout.down("panel[xtype=smartcontrol.watermeter.devicegrid]");
+            var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "termSN", "comparison": ""})
+            }
+            if(filter.length==0)
+                filter=null;
+            else
+                filter = JSON.stringify(filter);
+             //获取点击树节点的参数
+            var roomId= record.get("id");
+            var roomLeaf=record.get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams={
+                roomId:roomId,
+                roomLeaf:roomLeaf,
+                filter:filter
+            };
+            store.loadPage(1); 
 
             
 

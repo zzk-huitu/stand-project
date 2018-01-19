@@ -332,6 +332,7 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 	}
 
 	/* 空调控制 */
+	@Auth("CLIMATE_CONTROL_IrSend")
 	@RequestMapping(value = { "/doIrSend" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void doIrSend(HttpServletRequest request, HttpServletResponse response) throws IOException {

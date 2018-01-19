@@ -60,6 +60,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("PtRoombagStatus_look")
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute PtTerm entity, HttpServletRequest request, HttpServletResponse response)
@@ -420,7 +421,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 	}
 
-	@Auth("TASK_DETAIL_export")
+	@Auth("SBXX_export")
 	@RequestMapping("/doSbxxExportExcel")
 	public void doSbxxExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportSbxxIsEnd", "0");
