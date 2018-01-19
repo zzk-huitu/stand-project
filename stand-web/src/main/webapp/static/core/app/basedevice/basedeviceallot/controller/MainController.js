@@ -23,6 +23,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
                 var store = mianGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
@@ -161,15 +162,20 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid");
         var mainlayout=baseGrid.up("panel[xtype=basedevice.basedeviceallot.mainlayout]");
-        var treeGrid=mainlayout.down("panel[xtype=basedevice.basedeviceallot.roominfotree]");
-        var userGrid = mainlayout.down("basegrid[xtype=basedevice.basedeviceallot.maingrid]");
-        
-        var proxy = userGrid.getStore().getProxy();
-        var roomId = proxy.extraParams.roomId;
-        if(roomId==undefined){
-        	roomId="";
+       
+        var roominfotreegrid=mainlayout.down("panel[xtype=basedevice.basedeviceallot.roominfotree]");
+        var records = roominfotreegrid.getSelectionModel().getSelection();
+        var roomId ="";
+        var roomLeaf ="";
+        if(records.length>0){
+            roomId = records[0].get('id');
+            roomLeaf = records[0].get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
         }
-        
+        var userGrid = mainlayout.down("basegrid[xtype=basedevice.basedeviceallot.maingrid]");
         //获取快速搜索栏数据
         var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
         var termSN ="";
@@ -215,7 +221,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/exportPtTermAllotExcel?termSN='+termSN+'&roomId='+roomId+'&termSN='+termSN+'&termNo='+termNo+'&termName='+termName+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/doExportPtTermAllotExcel?termSN='+termSN+'&roomId='+roomId+'&termSN='+termSN+'&termNo='+termNo+'&termName='+termName+'&roomLeaf='+roomLeaf+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

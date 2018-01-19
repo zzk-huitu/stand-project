@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -83,15 +84,15 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 		String filter = request.getParameter("filter");
 		String brandId = request.getParameter("brandId");
 		String level = request.getParameter("level");
-		if(filter!=null && filter.length()>0){
-			if(brandId==null && level==null){
+		if(StringUtils.isNotEmpty(filter) && filter.length()>0){
+			if(StringUtils.isEmpty(brandId)&&StringUtils.isEmpty(level)){
 				brandId = "d9012b05-e85e-449d-82fc-4a424dee9b00";
 				level = "1";
 			}
 		}
 		
 		if(level.equals("3")){//品牌类型以下的子节点
-			if (filter!=null) {
+			if (StringUtils.isNotEmpty(filter)) {
 				filter = filter.substring(0, filter.length() - 1)
 						+ ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + brandId
 						+ "\",\"field\":\"parentNode\"}]";
@@ -105,20 +106,18 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			}else{//品牌类型
 				hql="select a.uuid from PtIrDeviceBrand a where a.isDelete=0  and a.level=3 and a.parentNode like '%"+brandId+"%'";
 			}
-			StringBuffer categorysb=new StringBuffer();
 		    List<String> categorylists=thisService.queryEntityByHql(hql);
-		    for(int i=0;i<categorylists.size();i++){
-				categorysb.append(categorylists.get(i)+",");
-			}
-			if(categorysb.length()>0){
-				if(filter!=null){			
-			    	filter = filter.substring(0,filter.length() - 1)+",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ categorysb.substring(0,categorysb.length()-1)+"\",\"field\":\"parentNode\"}]";	
+		    if(!categorylists.isEmpty()){
+				 String brandIds=categorylists.stream().collect(Collectors.joining(","));
+				if(StringUtils.isNotEmpty(filter)){			
+			    	filter = filter.substring(0,filter.length() - 1)+",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandIds+"\",\"field\":\"parentNode\"}]";	
 			    }else{
-			    	filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ categorysb.substring(0,categorysb.length()-1)+"\",\"field\":\"parentNode\"}]";
+			    	filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ brandIds+"\",\"field\":\"parentNode\"}]";
 			    }
 			}else{
-				writeJSON(response, jsonBuilder.returnSuccessJson("\"该区域下暂无数据\""));
-				return ;
+				strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+				writeJSON(response, strData);// 返回数据
+				return;
 			}
 		}
 		QueryResult<PtIrDeviceBrand> qResult = thisService.queryPageResult(super.start(request), super.limit(request),super.sort(request), filter, true);

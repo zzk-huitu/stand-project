@@ -99,13 +99,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
     queryFastSearchForm:function(component){
         //得到组件                 
         var baseGrid = component.up("basegrid");
-        if (!baseGrid)
-            return false;
-
         var toolBar = component.up("toolbar");
-        if (!toolBar)
-            return false;
-
         var filter = [];
         var filterStr = [];
         //可能存在多个文本框       
@@ -129,7 +123,10 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
         }
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.filter = JSON.stringify(filterStr);
+        if(filterStr.length==0)
+          delete proxy.extraParams.filter;
+        else 
+          proxy.extraParams.filter = JSON.stringify(filterStr);
         store.loadPage(1);
     },
 });

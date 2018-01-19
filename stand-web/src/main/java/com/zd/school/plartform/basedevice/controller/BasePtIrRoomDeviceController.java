@@ -235,12 +235,30 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		request.getSession().removeAttribute("exporRoomDeviceIsState");
 		String deviceTypeCode = request.getParameter("deviceTypeCode");
 		String roomId = request.getParameter("roomId");
+		String roomLeaf = request.getParameter("roomLeaf");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Integer[] columnWidth = new Integer[] { 10, 25, 20, 45 };
 		List<PtIrRoomDevice> roomDeviceList = null;
 		String hql = " from PtIrRoomDevice a where a.isDelete=0 ";
-		if (StringUtils.isNotEmpty(roomId)) {
+		//组装房间id参数
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				hql += " and a.roomId='"+roomId+"'";
+				
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));				
+					hql += " and a.roomId in (" + roomIds + ") ";
+				} else {
+					hql += " and 1=2 ";						//区域之下没有房间，则显示空数据
+				}					
+			}
+		}
+		
+/*		if (StringUtils.isNotEmpty(roomId)) {
 			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
 					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
 			List<String> roomLists = thisService.queryEntityByHql(roomHql);
@@ -256,7 +274,7 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 
 		} else {
 			hql = " select a from PtIrRoomDevice a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
-		}
+		}*/
 		if (StringUtils.isNotEmpty(deviceTypeCode)) {
 			hql += " and a.deviceTypeCode like '%" + deviceTypeCode + "%' ";
 		}

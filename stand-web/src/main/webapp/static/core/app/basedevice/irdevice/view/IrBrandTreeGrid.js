@@ -20,8 +20,14 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
         handler: function(event, toolEl, header) {
             var tree = header.ownerCt
             tree.getStore().load();
-            tree.getSelectionModel().deselectAll(true);          
-         }
+            tree.getSelectionModel().deselectAll(true);     
+            var mainlayout = tree.up("basepanel[xtype=basedevice.irdevice.mainlayout]");
+            var mianGrid = mainlayout.down("basegrid[xtype=basedevice.irdevice.maingrid]");
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams.brandId="";
+            proxy.extraParams.level="";     
+         } 
     }],
 
 
@@ -84,21 +90,28 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             var funData = mainLayout.funData;
             var brandId=record.get("id");
             var level = record.get("level");
-            
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
             mainLayout.funData = Ext.apply(funData, {
             	brandId: brandId,
             });
-            
+            var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "productModel", "comparison": ""})
+            }
+            if(filter.length==0)
+                filter=null;
+            else
+                filter = JSON.stringify(filter);
             // 加载品牌信息
-            var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
+    
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams={
                 brandId:brandId,
-                level:level
+                level:level,
+                filter:filter
             };
-          /*  proxy.extraParams.brandId=brandId;
-            proxy.extraParams.level=level;*/
             store.loadPage(1); // 给form赋值
             return false;
         }
