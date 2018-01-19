@@ -48,7 +48,7 @@ Ext.define("core.reportcenter.sbxx.controller.MainController", {
             });
             var time = function () {
                 self.syncAjax({
-                    url: comm.get('baseUrl') + '/BasePtTerm/checkExportEnd',
+                    url: comm.get('baseUrl') + '/BasePtTerm/checkSbxxExportEnd',
                     timeout: 1000 * 60 * 30,      
                     success: function (response) {
                         data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));

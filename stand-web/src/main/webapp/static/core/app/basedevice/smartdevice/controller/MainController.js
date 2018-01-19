@@ -23,6 +23,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                 var store = mianGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },
@@ -51,20 +52,21 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
         var self = this;
         var baseGrid = btn.up("basegrid");
         var mainlayout=baseGrid.up("panel[xtype=basedevice.smartdevice.mainlayout]");
-        var treeGrid=mainlayout.down("panel[xtype=basedevice.smartdevice.roominfotree]");
-        /*var treeRecords = treeGrid.getSelectionModel().getSelection();
-        if(treeRecords.length==0){
-       	    self.msgbox("请选择一个班级!");
-            return;
-       }
-       var deptId = treeRecords[0].get("id");*/
-        var userGrid = mainlayout.down("basegrid[xtype=basedevice.smartdevice.maingrid]");
-        var proxy = userGrid.getStore().getProxy();
-        var roomId = proxy.extraParams.roomId;
-        if(roomId==undefined){
-        	roomId="";
+
+        var roominfotreegrid=mainlayout.down("panel[xtype=basedevice.smartdevice.roominfotree]");
+        var records = roominfotreegrid.getSelectionModel().getSelection();
+        var roomId ="";
+        var roomLeaf ="";
+        if(records.length>0){
+            roomId = records[0].get('id');
+            roomLeaf = records[0].get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
         }
-        var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
+        var toolBar = btn.up("toolbar");
+        var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
         var termName ="";
         if(girdSearchTexts[0]!=null){
         	termName = girdSearchTexts[0].getValue();
@@ -78,7 +80,7 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                     width: 0,
                     height: 0,
                     hidden: true,
-                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/doExportExcel?termName='+termName+'&roomId='+roomId+'"></iframe>',
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BasePtTerm/doExportExcel?termName='+termName+'&roomId='+roomId+'&roomLeaf='+roomLeaf+'"></iframe>',
                     renderTo: Ext.getBody()
                 });
 

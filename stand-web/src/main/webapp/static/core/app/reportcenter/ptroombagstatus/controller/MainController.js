@@ -15,6 +15,19 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
+          "basepanel basegrid[xtype=reportcenter.ptroombagstatus.ptirroomdevicegrid]": {
+             afterrender : function(grid) {
+                if(comm.get("isAdmin")!="1"){
+                 var menuCode="PtRoombagStatus";    
+                 var userBtn=comm.get("userBtn");
+                 if(userBtn.indexOf(menuCode+"_gridfind")==-1){
+                    var btnFind = grid.down("button[ref=gridfind]");
+                    btnFind.setHidden(true);
+
+                }
+            }
+         },
+       },
         "basetreegrid[xtype=reportcenter.ptroombagstatus.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
                 var baseGrid = btn.up("panel[xtype=reportcenter.ptroombagstatus.roominfotree]");

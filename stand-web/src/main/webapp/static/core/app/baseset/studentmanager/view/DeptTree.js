@@ -51,9 +51,19 @@ Ext.define("core.baseset.studentmanager.view.DeptTree", {
             });
             //加载人员信息
             var userGrid = mainLayout.down("panel[xtype=baseset.studentmanager.studentgrid]");
+            //获取快速搜索框的参数
+            var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "userName", "comparison": ""})
+            }
+            if(girdSearchTexts[1].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "xm", "comparison": ""})
+            }
+            filter.push({"type": "string", "value": "2", "field": "category", "comparison": "="});
+            filter = JSON.stringify(filter);
             var store = userGrid.getStore();
             var proxy = store.getProxy();
-            var filter = "[{'type':'string','comparison':'=','value':'2','field':'category'}]";
             proxy.extraParams = {
                 deptId: record.get("id"),
                 filter :filter

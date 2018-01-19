@@ -3,7 +3,7 @@ Ext.define("core.smartcontrol.watermeter.view.MainGrid", {
 	alias: "widget.smartcontrol.watermeter.maingrid",
 	dataUrl: comm.get("baseUrl") + "/BasePtSkMeter/list", //数据获取地址
 	model: "com.zd.school.control.device.model.PtSkMeter", //对应的数据模型
-    menuCode:"CLASSELEGANT",
+    menuCode:"WATER_METER",
 	//工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',

@@ -2,12 +2,12 @@ package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -34,7 +35,6 @@ import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.ykt.model.PtTask;
 
 /**
  * 房间设备
@@ -60,6 +60,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("PtRoombagStatus_look")
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute PtTerm entity, HttpServletRequest request, HttpServletResponse response)
@@ -67,54 +68,40 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		String strData = ""; // 返回给js的数据
 		String filter = request.getParameter("filter");
 		String roomId = request.getParameter("roomId");
-
-		if (filter != null && filter.equals("[]")) {
-			filter = null;
-		}
-		if (roomId == null) {
-			roomId = "";
-		}
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ roomId + "%'";
-		List<String> areaIdlists = baseOfficeAllotService.queryEntityByHql(hql);
-		StringBuffer areasb = new StringBuffer();
-		for (int i = 0; i < areaIdlists.size(); i++) {
-			areasb.append("'" + areaIdlists.get(i) + "'" + ",");
-		}
-		if (areasb.length() > 0) {
-			List<String> roomIdLists = new ArrayList<>();
-			hql = "select a.uuid from BuildRoominfo a where a.areaId in (" + areasb.substring(0, areasb.length() - 1)
-					+ ")";
-			roomIdLists = baseRoominfoService.queryEntityByHql(hql);
-			areasb.setLength(0);
-			for (int i = 0; i < roomIdLists.size(); i++) {
-				areasb.append(roomIdLists.get(i) + ",");
-			}
-			if (areasb.length() > 0) {
-				if (filter != null) {
-					filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'in','value':'"
-							+ areasb.substring(0, areasb.length() - 1) + "','field':'roomId'}]";
-				} else {
-					filter = "[{'type':'string','comparison':'in','value':'" + areasb.substring(0, areasb.length() - 1)
-							+ "','field':'roomId'}]";
-				}
-			} else {
-				if (filter != null) {
-					filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'in','value':'"
-							+ roomId + "','field':'roomId'}]";
+		String roomLeaf = request.getParameter("roomLeaf");
+        if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}" + "]";
 				} else {
 					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
 							+ "\",\"field\":\"roomId\"}]";
 				}
-			}
-		} else {
-			if (filter != null) {
-				filter = filter.substring(0, filter.length() - 1) + ",{'type':'string','comparison':'=','value':'"
-						+ roomId + "','field':'roomId'}]";
-			} else {
-				filter = "[{'type':'string','comparison':'=','value':'" + roomId + "','field':'roomId'}]";
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
 		}
+		
 		QueryResult<PtTerm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
@@ -356,25 +343,24 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 
 		String roomId = request.getParameter("roomId");
+		String roomLeaf = request.getParameter("roomLeaf");
 		String termName = request.getParameter("termName");
 
 		String hql = " from PtTerm a where a.isDelete=0 ";
-		if (StringUtils.isNotEmpty(roomId)) {
-			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
-					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
-			List<String> roomLists = thisService.queryEntityByHql(roomHql);
-			if (roomLists.size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < roomLists.size(); i++) {
-					sb.append(roomLists.get(i) + ",");
-				}
-				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
-			} else {// 传进来的roomId 就是房间id
-				hql += " and a.roomId ='" + roomId + "' ";
-			}
+		// 组装房间id参数
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				hql += " and a.roomId='" + roomId + "'";
 
-		} else {
-			hql = " select a from PtTerm a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
+			} else { // 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+                if (!roomList.isEmpty()) {
+					String roomIds = roomList.stream().collect(Collectors.joining("','", "'", "'"));
+					hql += " and a.roomId in (" + roomIds + ") ";
+				} else {
+					hql += " and 1=2 "; // 区域之下没有房间，则显示空数据
+				}
+			}
 		}
 		List<PtTerm> ptTermList = null;
 		if (StringUtils.isNotEmpty(termName)) {
@@ -417,12 +403,29 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			request.getSession().setAttribute("exportPtTermIsState", "0");
 		}
 	}
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-	@Auth("TASK_DETAIL_export")
+		Object isEnd = request.getSession().getAttribute("exportPtTermIsEnd");
+		Object state = request.getSession().getAttribute("exportPtTermIsState");
+		if (isEnd != null) {
+			if ("1".equals(isEnd.toString())) {
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
+			} else if (state != null && state.equals("0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("0"));
+			} else {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+			}
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
+		}
+	}
+
+	@Auth("SBXX_export")
 	@RequestMapping("/doSbxxExportExcel")
 	public void doSbxxExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		request.getSession().setAttribute("exportPtTermIsEnd", "0");
-		request.getSession().removeAttribute("exportPtTermIsState");
+		request.getSession().setAttribute("exportSbxxIsEnd", "0");
+		request.getSession().removeAttribute("exportSbxxIsState");
 
 		String termName = request.getParameter("termName");
 		String roomName = request.getParameter("roomName");
@@ -477,19 +480,18 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		// 在导出方法中进行解析
 		boolean result = PoiExportExcel.exportExcel(response, "设备序列号", "设备序列号", allList);
 		if (result == true) {
-			request.getSession().setAttribute("exportPtTermIsEnd", "1");
+			request.getSession().setAttribute("exportSbxxIsEnd", "1");
 		} else {
-			request.getSession().setAttribute("exportPtTermIsEnd", "0");
-			request.getSession().setAttribute("exportPtTermIsState", "0");
+			request.getSession().setAttribute("exportSbxxIsEnd", "0");
+			request.getSession().setAttribute("exportSbxxIsState", "0");
 		}
 
 	}
+	@RequestMapping("/checkSbxxExportEnd")
+	public void checkSbxxExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-	@RequestMapping("/checkExportEnd")
-	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		Object isEnd = request.getSession().getAttribute("exportPtTermIsEnd");
-		Object state = request.getSession().getAttribute("exportPtTermIsState");
+		Object isEnd = request.getSession().getAttribute("exportSbxxIsEnd");
+		Object state = request.getSession().getAttribute("exportSbxxIsState");
 		if (isEnd != null) {
 			if ("1".equals(isEnd.toString())) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导出完成！\""));
@@ -502,6 +504,8 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
+
+
 
 	@Auth("DEVICEALLOT_export")
 	@RequestMapping("/doExportPtTermAllotExcel")
@@ -523,27 +527,27 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 		List<PtTerm> ptTermList = null;
 		String roomId = request.getParameter("roomId");
+		String roomLeaf = request.getParameter("roomLeaf");
 		String termSN = request.getParameter("termSN");
 		String termNo = request.getParameter("termNo");
 		String termName = request.getParameter("termName");
 
 		String hql = " from PtTerm a where a.isDelete=0 ";
-		if (StringUtils.isNotEmpty(roomId)) {
-			String roomHql = " select b.uuid from BuildRoomarea a left join BuildRoominfo b on a.uuid = b.areaId "
-					+ " where a.isDelete=0 and b.isDelete=0 and a.areaType='04' and a.treeIds like '%" + roomId + "%'";
-			List<String> roomLists = thisService.queryEntityByHql(roomHql);
-			if (roomLists.size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (int i = 0; i < roomLists.size(); i++) {
-					sb.append(roomLists.get(i) + ",");
-				}
-				hql += " and a.roomId in ('" + sb.substring(0, sb.length() - 1).replace(",", "','") + "') ";
-			} else {// 传进来的roomId 就是房间id
-				hql += " and a.roomId ='" + roomId + "' ";
+		//组装房间id参数
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				hql += " and a.roomId='"+roomId+"'";
+				
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining("','","'","'"));				
+					hql += " and a.roomId in (" + roomIds + ") ";
+				} else {
+					hql += " and 1=2 ";						//区域之下没有房间，则显示空数据
+				}					
 			}
-
-		} else {
-			hql = " select a from PtTerm a right join BuildRoominfo b on a.roomId = b.uuid where a.isDelete=0 and b.isDelete=0 ";
 		}
 
 		if (StringUtils.isNotEmpty(termSN)) {
@@ -619,5 +623,27 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		} else {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
+	}
+	/**
+	 * 获取某个区域下的所有房间数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getRoomIds(String areaId) {
+		List<String> result = new ArrayList<>();
+
+		// 当选择的区域不为房间时
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ areaId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		if (lists.size() > 0) {
+			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.areaId in (" + areaIds + ")";
+			result = thisService.queryEntityByHql(hql);
+		}
+
+		return result;
 	}
 }

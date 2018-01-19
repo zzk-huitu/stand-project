@@ -89,28 +89,37 @@ Ext.define("core.baseset.room.controller.MainController", {
             //区域列表点击事件
             "panel[xtype=baseset.room.areagrid]": {
                 itemclick: function (tree, record, item, index, e, eOpts) {
+                    var self = this;
                     var mainLayout = tree.up("panel[xtype=baseset.room.mainlayout]");
                     var areaType = record.get("areaType");
                     var areaId = record.get("id");
-                    var filter = "";
+                    var roomGrid = mainLayout.down("panel[xtype=baseset.room.maingrid]");
+
+                    var filter=self.getFastSearchFilter(roomGrid);
                     if(areaType=="04")
-                        filter = '[{"type":"string","comparison":"=","value":"' + areaId + '","field":"areaId"}]';
-                    
+                          filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
+                    if(filter.length==0)
+                        filter=null;
+                    else 
+                        filter = JSON.stringify(filter);
+
                     var funData = mainLayout.funData;
                     mainLayout.funData = Ext.apply(funData, {
                         areaId: record.get("id"),
                         areaType: record.get("areaType"),
                         areaName: record.get("text"),
-                        filter: filter,
+                        filter: '[{"type":"string","comparison":"=","value":"' + areaId + '","field":"areaId"}]',
                     });
                     // 加载对应的房间信息
-                    var roomGrid = mainLayout.down("panel[xtype=baseset.room.maingrid]");
                     var store = roomGrid.getStore();
                     var proxy = store.getProxy();
 
-                    proxy.extraParams.filter = filter;
-                    proxy.extraParams.areaId= areaId;
-                    proxy.extraParams.areaType= areaType;
+                      //附带参赛
+                    proxy.extraParams={
+                        areaId:areaId,
+                        areaType:areaType,
+                        filter:filter
+                    }
                     store.loadPage(1); // 给form赋值
                     // return false;
                 }
@@ -639,4 +648,13 @@ Ext.define("core.baseset.room.controller.MainController", {
         //表单赋值
         self.setFormValue(formDeptObj, insertObj);
     },
+    getFastSearchFilter:function(cpt){
+        var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "roomName", "comparison": ""})
+        }
+      
+        return filter;
+    }
 });

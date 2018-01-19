@@ -46,7 +46,8 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
                 var store = mianGrid.getStore();
                 var proxy = store.getProxy();
                 proxy.extraParams.roomId="";
-                 return false;
+                proxy.extraParams.roomLeaf="";
+                return false;
                 }
         },
     },
@@ -112,20 +113,26 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
             var self = this;
             var baseGrid = btn.up("basegrid");
             var toolBar = btn.up("toolbar");
-            if (!toolBar)
-            return false;
+        
             var girdSearchTexts = toolBar.query("field[funCode=girdFastSearchText]");
             var deviceTypeCode = "";
             if(girdSearchTexts[0].getValue()!=null){
                 deviceTypeCode = girdSearchTexts[0].getValue();
             }
             var mainLayout = baseGrid.up("basepanel[xtype=basedevice.ptirroomdevice.mainlayout]")
-            var mianGrid = mainLayout.down("panel[xtype=basedevice.ptirroomdevice.maingrid]");
-            var proxy = mianGrid.getStore().getProxy();
-            var roomId = proxy.extraParams.roomId;
-            if(roomId==undefined){
-               roomId="";
+            var roominfotreegrid = mainLayout.down("basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree]");
+            var records = roominfotreegrid.getSelectionModel().getSelection();
+            var roomId ="";
+            var roomLeaf ="";
+            if(records.length>0){
+                roomId = records[0].get('id');
+                roomLeaf = records[0].get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0";
             }
+
             var title = "确定要导出房间红外设备的信息吗？";
             Ext.Msg.confirm('提示', title, function (btn, text) {
                 if (btn == "yes") {
@@ -135,7 +142,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
                         width: 0,
                         height: 0,
                         hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrRoomDevice/doExportExcel?deviceTypeCode='+deviceTypeCode+'&roomId='+roomId+'"></iframe>',
+                        html: '<iframe src="' + comm.get('baseUrl') + '/BasePtIrRoomDevice/doExportExcel?deviceTypeCode='+deviceTypeCode+'&roomId='+roomId+'&roomLeaf='+roomLeaf+'"></iframe>',
                         renderTo: Ext.getBody()
                     });
 

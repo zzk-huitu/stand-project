@@ -2,7 +2,9 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -64,19 +66,19 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 		if(!"04".equals(areaType)){
 			String hql="select a.uuid from BuildRoomarea a where a.isDelete=0 and a.areaType='04' and a.treeIds like '%"+areaId+"%'";
 			List<String> lists=thisService.queryEntityByHql(hql);
-			StringBuffer sb=new StringBuffer();
-			for(int i=0;i<lists.size();i++){
-				sb.append(lists.get(i)+",");
-			}
-			if(sb.length()>0){
+			if(!lists.isEmpty()){
+				String areaIds=lists.stream().collect(Collectors.joining(","));
 				if(filter.length()>0){
 					filter = filter.substring(0, filter.length()-1);
-					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}"+"]";
+					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaIds+"\",\"field\":\"areaId\"}"+"]";
 				}else{
-					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"areaId\"}]";
+					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaIds+"\",\"field\":\"areaId\"}]";
 				}
 			}else{//为楼栋或校区，其下没有楼层
-				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+null+"\",\"field\":\"areaId\"}]";
+
+				strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+				writeJSON(response, strData);// 返回数据
+				return;
 			}
 		}else{
 			if(areaId!=null){

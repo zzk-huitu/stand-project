@@ -63,33 +63,26 @@ Ext.define("core.system.user.view.DeptTree", {
             });
             //加载人员信息
             var userGrid = mainLayout.down("panel[xtype=system.user.usergrid]");
+              //获取快速搜索框的参数
+            var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "userName", "comparison": ""})
+            }
+            if(girdSearchTexts[1].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "xm", "comparison": ""})
+            }
+            if(filter.length==0)
+                filter=null;
+            else 
+             filter = JSON.stringify(filter);
             var store = userGrid.getStore();
             var proxy = store.getProxy();
             proxy.extraParams = {
-                deptId: record.get("id")
+                deptId: record.get("id"),
+                filter:filter
             };
             store.load();
-
-        
-            // var mainLayout = view.up("panel[xtype=teachercourse.mainlayout]");
-            // var treePanel = mainLayout.down("panel[xtype=classteacher.classtree]");
-            // var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'claiId'}";
-            // filter += ",{'type':'integer','comparison':'=','value':0,'field':'isDelete'}]";
-            // var funData = mainLayout.funData;
-            // mainLayout.funData = Ext.apply(funData, {
-            //     claiId: record.get("id"),
-            //     claiLevel: record.get("level"),
-            //     filter: filter
-            // });
-            // // 加载人员信息
-            // var storeyGrid = mainLayout.down("panel[xtype=teachercourse.TeacherCourseGrid]");
-            // var store = storeyGrid.getStore();
-            // var proxy = store.getProxy();
-            // proxy.extraParams = {
-            //     filter: filter,
-            //     page: 1
-            // };
-            // store.load(); // 给form赋值
-        }
+         }
     }
 });

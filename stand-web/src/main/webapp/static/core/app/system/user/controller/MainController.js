@@ -968,10 +968,10 @@ Ext.define("core.system.user.controller.MainController", {
         var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
         var userName ="";
         var xm = "";
-        if(girdSearchTexts[0]!=null){
+        if(girdSearchTexts[0].getValue()!=null){
            userName = girdSearchTexts[0].getValue();
         }
-         if(girdSearchTexts[1]!=null){
+         if(girdSearchTexts[1].getValue()!=null){
            xm = girdSearchTexts[1].getValue();
         }
         var title = "确定要导出用户管理的信息吗？";

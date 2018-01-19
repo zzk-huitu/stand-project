@@ -12,6 +12,12 @@ Ext.define("core.smartcontrol.watermeter.controller.DetailController", {
                 var baseGrid = btn.up("basetreegrid");
                 var store = baseGrid.getStore();
                 store.load(); //刷新父窗体的grid
+                var mainlayout = btn.up("basepanel[xtype=smartcontrol.watermeter.mainlayout]");
+                var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.watermeter.maingrid]");
+                var store = mianGrid.getStore();
+                var proxy = store.getProxy();
+                proxy.extraParams.roomId="";
+                proxy.extraParams.roomLeaf="";
                 return false;
             }
         },

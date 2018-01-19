@@ -64,14 +64,21 @@ Ext.define("core.system.permission.view.MenuTree", {
             var mainGrid = mainLayout.down("panel[xtype=system.permission.maingrid]");
             var store = mainGrid.getStore();
             var proxy = store.getProxy();
-            var filter = '[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]';
+            //获取快速搜索框的参数
+            var girdSearchTexts = mainGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "perName", "comparison": ""})
+            }
+            filter.push({"type": "string", "value": record.get("id"), "field": "menuId", "comparison": ""})
+            filter = JSON.stringify(filter);
             proxy.extraParams = {
                 filter:filter
             };
             mainGrid.extParams = {
-               filter:filter 
+               filter:'[{"type": "string", "value": "'+record.get("id")+'", "field": "menuId", "comparison": ""}]' 
             }
-            store.loadPage(1);       
+            store.loadPage(1);     
         }
     }
 });
