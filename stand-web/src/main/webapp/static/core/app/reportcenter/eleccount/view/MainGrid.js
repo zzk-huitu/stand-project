@@ -22,7 +22,7 @@ Ext.define("core.reportcenter.eleccount.view.MainGrid", {
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-file'
+            iconCls: 'x-fa fa-file-excel-o'
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'

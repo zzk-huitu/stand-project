@@ -77,7 +77,7 @@ Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
             xtype:'textfield',
             name:'xm',
             funCode: 'girdFastSearchText',
-            emptyText: '姓名'
+            emptyText: '请输入姓名'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

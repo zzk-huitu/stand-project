@@ -24,7 +24,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.BoyDormDefineTree", {
             xtype: 'button',
             text: '刷新',
             ref: 'gridRefresh',
-            iconCls: ''
+            iconCls: 'x-fa fa-refresh'
         }]
     },
     columns:{

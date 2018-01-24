@@ -15,7 +15,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainGrid", {
             text: '开启',
             ref:'gridOpen',
             disabled:true,
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-toggle-on',
             funCode:'girdFuntionBtn',
             //disabled:true
         },{
@@ -24,7 +24,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainGrid", {
             ref: 'gridClose',
             disabled:true,
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分         
-            iconCls: 'x-fa fa-pencil-square'
+            iconCls: 'x-fa fa-toggle-off'
         },{
             xtype: 'numberfield',
             text: '温度设定',
@@ -48,7 +48,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.MainGrid", {
             xtype:'textfield',
             name:'deviceTypeCode',
             funCode: 'girdFastSearchText',
-            emptyText: '型号名称'
+            emptyText: '请输入型号名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

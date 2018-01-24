@@ -24,13 +24,13 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
             xtype:'textfield',
             name:'XM',
             funCode: 'girdFastSearchText',
-            emptyText: '姓名',
+            emptyText: '请输入姓名',
             width:120
         },{
             xtype:'textfield',
             name:'ROOM_NAME',
             funCode: 'girdFastSearchText',
-            emptyText: '房间名称',
+            emptyText: '请输入房间名称',
             width:120
         },{
             xtype: 'button',            

@@ -27,14 +27,14 @@ Ext.define("core.system.appupdate.view.MainGrid", {
             ref: 'gridUse',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
-            iconCls: 'x-fa fa-plus-square'
+            iconCls: 'x-fa fa-star'
         }, {
             xtype: 'button',
             text: '取消启用',
             ref: 'gridCancel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
-            iconCls: 'x-fa fa-minus-circle'
+            iconCls: 'x-fa fa-star-o'
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'

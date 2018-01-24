@@ -27,7 +27,7 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
             ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
+            iconCls: 'x-fa fa-link'
         },{
             xtype: 'button',
             text: '删除',

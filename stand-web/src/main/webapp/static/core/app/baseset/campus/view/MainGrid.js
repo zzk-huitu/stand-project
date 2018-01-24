@@ -30,7 +30,7 @@ Ext.define("core.baseset.campus.view.MainGrid", {
             ref: 'gridDetail_Tab',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,
-            iconCls: 'x-fa fa-pencil-square'
+            iconCls: 'x-fa fa-info-circle'
         },{
             xtype: 'button',
             text: '删除',

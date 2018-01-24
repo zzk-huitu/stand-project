@@ -12,7 +12,7 @@ Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
             xtype: 'button',
             text: '编辑',
             ref: 'gridEdit_Tab',
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-pencil-square',
             funCode:'girdFuntionBtn',
             disabled:true
         },'->',{
@@ -22,7 +22,7 @@ Ext.define("core.wisdomclass.classmotto.view.MainGrid", {
             xtype:'textfield',
             name:'className',
             funCode: 'girdFastSearchText',
-            emptyText: '班级名称'
+            emptyText: '请输入班级名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

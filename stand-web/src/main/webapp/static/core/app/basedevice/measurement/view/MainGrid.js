@@ -33,7 +33,7 @@ Ext.define("core.basedevice.measurement.view.MainGrid", {
             xtype:'textfield',
             name:'notes',
             funCode: 'girdFastSearchText',
-            emptyText: '备注'
+            emptyText: '请输入备注'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
