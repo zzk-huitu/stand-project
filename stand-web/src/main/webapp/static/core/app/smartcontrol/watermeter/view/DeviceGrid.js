@@ -29,7 +29,7 @@ Ext.define("core.smartcontrol.watermeter.view.DeviceGrid", {
             name:'termSN',
             dataType:'string',
             funCode:'girdFastSearchText', 
-            emptyText: '序列号'
+            emptyText: '请输入序列号'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

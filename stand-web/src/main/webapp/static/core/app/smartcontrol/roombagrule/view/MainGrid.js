@@ -42,7 +42,7 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
             xtype:'textfield',
             name:'roomRuleName',
             funCode: 'girdFastSearchText',
-            emptyText: '房间规则名称'
+            emptyText: '请输入房间规则名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
