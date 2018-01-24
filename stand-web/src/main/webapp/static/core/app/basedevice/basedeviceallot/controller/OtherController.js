@@ -54,6 +54,7 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
         var allotlayout = win.down("basepanel[funCode=" + detCode + "]");
         //var treegrid = allotlayout.down('basetreegrid[xtype=basedevice.basedeviceallot.roominfotree2]');
         var baseGrid =allotlayout.down('panel[xtype=basedevice.basedeviceallot.devicesysgrid]');
+        var deviceAllotGrid =allotlayout.down('panel[xtype=basedevice.basedeviceallot.deviceallotgrid]');
         var rows =  baseGrid.getStore().getCount();
         if (rows <= 0) {
           self.msgbox("选中的设备列表没有数据，请选择!");
@@ -80,14 +81,15 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
              var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
              if (data.success) {
                 self.msgbox("提交成功!");
-              //  baseGrid.getStore().removeAll();  
-                basegrid.getStore().load();                       
+                basegrid.getStore().load(); 
+                baseGrid.getStore().removeAll();
+                deviceAllotGrid.getStore().load();  
                 loading.hide();
-                win.close();
+               // win.close();
              } else {
                 loading.hide();
                 self.Warning(data.obj);
-                win.close();
+               // win.close();
               }
           },
         failure: function(response) {                   

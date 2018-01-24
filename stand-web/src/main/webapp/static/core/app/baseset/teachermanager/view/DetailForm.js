@@ -87,7 +87,8 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             fieldLabel: '工号',
             name: "userNumb",
             xtype: 'textfield',
-            allowBlank: true,
+            allowBlank: false,
+            blankText: "工号不能为空",
             maxLength:16,
             vtype:'userNumb' 
         },{

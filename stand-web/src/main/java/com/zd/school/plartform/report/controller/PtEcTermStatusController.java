@@ -93,7 +93,7 @@ public class PtEcTermStatusController extends FrameWorkController<PtEcTermStatus
 		}
 
 		QueryResult<PtEcTermStatus> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
+				super.sort(request), filter, false);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 		

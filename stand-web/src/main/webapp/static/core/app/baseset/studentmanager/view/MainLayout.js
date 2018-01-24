@@ -26,7 +26,7 @@ Ext.define("core.baseset.studentmanager.view.MainLayout", {
 		defaultObj: {
 			sex: '1',
 			category: '2',
-			state: '1',
+			state: '0',
 			orderIndex: 1,
 			userPwd: '123456',
 			issystem: '1'

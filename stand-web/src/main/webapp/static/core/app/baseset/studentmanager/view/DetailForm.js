@@ -86,7 +86,8 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             fieldLabel: '学号',
             name: "userNumb",
             xtype: 'textfield',
-            allowBlank: true,
+            allowBlank: false,
+            blankText: "学号不能为空",
             maxLength:16,
             vtype:'userNumb' 
         },{

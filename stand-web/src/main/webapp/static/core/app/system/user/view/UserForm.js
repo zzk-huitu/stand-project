@@ -86,7 +86,8 @@ Ext.define("core.system.user.view.UserForm", {
             fieldLabel: '工号/学号',
             name: "userNumb",
             xtype: 'textfield',
-            allowBlank: true,
+            allowBlank: false,
+            blankText: "工号/学号不能为空",
             maxLength:16,
             vtype:'userNumb'  
         },{

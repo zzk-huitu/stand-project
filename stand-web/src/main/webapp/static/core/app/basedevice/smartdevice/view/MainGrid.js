@@ -75,6 +75,11 @@ Ext.define("core.basedevice.smartdevice.view.MainGrid", {
             text: "主键",
             dataIndex: "uuid",
             hidden: true
+        },{
+            flex: 1.5,
+            minWidth: 150,
+            text: "设备序列号",
+            dataIndex: "termSN",            
         }, {
             flex: 1.5,
             minWidth: 150,
