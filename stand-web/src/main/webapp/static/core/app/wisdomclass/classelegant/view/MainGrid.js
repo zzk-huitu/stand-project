@@ -35,7 +35,7 @@ Ext.define("core.wisdomclass.classelegant.view.MainGrid", {
             xtype:'textfield',
             name:'title',
             funCode: 'girdFastSearchText',
-            emptyText: '标题'
+            emptyText: '请输入标题'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

@@ -36,7 +36,7 @@ Ext.define("core.wisdomclass.redflag.view.MainGrid", {
             xtype:'textfield',
             name:'className',
             funCode: 'girdFastSearchText',
-            emptyText: '班级名称'
+            emptyText: '请输入班级名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

@@ -670,7 +670,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 
 			if (row == 0) {
-				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"未有人员数据需要同步！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"该数据已同步！\"}");
 			} else if (row > 0) {
 				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"同步人员数据成功！\"}");
 			} else {

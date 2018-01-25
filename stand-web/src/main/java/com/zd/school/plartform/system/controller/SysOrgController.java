@@ -313,7 +313,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			
 			
 			if(row==0){
-				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"未有部门数据需要同步！\"}");
+				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"该部门数据已同步！\"}");
 			}else if(row>0){
 				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"同步部门数据成功！\"}");
 			}else{

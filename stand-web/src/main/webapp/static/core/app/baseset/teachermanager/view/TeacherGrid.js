@@ -29,7 +29,7 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
-            iconCls: 'x-fa fa-plus-square',
+            iconCls: 'x-fa fa-plus-circle',
             disabled: false
         },{
             xtype: 'button',
@@ -64,7 +64,7 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-file'
+            iconCls: 'x-fa fa-file-excel-o'
         },{
             xtype: 'button',
             text: '同步人员数据到UP',

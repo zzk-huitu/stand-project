@@ -14,13 +14,13 @@ Ext.define("core.system.menu.view.MenuTree", {
 		xtype: 'button',
 		text: '添加下级',
 		ref: 'gridAdd_Tab',
-		iconCls: 'x-fa fa-plus-square',
+		iconCls: 'x-fa fa-plus-circle',
 	    disabled: true
 	}, {
 		xtype: 'button',
 		text: '添加同级',
 		ref: 'gridAddBrother_Tab',
-		iconCls: 'x-fa fa-plus-square-o',
+		iconCls: 'x-fa fa-plus-circle',
 		disabled: true
 	}, {
 		xtype: 'button',

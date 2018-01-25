@@ -40,7 +40,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             text: '费率绑定',
             ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-link',
             disabled:true,
         },{
             xtype: 'tbtext', 
@@ -49,7 +49,7 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
             xtype:'textfield',
             name:'priceName',
             funCode: 'girdFastSearchText',
-            emptyText: '名称'
+            emptyText: '请输入名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

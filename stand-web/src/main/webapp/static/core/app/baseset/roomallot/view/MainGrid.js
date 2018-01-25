@@ -32,7 +32,7 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
             xtype: 'button',
             text: '推送消息',
             ref: 'officeTs',
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-paper-plane',
         }]
     }, 
    panelButtomBar:{},

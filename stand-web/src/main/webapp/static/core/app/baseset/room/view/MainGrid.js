@@ -61,7 +61,7 @@ Ext.define("core.baseset.room.view.MainGrid", {
             xtype:'textfield',
             name:'roomName',
             funCode: 'girdFastSearchText',
-            emptyText: '全局搜索房间名称'
+            emptyText: '请输入房间名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

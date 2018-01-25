@@ -106,7 +106,7 @@ Ext.define("core.reportcenter.ptroombagstatus.controller.MainController", {
             width: 1200,
             height: 600,
             operType: "detail",
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-search-plus',
             items: [{
                 xtype: "reportcenter.ptroombagstatus.sysdevicegrid",
             }]

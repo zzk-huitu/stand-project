@@ -21,7 +21,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             xtype: 'button',
             text: '绑定品牌型号',
             ref: 'gridBinDing',
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-link'
         },{
             xtype: 'button',
             text: '删除',
@@ -34,7 +34,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-file',
+            iconCls: 'x-fa fa-file-excel-o',
         },{
             xtype: 'tbtext', 
             html:'快速搜索：'
@@ -42,7 +42,7 @@ Ext.define("core.basedevice.ptirroomdevice.view.MainGrid", {
             xtype:'textfield',
             name:'deviceTypeCode',
             funCode: 'girdFastSearchText',
-            emptyText: '型号名称'
+            emptyText: '请输入型号名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  

@@ -26,7 +26,7 @@ Ext.define("core.smartcontrol.roombagrule.view.DormAllotFinishGridTwo", {
             xtype: 'button',
             text: '指定扣费人员',
             ref:'gridAssign',
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-hand-pointer-o',
             funCode:'girdFuntionBtn',
             //disabled:true
         }],

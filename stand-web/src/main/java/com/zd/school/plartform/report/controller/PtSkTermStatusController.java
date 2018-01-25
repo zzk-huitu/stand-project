@@ -97,7 +97,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		}
 
 		QueryResult<PtSkTermStatus> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
+				super.sort(request), filter, false);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 
@@ -149,7 +149,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		String sqlsub = " from dbo.PT_SK_TERMSTATUS a" + "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0 ";
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 ";
 		orderSql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
 
 		QueryResult<Object> qResult = thisService.queryPageResultBySql(select + sqlsub + querySql + orderSql, start,

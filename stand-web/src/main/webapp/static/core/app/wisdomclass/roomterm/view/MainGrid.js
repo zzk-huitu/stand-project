@@ -32,7 +32,7 @@ Ext.define("core.wisdomclass.roomterm.view.MainGrid", {
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   
-            iconCls: 'x-fa fa-file'
+            iconCls: 'x-fa fa-file-excel-o'
         }]
     },
     tbar:null,

@@ -29,7 +29,7 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
             xtype: 'button',
             text: '添加',
             ref: 'gridAdd_Tab',
-            iconCls: 'x-fa fa-plus-square',
+            iconCls: 'x-fa fa-plus-circle',
             disabled: false
         },{
             xtype: 'button',
@@ -64,7 +64,7 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-file'
+            iconCls: 'x-fa fa-file-excel-o'
         },{
             xtype: 'button',
             text: '同步人员数据到UP',
@@ -79,13 +79,13 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
             width:100,
             name:'userName',
             funCode:'girdFastSearchText', 
-            emptyText: '用户名'
+            emptyText: '请输入用户名'
         },{
             xtype:'textfield',
             width:100,
             name:'xm',
             funCode:'girdFastSearchText', 
-            emptyText: '学生姓名'
+            emptyText: '请输入学生姓名'
         },{
             xtype: 'button',
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型

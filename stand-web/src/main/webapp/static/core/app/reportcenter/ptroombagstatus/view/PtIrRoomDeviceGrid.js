@@ -32,7 +32,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtIrRoomDeviceGrid", {
             text: '查看所有设备',
             ref: 'gridfind',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-plus-circle'
+            iconCls: 'x-fa fa-search-plus'
         }]
     },
     panelButtomBar:{},

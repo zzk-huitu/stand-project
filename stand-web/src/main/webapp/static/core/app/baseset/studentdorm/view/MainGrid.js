@@ -37,13 +37,13 @@ Ext.define("core.baseset.studentdorm.view.MainGrid", {
             xtype: 'button',
             text: '推送消息',
             ref: 'dormTs',
-            iconCls: 'x-fa fa-plus-circle',
+            iconCls: 'x-fa fa-paper-plane',
         }, {
             xtype: 'button',
             text: '导出',
             ref: 'gridExport',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            iconCls: 'x-fa fa-file',
+            iconCls: 'x-fa fa-file-excel-o',
         }]
     },
     defSort: [{
