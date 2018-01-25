@@ -690,7 +690,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/*
-	 * 一键同步UP的方式（待定；目前使用数据库定时脚本，进行发卡信息同步）
+	 * 废弃：一键同步UP的方式（待定；目前使用数据库定时脚本，进行发卡信息同步）
 	 */
 	@RequestMapping("/doSyncAllCardInfoFromUp")
 	public void doSyncAllCardInfoFromUp(HttpServletRequest request, HttpServletResponse response) throws IOException {

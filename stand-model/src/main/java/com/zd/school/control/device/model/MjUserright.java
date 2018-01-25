@@ -20,7 +20,7 @@ import com.zd.core.util.DateTimeSerializer;
 /**
  * 
  * ClassName: MjUserright Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 门禁权限表(MJ_UserRight)实体类. date: 2016-09-08
+ * REASON(可选). Description: 门禁权限表(PT_MJ_USERRIGHT)实体类. date: 2016-09-08
  *
  * @author luoyibo 创建文件
  * @version 0.1
@@ -28,8 +28,8 @@ import com.zd.core.util.DateTimeSerializer;
  */
 
 @Entity
-@Table(name = "MJ_USERRIGHT")
-@AttributeOverride(name = "uuid", column = @Column(name = "USERRIGHT_ID", length = 36, nullable = false) )
+@Table(name = "PT_MJ_USERRIGHT")
+@AttributeOverride(name = "uuid", column = @Column(name = "USERRIGHT_ID", length = 36, nullable = false))
 public class MjUserright extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -49,7 +49,6 @@ public class MjUserright extends BaseEntity implements Serializable {
 	@Column(name = "CARDSER_NO", length = 36, nullable = true)
 	private String cardserNo;
 
-
 	@FieldInfo(name = "时段ID")
 	@Column(name = "CONTROLSEG_ID")
 	private Integer controlsegId;
@@ -62,10 +61,9 @@ public class MjUserright extends BaseEntity implements Serializable {
 	@Column(name = "ISDOWN_LOAD")
 	private Boolean isdownLoad;
 
-
 	@FieldInfo(name = "数据状态对应数据字典（0正常，1	删除，2无效，3过期，4历史）")
 	@Column(name = "STATUS_ID")
-	private Integer statusID;
+	private Integer statusID = 0;
 
 	@FieldInfo(name = "卡片状态日期，在卡片挂失、解挂、换卡、补卡、退卡、销户等操作时更新")
 	@Column(name = "STATUSCHANGE_TIME", length = 23, nullable = true)
@@ -80,11 +78,11 @@ public class MjUserright extends BaseEntity implements Serializable {
 	@FieldInfo(name = "设备名称")
 	@Formula("(SELECT A.TERMNAME FROM dbo.PT_TERM A WHERE A.TERM_ID=TERM_ID)")
 	private String termName;
-	
+
 	@FieldInfo(name = "设备序列号")
 	@Formula("(SELECT A.TERMSN FROM dbo.PT_TERM A WHERE A.TERM_ID=TERM_ID)")
 	private String termSN;
-	
+
 	public String getStuId() {
 		return stuId;
 	}

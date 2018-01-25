@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zd.core.annotation.FieldInfo;
@@ -24,7 +25,8 @@ import com.zd.core.util.DateTimeSerializer;
  */
 
 @Entity
-@Table(name = "PT_CARD_BAGS")
+@Table(name = "PT_CARD_BAGS" ,
+uniqueConstraints = {@UniqueConstraint(columnNames={"BAGID", "USER_ID"})})
 @AttributeOverride(name = "uuid", column = @Column(name = "BAGS_ID", length = 36, nullable = false))
 public class PtcardBags extends BaseEntity implements Serializable {
 
@@ -69,7 +71,7 @@ public class PtcardBags extends BaseEntity implements Serializable {
 	private Date bagUpdateDate = new Date();
 
 	@FieldInfo(name = "钱包状态 1正常 0未启用")
-	@Column(name = "BAGSTATUSID")
+	@Column(name = "BAGSTATUSID" , columnDefinition = "int ")
 	private Integer bagStatusId;
 
 	public Integer getBagId() {
@@ -164,3 +166,4 @@ public class PtcardBags extends BaseEntity implements Serializable {
 	@Column(name = "CARDVALUE_ENRYPT", length = 512, nullable = true)
 	private String cardValue_Enrypt;
 }
+
