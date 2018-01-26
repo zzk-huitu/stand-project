@@ -52,7 +52,10 @@ Ext.define("core.basedevice.smartdevice.view.SkBaseParamForm", {
                 name: 'tlvs[3].valInt',
                 xtype: "basecombobox",
                 ddCode: "GZMODEL",
-                value: '0'
+                value: '0',
+                listeners:{
+                    select:'onChangeWorkPattern' 
+                },
             }, {
                 xtype: "container",
                 layout: "column", // 从左往右的布局
@@ -68,7 +71,10 @@ Ext.define("core.basedevice.smartdevice.view.SkBaseParamForm", {
                 }, {
                     columnWidth: 0.2,
                     xtype: "label",
-                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒</font>"
+                    bind:{
+                       html: "{workPatternType.value}"
+                    },
+                   
                 }]
             }, {
                 xtype: "container",
@@ -85,7 +91,9 @@ Ext.define("core.basedevice.smartdevice.view.SkBaseParamForm", {
                 }, {
                     columnWidth: 0.2,
                     xtype: "label",
-                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒</font>"
+                    bind:{
+                       html: "{workPatternType.value}"
+                    },
                 }]
             }, {
                 xtype: "container",
@@ -103,7 +111,7 @@ Ext.define("core.basedevice.smartdevice.view.SkBaseParamForm", {
                 }, {
                     columnWidth: 0.2,
                     xtype: "label",
-                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>元</font>"
+                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>分</font>"
                 }]
             }, {
                 xtype: "container",
@@ -121,7 +129,9 @@ Ext.define("core.basedevice.smartdevice.view.SkBaseParamForm", {
                 }, {
                     columnWidth: 0.2,
                     xtype: "label",
-                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒</font>"
+                    bind:{
+                       html: "{workPatternType.value}"
+                    },
                 }]
             }, {
                 xtype: "combobox",

@@ -58,13 +58,11 @@ Ext.define("core.smartcontrol.watermeter.view.RoomInfoTree", {
             var mianGrid = mainLayout.down("panel[xtype=smartcontrol.watermeter.devicegrid]");
             var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
             var filter=new Array();
+            filter.push({"type": "string", "value": "8", "field": "termTypeID", "comparison": "="})
             if(girdSearchTexts[0].getValue()){
                 filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "termSN", "comparison": ""})
             }
-            if(filter.length==0)
-                filter=null;
-            else
-                filter = JSON.stringify(filter);
+            filter = JSON.stringify(filter);
              //获取点击树节点的参数
             var roomId= record.get("id");
             var roomLeaf=record.get("leaf");

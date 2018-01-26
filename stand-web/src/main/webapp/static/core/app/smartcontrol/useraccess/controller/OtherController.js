@@ -67,14 +67,15 @@ Ext.define("core.smartcontrol.useraccess.controller.OtherController", {
         }
        for (var i = 0; i < isSelectUserCount; i++) {
             employeeID = isSelectUserStore.getAt(i).data.uuid;
-            for (var k = 0; k < gridCount; k++) {
+            //已存的人员，去掉提示
+       /*     for (var k = 0; k < gridCount; k++) {
                  var employeeid = gridStore.getAt(k).data.stuId;
                  var xm = gridStore.getAt(k).data.xm;
                 if (employeeID == employeeid) {
                     self.msgbox("姓名为：" + xm + "的已存在!");
                     return ;
                 }
-            };
+            };*/
             if(stuId.indexOf(employeeID)==-1)
               stuId.push(employeeID);
           // stuId += employeeID + "," ;          
