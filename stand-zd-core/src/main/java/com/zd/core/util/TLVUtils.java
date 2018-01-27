@@ -1,5 +1,6 @@
 package com.zd.core.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -54,8 +55,13 @@ public class TLVUtils {
 
 
 
+
+
+
+
 	public static List<TagLenVal> decode(byte[] bytes,List<TagLenVal> tlvs){
 		int index=0;
+		List<Integer> tags=new ArrayList<>(); 
 		while(index<bytes.length-1){
 			byte[] twobyte=new byte[2];
 			twobyte[0]=bytes[index+1];
@@ -69,15 +75,25 @@ public class TLVUtils {
 			byte[] valbts=ArrayUtils.subarray(bytes, index, index+len);
 			TagLenVal tlv=findTlvbyTag(tlvs,tag);
 			if(tlv==null){
-				logger.error("定义数组里没有找到tag"+tag);
+				logger.error("定义数组里没有找到tag"+Integer.toHexString(tag));
 			}else{
+				tags.add(tag);
 				tlv.len=len;
 				tlv.tag=tag;
 				setValueToTlv(tlv,valbts);
 			}
 			index+=len;
 		}
-		return tlvs;
+		List<TagLenVal> result=new ArrayList<>(); 
+		for(TagLenVal tlv:tlvs){
+			for(int i:tags){
+				if(tlv.tag==i){
+					result.add(tlv);
+					break;
+				}
+			}
+		}
+		return result;
 	}
 	
 	private static void setValueToTlv(TagLenVal tlv,byte[] valbts){
@@ -149,6 +165,20 @@ public class TLVUtils {
 				byte[] temp=ArrayUtils.subarray(valbts, i*14, (i+1)*14);
 				setSwitchTimeString(temp, tlv);
 			}
+		}else if(tlv.type==10){
+			 StringBuilder stringBuilder = new StringBuilder("");   
+			    if (valbts == null || valbts.length <= 0) {   
+			        return;   
+			    }   
+			    for (int i = 0; i < valbts.length; i++) {   
+			        int v = valbts[i] & 0xFF;   
+			        String hv = Integer.toHexString(v);   
+			        if (hv.length() < 2) {   
+			            stringBuilder.append(0);   
+			        }   
+			        stringBuilder.append(hv);   
+			    }   
+			    tlv.valStr= stringBuilder.toString(); 
 		}
 	}
 	
@@ -174,7 +204,8 @@ public class TLVUtils {
 		}
 		return bytes;
 	}
-	
+
+
 	private static  void putStrValuebyIndex(byte[] bytes,TagLenVal tlv,int index){
 		byte[] str=tlv.valStr.getBytes();
 		byte[] temp=new byte[tlv.len-str.length];
@@ -313,8 +344,8 @@ public class TLVUtils {
 	            s = new String(ch);  
 	            return Integer.valueOf(s, 2);  
 	        } else {  
-	            for (int i = 0; i < 32; i++) {  
-	                if (ch[i] == '0')  
+	            for (int i = 0; i < 32; i++) {
+	                if (ch[i] == '0')
 	                    ch[i] = '1';  
 	                else  
 	                    ch[i] = '0';  
