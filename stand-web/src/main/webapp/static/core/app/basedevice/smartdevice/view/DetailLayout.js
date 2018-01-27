@@ -13,7 +13,7 @@ Ext.define("core.basedevice.smartdevice.view.DetailLayout",{
 	 /*设置最小宽度，并且自动滚动*/
     minWidth:1000,
     scrollable:true,
-
+    viewModel: 'basedevice.smartdevice.mainModel',
     /*关联此视图控制器*/
 	controller: 'basedevice.smartdevice.detailcontroller',
 	items: [{

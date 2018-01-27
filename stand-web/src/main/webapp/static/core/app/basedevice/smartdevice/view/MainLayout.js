@@ -5,7 +5,6 @@ Ext.define("core.basedevice.smartdevice.view.MainLayout", {
     requires: [   
     	"core.basedevice.smartdevice.controller.MainController",       
     ],
-    
     /** 关联此视图控制器 */
     controller: 'basedevice.smartdevice.maincontroller',
     /** 页面代码定义 */
@@ -14,6 +13,7 @@ Ext.define("core.basedevice.smartdevice.view.MainLayout", {
     detLayout: "basedevice.smartdevice.detaillayout",
     /*标注这个视图控制器的别名，以此提供给window处使用*/
     otherController:'basedevice.smartdevice.othercontroller',
+
     layout:'fit',
     border:false,
     funData: {

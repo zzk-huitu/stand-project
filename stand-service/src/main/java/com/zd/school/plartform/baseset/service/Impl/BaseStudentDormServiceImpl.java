@@ -10,11 +10,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zd.core.constant.AdminType;
+import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.school.build.allot.model.DormStudentDorm;
@@ -55,7 +59,10 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	public void setDormStudentdormDao(BaseStudentDormDao dao) {
 		this.dao = dao;
 	}
-
+	
+	@Autowired
+	private  HttpServletRequest request;
+	
 	@Resource
 	private CommTreeService commTreeService;
 	@Resource
@@ -81,8 +88,14 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser) {
 		String userId = currentUser.getUuid();
 		Integer rightType = currentUser.getRightType();
+		/*
 		if (currentUser.getUuid().equals(AdminType.ADMIN_USER_ID))
 			rightType = 0;
+		*/
+		Integer isAdmin=(Integer)request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+		if(isAdmin==1)
+			rightType=0;
+		
 
 		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTGRADCLASSTREE ''{0}'',{1},''{2}''", userId,
 				rightType, deptType);

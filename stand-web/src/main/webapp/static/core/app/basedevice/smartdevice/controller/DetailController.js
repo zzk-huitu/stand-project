@@ -36,6 +36,25 @@ Ext.define("core.basedevice.smartdevice.controller.DetailController", {
                     }
                 };                        
             }
+        },
+
+    },
+    onChangeWorkPattern:function(btn){
+        var value = btn.value;
+        var viewModel = this.getView().getViewModel();
+        var timeWorkPattern = "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒</font>";
+        var meterWorkPattern = "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>脉冲</font>";
+        if(value == 0){//计时实时模式
+         viewModel.set("workPatternType.value",timeWorkPattern);
+        }else if (value == 17){//计量实时模式
+            viewModel.set("workPatternType.value",meterWorkPattern);
+
+        }else if (value == 51){//计时预扣模式
+            viewModel.set("workPatternType.value",timeWorkPattern);
+
+        }else if(value == 68){//计量预扣模式
+            viewModel.set("workPatternType.value",meterWorkPattern);
+
         }
-    }
+    },
 });
