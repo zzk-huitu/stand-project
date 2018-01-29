@@ -44,7 +44,7 @@ Ext.define("core.basedevice.smartdevice.controller.OtherController", {
         for (var i = 1; i <= 4; i++) {
             valInt += Ext.util.Format.date("0 "+params["time" + i + ""], 'H:i') + "|";
         };
-        valInt = valInt.substring(1, valInt.length - 1);
+        valInt = valInt.substring(0, valInt.length - 1);
                         
         Ext.apply(params, objForm.highFormData,{
             'tlvs[0].valStr': valInt
