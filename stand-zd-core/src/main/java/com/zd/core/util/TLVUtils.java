@@ -1,11 +1,13 @@
 package com.zd.core.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javassist.bytecode.ByteArray;
 /**
@@ -22,7 +24,7 @@ public class TLVUtils {
 		for(TagLenVal tlv:tlvs){
 			if(tlv==null || tlv.type==0  )continue;
 			byte[] twobyte=new byte[2];
-			ByteArray.write16bit(tlv.getTag(), twobyte, 0);
+			ByteArray.write16bit(tlv.getTag(), twobyte, 0);//转为单字节的码，自动截取，每个字节最大值为127
 			swapAndAppend(bytes,twobyte,index);
 			index+=2;
 			ByteArray.write16bit(tlv.len, twobyte, 0);
@@ -58,7 +60,8 @@ public class TLVUtils {
 
 
 
-
+	//bytes在数据库中每个字节，以两位数字存放，
+	//而在这里读取出来的时候，会自动将每个字节转为10进行制来存放。
 	public static List<TagLenVal> decode(byte[] bytes,List<TagLenVal> tlvs){
 		int index=0;
 		List<Integer> tags=new ArrayList<>(); 
@@ -122,12 +125,20 @@ public class TLVUtils {
 			tlv.valStr=s.trim();
 		}else if(tlv.type==4){//卡类
 			//ArrayUtils.reverse(valbts);
-			int temp=ByteArray.read32bit(valbts, 0);
-			tlv.valStr=Integer.toBinaryString(temp);
+			int temp=ByteArray.read32bit(valbts, 0);	//将字节码转为10进制数据
+			tlv.valStr=Integer.toBinaryString(temp);	//将10进制数据转为32为二进制数据
 			int i=32-tlv.valStr.length();
 			for(;i>0;i--){
 				tlv.valStr="0"+tlv.valStr;
 			}
+			//ZZK：将32位的二进制码 按每8位数据进行反转。
+			char[] array=tlv.valStr.toCharArray();
+			ArrayUtils.reverse(array, 0, 8);
+			ArrayUtils.reverse(array, 8, 16);
+			ArrayUtils.reverse(array, 16, 24);
+			ArrayUtils.reverse(array, 24, 32);
+			tlv.valStr = new String(array);
+			
 		}else if(tlv.type==5){//费率
 			StringBuffer rate=new StringBuffer();
 			for(int i=0; i<valbts.length;i+=2){
@@ -234,13 +245,23 @@ public class TLVUtils {
 	
 	private static  void putCardTypeValuebyIndex(byte[] bytes,TagLenVal tlv,int index){
 		char[] array=tlv.valStr.toCharArray();
-		int temp=transferCharArray2Number(array);
+		
+		//ZZK：将32位的二进制码 按每8位数据进行反转。
+		//原码：10000000 00000000 00000000 00000000 （前端传来，代表1类卡可用）
+		//转码：00000001 00000000 00000000 00000000 （每8位数据，反转）
+		//最终整体转为16进制数据： 01 00 00 00 	（每个字节代表8类卡的状态）
+		ArrayUtils.reverse(array, 0, 8);
+		ArrayUtils.reverse(array, 8, 16);
+		ArrayUtils.reverse(array, 16, 24);
+		ArrayUtils.reverse(array, 24, 32);
+		
+		int temp=transferCharArray2Number(array);	//将2进制转为10进制值
 		byte[] bt=new byte[tlv.len];
 		ByteArray.write32bit(temp, bt, 0);
 		//swapAndAppend(bytes,bt,index);
-		 for(int i=0;i<bt.length;i++){
-			 bytes[index+i]=bt[i];
-		 }
+		for(int i=0;i<bt.length;i++){
+			bytes[index+i]=bt[i];
+		}
 	}
 	private static  void putIPValuebyIndex(byte[] bytes,TagLenVal tlv,int index){
 		String[] array=tlv.valStr.split("[|,:.]");
