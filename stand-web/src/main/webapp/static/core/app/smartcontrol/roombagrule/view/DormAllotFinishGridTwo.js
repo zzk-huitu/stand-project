@@ -59,5 +59,10 @@ Ext.define("core.smartcontrol.roombagrule.view.DormAllotFinishGridTwo", {
         dataIndex: "roomName",
         flex:1,
         minWidth:80,
+        renderer: function(value, metaData) {
+            var title = "房间名称";
+            metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+            return value;
+        }
     }]
 })
