@@ -82,7 +82,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             text: "费率",
             dataIndex: "price",
             flex:1,
-            minWidth:80,
+            minWidth:100,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
                 var termTypeId= record.get("termTypeId");            
                 if(termTypeId==9){
