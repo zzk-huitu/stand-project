@@ -186,5 +186,9 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	 * @return
 	 */
 	public List<BaseOrg> getUserRightDeptList(SysUser currentUser);
+
+	public BaseOrgChkTree getUserRightDeptTree(SysUser currentUser, String node);
+
+	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser);
 	
 }

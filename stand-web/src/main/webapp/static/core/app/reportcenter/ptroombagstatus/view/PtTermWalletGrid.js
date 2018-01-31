@@ -68,12 +68,12 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1,
             minWidth:80,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                var termtypeid= record.get("termTypeId");
-                if(termtypeid==8){
+                var termTypeId= record.get("termTypeId");
+                if(termTypeId==8){
                     value =record.get("bagValue");
                     return parseFloat(value).toFixed(2)+" 升"
                 }
-                if(termtypeid==9){
+                if(termTypeId==9){
                    value =record.get("bagValue");
                     return parseFloat(value).toFixed(2)+" 度"
                 }
@@ -84,14 +84,18 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1,
             minWidth:80,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                 var termtypeid= record.get("termTypeId");
+                var termTypeId= record.get("termTypeId");            
                 if(termTypeId==9){
-                    value =record.get("dkprice");
-                    return value+" 元/度"
+                    value = record.get("dkprice");
+                    if(!value)
+                        value="0";
+                    return value+" 元/度";
                 }
                 if(termTypeId==8){
-                    value =record.get("skprice");
-                    return value+" 元/升"
+                    value = record.get("skprice");
+                    if(!value)
+                        value="0";
+                    return value+" 元/升";
                 }
             }
         },{
@@ -100,12 +104,12 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1,
             minWidth:80,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                 var termtypeid= record.get("termTypeId");
-                if(termtypeid==8){
+                 var termTypeId= record.get("termTypeId");
+                if(termTypeId==8){
                     value =record.get("totalBuyedValue");
                     return parseFloat(value).toFixed(2)+" 升"
                 }
-                if(termtypeid==9){
+                if(termTypeId==9){
                     value =record.get("totalBuyedValue");
                     return parseFloat(value).toFixed(2)+" 度"
                 }
@@ -116,12 +120,12 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1,
             minWidth:80,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                  var termtypeid= record.get("termTypeId");
-                if(termtypeid==8){
+                  var termTypeId= record.get("termTypeId");
+                if(termTypeId==8){
                     value =record.get("totalUsedValue");
                     return parseFloat(value).toFixed(2)+" 升"
                 }
-                if(termtypeid==9){
+                if(termTypeId==9){
                     value =record.get("totalUsedValue");
                     return parseFloat(value).toFixed(2)+" 度"
                 }
@@ -132,12 +136,12 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1.2,
             minWidth:100,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                 var termtypeid= record.get("termTypeId");
-                if(termtypeid==8){
+                 var termTypeId= record.get("termTypeId");
+                if(termTypeId==8){
                     value =record.get("totalClearValue");
                     return parseFloat(value).toFixed(2)+" 升"
                 }
-                if(termtypeid==9){
+                if(termTypeId==9){
                     value =record.get("totalClearValue");
                     return parseFloat(value).toFixed(2)+" 度"
                 }
@@ -148,12 +152,12 @@ Ext.define("core.reportcenter.ptroombagstatus.view.PtTermWalletGrid", {
             flex:1,
             minWidth:80,
             renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                var termtypeid= record.get("termTypeId");
-                if(termtypeid==8){
+                var termTypeId= record.get("termTypeId");
+                if(termTypeId==8){
                     value =record.get("subValue");
                     return parseFloat(value).toFixed(2)+" 升"
                 }
-                if(termtypeid==9){
+                if(termTypeId==9){
                     value =record.get("subValue");
                     return parseFloat(value).toFixed(2)+" 度"
                 }

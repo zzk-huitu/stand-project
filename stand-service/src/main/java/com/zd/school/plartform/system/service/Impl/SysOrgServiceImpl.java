@@ -1075,4 +1075,82 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 	}
 	
+	
+	@Override
+	public BaseOrgChkTree getUserRightDeptTree(SysUser currentUser, String rootId) {
+		//1.查询部门的数据，并封装到实体类中
+		List<BaseOrgChkTree> list = getUserRightDeptTreeList(currentUser);
+		
+		//2.找到根节点
+		BaseOrgChkTree root = new BaseOrgChkTree();
+		for (BaseOrgChkTree node : list) {			
+			//if (!(StringUtils.isNotEmpty(node.getParent()) && !node.getId().equals(rootId))) {
+			if ( StringUtils.isEmpty(node.getParent()) || node.getId().equals(rootId)) {
+				root = node;
+				list.remove(node);
+				break;
+			}
+		}
+		
+		//3.递归组装children
+		createTreeChildren(list, root);
+		return root;
+	}
+	@Override
+	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser) {
+		String userId = currentUser.getUuid();
+		Integer rightType = currentUser.getRightType();
+
+		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTDEPTTREE ''{0}'',{1}", userId, rightType);
+		List<BaseOrgChkTree> chilrens = new ArrayList<BaseOrgChkTree>();
+		List<?> alist = this.queryObjectBySql(sql);
+		for (int i = 0; i < alist.size(); i++) {
+			Object[] obj = (Object[]) alist.get(i);
+			BaseOrgChkTree node = new BaseOrgChkTree();
+			node.setId((String) obj[0]);
+			node.setText((String) obj[1]);
+			node.setIconCls((String) obj[2]);
+
+			if ((Boolean) obj[3]) {
+				node.setLeaf(true);
+			} else {
+				node.setLeaf(false);
+			}
+			node.setLevel((Integer) obj[4]);
+			node.setTreeid((String) obj[5]);
+			node.setParent((String) obj[6]);
+			node.setOrderIndex((Integer) obj[7]);
+			node.setDeptType((String) obj[8]);		
+			node.setMainLeaderName((String) obj[9]);
+			node.setOutPhone((String) obj[10]);
+			node.setRemark((String) obj[11]);
+			//node.setViceLeader((String) obj[12]);
+			node.setSuperDept((String) obj[13]);
+			node.setSuperJob((String) obj[14]);
+			node.setAllDeptName((String) obj[15]);
+			node.setSuperdeptName((String) obj[16]);
+			node.setSuperjobName((String) obj[17]);
+			node.setIsRight((String) obj[18]);
+			node.setChecked(false);
+			chilrens.add(node);
+		}
+		return chilrens;
+	}
+	
+	private void createTreeChildren(List<BaseOrgChkTree> childrens, BaseOrgChkTree root) {
+		String parentId = root.getId();
+		for (int i = 0; i < childrens.size(); i++) {
+			BaseOrgChkTree node = childrens.get(i);
+			if (StringUtils.isNotEmpty(node.getParent()) && node.getParent().equals(parentId)) {
+				root.getChildren().add(node);
+				createTreeChildren(childrens, node);
+			}
+			if (i == childrens.size() - 1) {
+				if (root.getChildren().size() < 1) {
+					root.setLeaf(true);
+				}
+				return;
+			}
+		}
+	}
 }

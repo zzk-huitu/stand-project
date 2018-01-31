@@ -14,6 +14,8 @@ import com.zd.core.model.extjs.ExtTreeNode;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 /**
  * ClassName:BaseOrgTree Function: TODO ADD FUNCTION. Reason: TODO ADD REASON.
  * Date: 2016年5月11日 下午5:45:31
@@ -147,6 +149,38 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
         this.mainLeaderName = mainLeaderName;
     }
     
+    @FieldInfo(name = "部门全称")  
+    private String allDeptName;
+
+    public String getAllDeptName() {
+        return allDeptName;
+    }
+    public void setAllDeptName(String allDeptName) {
+        this.allDeptName = allDeptName;
+    }
+    
+    @FieldInfo(name = "上级主管部门") 
+    private String superDept;
+
+    public String getSuperDept() {
+        return superDept;
+    }
+    public void setSuperDept(String superDept) {
+        this.superDept = superDept;
+    }
+
+    @FieldInfo(name = "上级主管部门名称")
+    private String superdeptName;
+
+    public String getSuperdeptName() {
+        return superdeptName;
+    }
+    public void setSuperdeptName(String superdeptName) {
+        this.superdeptName = superdeptName;
+    }
+
+    
+    
     @FieldInfo(name = "上级主管岗位")
     private String superJob;
          
@@ -181,7 +215,11 @@ public class BaseOrgTree extends ExtTreeNode<BaseOrgTree> {
     public void setIsRight(String isRight) {
         this.isRight = isRight;
     }
-
+    
+    public BaseOrgTree() {
+		// TODO Auto-generated constructor stub
+	}
+    
     public BaseOrgTree(String id, List<BaseOrgTree> children) {
 
         super(id, children);

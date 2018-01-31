@@ -3,6 +3,7 @@ package com.zd.school.plartform.system.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -80,6 +81,35 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		writeJSON(response, strData);// 返回数据
 	}
 
+	@RequestMapping(value = { "/getUserRightDeptTree" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void getUserRightDeptTree( HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String strData = "";
+		// 得到根节点ID
+		String node = request.getParameter("node");
+		String nodeId = request.getParameter("nodeId");
+		String excludes = request.getParameter("excludes");	//在结果集中排除某个字段，比如checked复选框字段
+		if (!(StringUtils.isNotEmpty(node) && node.equalsIgnoreCase(TreeVeriable.ROOT))) {
+			node = TreeVeriable.ROOT;
+		}
+		if (StringUtils.isNotEmpty(nodeId)) {
+			node = nodeId;
+		}
+		
+		SysUser currentUser = getCurrentSysUser();
+		BaseOrgChkTree root = thisService.getUserRightDeptTree(currentUser, node);
+		if (node.equalsIgnoreCase(TreeVeriable.ROOT)) {
+			strData = jsonBuilder.buildList(root.getChildren(), excludes);
+		} else {
+			List<BaseOrgChkTree> alist = new ArrayList<BaseOrgChkTree>();
+			alist.add(root);
+			strData = jsonBuilder.buildList(root.getChildren(), excludes);
+		}
+		writeJSON(response, strData);// 返回数据
+	}
+	
     /**
      *
      * @param entity

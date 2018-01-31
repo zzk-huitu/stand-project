@@ -193,7 +193,7 @@ public class SysUser extends BaseEntity implements Serializable {
     }
     
     //默认设置为本部门
-    @FieldInfo(name = "部门权限类型 0-所有权限 1-指定部门 2-本部门")
+    @FieldInfo(name = "部门权限类型 0-所有权限 1-指定部门（默认包含了本部门和岗位主管的部门）  2-本部门(移除)")
 	@Column(name = "RIGHT_TYPE", nullable = true)
 	private Integer rightType;
 

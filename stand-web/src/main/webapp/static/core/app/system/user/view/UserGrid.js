@@ -42,14 +42,14 @@ Ext.define("core.system.user.view.UserGrid", {
             iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
-            text: '锁定用户',
+            text: '锁定',
             ref: 'gridLock',
             funCode:'girdFuntionBtn',  
             disabled:true,  
             iconCls: 'x-fa fa-lock'
         },{
             xtype: 'button',
-            text: '解锁用户',
+            text: '解锁',
             ref: 'gridUnLock',
             funCode:'girdFuntionBtn',
             disabled:true,       
@@ -75,11 +75,17 @@ Ext.define("core.system.user.view.UserGrid", {
             iconCls: 'x-fa fa-file-excel-o'
         },{
             xtype: 'button',
-            text: '同步人员数据到UP',
+            text: '同步人员到UP',
             ref: 'syncToUP',
             funCode:'girdFuntionBtn',
             iconCls: 'x-fa fa-rss'
         },/*{
+            xtype: 'button',
+            text: '部门权限',
+            ref: 'gridDeptRight',
+            funCode:'girdFuntionBtn',
+            iconCls: 'x-fa fa-sitemap'
+        },*//*{
             xtype: 'button',
             text: '同步数据',
             ref: 'sync',
@@ -196,7 +202,7 @@ Ext.define("core.system.user.view.UserGrid", {
         },{
             xtype:'actiontextcolumn',
             text: "操作",
-            width:200,
+            width:250,
             fixed:true,
             items: [{
                 text:'部门岗位',
@@ -242,6 +248,29 @@ Ext.define("core.system.user.view.UserGrid", {
                         view:view.grid,
                         record: rec,
                         cmd:"userRole"
+                    });
+                }
+            },{
+                text:'部门权限',
+                style:'font-size:12px;',
+                tooltip: '部门权限',
+                ref: 'gridDeptRight',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="SYSUSER";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDeptRight")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                }, 
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('gridDeptRightClick', {
+                        view:view.grid,
+                        record: rec,
+                        cmd:"deptRight"
                     });
                 }
             },{

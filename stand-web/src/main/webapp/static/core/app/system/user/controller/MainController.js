@@ -112,6 +112,15 @@ Ext.define("core.system.user.controller.MainController", {
                  
                     return false;
                 },
+                gridDeptRightClick:function(data){
+                    var baseGrid = data.view;
+                    var record = data.record;
+
+                    this.doDetail_Tab(null, data.cmd, baseGrid, record);
+                 
+                    return false;
+                },
+
                 /*暂不开放此功能*/
                 deleteClick:function(data){
                     var userGrid = data.view;
@@ -783,7 +792,7 @@ Ext.define("core.system.user.controller.MainController", {
             baseGrid = btn.up("basegrid");
         } else {
             baseGrid = grid;
-            recordData = record.data;
+            recordData = record.getData();
         }
 
 
@@ -816,7 +825,7 @@ Ext.define("core.system.user.controller.MainController", {
                 self.msgbox("请选择一条数据！");
                 return;
             }
-            recordData = rescords[0].data;
+            recordData = rescords[0].getData();
         }
 
         insertObj = recordData;
@@ -850,6 +859,33 @@ Ext.define("core.system.user.controller.MainController", {
                     items:[{
                         xtype:'system.user.userdeptjobgrid',
                         title:null
+                    }]
+                }];
+                break;
+            case 'deptRight':
+                operType="edit";
+                detCode="deptRight";
+                var tabTitle =insertObj.xm+"-部门权限";
+                //设置tab页的itemId
+                var tabItemId=funCode+"_gridDeptRight"+insertObj.uuid;    //详细界面可以打开多个
+                items=[{
+                    xtype:detLayout,
+                    layout:'vbox',
+                    scrollable: 'x',
+                    items:[{
+                        width:'100%',
+                        height:110,
+                        xtype:'system.user.userrightdeptform',
+                        title:null
+                    },{ 
+                        width:'99%',
+                        flex:1,
+                        xtype:'system.user.userdeptrightgrid',
+                        title:null,
+                        style:{
+                            border:'1px solid #097db5 ',
+                            margin:'10px'
+                        }
                     }]
                 }];
                 break;
@@ -920,6 +956,25 @@ Ext.define("core.system.user.controller.MainController", {
                             userId: insertObj.uuid
                         };
                         deptJobStore.load();
+                        break;
+                    case 'deptRight':
+                        var deptRightGrid = item.down("panel[xtype=system.user.userdeptrightgrid]");
+                        var deptRightStore = deptRightGrid.getStore();
+                        var deptRightProxy = deptRightStore.getProxy();
+                        deptRightProxy.extraParams = {
+                            filter:"[{'type':'string','comparison':'=','value':'"+insertObj.uuid+"','field':'userId'}]"
+                        };
+                        
+                        //默认是指定部门，所以当为全部部门时，不需要刷新指定部门的表格数据，
+                        if(insertObj.rightType==0 ){
+                            deptRightGrid.hide();
+
+                            var radios=item.down("radiogroup");
+                            radios.items.items[0].setValue(true);
+                        }else{
+                            deptRightStore.load();
+                        }
+                     
                         break;
                     case 'detail':
                         var userInfoContainer = tabItem.down("container[ref=userBaseInfo]");

@@ -19,6 +19,8 @@ Ext.define("core.system.user.view.UserLayout", {
     minWidth: 1000,
     scrollable: true,
 
+    controller:'system.user.detailcontroller',
+
 	items: [{
 		xtype: "system.user.userform"
 	}]

@@ -124,7 +124,7 @@ public class PtPowerResidueController extends FrameWorkController<PtPowerResidue
 					Method method = clazz.getDeclaredMethod(methodName, String.class);
 					try {
 						sql = "SELECT CAST(EmployeeName AS VARCHAR(60)) EmployeeName,CardValueXF   FROM	TC_Employee	LEFT OUTER JOIN "
-								+ "TC_Card ON TC_Employee.CardID = TC_Card.CARDID   WHERE CardStatusIDXF=1 and Student_id='"
+								+ "TC_Card ON TC_Employee.CardID = TC_Card.CARDID   WHERE CardStatusIDXF=1 and userId='"
 								+ userId + "'";
 						List<Object[]> xf = stuDormService.queryObjectBySql(sql);
 						String value = xf.get(0)[0] + ":" + xf.get(0)[1];

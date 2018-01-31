@@ -559,6 +559,112 @@ Ext.define("core.system.user.controller.OtherController", {
             }
         },
 
+
+        "baseformtab[detCode=deptRight] button[ref=formSave]": {
+            beforeclick: function (btn) {       
+                var self=this;
+                var basetab = btn.up('baseformtab');
+                var tabPanel = btn.up("tabpanel[xtype=app-main]");
+                var tabItemId = basetab.tabItemId;
+                var tabItem = tabPanel.getComponent(tabItemId);   //当前tab页
+        
+
+                var detPanel = basetab.down("basepanel[xtype=system.user.userlayout]");
+                var objForm = detPanel.down("baseform[xtype=system.user.userrightdeptform]");
+
+                var formObj = objForm.getForm();
+                
+                var loading = new Ext.LoadMask(basetab, {
+                    msg: '正在提交，请稍等...',
+                    removeMask: true// 完成后移除
+                });
+                loading.show();
+
+                self.asyncAjax({
+                    url:  comm.get("baseUrl") + "/SysDeptright/doUpdateRightType",
+                    params: {
+                        userId:basetab.insertObj.uuid,
+                        rightType:formObj.getValues().deptRadio
+                    },
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        if (data.success) {
+                            self.msgbox(data.obj);
+                           
+                            loading.hide();
+                            tabPanel.remove(tabItem);
+                            
+                            basetab.funData.grid.getStore().loadPage(1);
+
+                        } else {
+                            self.Error(data.obj);
+                            loading.hide();
+                        }
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });
+                return false;
+            }
+        },
+
+        /**
+         * 用户设定部门权限确定事件
+         * @type {[type]}
+         */
+        "mtsswinview[funcPanel=user.userdeptright] button[ref=ssOkBtn]": {
+            beforeclick: function(btn) {
+                var self=this;
+                
+                var win = btn.up("mtsswinview");
+                var setIds = win.setIds;
+                var funData = win.funData;
+                var deptRightGrid = win.grid;
+                var arry = new Array();
+
+                //树形查询处理
+                if (win.queryType == "mttreeview") {                    
+                    var tree = win.down("mttreeview");
+                    var records = tree.getChecked();
+                    if (records.length == 0) {                       
+                        self.msgbox("请选择部门");
+                        return false;
+                    }
+                    Ext.each(records, function(rec) {                       
+                        arry.push(rec.get("id"));
+                    });
+                    
+                    self.asyncAjax({
+                        url: comm.get("baseUrl") + "/SysDeptright/doUserRightDept",
+                        params: {
+                            userIds: setIds,
+                            deptIds: arry.join(",")
+                        },
+                        loadMask:true,
+                        //回调代码必须写在里面
+                        success: function(response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            Ext.Msg.hide(); //关闭loadMask
+
+                            if (data.success) {
+                                var deptRightStore = deptRightGrid.getStore();                               
+                                deptRightStore.load();
+                                self.msgbox(data.obj);
+                            } else
+                                self.Warning(data.obj);
+
+                            win.close();
+                        }
+                    });
+                }
+                return false;
+            }
+        },
+
     }
 
 

@@ -17,7 +17,7 @@ import com.zd.core.model.BaseEntity;
  *
  */
 @Entity
-@Table(name = "SK_PRICE")
+@Table(name = "PT_SK_PRICE")
 @AttributeOverride(name = "uuid", column = @Column(name = "SK_PRICEID", length = 36, nullable = false) )
 public class SkPriceDefine extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

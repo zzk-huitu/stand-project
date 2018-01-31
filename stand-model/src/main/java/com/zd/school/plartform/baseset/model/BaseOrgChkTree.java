@@ -148,6 +148,36 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
 		this.mainLeaderName = mainLeaderName;
 	}
 
+	@FieldInfo(name = "部门全称")  
+    private String allDeptName;
+
+    public String getAllDeptName() {
+        return allDeptName;
+    }
+    public void setAllDeptName(String allDeptName) {
+        this.allDeptName = allDeptName;
+    }
+    
+    @FieldInfo(name = "上级主管部门") 
+    private String superDept;
+
+    public String getSuperDept() {
+        return superDept;
+    }
+    public void setSuperDept(String superDept) {
+        this.superDept = superDept;
+    }
+
+    @FieldInfo(name = "上级主管部门名称")
+    private String superdeptName;
+
+    public String getSuperdeptName() {
+        return superdeptName;
+    }
+    public void setSuperdeptName(String superdeptName) {
+        this.superdeptName = superdeptName;
+    }
+    
 	@FieldInfo(name = "上级主管岗位")
 	private String superJob;
 
@@ -204,7 +234,11 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
         this.nj = nj;
     }
     
+    
+    public BaseOrgChkTree() {
 
+	}
+    
 	public BaseOrgChkTree(String id, List<BaseOrgChkTree> children) {
 
 		super(id, children);

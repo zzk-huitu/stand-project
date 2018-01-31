@@ -2,6 +2,7 @@
 package com.zd.school.plartform.report.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 	PtTermBagsService termBagsService; // service层接口
 	@Resource
 	PtRoomBagsService roomBagsService;
-	
+
 	@Resource
 	BaseStudentDormService studentdormService;
 	@Resource
@@ -54,7 +55,7 @@ public class PtBagController extends FrameWorkController implements Constant {
 
 	/**
 	 * @Title: list
-	 * @Description: 查询数据列表
+	 * @Description: 设备钱包列表
 	 * @param entity
 	 *            实体类
 	 * @param request
@@ -68,41 +69,64 @@ public class PtBagController extends FrameWorkController implements Constant {
 	public void termbaglist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		String roomid = request.getParameter("roomId");
-		QueryResult<Map> qResult = termBagsService.list(super.start(request), super.limit(request), super.sort(request), super.filter(request), true, roomid);
+		QueryResult<Map> qResult = termBagsService.list(super.start(request), super.limit(request), super.sort(request),
+				super.filter(request), true, roomid);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 
+	/**
+	 * 房间钱包
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/roombaglist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void roombaglist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
-		QueryResult<PtRoomBags> qResult = roomBagsService.queryPageResult(super.start(request), super.limit(request), super.sort(request), super.filter(request), true);
+		QueryResult<PtRoomBags> qResult = roomBagsService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), false);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 
+	/**
+	 * 用户钱包余额
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/userbagyue" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void userbagyue(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String roomid = request.getParameter("roomId");
-		String sql = "select u.*  from PT_V_STUDENTDORM d,SYS_T_USER u where " + "u.USER_ID =d.USER_ID and d.ROOM_ID='"
-				+ roomid + "'";
+		String sql = "select  u.USER_ID,u.USER_NUMB,u.XM  from PT_V_STUDENTDORM d,SYS_T_USER u where "
+				+ "u.USER_ID =d.USER_ID and d.ROOM_ID='" + roomid + "'";
 		List<Map<String, Object>> list = roomBagsService.queryMapBySql(sql);
-		//DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);//DATA_SOURCE_Up6 DATA_SOURCE_Q1 ?
+
+		DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
 		List<Map> listmap = new ArrayList<Map>();
 		try {
 			for (Map<String, Object> u : list) {
-				String USER_NUMB = (String) u.get("USER_NUMB");
-				sql = "SELECT		CardValueXF FROM	TC_Employee	LEFT OUTER JOIN "
-						+ "TC_Card ON TC_Employee.CardID = TC_Card.CARDID " + "WHERE	 EmployeeStrID = '" + USER_NUMB
-						+ "'";
+				String USER_ID = (String) u.get("USER_ID");
+				sql = "select b.bagName,b.cardValue from TC_Employee a "
+						+ " left join dbo.TC_Card_Bags b on a.cardID=b.cardID "
+						+ " where a.userId='"+USER_ID+"'";
 				List<Map<String, Object>> xf = roomBagsService.queryMapBySql(sql);
-				if (xf != null && xf.size() > 0) {
-					u.put("CardValueXF", xf.get(0).get("CardValueXF"));
-				} else {
-					u.put("CardValueXF", "无记录");
+				
+				String cardValueXF="";
+				for(int i=0;i<xf.size();i++){
+					BigDecimal cardValue = new BigDecimal(String.valueOf( xf.get(i).get("cardValue")))
+							.setScale(2, BigDecimal.ROUND_HALF_UP);		
+					cardValueXF+=xf.get(i).get("bagName")+" "+cardValue.toString()+"；";
 				}
+				if (xf.size() == 0) {			
+					cardValueXF="无记录";
+				}
+				u.put("CardValueXF", cardValueXF);
 
 				listmap.add(u);
 			}
@@ -114,21 +138,22 @@ public class PtBagController extends FrameWorkController implements Constant {
 
 		String strData = jsonBuilder.buildObjListToJson((long) listmap.size(), listmap, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
-		
+
 	}
 
 	@RequestMapping(value = { "/getUserRoomId" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public @ResponseBody BuildDormDefine getUserRoomId(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		BuildDormDefine dormDefine= null;
+	public @ResponseBody BuildDormDefine getUserRoomId(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		BuildDormDefine dormDefine = null;
 		String querySql = super.querySql(request);
 		String hql = "from DormStudentDorm where isDelete=0 ";
 		hql += querySql;
 		List<DormStudentDorm> studentDorms = studentdormService.queryByHql(hql);
-		if(studentDorms.size()!=0){
+		if (studentDorms.size() != 0) {
 			DormStudentDorm studentDormfirst = studentDorms.get(0);
 			JwClassDormAllot classDormAllot = classDormAllotService.get(studentDormfirst.getCdormId());
-			dormDefine= dormDefineService.get(classDormAllot.getDormId());
+			dormDefine = dormDefineService.get(classDormAllot.getDormId());
 		}
 		return dormDefine;
 	}

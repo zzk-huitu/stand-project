@@ -45,17 +45,15 @@ Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
         },{
             text: "学号",
             dataIndex: "USER_NUMB",
-            flex:1,
-            minWidth:100,
+            width:100,
             // renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
             //     value= record.get("USER_NUMB");
             //     return value
             // }
         }, {
             text: "姓名",
-            dataIndex: "XM",
-            flex:1,
-            minWidth:100,
+            dataIndex: "XM",            
+            width:90,
             // renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
             //     value= record.get("XM");
             //     return value
@@ -64,10 +62,19 @@ Ext.define("core.reportcenter.ptroombagstatus.view.UserWalletGrid", {
             text: "卡消费余额(元)",
             dataIndex: "CardValueXF",
             flex:1,
-            minWidth:100,
-            renderer: function(value,cellmeta,record,rowIndex,columnIndex,store) {
-                value= record.get("CardValueXF");
-                return value=="无记录"?"无记录":parseFloat(value).toFixed(2)
+            minWidth:120,
+            renderer: function(value, metaData) {
+                //var value = record.get("CardValueXF");
+            
+                var title = "卡消费余额(元)";
+                var html = value;
+                if(html)
+                    html=html.split("；").join("<br/>");
+
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + html + '"';
+
+                return value;
+
             }
         }]
     },
