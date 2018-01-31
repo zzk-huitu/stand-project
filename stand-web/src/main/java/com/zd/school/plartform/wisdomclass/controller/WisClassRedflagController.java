@@ -1,4 +1,4 @@
-package com.zd.school.platform.wisdomclass.controller;
+package com.zd.school.plartform.wisdomclass.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
