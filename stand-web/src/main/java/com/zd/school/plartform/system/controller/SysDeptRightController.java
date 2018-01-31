@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -92,6 +93,7 @@ public class SysDeptRightController extends FrameWorkController<SysDeptRight> im
 	 * @param response
 	 * @throws IOException
 	 */
+	@Auth("SYSUSER_doUserRightDept")
 	@RequestMapping(value = { "/doUserRightDept" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -110,6 +112,7 @@ public class SysDeptRightController extends FrameWorkController<SysDeptRight> im
 			
 	}
 	
+	@Auth("SYSUSER_doUpdateRightType")
 	@RequestMapping("/doUpdateRightType")
 	public void doUpdateRightType(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		SysUser  currentUser=getCurrentSysUser();

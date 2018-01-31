@@ -84,6 +84,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		orgSave.setDeptType("02"); // 默认类型为校区
 		orgSave.setLeaf(true);
 		orgSave.setIssystem(1);
+		orgSave.setAllDeptName(saveEntity.getSchoolName()+"/"+saveEntity.getCampusName());
 
 		BaseOrg parEntity = orgService.get(saveEntity.getSchoolId());
 		parEntity.setLeaf(false);

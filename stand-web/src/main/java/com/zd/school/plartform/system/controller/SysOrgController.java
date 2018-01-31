@@ -80,7 +80,13 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		strData = JsonBuilder.getInstance().buildList(lists, excludes);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+	
+	/**
+	 * 根据用户的权限，来显示具备权限的树
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/getUserRightDeptTree" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -251,6 +257,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	
 	/*
      * 单条数据调用同步UP的方式
+     * 弃用
      * */
     @RequestMapping("/doSyncDeptInfoToUp/{smallDeptId}")
 	public void doSyncDeptInfoToUp(@PathVariable("smallDeptId") String smallDeptId,HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -299,6 +306,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
     
     /*
      * 所有部门数据调用同步UP的方式
+     * 更新UP中的部门数据、更新UP用户的部门数据。
      * */
     @Auth("DEPARTMENT_sync")
     @RequestMapping("/doSyncAllDeptInfoToUp")

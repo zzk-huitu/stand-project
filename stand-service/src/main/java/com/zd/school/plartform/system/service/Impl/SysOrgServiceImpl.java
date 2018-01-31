@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.zd.core.constant.Constant;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
@@ -54,7 +57,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	public void setBaseOrgDao(SysOrgDao dao) {
 		this.dao = dao;
 	}
-
+	
+	@Autowired
+	private  HttpServletRequest request;
+	
 	@Resource
 	private JwTGradeService gradeService; // 年级的service
 
@@ -1100,7 +1106,12 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser) {
 		String userId = currentUser.getUuid();
 		Integer rightType = currentUser.getRightType();
-
+		
+		//若当前用户是超级管理员，那就直接查询所有部门
+		Integer isAdmin=(Integer)request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+		if(isAdmin==1)
+			rightType=0;
+		
 		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTDEPTTREE ''{0}'',{1}", userId, rightType);
 		List<BaseOrgChkTree> chilrens = new ArrayList<BaseOrgChkTree>();
 		List<?> alist = this.queryObjectBySql(sql);

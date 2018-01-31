@@ -1,7 +1,7 @@
 Ext.define("core.system.dept.view.MainGrid", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.system.dept.maingrid",
-    dataUrl: comm.get('baseUrl') + "/SysOrg/chkTreeList",
+    dataUrl: comm.get('baseUrl') + "/SysOrg/getUserRightDeptTree",
     model: "com.zd.school.plartform.baseset.model.BaseOrgChkTree",
     al: true,
     expandFirst:true,
