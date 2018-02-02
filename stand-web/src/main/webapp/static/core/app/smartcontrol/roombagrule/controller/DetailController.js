@@ -44,52 +44,61 @@ Ext.define("core.smartcontrol.roombagrule.controller.DetailController", {
     	var self=this;
 
     	var grid=row.view;
-    
+        var baseformtab = grid.up("baseformtab");
+        var deDuctionMode = baseformtab.deDuctionMode;
         var roomMainLayout = grid.up('basepanel[xtype=smartcontrol.roombagrule.binddetaillayout]');
         var dormGrid = roomMainLayout.down('panel[xtype=smartcontrol.roombagrule.dormallotfinishgrid]');
         var dormGrid2 = roomMainLayout.down('panel[xtype=smartcontrol.roombagrule.dormallotfinishgridtwo]');
         var store = dormGrid.getStore();
-        var store2= dormGrid2.getStore();		     
-    	//若为多选，则追加数据
-    	self.asyncAjax({
+        var store2= dormGrid2.getStore();
+        if(deDuctionMode==0){//不扣费
+            return false;
+        }else if(deDuctionMode==1){//平均扣费
+
+        //若为多选，则追加数据
+        self.asyncAjax({
             url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/userList",
             params: {
-               roomId: record.get('uuid')
-            },
+             roomId: record.get('uuid')
+         },
             //回调代码必须写在里面
-            success: function (response) {			         
-                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));	
+            success: function (response) {                   
+                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));  
                 var rows=data.rows;
                 for(var i=0;i<data.totalCount;i++){
-            		rows[i].roomId=record.get('uuid');	//加入此房间id值
-            	}         
-                store.add(rows);		  
+                    rows[i].roomId=record.get('uuid');  //加入此房间id值
+                }         
+                store.add(rows);          
             },
             failure: function(response) {
                 Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
                 loading.hide();
             }
         });
-			
-		self.asyncAjax({
-            url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/assignUserList",
-            params: {
-               filter: "[{'type':'string','comparison':'=','value':'" + record.get('uuid') + "','field':'roomId'}]",
-               limit:0,
-               start:0
-            },
+
+        }else if(deDuctionMode==2){//指定扣费
+
+            self.asyncAjax({
+                url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/assignUserList",
+                params: {
+                 filter: "[{'type':'string','comparison':'=','value':'" + record.get('uuid') + "','field':'roomId'}]",
+                 limit:0,
+                 start:0
+             },
             //回调代码必须写在里面
-            success: function (response) {			        
-                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));	
-                var rows=data.rows;			                   
-                store2.add(rows);		  
+            success: function (response) {                  
+                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));  
+                var rows=data.rows;                            
+                store2.add(rows);         
             },
             failure: function(response) {
                 Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
                 loading.hide();
             }
         });
-    },
+
+        }	
+     },
 
     doRoomDeSelect:function(row , record , index){    
     	var self=this;

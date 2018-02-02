@@ -48,6 +48,11 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
         dataIndex: "dormName",
         field: {
             xtype: "textfield"
+        },
+        renderer: function(value, metaData) {
+            var title = "宿舍名称";
+            metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+            return value;
         }
     }, {
         flex:1,

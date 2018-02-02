@@ -92,6 +92,13 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
                 xtype: "textfield"
             },
             width:150,
+        },{
+            text: "状态的小时",
+            dataIndex: "statusHour",
+            field: {
+                xtype: "textfield"
+            },
+            width:150,
         }, {
             text: "当前小时用电量",
             dataIndex: "usekwh",
