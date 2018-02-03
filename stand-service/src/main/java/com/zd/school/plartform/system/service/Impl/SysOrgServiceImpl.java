@@ -13,6 +13,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -29,6 +32,7 @@ import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwTBasecourseService;
 import com.zd.school.jw.eduresources.service.JwTGradeService;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
+import com.zd.school.plartform.baseset.model.BaseDeptjob;
 import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseOrgToUP;
@@ -60,6 +64,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	
 	@Autowired
 	private  HttpServletRequest request;
+	
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
 	
 	@Resource
 	private JwTGradeService gradeService; // 年级的service
@@ -225,7 +232,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			if (count.equals(0)) {
 				BaseOrg parentOrg = this.get(org.getParentNode());
 				parentOrg.setLeaf(true);
-				parentOrg.setUpdateUser(currentUser.getXm());
+				parentOrg.setUpdateUser(currentUser.getUuid());
 				parentOrg.setUpdateTime(new Date());
 				this.merge(parentOrg);
 			}
@@ -338,6 +345,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			org.setIsDelete(1);
 			this.merge(org);
 		}
+		
+		//删除redis部门数据
+		this.delDeptTreeAll();
+				
 		return "1";
 	}
 
@@ -374,7 +385,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		excludedProp.add("uuid");
 		BeanUtils.copyProperties(saveEntity, entity,excludedProp);	
 		
-		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
+		saveEntity.setCreateUser(currentUser.getUuid()); // 创建人
 		saveEntity.setLeaf(true);
 		saveEntity.setIssystem(0);
 		saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
@@ -406,7 +417,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		case "04": // 年级
 			JwTGrade grade = new JwTGrade(orgId);
 			grade.setGradeName(entity.getNodeText());
-			grade.setCreateUser(currentUser.getXm());
+			grade.setCreateUser(currentUser.getUuid());
 			grade.setOrderIndex(entity.getOrderIndex());
 			grade.setIsDelete(0);
 			grade.setSchoolId(currentUser.getSchoolId());
@@ -421,14 +432,16 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			gradeclass.setOrderIndex(entity.getOrderIndex());
 			gradeclass.setIsDelete(0);
 			gradeclass.setGraiId(parentNode);
-			gradeclass.setCreateUser(currentUser.getXm());
+			gradeclass.setCreateUser(currentUser.getUuid());
 
 			classService.merge(gradeclass);
 			break;
 		default:
 			break;
 		}
-
+		
+		//删除当前用户的redis部门数据
+		this.delDeptTreeAll();
 		return entity;
 	}
 
@@ -743,7 +756,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	}
 
 	@Override
-	public BaseOrg doUpdate(BaseOrg entity, String xm) {
+	public BaseOrg doUpdate(BaseOrg entity, String userId) {
 		String parentNode = entity.getParentNode();	
 		String nodeText = entity.getNodeText();
 		String uuid = entity.getUuid();
@@ -764,7 +777,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 
 		perEntity.setUpdateTime(new Date()); // 设置修改时间
-		perEntity.setUpdateUser(xm); // 设置修改人的中文名
+		perEntity.setUpdateUser(userId); // 设置修改人的id
 		perEntity.setLeaf(isLeaf);
 
 
@@ -772,7 +785,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		BaseOrg parentOrg = this.get(parentNode);
 		if(parentOrg!=null){
 			parentOrg.setUpdateTime(new Date()); // 设置修改时间
-			parentOrg.setUpdateUser(xm); // 设置修改人的中文名
+			parentOrg.setUpdateUser(userId); // 设置修改人的中文名
 			parentOrg.setLeaf(false);
 			this.merge(parentOrg);// 执行修改方法
 			
@@ -793,7 +806,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		if (deptType.equals("04")) { // 年级
 			JwTGrade grade = gradeService.get(uuid);
 			grade.setGradeName(nodeText);
-			grade.setUpdateUser(xm);
+			grade.setUpdateUser(userId);
 			grade.setOrderIndex(entity.getOrderIndex());
 			grade.setIsDelete(0);
 			grade.setNj(entity.getNj());
@@ -803,7 +816,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		} else if (deptType.equals("05")) { // 班级
 			JwTGradeclass gradeclass = classService.get(uuid);
 			gradeclass.setClassName(nodeText);
-			gradeclass.setUpdateUser(xm);
+			gradeclass.setUpdateUser(userId);
 			gradeclass.setOrderIndex(entity.getOrderIndex());
 			gradeclass.setIsDelete(0);
 			gradeclass.setGraiId(parentNode);
@@ -818,6 +831,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			else
 				this.setChildAllDeptName(entity,"ROOT");
 		}
+		
+		//删除redis部门数据
+		this.delDeptTreeAll();
+				
 		return entity;
 	}
 
@@ -1107,10 +1124,18 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		String userId = currentUser.getUuid();
 		Integer rightType = currentUser.getRightType();
 		
+		//先从redis中取数据
+		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+		Object userRightDeptTree = hashOper.get("userRightDeptTree", userId);	
+		if (userRightDeptTree != null) { // 若存在,则直接返回redis数据
+			return (List<BaseOrgChkTree>)userRightDeptTree;	//存在问题，id数据丢失
+		}
+		
 		//若当前用户是超级管理员，那就直接查询所有部门
 		Integer isAdmin=(Integer)request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
 		if(isAdmin==1)
 			rightType=0;
+		
 		
 		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTDEPTTREE ''{0}'',{1}", userId, rightType);
 		List<BaseOrgChkTree> chilrens = new ArrayList<BaseOrgChkTree>();
@@ -1145,6 +1170,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			node.setChecked(false);
 			chilrens.add(node);
 		}
+		
+		//若不存在，则存入到redis中
+		hashOper.put("userRightDeptTree", userId, chilrens);
 		return chilrens;
 	}
 	
@@ -1163,5 +1191,15 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
+	 * 
+	 * @param userIds
+	 */
+	public void delDeptTreeAll() {
+		// TODO Auto-generated method stub
+		redisTemplate.delete("userRightDeptTree");
 	}
 }

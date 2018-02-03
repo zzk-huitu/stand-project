@@ -11,10 +11,7 @@ package com.zd.school.plartform.baseset.model;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import com.zd.core.annotation.FieldInfo;
-import com.zd.core.model.extjs.ExtTreeNode;
 import com.zd.core.model.extjs.ExtTreeNodeChk;
 
 /**
@@ -27,6 +24,7 @@ import com.zd.core.model.extjs.ExtTreeNodeChk;
  * @see
  */
 public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
+	
 	@FieldInfo(name = "部门编码")
 	private String code;
 
@@ -236,7 +234,7 @@ public class BaseOrgChkTree extends ExtTreeNodeChk<BaseOrgChkTree> {
     
     
     public BaseOrgChkTree() {
-
+    	super();
 	}
     
 	public BaseOrgChkTree(String id, List<BaseOrgChkTree> children) {

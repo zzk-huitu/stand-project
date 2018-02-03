@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -49,14 +51,17 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 	}
 
 	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
+
+	@Resource
 	private SysOrgService deptService;
 
 	@Resource
-	SysJobService jobService;
-	
+	private SysJobService jobService;
+
 	@Resource
 	private SysUserdeptjobService baseUserdeptjobService;
-	
+
 	@Resource
 	private SysUserService userService;
 
@@ -163,7 +168,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			//手动回滚
+			// 手动回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}
@@ -255,7 +260,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			//手动回滚
+			// 手动回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}
@@ -266,16 +271,16 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 		List<BaseDpetJobTree> list = getDeptJobTreeList(rootId, whereSql);
 		BaseDpetJobTree root = new BaseDpetJobTree();
 		for (BaseDpetJobTree node : list) {
-			//默认会找到根目录root（从sdfz迁移而来的bug，下面的判断找不到root）
-			if(node.getId().equals("2851655E-3390-4B80-B00C-52C7CA62CB39")||node.getParent().equals("ROOT")){
-				root = node;					
-			}
-			//若这个地方可以执行，那么将使用这里的root
-			if (!(StringUtils.isNotEmpty(node.getParent()) && !node.getId().equals(rootId))) {			
+			// 默认会找到根目录root（从sdfz迁移而来的bug，下面的判断找不到root）
+			if (node.getId().equals("2851655E-3390-4B80-B00C-52C7CA62CB39") || node.getParent().equals("ROOT")) {
 				root = node;
-				//list.remove(node);
+			}
+			// 若这个地方可以执行，那么将使用这里的root
+			if (!(StringUtils.isNotEmpty(node.getParent()) && !node.getId().equals(rootId))) {
+				root = node;
+				// list.remove(node);
 				break;
-			}		
+			}
 		}
 		list.remove(root);
 		createTreeChildren(list, root);
@@ -335,6 +340,15 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 		}
 	}
 
+	/**
+	 * 设置部门或部门岗位的上级主管 注：清理旧的上级主管部门的用户部门树缓存数据
+	 * 
+	 * @param ids
+	 * @param setIds
+	 * @param setType
+	 * @param currentUser
+	 * @return
+	 */
 	@Override
 	public Boolean doSetSuperJob(String ids, String setIds, String setType, SysUser currentUser) {
 		String[] setId = setIds.split(",");
@@ -347,6 +361,13 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 			if ("dept".equals(setType)) {
 				List<BaseOrg> depts = deptService.queryByProerties("uuid", setId);
 				for (BaseOrg baseOrg : depts) {
+
+					// 获取旧的部门岗位数据，然后清除这个部门的用户部门树缓存
+					BaseDeptjob oldDeptJob = this.getByProerties(new String[] { "isDelete", "deptId", "jobId" },
+							new Object[] { 0, baseOrg.getSuperDept(), baseOrg.getSuperJob() });
+					if(oldDeptJob!=null)
+					this.delDeptTreeByDeptJob(oldDeptJob);
+
 					baseOrg.setSuperDept(deptId);
 					baseOrg.setSuperdeptName(deptName);
 					baseOrg.setSuperJob(jobId);
@@ -359,6 +380,13 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 			} else {
 				List<BaseDeptjob> setDeptJob = this.queryByProerties("uuid", setId);
 				for (BaseDeptjob baseDeptjob : setDeptJob) {
+
+					// 获取旧的部门岗位数据，然后清除这个部门的用户部门树缓存
+					BaseDeptjob oldDeptJob = this.getByProerties(new String[] { "isDelete", "deptId", "jobId" },
+							new Object[] { 0, baseDeptjob.getParentdeptId(), baseDeptjob.getParentjobId() });
+					if(oldDeptJob!=null)
+						this.delDeptTreeByDeptJob(oldDeptJob);
+
 					baseDeptjob.setParentdeptId(deptId);
 					baseDeptjob.setParentdeptName(deptName);
 					baseDeptjob.setParentjobId(jobId);
@@ -372,11 +400,28 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			//手动回滚
+			// 手动回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}
 	}
 
+	/**
+	 * 删除这个部门下所有用户的部门权限的缓存数据
+	 * 
+	 * @param userIds
+	 */
+	public void delDeptTreeByDeptJob(BaseDeptjob deptJob) {
+		// TODO Auto-generated method stub
+		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
+		String hql = "select userId from BaseUserdeptjob o where o.deptjobId=? and o.isDelete=0 ";
+		List<String> userIds = this.queryEntityByHql(hql, deptJob.getUuid());
+		
+		if(userIds.size()>0){
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			hashOper.delete("userRightDeptTree", userIds.toArray());
+		}		
+	}
+	
 	
 }

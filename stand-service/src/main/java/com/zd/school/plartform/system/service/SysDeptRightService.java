@@ -24,6 +24,10 @@ public interface SysDeptRightService extends BaseService<SysDeptRight> {
 
 	Boolean doUserRightDept(String userIds, String deptIds, SysUser currentUser);
 
+	
+
+	void doUpdateRightType(String uuid, String rightType, String userId);
+
 
 	
 }

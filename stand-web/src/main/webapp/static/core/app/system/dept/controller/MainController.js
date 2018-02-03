@@ -121,7 +121,7 @@ Ext.define("core.system.dept.controller.MainController", {
                     return false;
                 }
             },
-                        //快速搜索按按钮
+            //快速搜索按按钮
             "basetreegrid[xtype=system.dept.maingrid] button[ref=gridFastSearchBtn]": {
                 beforeclick: function (btn) {
                     this.doFastSearch(btn);
@@ -157,19 +157,20 @@ Ext.define("core.system.dept.controller.MainController", {
                         var pkValue = rec.get("id");
                         var deptType = rec.get("deptType");
                         var isSystem = rec.get("isSystem"); //系统内置
+                        var isRight = rec.get("isRight"); //系统内置
                         var child = rec.childNodes.length;
-                        if (child == 0 && deptType != "01" && deptType != "02" && isSystem!="1") {
+                        if (child == 0 && deptType != "01" && deptType != "02" && isSystem!="1" && isRight=="1") {
                             //仅能删除无子部门而且类型不为学校的部门
                             ids.push(pkValue);
                         }
                     });
                     var title = "确定要删除所选的部门吗？";
                     if (ids.length == 0) {
-                        self.msgbox("所选部门不符合要求，不能删除！<br/>不能删除的部门为：存在子部门、类别为学校/校区、系统内置");
+                        self.msgbox("所选部门不符合要求，不能删除！<br/>不能删除的部门为：存在子部门、类别为学校/校区、系统内置、无部门权限");
                         return;
                     }
                     if (ids.length < records.length) {
-                        title = "有些部门有子部门，仅删除不含子部门的部门，确定执行吗？";
+                        title = "有些部门有子部门、无权限，仅删除符合条件的部门，确定执行吗？";
                     }
 
                     Ext.Msg.confirm('警告', title, function(btn, text) {
@@ -223,14 +224,14 @@ Ext.define("core.system.dept.controller.MainController", {
                     var funData = basePanel.funData;
                     var store = baseGrid.getStore();
                     var proxy = store.getProxy();
-                    proxy.extraParams = {
-                      whereSql: "",
-                      orderSql: " order by parentNode,orderIndex asc"
-                  };
-                    // store.load(); //刷新父窗体的grid
-                    store.load(function(records, operation, success) {                    
-                        baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
-                    });
+                  
+                    store.load(); //刷新父窗体的grid
+                    /*
+                    store.load(function(records, operation, success) {    
+                        if(baseGrid.getRootNode().childNodes.length>0){
+                            baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
+                        }                
+                    });*/
                     return false;
                 }
             },
@@ -399,7 +400,9 @@ Ext.define("core.system.dept.controller.MainController", {
         var pkName=funData.pkName;
         var tabConfig=funData.tabConfig;
 
-        var insertObj = funData.defaultObj;
+        var insertObj = new Object();
+        Ext.apply(insertObj, funData.defaultObj);
+         
         var popFunData = Ext.apply(funData, {   //将一些必要的信息，统一存放于此，提高给处理提交代码使用。
             grid: baseGrid
         });
@@ -443,6 +446,10 @@ Ext.define("core.system.dept.controller.MainController", {
                 }     
                 if(recordData["isSystem"]=="1"){
                     self.Error("此部门为系统内置部门，不能修改");
+                    return;
+                }
+                if(recordData["isRight"]!="1"){
+                    self.Error("您不具备此部门的权限，不能修改");
                     return;
                 }
 
@@ -513,7 +520,7 @@ Ext.define("core.system.dept.controller.MainController", {
                     recordData = rescords[0].getData();
                 }else{  //点击操作列的方式
                     recordData=record.getData();
-                }
+                }            
                 
                 //获取名称
                 var titleName = recordData[tabConfig.titleField];
@@ -538,7 +545,12 @@ Ext.define("core.system.dept.controller.MainController", {
                     recordData = rescords[0].getData();
                 }else{  //点击操作列的方式
                     recordData=record.getData();
-                }                    
+                }  
+
+                if(recordData["isRight"]!="1"){
+                    self.Error("您不具备此部门的权限，不能操作");
+                    return;
+                }                  
                 //获取名称
                 var titleName = recordData[tabConfig.titleField];
                 if(titleName)
@@ -642,9 +654,18 @@ Ext.define("core.system.dept.controller.MainController", {
             return false;            
         }
         var setIds = new Array();
+        var noRightName="";
         Ext.each(records, function(rec) {
+            if(rec.get("isRight")!="1")
+                noRightName+=rec.get("text");
             setIds.push(rec.get("id"));
         }, this);
+
+        if(noRightName.length>0){
+            self.Error("您不具备【"+noRightName.substring(0,noRightName.length-1)+"】的权限，不能操作");
+            return;
+        }        
+
         var title = "选择上级主管岗位";
         var funcPanel = 'dept.mainlayout.deptsuperjob'; //仅仅是用于为编写确定按钮事件提供一个判断的标识
 

@@ -83,6 +83,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	
 	/**
 	 * 根据用户的权限，来显示具备权限的树
+	 * 注：将每个人的权限树的值，存入到redis中；在修改部门权限或指定部门岗位时删除redis数据。
 	 * @param request
 	 * @param response
 	 * @throws IOException
@@ -94,7 +95,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 			HttpServletResponse response) throws IOException {
 		String strData = "";
 		// 得到根节点ID
-		String node = request.getParameter("node");
+		String node = request.getParameter("node");	//一般传 ROOT
 		String nodeId = request.getParameter("nodeId");
 		String excludes = request.getParameter("excludes");	//在结果集中排除某个字段，比如checked复选框字段
 		if (!(StringUtils.isNotEmpty(node) && node.equalsIgnoreCase(TreeVeriable.ROOT))) {
@@ -242,7 +243,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 */
 		SysUser currentUser = getCurrentSysUser();
 
-		entity = thisService.doUpdate(entity, currentUser.getXm());		
+		entity = thisService.doUpdate(entity, currentUser.getUuid());		
 		
 		
 		if (entity == null){

@@ -120,11 +120,8 @@ public class SysDeptRightController extends FrameWorkController<SysDeptRight> im
 		String uuid=request.getParameter("userId");
 		String rightType=request.getParameter("rightType");
 		
-		String[] propertyName = { "updateUser", "updateTime", "rightType" };
-		Object[] propertyValue = { currentUser.getUuid(), new Date(), Integer.valueOf(rightType) };
+		thisService.doUpdateRightType(uuid,rightType,currentUser.getUuid());
 		
-		// 更新指定的用户信息
-		userService.updateByProperties("uuid", uuid, propertyName, propertyValue);
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"设置部门权限成功\""));
 	}

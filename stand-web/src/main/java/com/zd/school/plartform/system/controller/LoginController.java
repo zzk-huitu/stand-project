@@ -321,6 +321,19 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		hashOper.delete("userMenuTree", sysUser.getUuid());
 		hashOper.delete("userAuth", sysUser.getUuid());
 		hashOper.delete("userBtn", sysUser.getUuid());
+		
+		/**
+		 * 删除部门权限树的缓存数据
+		 * 在什么情况下执行？
+		 * 		1.在给用户添加、删除部门岗位时(SysUserdeptjobServiceImpl)
+		 * 		2.在给用户设置部门权限的时候(SysDeptRightServiceImpl)
+		 * 		3.设置上级部门主管岗位的时候(SysDeptjobServiceImpl)
+		 * 		4.部门岗位信息，当存在用户的时候，就不能被删除，故删除部门岗位时不执行
+		 * 		5.在进行增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会(SysOrgServiceImpl)
+		 */
+		hashOper.delete("userRightDeptTree", sysUser.getUuid());
+		
+		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));
 	}
 

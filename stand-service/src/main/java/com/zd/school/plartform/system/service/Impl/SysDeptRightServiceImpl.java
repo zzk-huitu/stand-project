@@ -2,9 +2,12 @@ package com.zd.school.plartform.system.service.Impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,9 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 	}
 	
 	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
+	
+	@Resource
 	private SysUserService userService;
 	
 	@Override
@@ -63,7 +69,10 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 				}
 			}
 		}
-
+		
+		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
+		this.delDeptTreeByUsers(userIds);
+				
 		// 更新指定的用户信息
 		userService.updateByProperties("uuid", userIds, propertyName, propertyValue);
 		return true;
@@ -73,10 +82,47 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 	public boolean doDelete(String delIds) {
 		// TODO Auto-generated method stub
 		String doIds = "'" + delIds.replace(",", "','") + "'";
-		String hql="Delete from SysDeptRight where uuid in ("+doIds+")";
 		
+		// 所有要设置的用户	
+		String hql="select userId from SysDeptRight where uuid in ("+doIds+")";
+		
+		List<String> userIds = this.queryEntityByHql(hql);
+		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
+		if(userIds.size()>0){
+			userIds.stream().distinct().collect(Collectors.toList());
+			this.delDeptTreeByUsers(userIds.toArray());
+		}
+			
+		hql="Delete from SysDeptRight where uuid in ("+doIds+")";
+			
 	    return this.doExecuteCountByHql(hql)>0;
 	}
 	
+	@Override
+	public void doUpdateRightType(String uuid, String rightType,String userId) {
+		// TODO Auto-generated method stub
+		this.delDeptTreeByUsers(uuid);
+		
+		String[] propertyName = { "updateUser", "updateTime", "rightType" };
+		Object[] propertyValue = { userId, new Date(), Integer.valueOf(rightType) };	
+		// 更新指定的用户信息
+		userService.updateByProperties("uuid", uuid, propertyName, propertyValue);
+	}
+	
+	/**
+	 * 删除这个部门下所有用户的部门权限的缓存数据
+	 * 
+	 * @param userIds
+	 */
+	public void delDeptTreeByUsers(Object... userIds) {
+		// TODO Auto-generated method stub
+		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
+		if (userIds.length > 0) {
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			hashOper.delete("userRightDeptTree", userIds);
+		}
+	}
+
+
 
 }

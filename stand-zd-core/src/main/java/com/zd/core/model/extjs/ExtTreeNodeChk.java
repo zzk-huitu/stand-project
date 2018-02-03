@@ -9,6 +9,7 @@
 
 package com.zd.core.model.extjs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,9 @@ import java.util.List;
  * @since JDK 1.8
  * @see
  */
-public class ExtTreeNodeChk<T> {
-
+public class ExtTreeNodeChk<T> implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     /** 节点ID */
     public String id;
 

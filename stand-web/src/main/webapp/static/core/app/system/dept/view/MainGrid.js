@@ -60,7 +60,7 @@ Ext.define("core.system.dept.view.MainGrid", {
         disabled:true
     }, {
         xtype: 'button',
-        text: '同步部门数据到UP',
+        text: '同步部门到UP',
         ref: 'sync',
         funCode:'girdFuntionBtn',         
         iconCls: 'x-fa fa-rss',
@@ -156,9 +156,16 @@ Ext.define("core.system.dept.view.MainGrid", {
         },{
             text: "是否系统内置",
             dataIndex: "isSystem",
-            flex:1,
+            width:100,
             renderer: function(value) {
                 return value=="1"?"<font color=green>是</font>":"<font color=red>否</font>"
+            }
+        },{
+            text: "权限状态",
+            dataIndex: "isRight",
+            width:80,
+            renderer: function(value) {
+                return value=="1"?"<font color=green>有权限</font>":"<font color=red>无权限</font>"
             }
         }, {
             header: '备注',

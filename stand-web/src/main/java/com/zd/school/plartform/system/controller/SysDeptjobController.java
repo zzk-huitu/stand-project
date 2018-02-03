@@ -40,7 +40,7 @@ public class SysDeptjobController extends FrameWorkController<BaseDeptjob> imple
 
 	@Resource
 	SysDeptjobService thisService; // service层接口
-
+	
 	/**
 	 * @Title: list
 	 * @Description: 查询数据列表

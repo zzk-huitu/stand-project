@@ -2,13 +2,16 @@ package com.zd.school.plartform.system.service.Impl;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List; 
+import java.util.List;
 
-  import java.util.Map;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +45,9 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 	public void setBaseUserdeptjobDao(SysUserdeptjobDao dao) {
 		this.dao = dao;
 	}
+
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
 
 	@Resource
 	private SysUserService userService;
@@ -159,12 +165,23 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 			userService.merge(user);
 		}
 
+		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
+		this.delDeptTreeByUsers(userIds);
+
 		return true;
 
 	}
 
 	@Override
 	public boolean doRemoveUserFromDeptJob(String delIds, SysUser currentUser) {
+		
+		// 所有要设置的用户	
+		List<BaseUserdeptjob> baseUserdeptjobs = this.queryByProerties("uuid", delIds);	
+		List<String> userIds = baseUserdeptjobs.stream().map((x)->x.getUserId()).distinct().collect(Collectors.toList());		
+		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
+		if(userIds.size()>0)
+			this.delDeptTreeByUsers(userIds.toArray());
+				
 		return this.doLogicDeleteByIds(delIds, currentUser);
 	}
 
@@ -187,27 +204,26 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		this.updateByProperties("uuid", delIds, propertyName, propertyValue);
 		return true;
 	}
-	
+
 	/**
-	 * 获取部门岗位的用户信息
-	 * zzk
+	 * 获取部门岗位的用户信息 zzk
 	 */
 	@Override
-	public QueryResult<BaseUserdeptjob> getUserByDeptJobId(String deptJobId,Integer start, Integer limit, String sort) {
+	public QueryResult<BaseUserdeptjob> getUserByDeptJobId(String deptJobId, Integer start, Integer limit,
+			String sort) {
 		// TODO Auto-generated method stub
-		
-		String hql = "from BaseUserdeptjob o where o.deptjobId='" + deptJobId
-				+ "' and o.isDelete=0 ";					   
-		
-		 if(StringUtils.isNotEmpty(sort)){
-            hql += " order by ";
-            hql+= sort;
-        }
+
+		String hql = "from BaseUserdeptjob o where o.deptjobId='" + deptJobId + "' and o.isDelete=0 ";
+
+		if (StringUtils.isNotEmpty(sort)) {
+			hql += " order by ";
+			hql += sort;
+		}
 
 		QueryResult<BaseUserdeptjob> qr = this.queryResult(hql, start, limit);
-		
+
 		return qr;
-		
+
 	}
 
 	@Override
@@ -215,15 +231,14 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 
 		// 先将原来的主部门岗位设置成非主部门岗位
 		Object[] userArray = userIds.split(",");
-		String[] conditionName={"masterDept","userId"};
+		String[] conditionName = { "masterDept", "userId" };
 		Object[] conditionValue = { 1, userArray };
 		String[] propertyName = { "masterDept", "updateTime", "updateUser" };
 		Object[] propertyValue = { 0, new Date(), currentUser.getUuid() };
 		this.updateByProperties(conditionName, conditionValue, propertyName, propertyValue);
-		
 
 		// 将新的部门岗位设置为主部门岗位
-		String[] conditionName2={"deptjobId","userId"};
+		String[] conditionName2 = { "deptjobId", "userId" };
 		Object[] conditionValue2 = { deptJobId, userArray };
 		String[] propertyName2 = { "masterDept", "updateTime", "updateUser" };
 		Object[] propertyValue2 = { 1, new Date(), currentUser.getUuid() };
@@ -232,46 +247,17 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 	}
 
 	/**
-	 * 根据传入的实体对象更新数据库中相应的数据
+	 * 删除这个部门下所有用户的部门权限的缓存数据
 	 * 
-	 * @param entity
-	 *            传入的要更新的实体对象
-	 * @param currentUser
-	 *            当前操作用户
-	 * @return
+	 * @param userIds
 	 */
-	/*
-	 * @Override public BaseUserdeptjob doUpdateEntity(BaseUserdeptjob entity,
-	 * SysUser currentUser) { // 先拿到已持久化的实体 BaseUserdeptjob saveEntity =
-	 * this.get(entity.getUuid()); try { BeanUtils.copyProperties(saveEntity,
-	 * entity); saveEntity.setUpdateTime(new Date()); // 设置修改时间
-	 * saveEntity.setUpdateUser(currentUser.getXm()); // 设置修改人的中文名 entity =
-	 * this.merge(saveEntity);// 执行修改方法
-	 * 
-	 * return entity; } catch (IllegalAccessException e) {
-	 * logger.error(e.getMessage()); return null; } catch
-	 * (InvocationTargetException e) { logger.error(e.getMessage()); return
-	 * null; } }
-	 */
-	/**
-	 * 将传入的实体对象持久化到数据
-	 * 
-	 * @param entity
-	 *            传入的要更新的实体对象
-	 * @param currentUser
-	 *            当前操作用户
-	 * @return
-	 */
-	/*
-	 * @Override public BaseUserdeptjob doAddEntity(BaseUserdeptjob entity,
-	 * SysUser currentUser) { BaseUserdeptjob saveEntity = new
-	 * BaseUserdeptjob(); try { List<String> excludedProp = new ArrayList<>();
-	 * excludedProp.add("uuid"); BeanUtils.copyProperties(saveEntity, entity,
-	 * excludedProp); saveEntity.setCreateUser(currentUser.getXm()); //
-	 * 设置修改人的中文名 entity = this.merge(saveEntity);// 执行修改方法
-	 * 
-	 * return entity; } catch (IllegalAccessException e) {
-	 * logger.error(e.getMessage()); return null; } catch
-	 * (InvocationTargetException e) { logger.error(e.getMessage()); return
-	 * null; } } }
-	 */}
+	public void delDeptTreeByUsers(Object... userIds) {
+		// TODO Auto-generated method stub
+		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
+		if (userIds.length > 0) {
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			hashOper.delete("userRightDeptTree", userIds);
+		}
+	}
+
+}
