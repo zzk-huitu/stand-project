@@ -39,7 +39,24 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
                 return false;
             }
         },
+        "basepanel[xtype=smartcontrol.roombagrule.binddetaillayout]":{
+            afterrender: function(cmp) {
+                var  baseformtab = cmp.up("baseformtab");
+                var deDuctionMode = baseformtab.deDuctionMode;
+                if(deDuctionMode==0){//不扣费
+                 var noDeductibleMode = cmp.down("container[ref=noDeductibleMode]");
+                 noDeductibleMode.setVisible(false);
+           
+                }else if(deDuctionMode==1){//平均扣费
+                 var dormallotfinishgridtwo = cmp.down("basegrid[xtype=smartcontrol.roombagrule.dormallotfinishgridtwo]");
+                 dormallotfinishgridtwo.setVisible(false);
+                 }else if(deDuctionMode==2){//指定扣费
+                 var dormallotfinishgrid = cmp.down("basegrid[xtype=smartcontrol.roombagrule.dormallotfinishgrid]");
+                 dormallotfinishgrid.setVisible(false);
+             }
 
+         }
+     },
     },
 
     doSave_Tab:function(btn,cmd){

@@ -138,6 +138,7 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
         var tabItemId = funCode+"_gridBindEdit"; 
         var operType = cmd; 
         insertObj = recordData;
+        var deDuctionMode = recordData.deDuctionMode; //扣费模式 ,渲染费率绑定时用到
 
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
@@ -165,6 +166,7 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
                     tabItemId:tabItemId,                //指定tab页的itemId
                     insertObj:insertObj,                //保存一些需要默认值，提供给提交事件中使用
                     funData: popFunData,                //保存funData数据，提供给提交事件中使用
+                    deDuctionMode:deDuctionMode,
                     items:[{
                         xtype:detLayout,                        
                         funCode: detCode             

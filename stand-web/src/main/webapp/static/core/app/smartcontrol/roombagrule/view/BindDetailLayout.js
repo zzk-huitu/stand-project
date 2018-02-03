@@ -39,7 +39,8 @@ Ext.define("core.smartcontrol.roombagrule.view.BindDetailLayout", {
             borderRight:'6px solid #ececec'
         },
     }, {
-        width: 320,        
+        width: 320,
+        ref:"noDeductibleMode",        
         layout: {
             type: 'vbox',
             pack: 'start',

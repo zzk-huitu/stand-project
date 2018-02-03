@@ -91,7 +91,12 @@ Ext.define("core.baseset.studentdorm.view.DormAllotFinishGrid", {
             width: 80,
             text: "所在宿舍",
             dataIndex: "roomName",
-            editable: false
+            editable: false,
+            renderer: function(value, metaData) {
+                var title = "所在宿舍";
+                metaData.tdAttr = 'data-qtitle="' + title + '" data-qtip="' + value + '"';
+                return value;
+            }
         }, {
             text: "入住时间",
             dataIndex: "inTime",
