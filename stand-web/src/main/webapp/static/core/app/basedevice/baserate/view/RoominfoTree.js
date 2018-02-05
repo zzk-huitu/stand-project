@@ -49,20 +49,41 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
     },
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
-    		var mainLayout =tree.up("panel[xtype=basedevice.baserate.dkmainlayout]");
+            var baseformwin =tree.up("baseformwin");
+            var categroy = baseformwin.categroy;
+            console.log(categroy);
+            var filter=new Array();
+            if(categroy==0){//水控
+                filter.push({"type": "string", "value":"8", "field": "termTypeID", "comparison": "="})
+            }else if(categroy==1){//电控
+                filter.push({"type": "string", "value": "9", "field": "termTypeID", "comparison": "="})
+            }
+            if(filter.length==0)
+                filter=null;
+            else
+                filter = JSON.stringify(filter);
+
+            var mainLayout =tree.up("panel[xtype=basedevice.baserate.dkmainlayout]");
     		var funData = mainLayout.funData;
             var roomId=record.get("id");
-            var leaf = record.get("leaf");
+            var roomLeaf=record.get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
             mainLayout.funData = Ext.apply(funData, {
                 roomId: roomId,
-                leaf :leaf,//true: 房间 false:区域
+                leaf :record.get("leaf"),//true: 房间 false:区域
             });
             // 加载房间的人员信息
             var mianGrid = mainLayout.down("panel[xtype=basedevice.baserate.skdatagrid]");
             var store = mianGrid.getStore();
             var proxy = store.getProxy();
-            proxy.extraParams.roomId=roomId;
-            proxy.extraParams.leaf=leaf;
+               proxy.extraParams={
+                roomId:roomId,
+                roomLeaf:roomLeaf,
+                filter:filter
+            };
             store.loadPage(1); // 给form赋值
             return false;
     		
