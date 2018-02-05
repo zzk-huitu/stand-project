@@ -459,8 +459,9 @@ public interface BaseService<E> {
 
     public List<E> queryByHql(String hql, String propName, Object[] objs);
 
+    @Deprecated
     public QueryResult<E> queryResult(String hql, Integer start, Integer limit);
-
+    public QueryResult<E> queryResult(String hql, Integer start, Integer limit, String countHql);
 
     public <T> T getEntityBySql(String sql);
 
@@ -481,8 +482,9 @@ public interface BaseService<E> {
      * @param <T>   实体类的泛型参数
      * @return 返回转换后的结果
      */
+    @Deprecated
     public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz);
-
+    public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz,String countSql);
     /**
      * 默认的添加实体的方法	
      * @param entity 	实体对象

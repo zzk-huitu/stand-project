@@ -162,8 +162,6 @@ public interface SysUserService extends BaseService<SysUser> {
 
 	public void deleteUserMenuTreeRedis(String[] roleIds);
 
-	public void deleteUserRoleRedis(SysUser currentUser);
-
 	public QueryResult<SysUser> getUserNotInRoleId(String roleId, int start, int limit, String sort, String filter);
 
 	public List<SysUser> getUserByDeptId(String id);
@@ -173,4 +171,6 @@ public interface SysUserService extends BaseService<SysUser> {
 	public Set<BaseOrg> getDeptByUserId(String userId);
 	
 	public String getUserOwnDeptids(SysUser currentUser) ;
+
+	public void deleteUserRoleRedis(String ... userId);
 }

@@ -429,6 +429,7 @@ public interface BaseDao<E> {
      * @param hql HQL语句
      * @return
      */
+    @Deprecated
     public QueryResult<E> queryPageResult(Integer start, Integer limit,String hql);
 
     /**
@@ -527,6 +528,7 @@ public interface BaseDao<E> {
      * @param <T>   实体类的泛型参数
      * @return 返回转换后的结果
      */
+    @Deprecated
     public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz);
 
 
@@ -535,6 +537,26 @@ public interface BaseDao<E> {
 
     public <T> QueryResult<T> doQueryCountToHql(Integer start, Integer limit, String sort, String filter, String hql,
                                                 String groupBy, String orderBy, String where);
+
+    /**
+     * 修正totalCount的获取方式，以免造成数据量过多时的内存爆炸的风险
+     * @param start
+     * @param limit
+     * @param hql
+     * @param countHql
+     * @return
+     */
+    public QueryResult<E> queryPageResult(Integer start, Integer limit, String hql, String countHql);
+    
+    /**
+     * 修正totalCount的获取方式，以免造成数据量过多时的内存爆炸的风险
+     * @param start
+     * @param limit
+     * @param hql
+     * @param countHql
+     * @return
+     */
+    public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz,String countSql);
 
 
 }

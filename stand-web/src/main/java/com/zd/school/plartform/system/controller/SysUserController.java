@@ -49,6 +49,7 @@ import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.PoiImportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDicitem;
+import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
@@ -58,6 +59,7 @@ import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserToUP;
 import com.zd.school.plartform.system.service.SysMenuService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
 
@@ -75,7 +77,7 @@ import com.zd.school.plartform.system.service.SysUserdeptjobService;
 public class SysUserController extends FrameWorkController<SysUser> implements Constant {
 
 	private static Logger logger = Logger.getLogger(SysUserController.class);
-	
+
 	@Resource
 	SysUserService thisService; // service层接口
 
@@ -84,9 +86,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	@Resource
 	SysUserdeptjobService userDeptjobService;
-	
+
 	@Resource
 	BaseDicitemService dicitemService;
+
+	@Resource
+	SysOrgService sysOrgService;
 
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
@@ -95,29 +100,54 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
+	 *  若当前用户是超级管理员/学校管理员，并且点击为学校部门，则查询出所有的用户
+	 *  否则其他用户点击顶层学校部门，只会显示出他权限之下的部门的用户
+	 *  点击其他的各个子部门，只会显示这个部门下的用户
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void list(@ModelAttribute SysUser entity, HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+	public void list(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		String deptId = request.getParameter("deptId");
 
 		deptId = deptId == null ? AdminType.ADMIN_ORG_ID : deptId;
-		if(deptId.equals("")){
-			deptId = AdminType.ADMIN_ORG_ID ;
+		if (deptId.equals("")) {
+			deptId = AdminType.ADMIN_ORG_ID;
 		}
 
-		// 若为学校部门，则查询出所有的用户
-		if (deptId.equals(AdminType.ADMIN_ORG_ID)) {
+		Integer isAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+
+		// 若当前用户是超级管理员，并且为学校部门，则查询出所有的用户
+		if (isAdmin == 1 && deptId.equals(AdminType.ADMIN_ORG_ID)) {
 
 			QueryResult<SysUser> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 					super.sort(request), super.filter(request), true);
 			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 
 		} else {
-			List<BaseUserdeptjob> udj = userDeptjobService.queryByProerties(new String[]{"deptId","isDelete"}, new Object[]{deptId,0});
-
+			List<BaseUserdeptjob> udj=null;
+			SysUser currentUser = getCurrentSysUser();
+			// 其他非管理员的，并且点击了学校部门，则查询出它有权限的部门
+			if (deptId.equals(AdminType.ADMIN_ORG_ID)) {
+				List<BaseOrgChkTree> baseOrgList = sysOrgService.getUserRightDeptTreeList(currentUser);
+				deptId = baseOrgList.stream().filter((x) -> x.getIsRight().equals("1"))
+						.map((x) -> x.getId()).collect(Collectors.joining("','"));			
+			}
+			
+			if(StringUtils.isNotEmpty(deptId)){
+				String hql="from SysUser g where g.uuid in ("
+						+ "	select distinct userId  from BaseUserdeptjob where deptId in ('"+deptId+"')"
+						+ ")";
+						
+				QueryResult<SysUser> qr=thisService.queryCountToHql(super.start(request), super.limit(request),
+							super.sort(request), super.filter(request), hql,null,null);
+				
+				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
+			
+			}else{
+				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
+			}
+			/*
 			String userIds = "";
 			for (int i = 0; i < udj.size(); i++) {
 				userIds += "'" + udj.get(i).getUserId() + "',";
@@ -127,14 +157,13 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 				userIds = StringUtils.trimLast(userIds);
 
-				SysUser currentUser = getCurrentSysUser();
 				QueryResult<SysUser> qr = thisService.getDeptUser(super.start(request), super.limit(request),
 						super.sort(request), super.filter(request), true, userIds, currentUser);
 				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 
 			} else {
 				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
-			}
+			}*/
 		}
 
 		writeJSON(response, strData);// 返回数据
@@ -147,7 +176,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
-    @Auth("SYSUSER_add")
+	@Auth("SYSUSER_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String userName = entity.getUserName();
@@ -171,7 +200,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-   
+
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -197,7 +226,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * 
 	 * @throws Exception
 	 */
-    @Auth("SYSUSER_update")
+	@Auth("SYSUSER_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -291,7 +320,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * @throws @since
 	 *             JDK 1.8
 	 */
-	
+
 	@RequestMapping(value = { "/userRoleList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void getUserRolelist(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -344,8 +373,17 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			boolean flag = thisService.doDeleteUserRole(userId, ids, currentUser);
 			if (flag) {
 				/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-				thisService.deleteUserRoleRedis(currentUser);
-
+				thisService.deleteUserRoleRedis(userId);
+				
+				//当操作了当前用户的角色，则更新roleKey的session值
+				if(userId.indexOf(currentUser.getUuid())!=-1){
+					SysUser sysUser = thisService.get(currentUser.getUuid());
+					String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+					 		.collect(Collectors.joining(","));
+					request.getSession().setAttribute(Constant.SESSION_SYS_USER, sysUser);
+					request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
+				}
+							
 				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
@@ -381,14 +419,24 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			boolean flag = thisService.doAddUserRole(userId, ids, currentUser);
 			if (flag) {
 				/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-				thisService.deleteUserRoleRedis(currentUser);
-
+				thisService.deleteUserRoleRedis(userId);
+				
+				//当操作了当前用户的角色，则更新roleKey的session值
+				if(userId.indexOf(currentUser.getUuid())!=-1){
+					SysUser sysUser = thisService.get(currentUser.getUuid());
+					String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+					 		.collect(Collectors.joining(","));
+					request.getSession().setAttribute(Constant.SESSION_SYS_USER, sysUser);
+					request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
+				}
+				
 				writeJSON(response, jsonBuilder.returnSuccessJson("'添加成功'"));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("'添加失败'"));
 			}
 		}
 	}
+
 	@Auth("SYSUSER_lock")
 	@RequestMapping("/doLock")
 	public void doLock(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -402,7 +450,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'锁定成功'"));
 		}
 	}
-    @Auth("SYSUSER_unlock")
+
+	@Auth("SYSUSER_unlock")
 	@RequestMapping("/doUnlock")
 	public void doUnlock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -415,7 +464,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnSuccessJson("'解锁成功'"));
 		}
 	}
-    @Auth("SYSUSER_setPwd")
+
+	@Auth("SYSUSER_setPwd")
 	@RequestMapping("/doSetPwd")
 	public void doSetpwd(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -487,7 +537,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		strData = jsonBuilder.buildObjListToJson((long) userList.size(), userList, true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-   
+
 	@RequestMapping(value = { "/userDeptJobList" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -578,58 +628,52 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/*
-	 * 单条数据调用同步UP的方式 用于修改单条人员数据的时候进行同步（貌似目前暂时未使用到）
-	 * 弃用
+	 * 单条数据调用同步UP的方式 用于修改单条人员数据的时候进行同步（貌似目前暂时未使用到） 弃用
 	 */
 	@RequestMapping("/doSyncUserInfoToUp/{userId}")
 	public void doSyncUserInfoToUp(@PathVariable("userId") String userId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		/*
-		StringBuffer returnJson = null;
-		try {
-
-			// String userId="8a8a8834533a065601533a065ae80234";
-
-			// 1.查询这个userId的最新的用户、部门信息
-			String sql = "select top 1 u.USER_ID as userId,u.XM as employeeName," + " u.user_numb as employeeStrId,"
-					+ " '' as employeePwd,CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,"
-					+ " job.JOB_NAME AS identifier,'1' AS cardState," // cardState
-																		// 和 sid
-																		// 都置默认值，现在不做特定的处理
-					+ " '' as sid,org.EXT_FIELD04 as departmentId " + " from SYS_T_USER as u "
-					+ " join BASE_T_UserDeptJOB udj on u.USER_ID=udj.USER_ID"
-					+ " join BASE_T_ORG org on udj.dept_ID=org.dept_ID"
-					+ " join BASE_T_JOB job on udj.job_id=job.JOB_ID" + " where u.ISDELETE=0 and udj.ISDELETE=0 "
-					+ " and u.USER_ID='" + userId + "' " + " order by udj.master_dept desc,udj.create_time asc";
-
-			List<SysUserToUP> userInfo = thisService.queryEntityBySql(sql, SysUserToUP.class);
-
-			// 2.进入事物之前切换数据源
-			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
-			int row = 0;
-			if (userInfo.size() != 0) {
-				row = thisService.syncUserInfoToUP(userInfo.get(0), userId);
-			} else {
-				row = thisService.syncUserInfoToUP(null, userId);
-			}
-
-			if (row == 0) {
-				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"未有人员数据需要同步！\"}");
-			} else if (row > 0) {
-				returnJson = new StringBuffer("{ \"success\" : true, \"msg\":\"同步人员数据成功！\"}");
-			} else {
-				returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}");
-			}
-
-		} catch (Exception e) {
-			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}");
-		} finally {
-			// 恢复数据源
-			DBContextHolder.clearDBType();
-		}
-
-		writeAppJSON(response, returnJson.toString());
-		*/
+		 * StringBuffer returnJson = null; try {
+		 * 
+		 * // String userId="8a8a8834533a065601533a065ae80234";
+		 * 
+		 * // 1.查询这个userId的最新的用户、部门信息 String sql =
+		 * "select top 1 u.USER_ID as userId,u.XM as employeeName," +
+		 * " u.user_numb as employeeStrId," +
+		 * " '' as employeePwd,CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,"
+		 * + " job.JOB_NAME AS identifier,'1' AS cardState," // cardState // 和
+		 * sid // 都置默认值，现在不做特定的处理 +
+		 * " '' as sid,org.EXT_FIELD04 as departmentId " +
+		 * " from SYS_T_USER as u " +
+		 * " join BASE_T_UserDeptJOB udj on u.USER_ID=udj.USER_ID" +
+		 * " join BASE_T_ORG org on udj.dept_ID=org.dept_ID" +
+		 * " join BASE_T_JOB job on udj.job_id=job.JOB_ID" +
+		 * " where u.ISDELETE=0 and udj.ISDELETE=0 " + " and u.USER_ID='" +
+		 * userId + "' " + " order by udj.master_dept desc,udj.create_time asc";
+		 * 
+		 * List<SysUserToUP> userInfo = thisService.queryEntityBySql(sql,
+		 * SysUserToUP.class);
+		 * 
+		 * // 2.进入事物之前切换数据源
+		 * DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6); int row =
+		 * 0; if (userInfo.size() != 0) { row =
+		 * thisService.syncUserInfoToUP(userInfo.get(0), userId); } else { row =
+		 * thisService.syncUserInfoToUP(null, userId); }
+		 * 
+		 * if (row == 0) { returnJson = new StringBuffer(
+		 * "{ \"success\" : true, \"msg\":\"未有人员数据需要同步！\"}"); } else if (row >
+		 * 0) { returnJson = new StringBuffer(
+		 * "{ \"success\" : true, \"msg\":\"同步人员数据成功！\"}"); } else { returnJson
+		 * = new StringBuffer(
+		 * "{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}"); }
+		 * 
+		 * } catch (Exception e) { returnJson = new StringBuffer(
+		 * "{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}"); } finally
+		 * { // 恢复数据源 DBContextHolder.clearDBType(); }
+		 * 
+		 * writeAppJSON(response, returnJson.toString());
+		 */
 	}
 
 	/*
@@ -647,12 +691,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			String sql = "select  u.USER_ID as userId,u.XM as employeeName, u.user_numb as employeeStrId,"
 					+ "CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,u.isDelete as isDelete,"
 					+ "u.SFZJH AS identifier,u.MOBILE as employeeTel,'1' AS cardState,"
-					+ "'' as sid,job.JOB_NAME as jobName,'' as employeePwd,"
-					+ "isnull(org.EXT_FIELD04,("
+					+ "'' as sid,job.JOB_NAME as jobName,'' as employeePwd," + "isnull(org.EXT_FIELD04,("
 					+ "		select top 1 EXT_FIELD04 from BASE_T_ORG where ISDELETE=0 and NODE_TEXT='临时部门'"
-					+ "))as departmentId "
-					+ "from SYS_T_USER u "
-					+ " LEFT join BASE_T_ORG org on "
+					+ "))as departmentId " + "from SYS_T_USER u " + " LEFT join BASE_T_ORG org on "
 					+ " 	(select top 1 DEPT_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=org.dept_ID "
 					+ " LEFT join BASE_T_JOB job on "
 					+ "		(select top 1 JOB_ID from BASE_T_UserDeptJOB where USER_ID=u.USER_ID and ISDELETE=0 order by master_dept desc,CREATE_TIME desc)=job.JOB_ID "
@@ -679,7 +720,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			logger.error("同步人员数据到UP失败！错误信息：->"+Arrays.toString(e.getStackTrace()));
+			logger.error("同步人员数据到UP失败！错误信息：->" + Arrays.toString(e.getStackTrace()));
 			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}");
 		} finally {
 			// 恢复数据源
@@ -700,14 +741,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			// 1.切换数据源
 			DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6);
 
-			//(2017-10-11:使用人员表和卡片表，双向关联查出最精确的发卡数据)
-			String sql="select B.UserId as userId,replace(B.EmployeeStrID,'NO','') as sid,B.EmployeeStatusID as employeeStatusID,"
+			// (2017-10-11:使用人员表和卡片表，双向关联查出最精确的发卡数据)
+			String sql = "select B.UserId as userId,replace(B.EmployeeStrID,'NO','') as sid,B.EmployeeStatusID as employeeStatusID,"
 					+ "	convert(varchar,A.CardID) as upCardId,convert(varchar,A.FactoryFixID) as factNumb,"
 					+ "	convert(int,A.CardStatusIDXF) as useState, convert(int,A.CardTypeID) as cardTypeId "
-					+ " from TC_Card A left join Tc_Employee B"
-					+ " on A.CardID=B.CardID and A.EmployeeID=B.EmployeeID "
-					+ " where A.EmployeeID=B.EmployeeID or A.EmployeeID=0"
-					+ " order by A.CardID asc";
+					+ " from TC_Card A left join Tc_Employee B" + " on A.CardID=B.CardID and A.EmployeeID=B.EmployeeID "
+					+ " where A.EmployeeID=B.EmployeeID or A.EmployeeID=0" + " order by A.CardID asc";
 
 			List<CardUserInfoToUP> upCardUserInfos = thisService.queryEntityBySql(sql, CardUserInfoToUP.class);
 
@@ -731,7 +770,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			logger.error("同步UP发卡数据到Q1失败！错误信息：->"+Arrays.toString(e.getStackTrace()));
+			logger.error("同步UP发卡数据到Q1失败！错误信息：->" + Arrays.toString(e.getStackTrace()));
 			returnJson = new StringBuffer("{ \"success\" : false, \"msg\":\"同步人员发卡数据失败，请联系管理员！\"}");
 		}
 
@@ -744,108 +783,109 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void getUserNotInRoleId(String roleId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		
+
 		int start = super.start(request); // 起始记录数
 		int limit = super.limit(request);// 每页记录数
 		String sort = StringUtils.convertSortToSql(super.sort(request));
 		String filter = StringUtils.convertFilterToSql(super.filter(request));
-	
+
 		QueryResult<SysUser> qr = thisService.getUserNotInRoleId(roleId, start, limit, sort, filter);
 		strData = jsonBuilder.buildObjListToJson(new Long(qr.getTotalCount()), qr.getResultList(), true);// 处理数据
-		
+
 		writeJSON(response, strData);// 返回数据
 	}
-	
-    @Auth("SYSUSER_export")
+
+	@Auth("SYSUSER_export")
 	@RequestMapping("/doExportExcel")
-    public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().setAttribute("exportTrainClassTraineeCardIsEnd", "0");
 		request.getSession().removeAttribute("exportTrainClassTraineeCardIIsState");
 
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Integer[] columnWidth = new Integer[] { 10,15, 15, 20,20, 20, 20, 15, 15 };
+		Integer[] columnWidth = new Integer[] { 10, 15, 15, 20, 20, 20, 20, 15, 15 };
 
-		String deptId = request.getParameter("deptId"); 
-		String userName = request.getParameter("userName"); 
+		String deptId = request.getParameter("deptId");
+		String userName = request.getParameter("userName");
 		String xm = request.getParameter("xm");
 		String category = request.getParameter("category");
-		
-		//数据字典项
+
+		// 数据字典项
 		String mapKey = null;
-		String[] propValue = { "XBM", "CATEGORY","ZXXBZLB","ACCOUNTSTATE","CARDSTATE"};
+		String[] propValue = { "XBM", "CATEGORY", "ZXXBZLB", "ACCOUNTSTATE", "CARDSTATE" };
 		Map<String, String> mapDicItem = new HashMap<>();
 		List<BaseDicitem> listDicItem = dicitemService.queryByProerties("dicCode", propValue);
 		for (BaseDicitem baseDicitem : listDicItem) {
-				mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
-				mapDicItem.put(mapKey, baseDicitem.getItemName());
-			}
+			mapKey = baseDicitem.getItemCode() + baseDicitem.getDicCode();
+			mapDicItem.put(mapKey, baseDicitem.getItemName());
+		}
 
 		List<SysUser> sysUserList = null;
 		String hql = " from SysUser a where a.isDelete=0 ";
 		if (StringUtils.isNotEmpty(deptId)) {
-			if(!deptId.equals(AdminType.ADMIN_ORG_ID)){
-				hql = " select a from SysUser a inner join BaseUserdeptjob b on a.uuid=b.userId where a.isDelete=0 and b.isDelete=0 and b.deptId='"+deptId+"'";	
+			if (!deptId.equals(AdminType.ADMIN_ORG_ID)) {
+				hql = " select a from SysUser a inner join BaseUserdeptjob b on a.uuid=b.userId where a.isDelete=0 and b.isDelete=0 and b.deptId='"
+						+ deptId + "'";
 			}
 		}
 		if (StringUtils.isNotEmpty(userName)) {
-			hql += " and a.userName like '%"+userName+"%'";
+			hql += " and a.userName like '%" + userName + "%'";
 		}
 		if (StringUtils.isNotEmpty(xm)) {
-			hql += " and a.xm like '%"+xm+"%'";
+			hql += " and a.xm like '%" + xm + "%'";
 		}
 		if (StringUtils.isNotEmpty(category)) {
-			hql += " and a.category = '"+category+"'";
+			hql += " and a.category = '" + category + "'";
 		}
 		sysUserList = thisService.queryByHql(hql);
 
-		
 		List<Map<String, String>> traineeList = new ArrayList<>();
 		Map<String, String> traineeMap = null;
-		String ClassName="";
-		int i=1;
+		String ClassName = "";
+		int i = 1;
 		for (SysUser sysUser : sysUserList) {
 			traineeMap = new LinkedHashMap<>();
 			ClassName = sysUser.getDeptName();
-			traineeMap.put("xh",i+"");
+			traineeMap.put("xh", i + "");
 			traineeMap.put("userName", sysUser.getUserName());
 			traineeMap.put("name", sysUser.getXm());
-			traineeMap.put("xb",  mapDicItem.get(sysUser.getXbm()+"XBM"));
-			traineeMap.put("category", mapDicItem.get(sysUser.getCategory()+"CATEGORY"));
-			traineeMap.put("zxxbzlb", mapDicItem.get(sysUser.getZxxbzlb()+"ZXXBZLB"));
-			traineeMap.put("stustatus", mapDicItem.get(sysUser.getState()+"ACCOUNTSTATE"));
-			traineeMap.put("cardNo", String.valueOf((sysUser.getUpCardId()==null)?0:sysUser.getUpCardId()));
+			traineeMap.put("xb", mapDicItem.get(sysUser.getXbm() + "XBM"));
+			traineeMap.put("category", mapDicItem.get(sysUser.getCategory() + "CATEGORY"));
+			traineeMap.put("zxxbzlb", mapDicItem.get(sysUser.getZxxbzlb() + "ZXXBZLB"));
+			traineeMap.put("stustatus", mapDicItem.get(sysUser.getState() + "ACCOUNTSTATE"));
+			traineeMap.put("cardNo", String.valueOf((sysUser.getUpCardId() == null) ? 0 : sysUser.getUpCardId()));
 			String useState = "";
-			if(sysUser.getUseState()==null){
-				useState="未发卡";
-			}else{
-				useState=mapDicItem.get(sysUser.getUseState()+"CARDSTATE");
+			if (sysUser.getUseState() == null) {
+				useState = "未发卡";
+			} else {
+				useState = mapDicItem.get(sysUser.getUseState() + "CARDSTATE");
 			}
 			traineeMap.put("useState", useState);
 			i++;
 			traineeList.add(traineeMap);
 		}
-		
+
 		Map<String, Object> courseAllMap = new LinkedHashMap<>();
 		courseAllMap.put("data", traineeList);
 		courseAllMap.put("title", null);
-		courseAllMap.put("head", new String[] { "序号","用户名","姓名", "性别","身份","编制","账户状态","卡片编号","发卡状态" }); // 规定名字相同的，设定为合并
+		courseAllMap.put("head", new String[] { "序号", "用户名", "姓名", "性别", "身份", "编制", "账户状态", "卡片编号", "发卡状态" }); // 规定名字相同的，设定为合并
 		courseAllMap.put("columnWidth", columnWidth); // 30代表30个字节，15个字符
-		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0,0}); // 0代表居中，1代表居左，2代表居右
+		courseAllMap.put("columnAlignment", new Integer[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 }); // 0代表居中，1代表居左，2代表居右
 		courseAllMap.put("mergeCondition", null); // 合并行需要的条件，条件优先级按顺序决定，NULL表示不合并,空数组表示无条件
 		allList.add(courseAllMap);
 
 		// 在导出方法中进行解析
-		boolean result = PoiExportExcel.exportExcel(response, ClassName==null?"所有部门用户详细":ClassName+"用户详细", ClassName==null?"所有部门用户详细":ClassName+"用户信息", allList);
+		boolean result = PoiExportExcel.exportExcel(response, ClassName == null ? "所有部门用户详细" : ClassName + "用户详细",
+				ClassName == null ? "所有部门用户详细" : ClassName + "用户信息", allList);
 		if (result == true) {
 			request.getSession().setAttribute("exportTrainClassTraineeCardIIsEnd", "1");
 		} else {
 			request.getSession().setAttribute("exportTrainClassTraineeCardIIsEnd", "0");
 			request.getSession().setAttribute("exportTrainClassTraineeCardIIsState", "0");
 		}
-	} 
-    
-    @RequestMapping("/checkExportEnd")
-    public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	}
+
+	@RequestMapping("/checkExportEnd")
+	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Object isEnd = request.getSession().getAttribute("exportTrainClassTraineeCardIIsEnd");
 		Object state = request.getSession().getAttribute("exportTrainClassTraineeCardIIsState");
@@ -861,91 +901,95 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
 	}
-    
-    /**
-     * 设置用户的常用桌面功能菜单
-     * @param menuCodes
-     * @throws IOException 
-     */
-    @RequestMapping("/setUserDeskFunc")
-    public void setUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
-    	try{
-	    	SysUser sysUser=getCurrentSysUser();
-	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
-	    	String[] strs=menuCodes.split(",");
-	    	
-	    	Set<String> set= null;
-	    	if (userDeskFunc != null){
-	    		set= (Set<String>) userDeskFunc;        	
-	    	}else{
-	    		set= new HashSet<>();    		
-	    	}	    	
-	    	set.addAll(Arrays.asList(strs));	
+
+	/**
+	 * 设置用户的常用桌面功能菜单
+	 * 
+	 * @param menuCodes
+	 * @throws IOException
+	 */
+	@RequestMapping("/setUserDeskFunc")
+	public void setUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response)
+			throws IOException {
+		try {
+			SysUser sysUser = getCurrentSysUser();
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+			String[] strs = menuCodes.split(",");
+
+			Set<String> set = null;
+			if (userDeskFunc != null) {
+				set = (Set<String>) userDeskFunc;
+			} else {
+				set = new HashSet<>();
+			}
+			set.addAll(Arrays.asList(strs));
 			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
-			
+
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功！\""));
-			
-    	}catch(Exception e){
-    		
-    		writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败！\""));
-    	}	
-    }
-    /**
-     * 取消用户的常用桌面功能菜单
-     * @param menuCodes
-     * @throws IOException 
-     */
-    @RequestMapping("/cancelUserDeskFunc")
-    public void cancelUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response) throws IOException{
-    	try{
-	    	SysUser sysUser=getCurrentSysUser();
-	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
-	    	String[] strs=menuCodes.split(",");
-	    	
-	    	Set<String> set= null;
-	    	if (userDeskFunc != null){
-	    		set= (Set<String>) userDeskFunc;        	
-	    	}else{
-	    		set= new HashSet<>();    		
-	    	}	    	
-	    	set.removeAll(Arrays.asList(strs));	
+
+		} catch (Exception e) {
+
+			writeJSON(response, jsonBuilder.returnFailureJson("\"设置失败！\""));
+		}
+	}
+
+	/**
+	 * 取消用户的常用桌面功能菜单
+	 * 
+	 * @param menuCodes
+	 * @throws IOException
+	 */
+	@RequestMapping("/cancelUserDeskFunc")
+	public void cancelUserDeskFunc(@RequestParam("menuCodes") String menuCodes, HttpServletResponse response)
+			throws IOException {
+		try {
+			SysUser sysUser = getCurrentSysUser();
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+			String[] strs = menuCodes.split(",");
+
+			Set<String> set = null;
+			if (userDeskFunc != null) {
+				set = (Set<String>) userDeskFunc;
+			} else {
+				set = new HashSet<>();
+			}
+			set.removeAll(Arrays.asList(strs));
 			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
-			
+
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功！\""));
-			
-    	}catch(Exception e){
-    		
-    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
-    	}	
-    }
-    
-    /**
-     * 获取用户的常用桌面功能菜单
-     * @param menuCodes
-     * @throws IOException 
-     */
-    @RequestMapping("/getUserDeskFunc")
-    public void getUserDeskFunc(HttpServletResponse response) throws IOException{
-    	try{
-	    	SysUser sysUser=getCurrentSysUser();
-	    	HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-	    	Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
-	   	    
-	    	Set<String> set= (Set<String>) userDeskFunc;        	
-	    	String returnStr=set.stream().collect(Collectors.joining(","));
-			writeJSON(response, jsonBuilder.returnSuccessJson("\""+returnStr+"\""));
-			
-    	}catch(Exception e){
-    		
-    		writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
-    	}	
-    }
-    
-    
-    
-    /**
+
+		} catch (Exception e) {
+
+			writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+		}
+	}
+
+	/**
+	 * 获取用户的常用桌面功能菜单
+	 * 
+	 * @param menuCodes
+	 * @throws IOException
+	 */
+	@RequestMapping("/getUserDeskFunc")
+	public void getUserDeskFunc(HttpServletResponse response) throws IOException {
+		try {
+			SysUser sysUser = getCurrentSysUser();
+			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+
+			Set<String> set = (Set<String>) userDeskFunc;
+			String returnStr = set.stream().collect(Collectors.joining(","));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"" + returnStr + "\""));
+
+		} catch (Exception e) {
+
+			writeJSON(response, jsonBuilder.returnFailureJson("\"取消失败！\""));
+		}
+	}
+
+	/**
 	 * 描述：通过传统方式form表单提交方式导入excel文件
 	 * 
 	 * @param request
@@ -957,26 +1001,25 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		try {
 
 			SysUser currentUser = getCurrentSysUser();
-			
+
 			InputStream in = null;
 			List<List<Object>> listObject = null;
 			List<ImportNotInfo> listReturn;
 
-			
 			if (!file.isEmpty()) {
 				in = file.getInputStream();
 				listObject = new PoiImportExcel().getListByExcel(in, file.getOriginalFilename());
 				in.close();
-				
+
 				listReturn = thisService.doImportUser(listObject, currentUser);
 
-                if (listReturn.size() == 0)
-                    writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导入成功！\""));
-                else {
-                    String strData = jsonBuilder.buildList(listReturn, "");
-                    request.getSession().setAttribute("UserImportError", strData);
-                    writeJSON(response, jsonBuilder.returnSuccessJson("-1")); // 返回前端-1，表示存在错误数据
-                }
+				if (listReturn.size() == 0)
+					writeJSON(response, jsonBuilder.returnSuccessJson("\"文件导入成功！\""));
+				else {
+					String strData = jsonBuilder.buildList(listReturn, "");
+					request.getSession().setAttribute("UserImportError", strData);
+					writeJSON(response, jsonBuilder.returnSuccessJson("-1")); // 返回前端-1，表示存在错误数据
+				}
 
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("\"文件不存在！\""));
@@ -986,27 +1029,27 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		}
 	}
 
-	@RequestMapping(value = {"/downNotImportInfo"})
-    public void downNotImportInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Object obj = request.getSession().getAttribute("UserImportError");
-        if (obj != null) {
+	@RequestMapping(value = { "/downNotImportInfo" })
+	public void downNotImportInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Object obj = request.getSession().getAttribute("UserImportError");
+		if (obj != null) {
 
-            request.getSession().removeAttribute("UserImportError");// 移除此session
+			request.getSession().removeAttribute("UserImportError");// 移除此session
 
-            String downData = (String) obj;
+			String downData = (String) obj;
 
-            List<ImportNotInfo> list = (List<ImportNotInfo>) jsonBuilder.fromJsonArray(downData, ImportNotInfo.class);
-            EntityExportExcel excel = new EntityExportExcel();
+			List<ImportNotInfo> list = (List<ImportNotInfo>) jsonBuilder.fromJsonArray(downData, ImportNotInfo.class);
+			EntityExportExcel excel = new EntityExportExcel();
 
-            String[] Title = {"序号", "用户姓名", "异常级别", "异常原因"};
-            Integer[] coulumnWidth = {8, 20, 20, 100};
-            Integer[] coulumnDirection = {1, 1, 1, 1};
+			String[] Title = { "序号", "用户姓名", "异常级别", "异常原因" };
+			Integer[] coulumnWidth = { 8, 20, 20, 100 };
+			Integer[] coulumnDirection = { 1, 1, 1, 1 };
 
-            List<String> excludeList = new ArrayList<>();
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
-            String fileNAME = "（" + sdf2.format(new Date()) + "）导入用户的异常信息名单";
+			List<String> excludeList = new ArrayList<>();
+			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+			String fileNAME = "（" + sdf2.format(new Date()) + "）导入用户的异常信息名单";
 
-            excel.exportExcel(response, fileNAME, Title, list, excludeList, coulumnWidth, coulumnDirection);
-        }
-    }
+			excel.exportExcel(response, fileNAME, Title, list, excludeList, coulumnWidth, coulumnDirection);
+		}
+	}
 }

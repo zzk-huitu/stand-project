@@ -83,7 +83,7 @@ Ext.define("core.system.user.view.DeptTree", {
                 deptId: record.get("id"),
                 filter:filter
             };
-            store.load();
+            store.loadPage(1);
          }
     }
 });

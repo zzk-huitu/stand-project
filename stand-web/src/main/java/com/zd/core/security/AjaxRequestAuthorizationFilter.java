@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
@@ -104,8 +105,15 @@ public class AjaxRequestAuthorizationFilter extends PassThruAuthenticationFilter
 		//更新redis数据
 		if(subject.isAuthenticated()==true){
 			//如果此用户是超级管理员，就不用获取功能权限列表,在过滤器和前端中直接跳过鉴权
-			//SysRole adminRole=roleService.get("8a8a8834533a0f8a01533a0f8e220000");	
-			SysUser sysUser = (SysUser) session.getAttribute(Constant.SESSION_SYS_USER);
+			//SysRole adminRole=roleService.get("8a8a8834533a0f8a01533a0f8e220000");
+			
+		
+			//每次读取数据库
+			//SysUser sysUser = sysUserService.get(String.valueOf(subject.getPrincipal()));	
+			//String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+			//		.collect(Collectors.joining(","));
+			
+			/*
 			boolean isAdmin=false;
 			Iterator<SysRole> iterator=sysUser.getSysRoles().iterator();
 			while(iterator.hasNext()){
@@ -113,8 +121,10 @@ public class AjaxRequestAuthorizationFilter extends PassThruAuthenticationFilter
 					isAdmin=true;
 					break;
 				}
-			}
-			if(!isAdmin){			
+			}*/		
+			SysUser sysUser = (SysUser) session.getAttribute(Constant.SESSION_SYS_USER);
+			String roleKeys = (String) session.getAttribute(Constant.SESSION_ROLE_KEY);
+			if(roleKeys.indexOf(AdminType.ADMIN_ROLE_NAME)==-1){			
 				HashMap<String,Set<String>> userRMP_Map = sysUserService.getUserRoleMenuPermission(sysUser,session);	
 				//返回null，表示redis没有改变数据，所以不用更新session。若session为空，则在上面的方法中会进行判断和设置。
 				if(userRMP_Map!=null){
@@ -124,7 +134,7 @@ public class AjaxRequestAuthorizationFilter extends PassThruAuthenticationFilter
 				session.setAttribute(Constant.SESSION_SYS_ISADMIN,0);
 			}else{
 				session.setAttribute(Constant.SESSION_SYS_ISADMIN,1);
-			}				
+			}
 		}
 		
 		return subject.isAuthenticated();

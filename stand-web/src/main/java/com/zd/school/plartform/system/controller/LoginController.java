@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	private static final Logger logger = LoggerFactory.getLogger(SysUser.class);
 	@Resource
 	private SysUserService sysUserService;
-	
+
 	@Resource
 	private SysRoleService roleService; // 角色数据服务接口
 
@@ -56,23 +57,21 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 
 	@Resource
 	private SessionDAO sessionDAO;
-	
+
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
-	
-//	@Value("${virtualFileUrl}")
-//	private String virtualFileUrl;
-	
-	
-	//测试jedis
-//	@Resource  
-//	private RedisTemplate<String, Object> redisTemplate;  	  
-//	@Resource
-//	private StringRedisTemplate stringRedisTemplate;
-	
-	    
+
+	// @Value("${virtualFileUrl}")
+	// private String virtualFileUrl;
+
+	// 测试jedis
+	// @Resource
+	// private RedisTemplate<String, Object> redisTemplate;
+	// @Resource
+	// private StringRedisTemplate stringRedisTemplate;
+
 	@RequestMapping("/login")
-	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {		      
+	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		SysUser sysUser = sysUserService.getByProerties("userName", sysUserModel.getUserName());
 		// if (sysUser == null || "1".equals(sysUser.getState())) { //
@@ -98,7 +97,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		Subject subject = SecurityUtils.getSubject();
 		Session session = subject.getSession();
 		// SecurityUtils.getSubject().getSession().setTimeout(-1000l); //永不过期
-		session.setTimeout(1000 * 60 * 30 * 2);   //超时时间为1小时
+		session.setTimeout(1000 * 60 * 30 * 2); // 超时时间为1小时
 		// login失败，要捕获相应异常
 		try {
 			// 执行login之后，会立即执行Realm的getAuthenticationInfo方法，用来判断token信息是否正确。
@@ -109,12 +108,12 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			String sessionId = (String) session.getId();
 
 			// 先判断此sessionID是否已经存在，若存在且userid不等于当前的，且没有登记退出时间，则设置为退出
-			String updateTime = DateUtil.formatDateTime(new Date());		
+			String updateTime = DateUtil.formatDateTime(new Date());
 			String updateHql = "update SysUserLoginLog o set o.offlineDate=CONVERT(datetime,'" + updateTime
 					+ "'),o.offlineIntro='切换账户退出' where o.offlineDate is null and o.isDelete=0 and o.sessionId='"
-					+ sessionId + "' and o.userId!='"+userId+"'";
+					+ sessionId + "' and o.userId!='" + userId + "'";
 			sysUserLoginLogService.doExecuteCountByHql(updateHql);
-			
+
 			if (!sysUserLoginLogService.IsFieldExist("userId", userId, "-1", " o.sessionId='" + sessionId + "'")) {
 				SysUserLoginLog loginLog = new SysUserLoginLog();
 				loginLog.setUserId(userId);
@@ -131,7 +130,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			 * ; SysUserLoginLog loginLog =
 			 * sysUserLoginLogService.getEntityByHql(hql, userId,sessionId); }
 			 */
-			
+
 		} catch (AuthenticationException e) { // 这里只捕获了AuthenticationException这个超类，其他更详细的异常子类，暂时不处理
 			result.put("result", -2);
 			writeJSON(response, jsonBuilder.toJson(result));
@@ -154,22 +153,27 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		sysUser.setStudyYearname(studyYeahname);
 
 		session.setAttribute(SESSION_SYS_USER, sysUser);
-		//如果此用户是超级管理员，就不用获取功能权限列表,在过滤器和前端中直接跳过鉴权
-		SysRole adminRole=roleService.get(AdminType.ADMIN_ROLE_ID);	
-		if(sysUser.getSysRoles().contains(adminRole)){
-			session.setAttribute(SESSION_SYS_ISADMIN,1);
-		}else{			
-			//将权限数据保存到session中
-			HashMap<String,Set<String>> userRMP_Map = sysUserService.getUserRoleMenuPermission(sysUser,session);
-			if(userRMP_Map!=null){
-				session.setAttribute(SESSION_SYS_AUTH,userRMP_Map.get("auth") );	
-				session.setAttribute(SESSION_SYS_BTN,userRMP_Map.get("btn") );	
+
+		String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+				.collect(Collectors.joining(","));
+		session.setAttribute(SESSION_ROLE_KEY, roleKeys);
+
+		// 如果此用户是超级管理员，就不用获取功能权限列表,在过滤器和前端中直接跳过鉴权
+		// SysRole adminRole=roleService.get(AdminType.ADMIN_ROLE_ID);
+		if (roleKeys.indexOf(AdminType.ADMIN_ROLE_NAME) != -1) {
+			session.setAttribute(SESSION_SYS_ISADMIN, 1);
+		} else {
+			// 将权限数据保存到session中
+			HashMap<String, Set<String>> userRMP_Map = sysUserService.getUserRoleMenuPermission(sysUser, session);
+			if (userRMP_Map != null) {
+				session.setAttribute(SESSION_SYS_AUTH, userRMP_Map.get("auth"));
+				session.setAttribute(SESSION_SYS_BTN, userRMP_Map.get("btn"));
 			}
-			session.setAttribute(SESSION_SYS_ISADMIN,0);
+			session.setAttribute(SESSION_SYS_ISADMIN, 0);
 		}
-		
-		//session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
-		
+
+		// session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
+
 		result.put("result", 1);
 		writeJSON(response, jsonBuilder.toJson(result));
 	}
@@ -212,7 +216,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		if (userPwd.equals(newUserPwd)) {
 			writeJSON(response, jsonBuilder.returnFailureJson("0"));
 			return;
-        }
+		}
 		SysUser sysUser = sysUserService.getByProerties(propName, propValue);
 		if (ModelUtil.isNotNull(sysUser)) {
 			// 更新到数据库
@@ -234,74 +238,84 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	@RequestMapping("/getOnlineCount")
 	public void getOnlineCount(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		int count = sessionDAO.getActiveSessions().size();
-		/*测试使用redis后，执行存储过程是否变缓慢
-		StringBuffer sql = new StringBuffer("EXEC [dbo].[test_sql] ");
-		List<Map<String, Object>> lists=sysUserService.queryMapBySql(sql.toString());
-		System.out.println(lists);
-		*/
 		/*
-         * redis测试操作，string类型
-         * 在配置文件中设定了ValueSerializer的默认序列化方式为 JdkSerializationRedisSerializer
-         * */
-        //存入      
-//		redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
-//        ValueOperations<String, SysUser> stringOper= redisTemplate.opsForValue();        
-//    	stringOper.set("zzk", new SysUser());
-//    	//取出
-//    	SysUser ss=stringOper.get("zzk");
-//    	System.out.println(ss);
-//    	
-//    	/*
-//         * redis测试操作，存入json数据格式(推荐)
-//         * */
-//    	//设置value的序列化方式为json
-//    	redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(SysUser.class));
-//    	//存入类对象    
-//        ValueOperations<String, SysUser> stringOper2= redisTemplate.opsForValue();        
-//        stringOper2.set("zzkjson", new SysUser());
-//    	//取出json字符串    	
-//    	String json=stringRedisTemplate.opsForValue().get("zzkjson");
-//    	System.out.println(json);
-//    	
-//    	//测试list类型,若要使用实体的方式取出，必须把value序列化方式设置回jdk序列化，并且key里面的值必须序列化格式一致
-//    	redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
-//    	ListOperations<String, SysUser> listOper = redisTemplate.opsForList();
-//    	listOper.leftPush("czc", new SysUser());
-//    	listOper.leftPush("czc", new SysUser());
-//        System.out.println(listOper.range("czc", 0, -1));
-//        
-//        //测试set类型
-//    	SetOperations<String, SysUser> setOper = redisTemplate.opsForSet();
-//    	setOper.add("zzk2", new SysUser());
-//    	setOper.add("zzk2", new SysUser()); 
-//        System.out.println(setOper.members("zzk2"));
-//        
-//        
-//        //测试hash类型
-//    	HashOperations<String, String, SysUser> hashOper = redisTemplate.opsForHash();
-//    	hashOper.put("zzk3", "o1", new SysUser());
-//    	hashOper.put("zzk3", "o2", new SysUser());
-//    	hashOper.put("zzk3", "o3", new SysUser());
-//    	hashOper.put("zzk3", "o4", new SysUser());
-//        System.out.println(hashOper.values("zzk3"));
-//        
-//        
-//        //测试zset类型
-//    	ZSetOperations<String, SysUser> zsetOper = redisTemplate.opsForZSet();
-//    	zsetOper.add("zzk4", new SysUser(), 1);
-//    	zsetOper.add("zzk4", new SysUser(), 2);
-//    	zsetOper.add("zzk4", new SysUser(), 10);
-//    	zsetOper.add("zzk4", new SysUser(), 2);
-//    	zsetOper.add("zzk4", new SysUser(), 3);
-//    	zsetOper.add("zzk4", new SysUser(), 3);
-//        System.out.println(zsetOper.rangeByScoreWithScores("zzk4", 0, 1000));
-//       
-//        //简单的字符串数据操作
-//        ValueOperations<String,String> stringOper3 = stringRedisTemplate.opsForValue();
-//        stringOper3.set("zzz1", "1");
-//        stringOper3.set("zzz2", "asd");
-//        System.out.println(stringOper3.get("zzz1"));
-//        System.out.println(stringOper3.get("zzz2"));
+		 * 测试使用redis后，执行存储过程是否变缓慢 StringBuffer sql = new StringBuffer(
+		 * "EXEC [dbo].[test_sql] "); List<Map<String, Object>>
+		 * lists=sysUserService.queryMapBySql(sql.toString());
+		 * System.out.println(lists);
+		 */
+		/*
+		 * redis测试操作，string类型 在配置文件中设定了ValueSerializer的默认序列化方式为
+		 * JdkSerializationRedisSerializer
+		 */
+		// 存入
+		// redisTemplate.setValueSerializer(new
+		// JdkSerializationRedisSerializer());
+		// ValueOperations<String, SysUser> stringOper=
+		// redisTemplate.opsForValue();
+		// stringOper.set("zzk", new SysUser());
+		// //取出
+		// SysUser ss=stringOper.get("zzk");
+		// System.out.println(ss);
+		//
+		// /*
+		// * redis测试操作，存入json数据格式(推荐)
+		// * */
+		// //设置value的序列化方式为json
+		// redisTemplate.setValueSerializer(new
+		// Jackson2JsonRedisSerializer(SysUser.class));
+		// //存入类对象
+		// ValueOperations<String, SysUser> stringOper2=
+		// redisTemplate.opsForValue();
+		// stringOper2.set("zzkjson", new SysUser());
+		// //取出json字符串
+		// String json=stringRedisTemplate.opsForValue().get("zzkjson");
+		// System.out.println(json);
+		//
+		// //测试list类型,若要使用实体的方式取出，必须把value序列化方式设置回jdk序列化，并且key里面的值必须序列化格式一致
+		// redisTemplate.setValueSerializer(new
+		// JdkSerializationRedisSerializer());
+		// ListOperations<String, SysUser> listOper =
+		// redisTemplate.opsForList();
+		// listOper.leftPush("czc", new SysUser());
+		// listOper.leftPush("czc", new SysUser());
+		// System.out.println(listOper.range("czc", 0, -1));
+		//
+		// //测试set类型
+		// SetOperations<String, SysUser> setOper = redisTemplate.opsForSet();
+		// setOper.add("zzk2", new SysUser());
+		// setOper.add("zzk2", new SysUser());
+		// System.out.println(setOper.members("zzk2"));
+		//
+		//
+		// //测试hash类型
+		// HashOperations<String, String, SysUser> hashOper =
+		// redisTemplate.opsForHash();
+		// hashOper.put("zzk3", "o1", new SysUser());
+		// hashOper.put("zzk3", "o2", new SysUser());
+		// hashOper.put("zzk3", "o3", new SysUser());
+		// hashOper.put("zzk3", "o4", new SysUser());
+		// System.out.println(hashOper.values("zzk3"));
+		//
+		//
+		// //测试zset类型
+		// ZSetOperations<String, SysUser> zsetOper =
+		// redisTemplate.opsForZSet();
+		// zsetOper.add("zzk4", new SysUser(), 1);
+		// zsetOper.add("zzk4", new SysUser(), 2);
+		// zsetOper.add("zzk4", new SysUser(), 10);
+		// zsetOper.add("zzk4", new SysUser(), 2);
+		// zsetOper.add("zzk4", new SysUser(), 3);
+		// zsetOper.add("zzk4", new SysUser(), 3);
+		// System.out.println(zsetOper.rangeByScoreWithScores("zzk4", 0, 1000));
+		//
+		// //简单的字符串数据操作
+		// ValueOperations<String,String> stringOper3 =
+		// stringRedisTemplate.opsForValue();
+		// stringOper3.set("zzz1", "1");
+		// stringOper3.set("zzz2", "asd");
+		// System.out.println(stringOper3.get("zzz1"));
+		// System.out.println(stringOper3.get("zzz2"));
 
 		writeJSON(response, jsonBuilder.returnSuccessJson(String.valueOf(count)));
 	}
@@ -315,28 +329,23 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	 */
 	@RequestMapping("/clearCache")
 	public void clearCache(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		//DictionaryItemCache.clearAll();
+		// DictionaryItemCache.clearAll();
 		SysUser sysUser = getCurrentSysUser();
 		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 		hashOper.delete("userMenuTree", sysUser.getUuid());
 		hashOper.delete("userAuth", sysUser.getUuid());
 		hashOper.delete("userBtn", sysUser.getUuid());
-		
+
 		/**
-		 * 删除部门权限树的缓存数据
-		 * 在什么情况下执行？
-		 * 		1.在给用户添加、删除部门岗位时(SysUserdeptjobServiceImpl)
-		 * 		2.在给用户设置部门权限的时候(SysDeptRightServiceImpl)
-		 * 		3.设置上级部门主管岗位的时候(SysDeptjobServiceImpl)
-		 * 		4.部门岗位信息，当存在用户的时候，就不能被删除，故删除部门岗位时不执行
-		 * 		5.在进行增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会(SysOrgServiceImpl)
+		 * 删除部门权限树的缓存数据 在什么情况下执行？ 1.在给用户添加、删除部门岗位时(SysUserdeptjobServiceImpl)
+		 * 2.在给用户设置部门权限的时候(SysDeptRightServiceImpl)
+		 * 3.设置上级部门主管岗位的时候(SysDeptjobServiceImpl)
+		 * 4.部门岗位信息，当存在用户的时候，就不能被删除，故删除部门岗位时不执行
+		 * 5.在进行增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会(SysOrgServiceImpl)
 		 */
 		hashOper.delete("userRightDeptTree", sysUser.getUuid());
-		
-		
+
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));
 	}
 
-
-	
 }

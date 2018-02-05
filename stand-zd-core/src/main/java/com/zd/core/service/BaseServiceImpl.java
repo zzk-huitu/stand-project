@@ -806,7 +806,11 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	public QueryResult<E> queryResult(String hql, Integer start, Integer limit) {
 		return this.dao.queryPageResult(start, limit, hql);
 	}
-
+	@Override
+	public QueryResult<E> queryResult(String hql, Integer start, Integer limit,String countHql) {
+		return this.dao.queryPageResult(start, limit, hql,countHql);
+	}
+	
 	@Override
 	public <T> T getEntityBySql(String sql) {
 		// TODO Auto-generated method stub
@@ -837,6 +841,10 @@ public class BaseServiceImpl<E> implements BaseService<E> {
 	@Override
 	public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz) {
 		return this.dao.queryPageResultBySql(sql, start, limit, clz);
+	}
+	@Override
+	public <T> QueryResult<T> queryPageResultBySql(String sql, Integer start, Integer limit, Class<T> clz,String countSql) {
+		return this.dao.queryPageResultBySql(sql,start, limit, clz,countSql);
 	}
 
 	/**

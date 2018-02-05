@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -413,10 +414,22 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         	writeJSON(response,jsonBuilder.returnFailureJson("\"不允许删除超级管理员角色的administrator账户！\""));
             return;
         }
+              
         Boolean flag = thisService.doDeleteRoleUser(ids,userId);
-        if(flag)
+        if(flag){
+        	
+          	//当操作了当前用户的角色，则更新roleKey的session值
+        	SysUser currentUser=getCurrentSysUser();
+			if(userId.indexOf(currentUser.getUuid())!=-1){
+				SysUser sysUser = userSerive.get(currentUser.getUuid());
+				String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+				 		.collect(Collectors.joining(","));
+				request.getSession().setAttribute(Constant.SESSION_SYS_USER, sysUser);
+				request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
+			}
+			
             writeJSON(response,jsonBuilder.returnSuccessJson("\"角色用户删除成功\""));
-        else
+        }else
             writeJSON(response,jsonBuilder.returnFailureJson("\"角色用户删除失败，详情请见错误日志\""));
         
     }
@@ -436,10 +449,22 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
             writeJSON(response,jsonBuilder.returnFailureJson("\"没有传入相关的参数:角色标识或要添加的用户标识\""));
             return;
         }
+        
         Boolean flag = thisService.doAddRoleUser(ids,userId);
-        if(flag)
+        if(flag){
+        	
+        	//当操作了当前用户的角色，则更新roleKey的session值
+        	SysUser currentUser=getCurrentSysUser();
+			if(userId.indexOf(currentUser.getUuid())!=-1){
+				SysUser sysUser = userSerive.get(currentUser.getUuid());
+				String roleKeys = sysUser.getSysRoles().stream().filter(x -> x.getIsDelete() == 0).map(x -> x.getRoleCode())
+				 		.collect(Collectors.joining(","));
+				request.getSession().setAttribute(Constant.SESSION_SYS_USER, sysUser);
+				request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
+			}
+			
             writeJSON(response,jsonBuilder.returnSuccessJson("\"角色用户添加成功\""));
-        else
+        }else
             writeJSON(response,jsonBuilder.returnFailureJson("\"角色用户添加失败，详情请见错误日志\""));
        
     }

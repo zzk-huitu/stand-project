@@ -62,13 +62,16 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements SysR
 
 	@Override
 	public Boolean doDeleteRoleUser(String ids, String userId) {
-
+		String[] userIds = userId.split(",");
 		String temp = userId.replace(",", "','");
 		String sql = " delete from SYS_T_ROLEUSER where role_id=''{0}'' and user_id in (''{1}'')";
 		sql = MessageFormat.format(sql, ids, temp);
 		Integer executeCount = this.doExecuteCountBySql(sql);
-		if (executeCount > 0)
+		if (executeCount > 0){
+			/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
+			userSerive.deleteUserRoleRedis(userIds);
 			return true;
+		}
 		else
 			return false;
 
@@ -83,10 +86,13 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements SysR
 		for (int i = 0; i < userCount; i++) {
 			sb.append(MessageFormat.format(sql, ids, userIds[i]));
 		}
-		Integer executeCount = this.doExecuteCountBySql(sb.toString());
-		if (executeCount > 0)
+		Integer executeCount = this.doExecuteCountBySql(sb.toString());					
+		
+		if (executeCount > 0){
+			/* 删除用户的redis数据，以至于下次刷新或请求时，可以加载最新数据 */
+			userSerive.deleteUserRoleRedis(userIds);
 			return true;
-		else
+		}else
 			return false;
 
 	}

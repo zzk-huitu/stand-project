@@ -777,8 +777,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		map.put("btn", userRMP_BTN);
 
 		// 设置登录用户的功能权限（使用redis hash类型存储）
-		hashOper.put("userAuth", sysUser.getUuid(), userRMP_AUTH);
-		hashOper.put("userBtn", sysUser.getUuid(), userRMP_BTN);
+		if(userRMP_AUTH.size()==0)
+			hashOper.put("userAuth", sysUser.getUuid(), null);
+		else
+			hashOper.put("userAuth", sysUser.getUuid(), userRMP_AUTH);
+		
+		if(userRMP_BTN.size()==0)
+			hashOper.put("userBtn", sysUser.getUuid(), null);
+		else
+			hashOper.put("userBtn", sysUser.getUuid(), userRMP_BTN);
 
 		return map;
 
@@ -825,12 +832,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	}
 
 	@Override
-	public void deleteUserRoleRedis(SysUser currentUser) {
+	public void deleteUserRoleRedis(String ... userId) {
 		// TODO Auto-generated method stub
 		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		hashOper.delete("userAuth", currentUser.getUuid());
-		hashOper.delete("userBtn", currentUser.getUuid());
-		hashOper.delete("userMenuTree", currentUser.getUuid());
+		hashOper.delete("userAuth", userId);
+		hashOper.delete("userBtn", userId);
+		hashOper.delete("userMenuTree", userId);
 	}
 
 	@Override
