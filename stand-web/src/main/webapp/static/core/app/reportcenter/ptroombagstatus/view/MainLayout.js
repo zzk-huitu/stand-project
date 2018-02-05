@@ -41,7 +41,7 @@ Ext.define("core.reportcenter.ptroombagstatus.view.MainLayout", {
       items: [{
         xtype: "reportcenter.ptroombagstatus.roominfotree",		
         region: "west",
-        width:250,
+        width:300,
         split:true,
       },{
         xtype: 'basecenterpanel',

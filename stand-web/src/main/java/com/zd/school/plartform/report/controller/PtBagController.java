@@ -19,6 +19,7 @@ import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.DBContextHolder;
+import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
@@ -119,9 +120,15 @@ public class PtBagController extends FrameWorkController implements Constant {
 				
 				String cardValueXF="";
 				for(int i=0;i<xf.size();i++){
-					BigDecimal cardValue = new BigDecimal(String.valueOf( xf.get(i).get("cardValue")))
-							.setScale(2, BigDecimal.ROUND_HALF_UP);		
-					cardValueXF+=xf.get(i).get("bagName")+" "+cardValue.toString()+"；";
+					String cardValueStr = String.valueOf( xf.get(i).get("cardValue"));
+					String bagNameStr = String.valueOf( xf.get(i).get("bagName"));
+					if(!StringUtils.isEmpty(cardValueStr)&&!StringUtils.isEmpty(bagNameStr)){
+						BigDecimal cardValue = new BigDecimal(cardValueStr)
+								.setScale(2, BigDecimal.ROUND_HALF_UP);		
+						cardValueXF+=bagNameStr+" "+cardValue.toString()+"；";
+					}else{
+						cardValueXF="无记录";
+					}
 				}
 				if (xf.size() == 0) {			
 					cardValueXF="无记录";
