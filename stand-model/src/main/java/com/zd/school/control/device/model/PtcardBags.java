@@ -18,7 +18,7 @@ import com.zd.core.model.BaseEntity;
 import com.zd.core.util.DateTimeSerializer;
 
 /**
- * 钱包表
+ * 钱包表（弃用）
  * 
  * @author hucy
  *

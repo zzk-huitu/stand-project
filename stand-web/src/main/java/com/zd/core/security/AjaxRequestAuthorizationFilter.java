@@ -132,6 +132,13 @@ public class AjaxRequestAuthorizationFilter extends PassThruAuthenticationFilter
 					session.setAttribute(Constant.SESSION_SYS_BTN,userRMP_Map.get("btn") );	
 				}
 				session.setAttribute(Constant.SESSION_SYS_ISADMIN,0);
+				
+				//学校管理员，理应可以查看所有数据
+				if(roleKeys.indexOf(AdminType.SCHOOLADMIN_ROLE_NAME) != -1)
+					session.setAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN, 1);
+				else
+					session.setAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN, 0);
+				
 			}else{
 				session.setAttribute(Constant.SESSION_SYS_ISADMIN,1);
 			}

@@ -39,6 +39,19 @@ public class BuildOfficeDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "状态,用于标识是否分配：0未分配。1已分配")
 	@Column(name = "ROOM_STATUS", length = 8, nullable = true)
 	private String roomStatus = "0";
+	
+	@FieldInfo(name = "办公室名称")
+	@Column(name = "OFFICE_NAME", length = 64, nullable = true)
+	private String officeName;
+
+	public String getOfficeName() {
+		return officeName;
+	}
+
+	public void setOfficeName(String officeName) {
+		this.officeName = officeName;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

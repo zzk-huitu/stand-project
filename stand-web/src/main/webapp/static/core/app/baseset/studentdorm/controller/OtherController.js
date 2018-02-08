@@ -22,6 +22,13 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
             return false;
            }
          },
+          //添加班级宿舍
+        "basegrid[xtype=baseset.studentdorm.classdormgrid] button[ref=addClassDorm]": {
+           beforeclick: function(btn) {
+            self.doSelectStuDorm(btn);
+            return false;
+          }
+        },
          //手动分配宿舍
         "basegrid[xtype=baseset.studentdorm.dormnotallotgrid] button[ref=dormFp]": {
            beforeclick: function(btn) {
@@ -105,6 +112,21 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                return false;
              }
            },
+        //选中宿舍时
+        "mtfuncwindow[funcPanel=addClassDorm] button[ref=ssOkBtn]": {
+            beforeclick: function(btn) {
+              self.doSaveClassDorm(btn);
+              return false;
+            }
+        },
+         //关闭选中宿舍layout
+        "mtfuncwindow[funcPanel=addClassDorm] button[ref=ssCancelBtn]": {
+            beforeclick: function(btn) {
+              var win = btn.up('window').close();
+              return false;
+            }
+        },
+
 
            /*
            虚拟宿舍调整(或换宿舍)
@@ -456,10 +478,11 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
            }); //打开自定义窗口 
       
           var oneKeyPanel = win.down("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
-          var girldormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree]");
+          //var girldormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree]");
           var boydormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree]");
-          girldormdefintree.hidden=true;
+          //girldormdefintree.hidden=true;
           boydormdefintree.hidden=false;
+          boydormdefintree.getStore().load();
           win.show();
       },
         doDeleteBoyDorm :function(btn){
@@ -508,9 +531,10 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
 
           var oneKeyPanel = win.down("basepanel[xtype=pubonkeyallotdorm.mainlayout]");
           var girldormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree]");
-          var boydormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree]");
+          //var boydormdefintree = oneKeyPanel.down("basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree]");
           girldormdefintree.hidden=false;
-          boydormdefintree.hidden=true;
+          girldormdefintree.getStore().load();
+          //boydormdefintree.hidden=true;
           win.show();
         },
         doDeleteGirlDorm :function(btn){
@@ -782,7 +806,9 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                           //已分配宿舍学生grid
                           baseGrid.getStore().loadPage(1);
                           //未分配宿舍学生grid
-                          mainLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]").getStore().loadPage(1);                     
+                          mainLayout.down("basegrid[xtype=baseset.studentdorm.dormnotallotgrid]").getStore().loadPage(1);     
+                          //班级宿舍列表grid
+                          mainLayout.down("basegrid[xtype=baseset.studentdorm.classdormgrid]").getStore().loadPage(1);                  
                       }else {
                           self.Warning(data.obj);                          
                       }           
@@ -871,6 +897,102 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                   loading.hide();
                 }
             }); 
-         }
+         },
 
+         doSelectStuDorm :function(btn){
+            var self=this;
+            var basePanel=btn.up("basepanel[xtype=baseset.studentdorm.dormallotLayout]");
+            var dormAllotTree=basePanel.down('basetreegrid[xtype=baseset.studentdorm.dormallottree]');
+            var treeObj = dormAllotTree.getSelectionModel().getSelection();
+            if (treeObj.length != 1) {
+                self.msgbox("请选择一个班级！");
+                return;
+            } else {
+                treeObj = treeObj[0];
+            }
+            var nodeType = treeObj.get("nodeType");
+            if (nodeType != "05") {
+               self.msgbox("只能选择班级进行操作！");
+               return;
+            }
+
+            var baseGrid = basePanel.down('basegrid[xtype=baseset.studentdorm.classdormgrid]')
+            var funcPanel = "pubonkeyallotdorm.mainlayout";
+            var funcTitle = "宿舍列表";
+            var otherController = 'baseset.studentdorm.othercontroller';
+            var win = Ext.createWidget("mtfuncwindow", {
+                title: funcTitle,
+                items: {
+                  xtype: funcPanel
+                },
+                width: 1100,
+                baseGrid: baseGrid,
+                classId:treeObj.get("id"),
+                controller: otherController, 
+                height: 500,
+                maximizable: false,
+                resizable: false, //禁止拖动
+                funcPanel: "addClassDorm",
+            }); //打开自定义窗口
+
+            var studormareatree = win.down("basetreegrid[xtype=pubonkeyallotdorm.studormareatree]");      
+            studormareatree.hidden=false;
+            studormareatree.getStore().load();
+            win.show();
+        },
+        
+        doSaveClassDorm:function(btn){
+            var self=this;
+            var win=btn.up("window");
+            var classId=win.classId;
+            var baseGrid=win.baseGrid;
+            var isselectdormgrid = win.down('panel[xtype=pubonkeyallotdorm.isselectdormgrid]'); 
+
+            var dormArray=new Array();
+            for (var k = 0; k < isselectdormgrid.getStore().getCount(); k++) {
+                var rec = isselectdormgrid.getStore().getAt(k);
+                var dormUUid = rec.get('uuid');
+                if(dormArray.indexOf(dormUUid)==-1){
+                    dormArray.push(dormUUid);
+                }
+            }     
+
+            if(dormArray.length==0){
+              self.msgbox("请选择学生宿舍!");
+              return false;
+            }
+
+            Ext.Msg.confirm("温馨提示", "您确定要为此班级添加宿舍吗？", function(btns) {
+            if (btns == 'yes') {
+                var loading = self.LoadMask(win,'正在执行中，请等待...');
+
+                self.asyncAjax({
+                    url: comm.get('baseUrl') + "/BaseStudentDorm/doAddClassDorm",
+                    params: {
+                      classId: classId,
+                      dormIds: dormArray.join(",")
+                    },                      
+                    success: function(response) {
+                      var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                      if(data.success){
+                        baseGrid.getStore().load(); 
+                        
+                        loading.hide();
+                        win.close(); 
+                        self.msgbox(data.obj);
+                                                    
+                      }else {
+                        loading.hide();
+                        win.close();
+                        self.Error(data.obj);                  
+                      } 
+                    },
+                    failure: function(response) {                   
+                      Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                      loading.hide();
+                    }
+                });     
+              }
+            }) 
+        }
 });

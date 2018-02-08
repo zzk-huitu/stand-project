@@ -90,6 +90,20 @@ Ext.define("core.baseset.studentdorm.view.MixDormGrid", {
         field: {
             xtype: "textfield"
         }
+    }, {
+        width:80,
+        text: "混班宿舍",
+        dataIndex: "ismixed",
+        renderer: function(value) {
+            switch (value) {
+                case '1':
+                    return '<font color=red>是</font>';
+                    break;
+                default:
+                    return '<font color=green>否</font>';
+                    break;
+            }
+        }
     }]
 }
 });

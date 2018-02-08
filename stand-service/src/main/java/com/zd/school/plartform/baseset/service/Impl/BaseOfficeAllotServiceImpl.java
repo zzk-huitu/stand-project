@@ -70,16 +70,11 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	}
 
 	/**
-	 * 1: 学生宿舍分配的门禁分配
-	 * roomaAllotService.mjUserRight(entity.getStuId(), null, null, entity, null);
-	 * dorm ：学生宿舍
-	 * uuid ：DormStudentDorm表的学生id
-	 * 2：办公室分配（现名为房间分配）
-	 * 	this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
-	 *  this.mjUserRight(null, roomId, tteacId, null, null);
-	 * roomId: JwOfficeAllot的房间id 
-	 * userId :JwOfficeAllot的主键id
-	 * uuid :JwOfficeAllot表的教师id
+	 * uuid：需要进行设置门禁权限的学生ID或教师ID；
+	 * roomId：需要设置门禁的房间id；
+	 * userId：需要取消门禁权限的学生ID或教师ID；
+	 * dorm：在学生宿舍分配门禁使用，通过它来找到roomId；
+	 * classStu：班级学生，暂时不设置，已经取消了班级的方式。
 	 */
 	@Override
 	public boolean mjUserRight(String uuid, String roomId, String userId, DormStudentDorm dorm,
@@ -88,9 +83,9 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			if (dorm != null) {//学生宿舍门禁分配
 				String dormId = classDormService.get(dorm.getCdormId()).getDormId(); //班级宿舍id
 				roomId = dormDefine.get(dormId).getRoomId();
-			} else if (classStu != null) { //教师分配门禁  目前还未增加教师分配该模块
-				String[] propName = { "claiId", "isDelete" };
-				Object[] propValue = { classStu.getClaiId(), 0 };
+			} else if (classStu != null) { //班级的教师分配门禁 #目前还未增加教师分配该模块
+				//String[] propName = { "claiId", "isDelete" };
+				//Object[] propValue = { classStu.getClaiId(), 0 };
 				//roomId = classservice.getByProerties(propName, propValue).getRoomId();
 			}
 			String[] propName = { "termTypeID", "isDelete", "roomId" };

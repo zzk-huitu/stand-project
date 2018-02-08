@@ -134,8 +134,10 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String identity = request.getParameter("identity");
 		if(identity.equals("1")){//男生
 			lists = treeService.getCommTree("JW_V_STU_BOY_DORMALLOTTREE", whereSql);
-		}else{//女生
+		}else if(identity.equals("2")){//女生
 			lists = treeService.getCommTree("JW_V_STU_GRIL_DORMALLOTTREE", whereSql);
+		}else{
+			lists = treeService.getCommTree("JW_V_STU_DORM_ARER_TREE", whereSql);
 		}
 		
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
@@ -222,13 +224,18 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String sql = " select a.userId as userId,a.xm as xm,a.userNumb as userNumb,a.xbm as xbm,a.classId as classId,"
 				+ " a.className as className,a.gradeId as gradeId,a.gradeCode as gradeCode,a.gradeName as gradeName "
 				+ "from STAND_V_CLASSSTUDENT a where "
-				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0 and  CLAI_ID=a.classId)";
+				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0)";
+		
+		String countSql="select count(*) "
+				+ "from STAND_V_CLASSSTUDENT a where "
+				+ " a.userId not in (select STU_ID from DORM_T_STUDENTDORM  where isDelete=0)";
 		
 		if(classId!=null){
 			sql+=" and a.classId in ('"+str.replace(",", "','")+"')";
+			countSql+=" and a.classId in ('"+str.replace(",", "','")+"')";
 		}
 		
-		QueryResult<StandVClassStudent> qr = thisService.queryPageResultBySql(sql, super.start(request),super.limit(request), StandVClassStudent.class);	
+		QueryResult<StandVClassStudent> qr = thisService.queryPageResultBySql(sql, super.start(request),super.limit(request), StandVClassStudent.class,countSql);	
 	
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		
@@ -237,7 +244,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	
 	// 手动分配宿舍 （学生分配宿舍）
 	
-	@Auth("BASESTUDENTDORM_dormAllot,BASESTUDENTDORM_dormAdjust")
+	@Auth("BASESTUDENTDORM_dormAllot")
 	@RequestMapping("/dormHandAllot")
 	public void dormHandAllot(DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -346,6 +353,29 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	}
 	
 	/**
+	 * 手动添加班级宿舍
+	*/
+	@Auth("BASESTUDENTDORM_AddClassDorm")
+	@RequestMapping("/doAddClassDorm")
+	public void doAddClassDorm(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		String classId = request.getParameter("classId");
+		String dormIds = request.getParameter("dormIds");
+	
+		// 获取当前的操作用户
+		SysUser currentUser = getCurrentSysUser();
+
+		Boolean flag = thisService.doAddClassDorm(classId,dormIds, currentUser);
+		
+		if (flag) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"添加班级宿舍成功!\""));
+		} else {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"添加班级宿舍失败!\""));
+		}
+		
+	}
+	
+	/**
 	 * 取消分配学生宿舍
 	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
 	 * request @param @param response @param @throws IOException 设定参数 @return
@@ -361,7 +391,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			return;
 		} else {
 			String[] delIds = entity.getUuid().split(",");
-			flag = thisService.doDeleteDorm(delIds,currentUser.getXm());
+			flag = thisService.doDeleteDorm(delIds,currentUser.getUuid());
 					
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"取消宿舍成功!\""));
@@ -386,7 +416,7 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		String[] list = entity.getUuid().split(";");
 		int count = 0;
 		
-		count = thisService.doUpdateBedArkNum(list,currentUser.getXm());
+		count = thisService.doUpdateBedArkNum(list,currentUser.getUuid());
 			
 		if (count > 0) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"保存成功。\""));

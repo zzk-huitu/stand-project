@@ -101,15 +101,15 @@ public class PtGateway extends BaseEntity implements Serializable {
 	private Integer frontServerStatus;
 	
 	@FieldInfo(name = "基础参数")
-	@Column(name = "BASEPARAM")
+	@Column(name = "BASEPARAM",length=8000)
 	private byte[] baseParam;
 
 	@FieldInfo(name = "高级参数")
-	@Column(name = "ADVPARAM")
+	@Column(name = "ADVPARAM",length=8000)
 	private byte[] advParam;
 
 	@FieldInfo(name = "网络参数")
-	@Column(name = "NETPARAM")
+	@Column(name = "NETPARAM",length=8000)
 	private byte[] netParam;
 
 	@FieldInfo(name = "备注说明")

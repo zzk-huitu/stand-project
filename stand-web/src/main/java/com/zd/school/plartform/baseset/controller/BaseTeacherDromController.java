@@ -166,8 +166,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入退住主键\""));
 			return;
 		} else {
-			flag = thisService.doOut(outIds, currentUser);
-			// 应当移除门禁
+			flag = thisService.doOut(outIds, currentUser);	
 		}
 		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"退住成功\""));
@@ -180,7 +179,7 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	public @ResponseBody DormTeacherDorm getMax(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		String dormId = request.getParameter("dormId");
-		String sql = "SELECT MAX(ARK_NUM) arkNum,MAX(BED_NUM) bedNum FROM DORM_T_TEACHERDORM WHERE DORM_ID='" + dormId
+		String sql = "SELECT MAX(ARK_NUM) arkNum,MAX(BED_NUM) bedNum FROM DORM_T_TEACHERDORM WHERE ISDELETE=0 AND IN_OUT=0 and DORM_ID='" + dormId
 				+ "'";
 		List<Object[]> list = thisService.queryObjectBySql(sql);
 		DormTeacherDorm entity = new DormTeacherDorm();

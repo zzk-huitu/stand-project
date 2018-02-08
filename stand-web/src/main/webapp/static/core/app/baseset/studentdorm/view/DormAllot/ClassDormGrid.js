@@ -22,6 +22,11 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
                 fontWeight:800,
                 padding: '8px 5px'
             }
+        }, '->',{
+            xtype: 'button',
+            text: '添加班级宿舍',
+            ref: 'addClassDorm',
+            iconCls: 'x-fa fa-plus-circle',
         }]
     },
       columns: {
@@ -49,7 +54,7 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
         hidden: true
     }, {
         flex : 1,
-        minWidth:80,
+        minWidth:75,
         text: "宿舍名称",
         dataIndex: "dormName",
         field: {
@@ -61,7 +66,7 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
             return value;
         }
     }, {
-        width:80,
+        width:75,
         text: "宿舍类型",
         dataIndex: "dormType",
         renderer: function(value) {
@@ -78,14 +83,21 @@ Ext.define("core.baseset.studentdorm.view.ClassDormGrid", {
             }
         }
     }, {
-        width:80,
+        width:60,
         text: "床位数",
         dataIndex: "dormBedCount",
         field: {
             xtype: "textfield"
         }
     }, {
-        width:80,
+        width: 75,
+        text: "入住人数",
+        dataIndex: "stuCount",
+        field: {
+            xtype: "textfield"
+        }
+    }, {
+        width:75,
         text: "混班宿舍",
         dataIndex: "ismixed",
         renderer: function(value) {

@@ -40,19 +40,32 @@ public class JwClassDormAllot extends BaseEntity implements Serializable {
 	@FieldInfo(name = "是否是混班宿舍：0否-1是")
 	@Column(name = "ISMIXED", length = 10, nullable = true)
 	private String ismixed = "0";
-
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 
 	 * @Transient
 	 * @FieldInfo(name = "") private String field1;
 	 */
+	
+	@FieldInfo(name = "房间编码")
+	@Formula("(SELECT B.ROOM_NAME FROM  dbo.BUILD_T_DORMDEFINE A JOIN dbo.BUILD_T_ROOMINFO B "
+			+ "ON A.ROOM_ID=B.ROOM_ID WHERE  A.ISDELETE=0 AND A.DORM_ID=DORM_ID)")
+	private String dormCode;
+	
+	@FieldInfo(name = "房间电话")
+	@Formula("(SELECT B.ROOM_PHONE FROM  dbo.BUILD_T_DORMDEFINE A JOIN dbo.BUILD_T_ROOMINFO B "
+			+ "ON A.ROOM_ID=B.ROOM_ID WHERE  A.ISDELETE=0 AND A.DORM_ID=DORM_ID)")
+	private String roomPhone;
+	
+	
 	@Formula("(SELECT A.DORM_TYPE FROM dbo.BUILD_T_DORMDEFINE A  WHERE A.DORM_ID=DORM_ID AND A.ISDELETE=0)")
 	@FieldInfo(name = "宿舍类型")
 	private String dormType;
 	
-	@Transient
+	//@Transient
 	@FieldInfo(name = "已入住人数")
+	@Formula("(select COUNT(*) from DORM_T_STUDENTDORM A where A.CDORM_ID=CDORM_ID AND A.ISDELETE=0)")
 	private String stuCount;
 	
 	@Formula("(SELECT A.DORM_BEDCOUNT FROM dbo.BUILD_T_DORMDEFINE A  WHERE A.DORM_ID=DORM_ID AND A.ISDELETE=0)")
@@ -144,5 +157,23 @@ public class JwClassDormAllot extends BaseEntity implements Serializable {
 	public void setStuCount(String stuCount) {
 		this.stuCount = stuCount;
 	}
+
+	public String getDormCode() {
+		return dormCode;
+	}
+
+	public void setDormCode(String dormCode) {
+		this.dormCode = dormCode;
+	}
+
+	public String getRoomPhone() {
+		return roomPhone;
+	}
+
+	public void setRoomPhone(String roomPhone) {
+		this.roomPhone = roomPhone;
+	}
+	
+	
 
 }

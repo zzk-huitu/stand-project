@@ -83,6 +83,10 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 				writeJSON(response, jsonBuilder.toJson(result));
 				return;
 			}
+		}else if("1".equals(sysUser.getState())){
+			result.put("result", -1);
+			writeJSON(response, jsonBuilder.toJson(result));
+			return;
 		}
 
 		String pwd = Base64.decodeToString(sysUserModel.getUserPwd());
@@ -161,7 +165,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		// 如果此用户是超级管理员，就不用获取功能权限列表,在过滤器和前端中直接跳过鉴权
 		// SysRole adminRole=roleService.get(AdminType.ADMIN_ROLE_ID);
 		if (roleKeys.indexOf(AdminType.ADMIN_ROLE_NAME) != -1) {
-			session.setAttribute(SESSION_SYS_ISADMIN, 1);
+			session.setAttribute(SESSION_SYS_ISADMIN, 1);	
 		} else {
 			// 将权限数据保存到session中
 			HashMap<String, Set<String>> userRMP_Map = sysUserService.getUserRoleMenuPermission(sysUser, session);
@@ -169,7 +173,14 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 				session.setAttribute(SESSION_SYS_AUTH, userRMP_Map.get("auth"));
 				session.setAttribute(SESSION_SYS_BTN, userRMP_Map.get("btn"));
 			}
+			
 			session.setAttribute(SESSION_SYS_ISADMIN, 0);
+			
+			//学校管理员，理应可以查看所有数据
+			if(roleKeys.indexOf(AdminType.SCHOOLADMIN_ROLE_NAME) != -1)
+				session.setAttribute(SESSION_SYS_ISSCHOOLADMIN, 1);
+			else
+				session.setAttribute(SESSION_SYS_ISSCHOOLADMIN, 0);
 		}
 
 		// session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);

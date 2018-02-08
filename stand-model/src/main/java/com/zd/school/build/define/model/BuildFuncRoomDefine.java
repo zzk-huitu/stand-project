@@ -39,7 +39,19 @@ public class BuildFuncRoomDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "状态,用于标识是否分配：0未分配。1已分配")
 	@Column(name = "ROOM_STATUS", length = 8, nullable = true)
 	private String roomStatus = "0";
+	
+	@FieldInfo(name = "功能室名称")
+	@Column(name = "FUNC_NAME", length = 64, nullable = true)
+	private String funcName;
 
+	public String getFuncName() {
+		return funcName;
+	}
+
+	public void setFuncName(String funcName) {
+		this.funcName = funcName;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

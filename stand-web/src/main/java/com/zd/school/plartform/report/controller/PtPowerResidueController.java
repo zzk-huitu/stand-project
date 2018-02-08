@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.controller.core.FrameWorkController;
+import com.zd.core.model.BaseEntity;
 import com.zd.core.util.DBContextHolder;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
@@ -39,7 +40,7 @@ import com.zd.school.plartform.system.service.SysUserService;
 
 @Controller
 @RequestMapping("/PtPowerResidue")
-public class PtPowerResidueController extends FrameWorkController<PtPowerResidue> {
+public class PtPowerResidueController extends FrameWorkController<BaseEntity> {
 
 	private static Logger logger = Logger.getLogger(PtPowerResidueController.class);
 

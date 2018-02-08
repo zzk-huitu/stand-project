@@ -49,13 +49,7 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                     var formDormId = bf.findField("dormId").getValue();
                     var formRoomId = bf.findField("roomId").getValue();
 
-                    var isStoreXmb=new Array();;
-                    var store = IsSelectStore.getStore();
-                     for (var i = 0; i < store.getCount(); i++) {
-                        var record = store.getAt(i);
-                        var xbm = record.get("xbm");
-                        isStoreXmb.push(xbm);
-                     }
+                    
                   
                      var date = self.ajax({
                         url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getTeaDormXmb",
@@ -63,26 +57,40 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
                             roomId:formRoomId
                         },
                     });
-                     var xmb = '';
-                     var dormType='';
-                     if(date!=null){
+
+                    var xmb = '';
+                    var dormType='';
+                    if(date!=null){
                         dormType = date.dormType;
-                        if (dormType=='1'){
-                            xmb = '男';
-                        }else if(dormType=='2'){
-                           xmb = '女';
-                       }else{
-                           xmb = '不限';
-                       }
-                    }
-                    for(var j=0; j<isStoreXmb.length; j++){
-                        if(isStoreXmb[j]!=dormType){
-                            self.Warning("该教师宿舍为"+ xmb+ "宿舍,请均选择"+ xmb+ "教师。");
-                            return false;
+                        if(dormType=="1" || dormType=="2"){
+                            if (dormType=='1'){
+                                xmb = '男';
+                            }else if(dormType=='2'){
+                               xmb = '女';
+                            }
 
+                            var isStoreXmb=new Array();;
+                            var store = IsSelectStore.getStore();
+                            for (var i = 0; i < store.getCount(); i++) {
+                                var record = store.getAt(i);
+                                var xbm = record.get("xbm");
+                                isStoreXmb.push(xbm);
+                            }
+
+                            
+                            for(var j=0; j<isStoreXmb.length; j++){
+                                if(isStoreXmb[j]!=dormType){
+                                    self.Warning("该教师宿舍为"+ xmb+ "宿舍,请均选择"+ xmb+ "教师。");
+                                    return false;
+
+                                }
+
+                            }
                         }
-
+                        
                     }
+
+                     
 
                     var basePanel = win.down("basepanel[xtype=pubselect.selectuserlayout]");
                     var baseGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
@@ -146,11 +154,11 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
 
 		var defined=grid.store.totalCount;
 		if (resObj.dormBedCount < bedCount.length+defined) {
-			self.msgbox("床位数量不能超过已经定义的");
+			self.msgbox("床位数量不能超过"+resObj.dormBedCount +"个");
 			return;
 		}
 		if (resObj.dormChestCount < arkCount.length+defined) {
-			self.msgbox("柜子数量不能超过已经定义的");
+			self.msgbox("柜子数量不能超过"+resObj.dormChestCount +"个");
 			return;
 		}
           //获取当前tab页

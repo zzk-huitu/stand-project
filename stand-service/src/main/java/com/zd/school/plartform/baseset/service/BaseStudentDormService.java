@@ -31,6 +31,7 @@ public interface BaseStudentDormService extends BaseService<DormStudentDorm> {
 	public List<JwClassDormAllot>  mixDormList(JwClassDormAllot entity);
 	public List<JwClassDormAllot>  emptyMixDormList(JwClassDormAllot entity);
 	public Boolean pushMessage(String classId);
-	public boolean doDeleteDorm(String[] delIds, String xm);
-	public Integer doUpdateBedArkNum(String[] list, String xm);
+	public Boolean doDeleteDorm(String[] delIds, String userId);
+	public Integer doUpdateBedArkNum(String[] list, String userId);
+	public Boolean doAddClassDorm(String classId, String dormIds, SysUser currentUser);
 }

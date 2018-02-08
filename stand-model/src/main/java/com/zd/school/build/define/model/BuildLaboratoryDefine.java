@@ -39,6 +39,19 @@ public class BuildLaboratoryDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "状态,用于标识是否分配：0未分配。1已分配")
 	@Column(name = "ROOM_STATUS", length = 8, nullable = true)
 	private String roomStatus = "0";
+	
+	@FieldInfo(name = "实验室名称")
+	@Column(name = "LABO_NAME", length = 64, nullable = true)
+	private String laboName;
+	
+	public String getLaboName() {
+		return laboName;
+	}
+
+	public void setLaboName(String laboName) {
+		this.laboName = laboName;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

@@ -102,7 +102,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 *  若当前用户是超级管理员/学校管理员，并且点击为学校部门，则查询出所有的用户
 	 *  否则其他用户点击顶层学校部门，只会显示出他权限之下的部门的用户
-	 *  点击其他的各个子部门，只会显示这个部门下的用户
+	 *  点击其他的各个子部门，只会显示这个部门下的用户(为主部门的用户)
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -114,12 +114,13 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		if (deptId.equals("")) {
 			deptId = AdminType.ADMIN_ORG_ID;
 		}
-
+		
 		Integer isAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
-
-		// 若当前用户是超级管理员，并且为学校部门，则查询出所有的用户
-		if (isAdmin == 1 && deptId.equals(AdminType.ADMIN_ORG_ID)) {
-
+		Integer isSchoolAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN);
+		
+		// 若当前用户是超级管理员/学校管理员，并且为学校部门，则查询出所有的用户
+		if ((isAdmin == 1 || isSchoolAdmin==1) && deptId.equals(AdminType.ADMIN_ORG_ID)) {
+			
 			QueryResult<SysUser> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 					super.sort(request), super.filter(request), true);
 			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
@@ -135,8 +136,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			}
 			
 			if(StringUtils.isNotEmpty(deptId)){
-				String hql="from SysUser g where g.uuid in ("
-						+ "	select distinct userId  from BaseUserdeptjob where deptId in ('"+deptId+"')"
+				String hql="from SysUser g where g.isDelete=0 and g.uuid in ("
+						+ "	select distinct userId  from BaseUserdeptjob where isDelete=0 and masterDept=1 and deptId in ('"+deptId+"')"
 						+ ")";
 						
 				QueryResult<SysUser> qr=thisService.queryCountToHql(super.start(request), super.limit(request),
@@ -146,24 +147,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			
 			}else{
 				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
-			}
-			/*
-			String userIds = "";
-			for (int i = 0; i < udj.size(); i++) {
-				userIds += "'" + udj.get(i).getUserId() + "',";
-			}
-
-			if (userIds.trim().length() > 0) { // 若有用户，就去查询
-
-				userIds = StringUtils.trimLast(userIds);
-
-				QueryResult<SysUser> qr = thisService.getDeptUser(super.start(request), super.limit(request),
-						super.sort(request), super.filter(request), true, userIds, currentUser);
-				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
-
-			} else {
-				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
-			}*/
+			}			
 		}
 
 		writeJSON(response, strData);// 返回数据

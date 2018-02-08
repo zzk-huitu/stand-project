@@ -27,12 +27,16 @@
 <script type="text/javascript" src="${contextPath}/static/core/resources/js/layer/layer.js"></script>
 
 <script language="JavaScript"> 
-	function keyLogin(){  
+	function keyLogin(me){  
 	  	if (event.keyCode==13) {                        
-		//按Enter键的键值为13  
-		     document.getElementById("input2").click(); 
-		     //document.getElementById("yzz").click();
-		 }
+			//按Enter键的键值为13  
+			me.blur();
+			//var input = document.getElementById("your-input-id");
+			//input.blur();
+		    document.getElementById("input2").click();
+
+		    //document.getElementById("yzz").click();
+		}
 	//调用登录按钮的登录事件  
 	}  
 
@@ -62,7 +66,7 @@
 					<div class="input_top">
 						<label class="textName">用户名：</label><input value="" name="name"  id="name"  type="text" placeholder="请输入用户名" /></br>
 						<label class="textName">密　码：</label><input value="" name="psw" id="psw" type="password" placeholder="请输入密码" /></br>
-						<label class="textName">验证码：</label><input type="text" class="yzm" id="yzm" style='width: 80px;' placeholder="验证码"  onkeydown="keyLogin();"/>
+						<label class="textName">验证码：</label><input type="text" class="yzm" id="yzm" style='width: 80px;' placeholder="验证码"  onkeydown="keyLogin(this);"/>
 						<div class="yzm-m" id="yzm-m">
 							<img src="${contextPath}/verifycode/image" alt="点击重新生成"
 								id="yzz" onclick="yz();">

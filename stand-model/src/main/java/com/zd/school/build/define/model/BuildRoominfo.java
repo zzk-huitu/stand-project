@@ -136,7 +136,19 @@ public class BuildRoominfo extends BaseEntity implements Serializable {
 	public String getRoomDesc() {
 		return roomDesc;
 	}
+	
+	@FieldInfo(name = "房间电话")
+	@Column(name = "ROOM_PHONE", length = 200, nullable = true)
+	private String roomPhone;
 
+	public String getRoomPhone() {
+		return roomPhone;
+	}
+
+	public void setRoomPhone(String roomPhone) {
+		this.roomPhone = roomPhone;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

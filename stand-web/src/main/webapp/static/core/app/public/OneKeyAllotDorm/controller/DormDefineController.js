@@ -11,6 +11,27 @@ Ext.define("core.public.OneKeyAllotDorm.controller.DormDefineController", {
     },
     init: function () {
         this.control({
+            "basetreegrid[xtype=pubonkeyallotdorm.boydormdefinetree] button[ref=gridRefresh]":{
+                beforeclick: function(btn) {
+                    var baseGrid = btn.up("basetreegrid");
+                    var store = baseGrid.getStore().load(); //刷新父窗体的grid
+                    return false;
+               }    
+            },
+            "basetreegrid[xtype=pubonkeyallotdorm.girldormdefinetree] button[ref=gridRefresh]":{
+                beforeclick: function(btn) {
+                    var baseGrid = btn.up("basetreegrid");
+                    var store = baseGrid.getStore().load(); //刷新父窗体的grid
+                    return false;
+               }    
+            },
+            "basetreegrid[xtype=pubonkeyallotdorm.studormareatree] button[ref=gridRefresh]":{
+                beforeclick: function(btn) {
+                    var baseGrid = btn.up("basetreegrid");
+                    var store = baseGrid.getStore().load(); //刷新父窗体的grid
+                    return false;
+               }    
+            }
         })
     },
 });

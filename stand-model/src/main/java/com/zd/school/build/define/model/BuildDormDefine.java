@@ -75,7 +75,11 @@ public class BuildDormDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "是否混班宿舍,0否,1是")
 	@Column(name = "ISMIXED", length = 8, nullable = true)
 	private String isMixed = "0";
-
+	
+	@FieldInfo(name = "宿舍名称")
+	@Column(name = "DORM_NAME", length = 64, nullable = true)
+	private String dormName;
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加 8
 	 * 
@@ -228,5 +232,12 @@ public class BuildDormDefine extends BaseEntity implements Serializable {
 	public void setUpAreaName(String upAreaName) {
 		this.upAreaName = upAreaName;
 	}
+	
+	public String getDormName() {
+		return dormName;
+	}
 
+	public void setDormName(String dormName) {
+		this.dormName = dormName;
+	}
 }

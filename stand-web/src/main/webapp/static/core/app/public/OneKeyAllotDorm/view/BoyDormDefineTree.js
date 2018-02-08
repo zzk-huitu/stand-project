@@ -5,6 +5,7 @@ Ext.define("core.public.OneKeyAllotDorm.view.BoyDormDefineTree", {
     model: "com.zd.school.build.define.model.BuildRoomAreaTree",
     selModel: {},
     expandFirst:true,
+    al:false,
     extParams: {
          whereSql: "",
          excludes:"checked",

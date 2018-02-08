@@ -1,16 +1,13 @@
 package com.zd.school.control.device.model;
 
-import java.io.Serializable;
-
 import com.zd.core.annotation.FieldInfo;
-import com.zd.core.model.BaseEntity;
 
 /**
  * 电量剩余查询
  * @author hucy
  *
  */
-public class PtPowerResidue  extends BaseEntity implements Serializable {
+public class PtPowerResidue {
 
 	@FieldInfo(name = "宿舍名称")
 	private String roomName;

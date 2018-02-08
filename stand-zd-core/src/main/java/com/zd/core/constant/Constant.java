@@ -22,6 +22,7 @@ public interface Constant {
     public static final String SESSION_SYS_USER = "SESSION_SYS_USER";
     public static final String SESSION_ROLE_KEY = "SESSION_ROLE_KEY";
     public static final String SESSION_SYS_ISADMIN = "SESSION_SYS_ISADMIN";	//是否为超级管理员
+    public static final String SESSION_SYS_ISSCHOOLADMIN = "SESSION_SYS_ISSCHOOLADMIN";	//是否为超级管理员
     public static final String SESSION_SYS_AUTH = "SESSION_SYS_AUTH";	//后端接口权限，前缀+后缀
     public static final String SESSION_SYS_BTN = "SESSION_SYS_BTN";		//前端按钮权限，菜单编码+按钮ref值
     /**

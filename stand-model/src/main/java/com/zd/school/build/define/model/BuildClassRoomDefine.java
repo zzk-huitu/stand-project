@@ -39,6 +39,19 @@ public class BuildClassRoomDefine extends BaseEntity implements Serializable {
 	@FieldInfo(name = "状态,用于标识是否分配：0未分配。1已分配")
 	@Column(name = "ROOM_STATUS", length = 8, nullable = true)
 	private String roomStatus = "0";
+	
+	@FieldInfo(name = "班级名称")
+	@Column(name = "CLASS_NAME", length = 64, nullable = true)
+	private String className;
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+	
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
 	 * 

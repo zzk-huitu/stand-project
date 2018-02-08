@@ -23,6 +23,12 @@ Ext.define("core.public.OneKeyAllotDorm.view.MainLayout", {
         width: 220,
         hidden:true
     },{
+        xtype: "pubonkeyallotdorm.studormareatree",
+        region: "west",
+        margin:'5',
+        width: 220,
+        hidden:true
+    },{
         xtype: "pubonkeyallotdorm.selectdormgrid",
         region: "center",
         margin:'5',

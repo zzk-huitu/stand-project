@@ -41,7 +41,7 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	private String cdormId;
 
 	@FieldInfo(name = "班级ID")
-	@Column(name = "CLAI_ID", length = 36, nullable = true)
+	@Formula("(SELECT a.classId FROM STAND_V_CLASSSTUDENT a where a.userId=STU_ID)")
 	private String claiId;
 
 	@FieldInfo(name = "学生主键")
@@ -80,7 +80,7 @@ public class DormStudentDorm extends BaseEntity implements Serializable {
 	
 	@ExportExcelAnnotation(columnName="班级名称",columnWidth=25,order =1)
 	@MapperCell(cellName = "班级名称", order = 2)
-	@Formula("(SELECT A.CLASS_NAME FROM dbo.JW_T_GRADECLASS A WHERE A.CLAI_ID=CLAI_ID)")
+	@Formula("(SELECT a.className FROM STAND_V_CLASSSTUDENT a where a.userId=STU_ID)")
 	@FieldInfo(name = "班级名称")
 	private String claiName;
 	

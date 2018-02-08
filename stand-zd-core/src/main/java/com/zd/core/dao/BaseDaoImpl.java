@@ -993,7 +993,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
 		// 如果存在countHql，就使用count(*)查询
 		if (StringUtils.isNotEmpty(countHql)) {
 			Query query2 = this.getSession().createQuery(countHql);
-			qr.setTotalCount((long) query2.uniqueResult());
+			qr.setTotalCount(Long.valueOf(query2.uniqueResult().toString()));
 		} else {
 			qr.setTotalCount((long) query.list().size());
 		}
@@ -1236,7 +1236,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
 			
 			long totalCount = 0;
 			if(countQuery!=null){
-				totalCount=(long)countQuery.uniqueResult();
+				totalCount=Long.valueOf(countQuery.uniqueResult().toString());
 			}else{
 				ScrollableResults scrollableResults = query.scroll(ScrollMode.SCROLL_SENSITIVE);
 				scrollableResults.last();
@@ -1491,7 +1491,7 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
 			
 			long totalCount = 0;
 			if(countQuery!=null){
-				totalCount=(long)countQuery.uniqueResult();
+				totalCount=Long.parseLong(countQuery.uniqueResult().toString());
 			}else{
 				ScrollableResults scrollableResults = query.scroll(ScrollMode.SCROLL_SENSITIVE);
 				scrollableResults.last();
@@ -1741,7 +1741,8 @@ public class BaseDaoImpl<E> implements BaseDao<E> {
 
 		if (StringUtils.isNotEmpty(countSql)) {
 			Query query2 = this.getSession().createSQLQuery(countSql);
-			qr.setTotalCount((long) query2.uniqueResult());
+			
+			qr.setTotalCount(Long.parseLong(query2.uniqueResult().toString()));
 		} else {
 			qr.setTotalCount((long) query.list().size());
 		}
