@@ -54,8 +54,53 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                 }
             },
 
+            "basetreegrid[xtype=baseset.teacherdorm.teacherdormtree]": {
+                /*
+                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                    1. 附带树节点的相关参数
+                    2. 当存在basegrid的默认参数，则附带上去
+                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+                */
+                itemclick: function(tree, record, item, index, e, eOpts) {
+                    var self = this;
+                    var mainLayout = tree.up("panel[xtype=baseset.teacherdorm.mainlayout]");
+
+                    Ext.apply(mainLayout.funData, {
+                        dormId: record.get("id"),
+                        //roomId: record.get("iconCls"),
+                        roomId: record.get("id"),
+                        roomName:record.get("text"),
+                        leaf: record.get("leaf"),
+                    });
+              
+
+                    var storeGrid = mainLayout.down("panel[xtype=baseset.teacherdorm.maingrid]");
+                    var store = storeGrid.getStore();
+                    var proxy = store.getProxy();
+    
+
+                    //获取点击树节点的参数            
+                    var roomId= record.get("id");
+                    var roomLeaf=record.get("leaf");
+                    if(roomLeaf==true)
+                        roomLeaf="1";
+                    else
+                        roomLeaf="0";
+
+                    //附带参赛
+                    proxy.extraParams={
+                        roomId:roomId,
+                        roomLeaf:roomLeaf
+                    }
+                    store.loadPage(1); 
+                    return false;
+               }
+            },
+
+
               //入住
-          "basegrid[xtype=baseset.teacherdorm.maingrid] button[ref=gridAdd_Tab]": {
+            "basegrid[xtype=baseset.teacherdorm.maingrid] button[ref=gridAdd_Tab]": {
                 beforeclick: function(btn) {
                     self.open_Tab(btn,"add");
                     return false;

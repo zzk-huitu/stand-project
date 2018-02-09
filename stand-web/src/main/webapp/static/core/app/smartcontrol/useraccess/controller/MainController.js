@@ -101,6 +101,47 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
              return false;
           }
         },
+        "basetreegrid[xtype=smartcontrol.useraccess.roominfotree]": {
+            /*
+                当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                1. 附带树节点的相关参数
+                2. 当存在basegrid的默认参数，则附带上去
+                3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+            */
+            itemclick: function(tree, record, item, index, e, eOpts) {
+                var self = this;
+                var mainLayout = tree.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
+
+                Ext.apply(mainLayout.funData, {
+                    roomId: record.get("id"),
+                    leaf : record.get("leaf"),//true: 房间 false:区域
+                    arealevel: record.get("level"),
+                });
+                         
+
+                var storeGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
+                var store = storeGrid.getStore();
+                var proxy = store.getProxy();
+
+                //获取点击树节点的参数            
+                var roomId= record.get("id");
+                var roomLeaf=record.get("leaf");
+                if(roomLeaf==true)
+                    roomLeaf="1";
+                else
+                    roomLeaf="0";
+
+                //附带参赛
+                proxy.extraParams={
+                    roomId:roomId,
+                    roomLeaf:roomLeaf
+                }
+                store.loadPage(1); 
+                return false;
+           }
+        },
+
     	
     	 //选择人员按钮
     	 "basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid] button[ref=selectPersonnel]": {

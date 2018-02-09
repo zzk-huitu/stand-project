@@ -13,18 +13,18 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
     },
     /** 该视图内的组件事件注册 */
     control: {
-        "basetreegrid[xtype=smartcontrol.userauthority.depttree] button[ref=gridRefresh]": {
+      "basetreegrid[xtype=smartcontrol.userauthority.depttree] button[ref=gridRefresh]": {
           beforeclick: function(btn) {
-           btn.up('basetreegrid').getStore().load();
-           var baseGrid = btn.up("basetreegrid");
-           var mainlayout = baseGrid.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
-           var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.userauthority.usergrid]");
-           var store = mianGrid.getStore();
-           var proxy = store.getProxy();
-           proxy.extraParams.deptId="";
-           return false;
-       }
-   },
+             btn.up('basetreegrid').getStore().load();
+             var baseGrid = btn.up("basetreegrid");
+             var mainlayout = baseGrid.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
+             var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.userauthority.usergrid]");
+             var store = mianGrid.getStore();
+             var proxy = store.getProxy();
+             proxy.extraParams.deptId="";
+             return false;
+         }
+      },
       "basetreegrid[xtype=smartcontrol.userauthority.depttree]": {
             itemclick: function(tree, record, item, index, e, eOpts) {
                 var self = this;
@@ -41,8 +41,9 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
                 var proxy = store.getProxy();
 
                 //获取右边筛选框中的条件数据
-                var filter=self.getFastSearchFilter(storeGrid);           
-                 if(filter.length==0)
+                var filter=self.getFastSearchFilter(storeGrid);
+                filter.push({"type":"string","comparison":"=","value":"1","field":"category"})
+                if(filter.length==0)
                     filter=null;
                 else
                     filter = JSON.stringify(filter); 
@@ -63,15 +64,22 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
        },
 
       "basegrid[xtype=smartcontrol.userauthority.maingrid] field[funCode=girdFastSearchText]": {
-         specialkey: function (field, e) {
-          if (e.getKey() == e.ENTER) {
-           this.queryFastSearchForm(field);
-           return false;
-         }
-       }
-     },
- },
- getFastSearchFilter:function(cpt){
+          specialkey: function (field, e) {
+            if (e.getKey() == e.ENTER) {
+              this.queryFastSearchForm(field);
+            return false;
+          }
+        },
+      },
+
+     "basegrid[xtype=smartcontrol.userauthority.usergrid]": {
+          beforeitemclick: function (grid, record, item) {
+              this.loadUserRightInfo(grid,record);                  
+              return false;
+          }
+      },
+    },
+    getFastSearchFilter:function(cpt){
         var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
         var filter=new Array();
         if(girdSearchTexts[0].getValue()){
@@ -79,7 +87,7 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
         }
         return filter;
     },
- queryFastSearchForm:function(btn){
+    queryFastSearchForm:function(btn){
         var self = this;
 
         var baseGrid = btn.up("basegrid");
@@ -102,4 +110,31 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
         proxy.extraParams.querySql2 =  querySql2 ;
         store.loadPage(1);
     },
+
+    loadUserRightInfo:function(grid,record){
+        var mainlayout = grid.up('panel[xtype=smartcontrol.userauthority.mainlayout]');
+        var baseGrid = mainlayout.down('panel[xtype=smartcontrol.userauthority.maingrid]');
+
+        var querySql1="";
+        var querySql2="";
+    
+        querySql1 = " and USER_ID ="+"'"+record.get("uuid")+"'";
+                   
+        //获取快速搜索框的值
+        var girdSearchTexts = baseGrid.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            querySql2+=" and XM like "+"'%"+girdSearchTexts[0].getValue()+"%'";           
+        }
+        if(girdSearchTexts[1].getValue()){
+            querySql2+=" and ROOM_NAME like "+"'%"+girdSearchTexts[1].getValue()+"%'";          
+        }
+        var stores = baseGrid.getStore();
+        var proxy = stores.getProxy();
+        proxy.extraParams={
+            querySql:querySql1,
+            querySql2:querySql2
+        };
+        stores.loadPage(1); //刷新
+    }
 });

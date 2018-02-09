@@ -45,24 +45,4 @@ Ext.define("core.smartcontrol.useraccess.view.RoominfoTree", {
             hidden: true
         }]
     },
-    listeners: {
-        itemclick: function (tree, record, item, index, e, eOpts) {
-        	var mainLayout = tree.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
-        	var funData = mainLayout.funData;
-            var roomId=record.get("id");
-            mainLayout.funData = Ext.apply(funData, {
-                roomId: roomId,
-                leaf : record.get("leaf"),//true: 房间 false:区域
-                arealevel: record.get("level"),
-            });
-            // 加载房间的人员信息
-            var mianGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
-            var store = mianGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams.roomId=roomId;
-            store.loadPage(1); // 给form赋值
-            return false;
-        	
-        }
-    }
 });

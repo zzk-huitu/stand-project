@@ -8,6 +8,9 @@ Ext.define("core.baseset.teacherdorm.view.MainGrid", {
     extParams: {
     },
     defSort: [{
+        property: 'inTime',
+        direction: 'DESC'
+    },{
         property: 'bedNum',
         direction: 'ASC'
     }],

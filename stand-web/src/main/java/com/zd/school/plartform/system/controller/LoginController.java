@@ -355,7 +355,8 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		 * 5.在进行增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会(SysOrgServiceImpl)
 		 */
 		hashOper.delete("userRightDeptTree", sysUser.getUuid());
-
+		hashOper.delete("userRightDeptClassTree", sysUser.getUuid());
+		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));
 	}
 

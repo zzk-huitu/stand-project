@@ -2,6 +2,7 @@ package com.zd.school.plartform.comm.model;
 
 import java.util.List;
 
+import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.extjs.ExtTreeNodeChk;
 
 /**
@@ -25,6 +26,17 @@ public class CommTreeChk extends ExtTreeNodeChk<CommTreeChk> {
         this.parent = parent;
     }
 
+    @FieldInfo(name = "节点类型")
+	private String nodeType;
+
+	public String getNodeType() {
+		return nodeType;
+	}
+
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
+	}
+	
     public CommTreeChk() {
 
         super();

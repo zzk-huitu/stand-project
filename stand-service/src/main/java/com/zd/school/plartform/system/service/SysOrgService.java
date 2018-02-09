@@ -20,6 +20,7 @@ import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseOrgToUP;
 import com.zd.school.plartform.baseset.model.BaseOrgTree;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserToUP;
 
@@ -190,5 +191,7 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	public BaseOrgChkTree getUserRightDeptTree(SysUser currentUser, String node);
 
 	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser);
+
+	public List<CommTreeChk> getUserRightDeptClassTreeList(SysUser currentUser);
 	
 }

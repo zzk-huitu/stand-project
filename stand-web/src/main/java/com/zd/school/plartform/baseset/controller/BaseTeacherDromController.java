@@ -2,9 +2,11 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -23,6 +26,7 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.define.model.BuildDormDefine;
+import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseTeacherDormService;
 import com.zd.school.plartform.comm.model.CommTree;
@@ -51,41 +55,44 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute DormTeacherDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		String strData = ""; // 返回给js的数据
-		String filter = "";
-		String dormId = request.getParameter("dormId");
-		if(dormId==null){
-			dormId="";
-		}
-		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
-				+ dormId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		String areaIds = "";
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-			areaIds = sb.substring(0, sb.length() - 1);
-
-			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType='1' and a.areaId in ('"
-					+ areaIds.replace(",", "','") + "')";
-			List<String> roomLists = thisService.queryEntityByHql(hql);
-			sb.setLength(0);
-			for (int i = 0; i < roomLists.size(); i++) {
-				sb.append(roomLists.get(i) + ",");
+    	    
+    	String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String roomId = request.getParameter("roomId");		//前端传入若为区域，则是roomId，否则是dormId
+		String roomLeaf = request.getParameter("roomLeaf");
+        if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"dormId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"dormId\"}]";
+				}
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getDormIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"dormId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"dormId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
 			}
-			// 房间id
-			if (sb.length() > 0) {
-				filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
-						+ "\",\"field\":\"dormId\"}]";
-			}else {
-				filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + dormId + "\",\"field\":\"dormId\"}]";
-			}
-		} else {
-			filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + dormId + "\",\"field\":\"dormId\"}]";
 		}
-
+		
 		QueryResult<DormTeacherDorm> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 
@@ -211,5 +218,23 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
+	}
+	
+	/**
+	 * 获取某个区域下的所有教师宿舍数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getDormIds(String areaId) {
+		List<String> result = new ArrayList<>();
+
+		// 当选择的区域不为房间时
+		String sql = "select a.id from JW_V_DORMALLOTTREE a where a.leaf='true' and a.treeIds like '%"
+				+ areaId + "%'";
+		result = thisService.queryEntityBySql(sql, null);
+		
+		return result;
 	}
 }

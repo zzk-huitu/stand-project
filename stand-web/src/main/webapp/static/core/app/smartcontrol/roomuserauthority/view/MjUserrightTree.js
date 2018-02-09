@@ -1,10 +1,11 @@
 Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.smartcontrol.roomuserauthority.mjuserrighttree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoomarea/list",
-    model: "com.zd.school.build.define.model.BuildRoomAreaTree",
+    dataUrl: comm.get('baseUrl') + "/BaseMjUserright/treelist",
+    model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
+    /*
     selModel: {
         mode : 'single',
         listeners: {
@@ -48,7 +49,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
                 stores.load(); //刷新
             }
         }
-    },
+    },*/
      tbar:{
         xtype:'toolbar',
         items: [{
@@ -68,7 +69,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
         }]
     },
     extParams: {
-        whereSql: " and isDelete='0' ",
+        whereSql: "",
         orderSql: "",
         excludes:"checked"
     },

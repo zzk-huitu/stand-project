@@ -8,6 +8,7 @@ import com.zd.core.service.BaseService;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.plartform.comm.model.CommTree;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
@@ -23,7 +24,7 @@ import com.zd.school.plartform.system.model.SysUser;
 
 public interface BaseStudentDormService extends BaseService<DormStudentDorm> {
 
-	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser);
+	//public CommTree getCommTree(String rootId, String deptType, SysUser currentUser);
 	public List<DormStudentDorm> oneKeyList(DormStudentDorm entity,String whereSql);
 	public Boolean oneKeyAllotDorm(String gradId,String boyId,String girlId,SysUser currentUser);
 	public Boolean dormAutoAllot(String claiId,SysUser currentUser);
@@ -34,4 +35,5 @@ public interface BaseStudentDormService extends BaseService<DormStudentDorm> {
 	public Boolean doDeleteDorm(String[] delIds, String userId);
 	public Integer doUpdateBedArkNum(String[] list, String userId);
 	public Boolean doAddClassDorm(String classId, String dormIds, SysUser currentUser);
+	public CommTreeChk getUserRightDeptClassTree(String rootId, SysUser currentUser);
 }

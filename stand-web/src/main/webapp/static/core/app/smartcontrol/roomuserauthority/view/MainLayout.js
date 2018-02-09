@@ -40,7 +40,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainLayout", {
 	items: [ {
 		xtype: "smartcontrol.roomuserauthority.mjuserrighttree",		
         region: "west",
-        width:200,
+        width:250,
         split:true
 	},{
         xtype: "smartcontrol.roomuserauthority.maingrid",   

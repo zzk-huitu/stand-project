@@ -31,14 +31,17 @@ import com.zd.school.jw.eduresources.service.JwTGradeclassService;
 import com.zd.school.jw.push.model.PushInfo;
 import com.zd.school.jw.push.service.PushInfoService;
 import com.zd.school.plartform.baseset.dao.BaseStudentDormDao;
+import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.comm.model.CommTree;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.student.studentclass.model.StandVClassStudent;
 import com.zd.school.student.studentinfo.model.StuBaseinfo;
 import com.zd.school.student.studentinfo.service.StuBaseinfoService;
@@ -79,34 +82,58 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	// 班级宿舍
 	/*
 	 * @Resource private JwClassstudentService classStuService; // 学生分班
-	 */ @Resource
+	 */
+	@Resource
 	private StuBaseinfoService stuBaseinfoService;// 学生
 	@Resource
 	private BaseRoomareaService roomAreaService;// 区域
 	@Resource
 	private PushInfoService pushService; // 推送
-
+	@Resource
+	private SysOrgService orgService; // 推送
+	
+	/**
+	 * 获取用户有权限的部门班级树
+	 */
 	@Override
-	public CommTree getCommTree(String rootId, String deptType, SysUser currentUser) {
-		String userId = currentUser.getUuid();
-		Integer rightType = currentUser.getRightType();
-		/*
-		if (currentUser.getUuid().equals(AdminType.ADMIN_USER_ID))
-			rightType = 0;
-		*/
-		Integer isAdmin=(Integer)request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
-		if(isAdmin==1)
-			rightType=0;
+	public CommTreeChk getUserRightDeptClassTree(String rootId, SysUser currentUser) {
+		//1.查询部门的数据，并封装到实体类中
+		List<CommTreeChk> list = orgService.getUserRightDeptClassTreeList(currentUser);
 		
-
-		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTGRADCLASSTREE ''{0}'',{1},''{2}''", userId,
-				rightType, deptType);
-		CommTree gradeTree = commTreeService.getGradeCommTree(sql, rootId); // 2017-10-9：待完成
-
-		return gradeTree;
-		// return null;
+		//2.找到根节点
+		CommTreeChk root = new CommTreeChk();
+		for (CommTreeChk node : list) {			
+			//if (!(StringUtils.isNotEmpty(node.getParent()) && !node.getId().equals(rootId))) {
+			if ( StringUtils.isEmpty(node.getParent()) || node.getId().equals(rootId)) {
+				root = node;
+				list.remove(node);
+				break;
+			}
+		}
+		
+		//3.递归组装children
+		createTreeChildren(list, root);
+		
+		return root;
+	}
+	private void createTreeChildren(List<CommTreeChk> childrens, CommTreeChk root) {
+		String parentId = root.getId();
+		for (int i = 0; i < childrens.size(); i++) {
+			CommTreeChk node = childrens.get(i);
+			if (StringUtils.isNotEmpty(node.getParent()) && node.getParent().equals(parentId)) {
+				root.getChildren().add(node);
+				createTreeChildren(childrens, node);
+			}
+			if (i == childrens.size() - 1) {
+				if (root.getChildren().size() < 1) {
+					root.setLeaf(true);
+				}
+				return;
+			}
+		}
 	}
 
+	
 	@Override
 	public List<DormStudentDorm> oneKeyList(DormStudentDorm entity, String whereSql) {
 		/*

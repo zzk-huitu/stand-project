@@ -37,6 +37,7 @@ import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.comm.model.CommTree;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.student.studentclass.model.JwClassstudent;
@@ -100,14 +101,14 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 
 	/**
 	 * 生成树
-	 * 
+	 * 获取用户有权限的年级班级树
 	 */
 	@RequestMapping("/classtreelist")
 	public void classtreelist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
-		String node = request.getParameter("node");
+		String node = request.getParameter("node");	//一般传 ROOT
 		String nodeId = request.getParameter("nodeId");
-		String excludes = request.getParameter("excludes");
+		String excludes = request.getParameter("excludes");		//在结果集中排除某个字段，比如checked复选框字段
 		if (!(StringUtils.isNotEmpty(node) && node.equalsIgnoreCase(TreeVeriable.ROOT))) {
 			node = TreeVeriable.ROOT;
 		}
@@ -115,17 +116,23 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 			node = nodeId;
 		}
 		SysUser currentUser = getCurrentSysUser();
-		CommTree root = thisService.getCommTree(node, "05", currentUser);
+		CommTreeChk root = thisService.getUserRightDeptClassTree(node, currentUser);	//(04-年级 05-班级)
 		if (node.equalsIgnoreCase(TreeVeriable.ROOT)) {
 			strData = jsonBuilder.buildList(root.getChildren(), excludes);
 		} else {
-			List<CommTree> alist = new ArrayList<CommTree>();
+			List<CommTreeChk> alist = new ArrayList<CommTreeChk>();
 			alist.add(root);
 			strData = jsonBuilder.buildList(root.getChildren(), excludes);
 		}
 		writeJSON(response, strData);// 返回数据
 	}
 	
+	/**
+	 * 分别获取男生宿舍树、女生宿舍树、学生宿舍树
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping("/getTree")
 	public void getBoyTree(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";

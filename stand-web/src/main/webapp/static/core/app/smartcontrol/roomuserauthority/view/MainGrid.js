@@ -1,11 +1,11 @@
 Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.smartcontrol.roomuserauthority.maingrid",
-    dataUrl: comm.get("baseUrl") + "/BaseMjUserright/mjrightlist", //数据获取地址
+    dataUrl: comm.get("baseUrl") + "/BaseMjUserright/roomUserRightList", //数据获取地址
     model:"com.zd.school.teacher.teacherinfo.model.ViewUserRoom", //对应的数据模型
     menuCode:"ROOM_ACCESS_CONTROL",
     al: false,
-    pageDisplayInfo:false,
+    //pageDisplayInfo:false,
     //工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',
@@ -66,7 +66,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
     },{
         text: "用户姓名",
         dataIndex: "xm",
-        minWidth:120,
+        minWidth:100,
         flex:1,
     },{
         text: "房间ID",
@@ -75,7 +75,8 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
     },{
         text: "房间代码",
         dataIndex: "room_CODE",
-        width:150
+        minWidth:100,
+        flex:1,
     },{
         text: "区域ID",
         dataIndex: "area_ID",
@@ -83,11 +84,13 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
     },{
         text: "房间名称",
         dataIndex: "room_NAME",
-        width:150
+        minWidth:100,
+        flex:1,
     },{
         text: "房间类型",
         dataIndex: "room_TYPE",
-        width:150
+        minWidth:100,
+        flex:1,
     }]
     }
 });

@@ -46,29 +46,4 @@ Ext.define("core.baseset.teacherdorm.view.TeacherDormTree", {
             hidden:true
         }]
   },
-
-    listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("basepanel[xtype=baseset.teacherdorm.mainlayout]");
-            var treePanel = mainLayout.down("panel[xtype=baseset.teacherdorm.teacherdormtree]");
-            var dormId = record.get("id");
-            var funData = mainLayout.funData;
-            mainLayout.funData = Ext.apply(funData, {
-                dormId: dormId,
-                //roomId: record.get("iconCls"),
-                roomId: record.get("id"),
-                roomName:record.get("text"),
-                leaf: record.get("leaf"),
-            });
-            // 加载人员信息
-            var storeyGrid = mainLayout.down("panel[xtype=baseset.teacherdorm.maingrid]");
-            var store = storeyGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams = {
-                dormId:dormId,
-            };
-            store.loadPage(1); // 给form赋值
-            return false;
-        }
-    }
 })

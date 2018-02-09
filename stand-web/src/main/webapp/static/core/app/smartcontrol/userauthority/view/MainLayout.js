@@ -40,7 +40,7 @@ Ext.define("core.smartcontrol.userauthority.view.MainLayout", {
 	items: [ {
 		xtype: "smartcontrol.userauthority.depttree",		
         region: "west",
-        width:180,
+        width:250,
         split:true,
         //margin:'0 5 0 0'
 	},{

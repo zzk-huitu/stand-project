@@ -420,6 +420,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 		if(userIds.size()>0){
 			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 			hashOper.delete("userRightDeptTree", userIds.toArray());
+			hashOper.delete("userRightDeptClassTree",userIds.toArray());
 		}		
 	}
 	

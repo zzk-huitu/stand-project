@@ -1,65 +1,25 @@
 Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
     extend: "core.base.view.BaseGrid",
 	alias: "widget.smartcontrol.userauthority.usergrid",
-	dataUrl: comm.get('baseUrl') + "/teacherBase/list",
+	//dataUrl: comm.get('baseUrl') + "/teacherBase/list",
+    dataUrl: comm.get('baseUrl') + "/SysUser/list",
 	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysUser", "checked").modelName,
 	al: false,
     pageDisplayInfo:false,
 	multiSelect: true,
 	menuCode:"USER_ACCESS_CONTROL",
 	//排序字段及模式定义
-	defSort: [{
-		property: 'xm',
-		direction: 'DESC'
-	}],
-	extParams: {
-		whereSql: "",
-		orderSql: ""
-	},
-	selModel: {
-        selType: "checkboxmodel",
-        width: 10,
-        listeners: {
-            selectionchange:function(model,selected,eOpts){
-                var grid=model.view;
-                var selectRow=model.getSelection();
-                var querySql1="";
-                var querySql2="";
-
-                var uuids=new Array();
-                if(selectRow.length==1){
-                	querySql1 = " and USER_ID ="+"'"+selectRow[0].data.uuid+"'";
-                }
-                if(selectRow.length>1){
-                	for (var i = 0; i < selectRow.length; i++) {
-                      var temp=selectRow[i].data;
-                      uuids.push("'"+temp.uuid+"'");
-                  }
-                querySql1 = " and USER_ID in (" + uuids.join(",") + ")";
-                }
-                var mainlayout = grid.up('panel[xtype=smartcontrol.userauthority.mainlayout]');
-                var baseGrid = mainlayout.down('panel[xtype=smartcontrol.userauthority.maingrid]');
-                //获取快速搜索框的值
-                var girdSearchTexts = baseGrid.query("field[funCode=girdFastSearchText]");
-                var filter=new Array();
-                if(girdSearchTexts[0].getValue()){
-                    querySql2+=" and XM like "+"'%"+girdSearchTexts[0].getValue()+"%'";
-                    //filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "XM", "comparison": ""});
-                }
-                if(girdSearchTexts[1].getValue()){
-                    querySql2+=" and ROOM_NAME like "+"'%"+girdSearchTexts[1].getValue()+"%'";
-                   // filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "ROOM_NAME", "comparison": ""});
-                }
-                var stores = baseGrid.getStore();
-                var proxy = stores.getProxy();
-                proxy.extraParams={
-                    querySql:querySql1,
-                    querySql2:querySql2
-                };
-                stores.load(); //刷新
-            }
-        }
+    defSort: [{
+        property: 'userNumb',
+        direction: 'ASC'
+    }, {
+        property: 'xm',
+        direction: 'ASC'
+    }],
+    extParams: {
+        filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]'
     },
+	selModel:null,
     panelTopBar:{
         xtype:'toolbar',
         items: [{
@@ -91,6 +51,11 @@ Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
     		titleAlign:"center"
     	},
     	items:[{
+            xtype: "rownumberer",
+            width: 50,
+            text: '序号',
+            align: 'center'
+        },{
     		text: "主键",
     		dataIndex: "uuid",
     		hidden: true
@@ -112,23 +77,31 @@ Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
     		flex:1,
             minWidth:80
     	}, {
-    		text: "岗位",
-    		dataIndex: "allJobName",
+    		text: "主部门岗位",
+    		dataIndex: "deptName",
     		flex:1,
-            minWidth:80
+            minWidth:80,
+            renderer: function(value, metaData,record) {    
+                var deptName=record.get("deptName");
+                var jobName=record.get("jobName");
+                if(deptName&&jobName)
+                    return  deptName+"-"+jobName;       
+            }
     	}]
     },
+    /*
 	listeners: {
-	        beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
-	            return false;
-	        },
-	        beforeitemmousedown: function(grid, record, item, index, e, eOpts) {
-	            var model = grid.getSelectionModel();  
-	            var flag=model.isSelected(index);
-	            if (flag) {
-	                model.deselect(index);
-	                return false;
-	            }
-	        }
-	    }
+        beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
+            return false;
+        },
+        beforeitemmousedown: function(grid, record, item, index, e, eOpts) {
+            var model = grid.getSelectionModel();  
+            var flag=model.isSelected(index);
+            if (flag) {
+                model.deselect(index);
+                return false;
+            }
+        }
+    }
+    */
 });

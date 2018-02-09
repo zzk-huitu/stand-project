@@ -257,6 +257,7 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		if (userIds.length > 0) {
 			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 			hashOper.delete("userRightDeptTree", userIds);
+			hashOper.delete("userRightDeptClassTree", userIds);		
 		}
 	}
 

@@ -39,10 +39,15 @@ public class ExtTreeNodeChk<T> implements Serializable{
 
     /** 节点层级 */
     public Integer level;
-
+    
     /** 各级上级节点ID组 */
     public String treeid;
-
+    
+    /** 上级节点ID */
+	private String parent;
+	
+	/** 同级别排序号 */
+	private Integer orderIndex;
     /**
      * 是否选中
      */
@@ -118,8 +123,27 @@ public class ExtTreeNodeChk<T> implements Serializable{
     public ExtTreeNodeChk() {
         super();
     }
+    
+    
 
-    public ExtTreeNodeChk(String id, List<T> children) {
+    public String getParent() {
+		return parent;
+	}
+
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	public Integer getOrderIndex() {
+		return orderIndex;
+	}
+
+	public void setOrderIndex(Integer orderIndex) {
+		this.orderIndex = orderIndex;
+	}
+
+	
+	public ExtTreeNodeChk(String id, List<T> children) {
         super();
         this.id = id;
         this.children = children;
@@ -137,4 +161,21 @@ public class ExtTreeNodeChk<T> implements Serializable{
         this.children = children;
         this.checked = checked;
     }
+
+	public ExtTreeNodeChk(String id, String text, String iconCls, Boolean leaf, Integer level, String treeid,
+			String parent, Integer orderIndex, Boolean checked, List<T> children) {
+		super();
+		this.id = id;
+		this.text = text;
+		this.iconCls = iconCls;
+		this.leaf = leaf;
+		this.level = level;
+		this.treeid = treeid;
+		this.parent = parent;
+		this.orderIndex = orderIndex;
+		this.checked = checked;
+		this.children = children;
+	}
+
+    
 }
