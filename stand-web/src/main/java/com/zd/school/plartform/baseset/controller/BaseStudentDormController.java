@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.constant.TreeVeriable;
@@ -30,8 +32,10 @@ import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.PoiExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
+import com.zd.school.build.allot.model.DormTeacherDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
+import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
 import com.zd.school.plartform.baseset.service.BaseOfficeAllotService;
@@ -40,6 +44,7 @@ import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.student.studentclass.model.JwClassstudent;
 import com.zd.school.student.studentclass.model.StandVClassStudent;
 import com.zd.school.student.studentclass.service.JwClassstudentService;
@@ -63,6 +68,8 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	BaseDormDefineService dormDefineService;// 宿舍定义
 	@Resource
 	private BaseOfficeAllotService roomaAllotService;// 房间分配 办公室
+	@Resource
+	SysOrgService sysOrgService;
 
    /**
 		 * 已入住宿舍学生列表 @Title: list @Description: TODO @param @param entity
@@ -74,29 +81,63 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	public void list(@ModelAttribute DormStudentDorm entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		String filter="";
-		String claiId=request.getParameter("claiId");
-		if(claiId==null){
-			claiId="";
+		String filter = request.getParameter("filter");
+		String deptId = request.getParameter("deptId");		//前端传入若为区域，则是roomId，否则是dormId
+		String deptType = request.getParameter("deptType");
+		
+		if (StringUtils.isEmpty(deptId)) {
+			deptId = AdminType.ADMIN_ORG_ID;
 		}
-		String hql = "select a.uuid from BaseOrg a where a.isDelete=0  and a.deptType='05' and a.treeIds like '%"
-				+ claiId + "%'";
-		List<String> lists = thisService.queryEntityByHql(hql);
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < lists.size(); i++) {
-			sb.append(lists.get(i) + ",");
-		}
-		if (sb.length() > 0) {
-		   filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + sb.substring(0, sb.length() - 1)
-						+ "\",\"field\":\"claiId\"}]";
-		} else {
-			filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + null + "\",\"field\":\"claiId\"}]";
-		}
-		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request),super.limit(request),
+		
+		Integer isAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+		Integer isSchoolAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN);
+		
+		
+		//若当前用户是超级管理员/学校管理员，并且为学校部门，则查询出所有的用户
+		//if ((isAdmin == 1 || isSchoolAdmin==1) && deptId.equals(AdminType.ADMIN_ORG_ID)) {...}
+		//当部门不为根部门时 或者 不为管理员时，就要去查询内部的数据
+		if (!deptId.equals(AdminType.ADMIN_ORG_ID)||!(isAdmin == 1 || isSchoolAdmin==1)) {
+			if ("05".equals(deptType)) { // 当选择的区域为班级时
+				
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + deptId
+							+ "\",\"field\":\"claiId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + deptId
+							+ "\",\"field\":\"claiId\"}]";
+				}
+				
+			} else {					// 当选择的区域不为班级时
+				
+				SysUser currentUser = getCurrentSysUser();
+				String classIds = getClassIds(deptId,currentUser);
+					
+				if(StringUtils.isNotEmpty(classIds)){
+				
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + classIds
+								+ "\",\"field\":\"claiId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + classIds
+								+ "\",\"field\":\"claiId\"}]";
+					}
+					
+				}else{	// 若区域之下没有班级，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
+			}
+		}	
+		
+		QueryResult<DormStudentDorm> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
-
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
+		
 	}
 
 	/**
@@ -510,5 +551,24 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 		} else {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
+	}
+	
+	/**
+	 * 获取某个区域下的所有教师宿舍数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private String getClassIds(String areaId,SysUser currentUser) {
+		
+		List<CommTreeChk> baseOrgList = sysOrgService.getUserRightDeptClassTreeList(currentUser);
+		String classIds = baseOrgList.stream().filter((x) -> {
+			if(x.getNodeType().equals("05")&&x.getTreeid().indexOf(areaId)!=-1)
+				return true;
+			return false;
+		}).map((x) -> x.getId()).collect(Collectors.joining(","));	
+		
+		return classIds;
 	}
 }

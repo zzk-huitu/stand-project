@@ -110,8 +110,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String strData = ""; // 返回给js的数据
 		String deptId = request.getParameter("deptId");
 
-		deptId = deptId == null ? AdminType.ADMIN_ORG_ID : deptId;
-		if (deptId.equals("")) {
+		if (StringUtils.isEmpty(deptId)) {
 			deptId = AdminType.ADMIN_ORG_ID;
 		}
 		

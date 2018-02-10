@@ -49,7 +49,7 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             dataIndex:'id',
             hidden:true
         }]
-  },
+  },/*
      listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=baseset.studentdorm.mainlayout]");
@@ -70,5 +70,5 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             store.loadPage(1); // 给form赋值
             return false;
         }
-    }
+    }*/
 });
