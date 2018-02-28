@@ -22,5 +22,7 @@ import com.zd.school.control.device.model.PtIrRoomDevice ;
  */
  
 public interface PtIrRoomDeviceService extends BaseService<PtIrRoomDevice> {
+
+	public void doBindRoomBrand(String roomIds, String brandIds, String xm);
 	
 }

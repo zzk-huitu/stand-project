@@ -63,7 +63,7 @@ Ext.define("core.basedevice.basegateway.view.PtGatewayTree", {
             var proxy = store.getProxy();
             if (id!= 1) {
              //filter.push({"type":"string","value":"'+record.get("id")+'","field":"frontserverId","comparison":"="});
-            filter.push({"type": "string", "value":  record.get("id") , "field": "frontserverId", "comparison": ""});
+                filter.push({"type": "string", "value":  record.get("id") , "field": "frontserverId", "comparison": ""});
              }
              proxy.extraParams.filter = JSON.stringify(filter);
            //proxy.extraParams.filter='[{"type":"string","value":"'+record.get("id")+'","field":"frontserverId","comparison":"="}]';

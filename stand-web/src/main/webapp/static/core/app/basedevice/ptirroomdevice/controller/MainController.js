@@ -14,15 +14,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
     control: {
        "basepanel basegrid[xtype=basedevice.ptirroomdevice.maingrid]": {
               afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="PTIRROOMDEVICE";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridBinDing")==-1){
-                        var btnBinDing = grid.down("button[ref=gridBinDing]");
-                        btnBinDing.setHidden(true);
-                        
-                     }
-                 }
+                this.hideFuncBtn(grid);
             },
         },
     	//绑定品牌列表事件
@@ -32,11 +24,26 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
             }
         },
         "basegrid[xtype=basedevice.ptirroomdevice.maingrid] button[ref=gridExport]": {
-                beforeclick: function(btn) {
-                    this.doExportExcel(btn);
-                    return false;
-                }
+            beforeclick: function(btn) {
+                this.doExportExcel(btn);
+                return false;
+            }
          },
+
+         "basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree] ": {
+                /*
+                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                    1. 附带树节点的相关参数
+                    2. 当存在basegrid的默认参数，则附带上去
+                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+                */
+                itemclick: function(tree, record, item, index, e, eOpts) {                   
+                    this.loadMainGridStore(tree,record);   
+                    return false;
+               }
+           },
+
         //房间列表刷新按钮
     	"basetreegrid[xtype=basedevice.ptirroomdevice.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
@@ -182,5 +189,56 @@ Ext.define("core.basedevice.ptirroomdevice.controller.MainController", {
                 }
             });
            return false;
+        },
+
+        loadMainGridStore:function(tree,record){
+            var mainLayout = tree.up("panel[xtype=basedevice.ptirroomdevice.mainlayout]");
+            var funData = mainLayout.funData;
+            mainLayout.funData = Ext.apply(funData, {
+                roomId: record.get("id"),
+                leaf : record.get("leaf"),//true: 房间 false:区域
+                arealevel: record.get("level"),
+            });
+            // 加载房间的人员信息
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.ptirroomdevice.maingrid]");
+             var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "deviceTypeCode", "comparison": ""})
+            }
+            if(filter.length==0)
+                filter=null;
+            else
+                filter = JSON.stringify(filter);
+
+            //获取点击树节点的参数
+            var roomId= record.get("id");
+            var roomLeaf=record.get("leaf");
+            if(roomLeaf==true)
+                roomLeaf="1";
+            else
+                roomLeaf="0";
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams={
+                roomId:roomId,
+                roomLeaf:roomLeaf,
+                filter:filter
+            }; 
+            //proxy.extraParams.roomId=roomId;
+            store.loadPage(1); // 给form赋值
+            return false;
+        },
+
+        hideFuncBtn:function(grid){        
+            if(comm.get("isAdmin")!="1"){
+                var menuCode="PTIRROOMDEVICE";     // 此菜单的前缀
+                var userBtn=comm.get("userBtn");
+                if(userBtn.indexOf(menuCode+"_gridBinDing")==-1){
+                    var btnBinDing = grid.down("button[ref=gridBinDing]");
+                    btnBinDing.setHidden(true);
+                    
+                 }
+             }
         }
 });

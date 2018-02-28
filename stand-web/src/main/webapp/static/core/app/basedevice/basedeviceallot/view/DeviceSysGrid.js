@@ -39,19 +39,22 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             text: "机号",
             dataIndex: "termNo",
             hidden: true
-        },{
-            text: "序列号",
-            dataIndex: "termSN",
-            hidden: true
         },*/{
             text: "房间名称",
             dataIndex: "roomName",
-            width:80
+            flex:0.8,
+            minWidth:80
+        },{
+            text: "序列号",
+            dataIndex: "termSN",
+            flex:1,
+            minWidth:100,
         }, {
             text: "设备名称",
             dataIndex: "termName",
-            width:80
-        }, {
+            flex:0.8,
+            minWidth:80
+        },/* {
             text: "设备类型",
             dataIndex: "termTypeID",
             columnType: "basecombobox", //列类型
@@ -61,7 +64,7 @@ Ext.define("core.basedevice.basedeviceallot.view.DeviceSysGrid", {
             text: "网关名称",
             dataIndex: "gatewayName",
             width:80
-        }]
+        }*/]
     },
     
     listeners: {

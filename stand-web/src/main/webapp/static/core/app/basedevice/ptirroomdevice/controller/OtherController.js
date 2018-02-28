@@ -14,7 +14,8 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
     	//弹出窗口的确认按钮
     	"baseformwin[funCode=ptirroomdevice_branddetaillayout] button[ref=formSave]": {
             beforeclick: function(btn) {
-                this.savebinding_Win(btn);
+                this.saveBinding_Win(btn);
+                return false;
              },
     	 },
       "basegrid[xtype=basedevice.ptirroomdevice.irdevicegrid] button[ref=gridFastSearchBtn]": {
@@ -27,7 +28,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
     },
     
     //确认绑定事件
-    savebinding_Win:function(btn){
+    saveBinding_Win:function(btn){
         var self=this;
         var win = btn.up('window');
         var baseGrid =win.baseGrid;
@@ -44,6 +45,8 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
             brandId += rows[i].get('uuid') + ",";
           };
         }
+
+        var loading=self.LoadMask(win);
         self.asyncAjax({
             url: comm.get('baseUrl') + "/BasePtIrRoomDevice/doAdd",
             params: {
@@ -53,6 +56,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
           success: function(response) {
               var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
+              loading.hide();
               if(data.success){
                    win.close();
                    baseGrid.getStore().load();
@@ -60,7 +64,7 @@ Ext.define("core.basedevice.ptirroomdevice.controller.OtherController", {
                }else {
                   self.Error(data.obj);
               }           
-              loading.hide();
+              
             },
           failure: function(response) {                   
               Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);

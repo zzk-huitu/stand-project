@@ -12,6 +12,19 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
     init: function() {
     },
     control: {
+        "basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]": {
+                /*
+                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                    1. 附带树节点的相关参数
+                    2. 当存在basegrid的默认参数，则附带上去
+                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+                */
+                itemclick: function(tree, record, item, index, e, eOpts) {                   
+                    this.loadMainGridStore(tree,record);   
+                    return false;
+               }
+           },
           "basepanel basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]": {
                   afterrender : function(grid) {
                     this.hideFuncBtn(grid);                
@@ -580,6 +593,37 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 btnEdit.setDisabled(true);
                 btnDel.setDisabled(false);
             }
+        },
+
+        loadMainGridStore:function(tree,record){
+            var mainLayout = tree.up("panel[xtype=basedevice.irdevice.mainlayout]");
+            var funData = mainLayout.funData;
+            var brandId=record.get("id");
+            var level = record.get("level");
+            var mianGrid = mainLayout.down("panel[xtype=basedevice.irdevice.maingrid]");
+            mainLayout.funData = Ext.apply(funData, {
+                brandId: brandId,
+            });
+            var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+            var filter=new Array();
+            if(girdSearchTexts[0].getValue()){
+                filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "productModel", "comparison": ""})
+            }
+            if(filter.length==0)
+                filter=null;
+            else
+                filter = JSON.stringify(filter);
+            // 加载品牌信息
+    
+            var store = mianGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams={
+                brandId:brandId,
+                level:level,
+                filter:filter
+            };
+            store.loadPage(1); // 给form赋值
+            return false;
         }
     
 });
