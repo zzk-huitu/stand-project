@@ -41,6 +41,13 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
                 return false;
              },
     	 },
+            //费率设备删除
+        "basegrid[xtype=basedevice.baserate.pricebinggrid] button[ref=gridDelete]": {
+            beforeclick: function(btn) {
+                this.deletePriceBingTerm(btn);
+                return false;
+             },
+         },
     },
     
     /*
@@ -169,6 +176,45 @@ Ext.define("core.basedevice.baserate.controller.OtherController", {
                     Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
                 }
             });
- }
+ },
+
+    deletePriceBingTerm:function(btn){
+        var self=this;
+
+        var baseGrid = btn.up("basegrid");
+        //选择的设备
+        var selectTerm= baseGrid.getSelectionModel().getSelection();
+        if (selectTerm.length == 0) {
+            self.msgbox("没有选择要删除的设备，请选择!");
+            return false;
+        }
+       
+        //拼装所选择的设备
+        var termIds = new Array();
+        Ext.each(selectTerm, function(rec) {
+            var pkValue = rec.get("uuid");
+            termIds.push(pkValue);
+        });
+        var title = "确定删除绑定该费率的设备吗？";
+        Ext.Msg.confirm('警告', title, function(btn, text) {
+            if (btn == 'yes') {
+                //发送ajax请求
+                var resObj = self.ajax({
+                    url: comm.get('baseUrl') + "/BasePtPriceBind/doPtTermDelete",
+                    params: {
+                        termIds: termIds.join(","),
+                     }
+                });
+                if (resObj.success) {
+                    var store = baseGrid.getStore();
+                    store.load();
+                    self.msgbox(resObj.obj);
+                } else {
+                    self.Error(resObj.obj);
+                }
+            }
+        });
+       
+    },
     
  });

@@ -180,6 +180,28 @@ Ext.define("core.basedevice.baserate.view.MainGrid", {
                         record: rec
                     });
                 }
+            },{
+                text:'费率设备',  
+                style:'font-size:12px;', 
+                tooltip: '费率设备',
+                ref: 'priceBing',
+            /*    getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="BASERATE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },*/
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('priceBingClick', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
             }]
         }]
     }    

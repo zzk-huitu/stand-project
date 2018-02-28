@@ -90,10 +90,16 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
              },
              //操作列删除
              deleteClick: function (data) {
-            	 this.doBasePriceDefine_Delete(null, null, data.view, data.record);
-                 return false;
-             }
-         }
+              this.doBasePriceDefine_Delete(null, null, data.view, data.record);
+              return false;
+          },
+             //费率设备 
+             priceBingClick: function (data) {
+               this.doBasePriceDefine_Tab(null, "bing", data.view, data.record);
+               return false;
+           },
+
+       }
          
     },
     
@@ -104,7 +110,6 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
         var self = this;
         var baseGrid;
         var recordData;
-
         //根据点击的地方是按钮或者操作列，处理一些基本数据
         if (btn) {
             baseGrid = btn.up("basegrid");
@@ -179,13 +184,24 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                 tabTitle = funData.tabConfig.editTitle;
                 tabItemId=funCode+"_gridEdit"; 
                 break;
-            case "add":
+                case "add":
                 if (btn) {
-                insertObj.categroy=categroy;
-                tabTitle = funData.tabConfig.addTitle;
-                tabItemId=funCode+"_gridAdd"; 
-                break;   
-                }  
+                    insertObj.categroy=categroy;
+                    tabTitle = funData.tabConfig.addTitle;
+                    tabItemId=funCode+"_gridAdd"; 
+                   // break;   
+                } 
+                break;
+                case "bing":
+                    insertObj=recordData;
+                    tabTitle = recordData.priceName+recordData.priceStatus+"绑定的设备";
+                    tabItemId=funCode+"_gridPriceBing"; 
+                    var itemXtype=[{
+                        xtype:"basedevice.baserate.pricebinggrid",                        
+                        funCode: "gridPriceBing"             
+                    }];
+                    break;   
+                
         }
 
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
@@ -228,7 +244,20 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                     var objDetForm = item.down("baseform[funCode=" + detCode + "]");
                     var formDeptObj = objDetForm.getForm();
                     self.setFormValue(formDeptObj, insertObj);
-                }
+                }    
+                if (cmd=="bing") {
+                 var priceBingGrid = item.down("basegrid[xtype=basedevice.baserate.pricebinggrid]");
+                 var priceBingStore = priceBingGrid.getStore();
+                 var priceBingProxy = priceBingStore.getProxy();
+                 var filter=new Array();
+                 console.log( insertObj.uuid);
+                 filter.push({"type": "string", "value": insertObj.uuid, "field": "priceId", "comparison": "="})
+                 priceBingProxy.extraParams = {
+                    filter: JSON.stringify(filter)
+                };
+                priceBingStore.load();
+
+            }
                 
             },30);
                            
