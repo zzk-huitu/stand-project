@@ -5,7 +5,7 @@ Ext.define("core.system.appupdate.view.DetailForm", {
     items: [{
         xtype: 'label',
         text: "支持文件格式：APK | IPA",
-        margin:'10',
+        margin:'20',
     }, {
         fieldLabel: '主键',
         xtype: "textfield",

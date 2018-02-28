@@ -27,48 +27,23 @@ Ext.define("core.system.roleright.controller.DetailController", {
         "treepanel[xtype=roleright.selectmenugrid]": {
             checkchange: function(node, checked,options) {
                 var self=this;
-                // record.expand();
-                // record.set( 'checked', flag);
-                // if (flag){
-                //  console.log(record.parentNode.data);
-                //  //record.parentNode.data.checked=flag;
-                //  //record.parentNode.updateInfo({checked:true});
-                // }
-                // if (record.childNodes.length > 0) {
-                //  Ext.each(record.childNodes, function(rec) {
-                //      rec.set( 'checked', flag);
-                //      //rec.updateInfo({checked:flag});
-                //  }, this);
-                // } 
-                //debugger;
                 if (node.data.leaf == false) {
                     if (checked) {
                         //打开节点
                         node.expand();
                         //遍历孩子
                         node.eachChild(function(n) {
-                            n.set( 'checked', checked);
-                            //n.data.checked = true;
-                            // n.updateInfo({
-                            //  checked: true
-                            // });
+                            n.set( 'checked', checked);                           
                         });
                     } else {
                         node.expand();
                         node.eachChild(function(n) {
-                            n.set( 'checked', checked);
-                            // n.updateInfo({
-                            //  checked: false
-                            // });
+                            n.set( 'checked', checked);                          
                         });
                     }
                 } else { //单击叶子时候
                     if (checked) { //未被选中时，取消父节点的选择状态
-                        node.parentNode.set('checked', checked);
-                        //node.parentNode.data.checked = true;
-                        // node.parentNode.updateInfo({
-                        //  checked: true
-                        // });
+                        node.parentNode.set('checked', checked);                      
                     }
                 }
                 return false;

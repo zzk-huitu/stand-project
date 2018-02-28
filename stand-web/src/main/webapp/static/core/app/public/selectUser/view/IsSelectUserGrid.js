@@ -2,7 +2,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
     extend: "Ext.grid.Panel",
     alias: "widget.pubselect.isselectusergrid",
     ref: 'isselectusergrid',
-    title: "<font color='#ffeb00'>已选用户(向左拖动或双击移除）</font>",
+    title: "<font color='#ffeb00'>已选用户(向左拖动或双击移除)</font>",
     columnLines: true,
     loadMask: true,
     multiSelect: true,
@@ -27,7 +27,7 @@ Ext.define("core.public.selectUser.view.IsSelectUserGrid", {
         align: 'center'
     }, {
         flex:1,
-        minWidth: 150,
+        minWidth: 100,
         text: "姓名",
         titleAlign: "center",
         align:'center',

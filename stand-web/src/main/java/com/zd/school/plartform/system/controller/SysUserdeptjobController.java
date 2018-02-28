@@ -18,16 +18,10 @@ import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
-
 /**
- * 
- * ClassName: BaseUserdeptjobController Function: ADD FUNCTION. Reason: ADD
- * REASON(可选). Description: 用户部门岗位(BASE_T_USERDEPTJOB)实体Controller. date:
- * 2017-03-27
+ * 用户部门岗位管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysUserdeptjob")

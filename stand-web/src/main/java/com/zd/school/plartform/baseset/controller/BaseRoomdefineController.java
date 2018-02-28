@@ -30,6 +30,11 @@ import com.zd.school.plartform.baseset.service.BaseOfficeDefineService;
 import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.system.model.SysUser;
 
+/**
+ * 房间定义
+ * @author Administrator
+ *
+ */
 @Controller
 @RequestMapping("/BaseRoomdefine")
 public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo> implements Constant {
@@ -45,22 +50,26 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 	@Resource
 	BaseFuncRoomDefineService funRoomService; // 功能室service层接口
 	
+	/**
+	 * 定义房间
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
     @Auth("BASEROOMDEFINE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(BuildRoominfo entity, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IllegalAccessException, InvocationTargetException {
 
-		int fs = 0;
-		int count = 0;
-		String roomType = "";// 房间类型 1.宿舍，2.办公室，3.教室，5、功能室，0、未分配
-		String id = ""; // BuildRoominfo的主键
-		BuildDormDefine dormRoom = null;// 宿舍定义
+		boolean flag = true;
+		
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-		String userCh = "超级管理员";// 中文名
-		if (currentUser != null)
-			userCh = currentUser.getXm();
-		id = entity.getUuid();// BuildRoominfo的uuid
+		String userCh =  currentUser.getXm();
+		
 		// 在add前判断房间名称是否唯一
 		String roomName = entity.getRoomName();
 		Integer conuts = thisService.getCount(roomName);
@@ -68,145 +77,51 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 			writeJSON(response, jsonBuilder.returnFailureJson("\"该房间名称已存在,不能重复。\""));
 			return;
 		}
-		roomType = entity.getRoomType();
-		if (id != null) {
-			if (roomType.equals("1")) {// 宿舍
-				boolean cz = dormRoomService.IsFieldExist("roomId", id, "-1", "isdelete=0");// 判断该房间是否存在
-				if (cz) {
-					++count;
-				}
-				if (count == 0) {
-					String dormType = request.getParameter("dormType");// 宿舍类型
-					String dormTypeLb = request.getParameter("dormTypeLb");// 宿舍类别
-
-					String dormBedCount = request.getParameter("dormBedCount");// 床位数
-					String dormChestCount = request.getParameter("dormChestCount");// 柜子数
-					String dormPhone = request.getParameter("dormPhone");// 电话
-					String dormFax = request.getParameter("dormFax");// 传真
-
-					dormRoom = new BuildDormDefine();
-					dormRoom.setDormType(dormType);
-					dormRoom.setDormTypeLb(dormTypeLb);
-					dormRoom.setDormBedCount(Integer.valueOf(dormBedCount));
-					dormRoom.setDormChestCount(Integer.valueOf(dormChestCount));
-					dormRoom.setDormPhone(dormPhone);
-					dormRoom.setDormFax(dormFax);
-
-					dormRoomService.addDormRoom(entity, dormRoom, id, userCh);
-					++fs;
-				}
-				count = 0;
-
-			} else if (roomType.equals("2")) {// 办公室
-				boolean cz = offRoomService.IsFieldExist("roomId", id, "-1", "isdelete=0");
-				if (cz) {
-					++count;
-				}
-				if (count == 0) {
-					offRoomService.addOffRoom(entity, id, userCh);
-					++fs;
-				}
-				count = 0;
-			} else if (roomType.equals("3")) {// 教室
-				boolean cz = classRoomService.IsFieldExist("roomId", id, "-1", "isdelete=0");
-				if (cz) {
-					++count;
-				}
-				if (count == 0) {
-					classRoomService.addClassRoom(entity, id, userCh);
-					++fs;
-				}
-				count = 0;
-
-			} else if (roomType.equals("5")) {// 功能室
-				boolean cz = funRoomService.IsFieldExist("roomId", id, "-1", "isdelete=0");
-				if (cz) {
-					++count;
-				}
-				if (count == 0) {
-					funRoomService.addFunRoom(entity, id, userCh);
-					++fs;
-				}
-				count = 0;
-			}
-		}
-
-		if (fs > 0) {
+		
+		flag=thisService.doAddRoomDefine(entity, request,userCh);
+		
+		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"增加成功。\""));
 		} else {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"请勿重复添加。\""));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，房间可能已经定义了！\""));
 		}
 
 	}
+    
+    /**
+     * 解除房间定义
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @Auth("BASEROOMDEFINE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		int count = 0;
+
 		Boolean flag = false;
-		Map<String, Object> hashMap = new HashMap<String, Object>();
-		String roomType = "";// 房间类型 1.宿舍，2.办公室，3.教室，5、功能室，0、未分配
-		BuildRoominfo roomInfo = null;
+		
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-		String xm = "超级管理员";// 中文名
-		if (currentUser != null)
-			xm = currentUser.getXm();
+		String xm = currentUser.getXm();
+		Map<String, Object> hashMap = new HashMap<String, Object>();
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		}
-		String[] ids = delIds.split(",");
-		for (int j = 0; j < ids.length; j++) {
-			roomInfo = thisService.get(ids[j]); // 获取BuildRoominfo对象
-			roomType = roomInfo.getRoomType();
-			if (roomType.equals("1")) {
-				flag = dormRoomService.delDormRoom(roomInfo, ids[j], xm);
-				if (flag) {
-
-				} else {
-					hashMap.put("flag", false);
-					continue;
-				}
-
-			} else if (roomType.equals("2")) {
-				flag = offRoomService.delOffRoom(roomInfo, ids[j], xm);
-				if (flag) {
-
-				} else {
-					hashMap.put("flag", false);
-					continue;
-				}
-
-			} else if (roomType.equals("3")) {
-				flag = classRoomService.delClassRoom(roomInfo, ids[j], xm);
-				if (flag) {
-
-				} else {
-					hashMap.put("flag", false);
-					continue;
-				}
-			} else if (roomType.equals("5")) {
-				flag = funRoomService.delFunRoom(roomInfo, ids[j], xm);
-				if (flag) {
-
-				} else {
-					hashMap.put("flag", false);
-					continue;
-				}
-			}
-
-		}
-		flag =(Boolean) hashMap.get("flag")==null?true:(Boolean) hashMap.get("flag");
+		
+		flag=thisService.doDeleteRoomDefine(delIds,xm,hashMap);
+		
 		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 		} else {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"该房間已分配，不允许删除。\""));
-
+			writeJSON(response, jsonBuilder.returnFailureJson("\"操作未完全成功！<br/><br/>"
+					+ "房间【"+hashMap.get("roomNames")+"】可能已分配，不允许删除！\""));
 		}
 
 	}
-    @Auth("BASEROOMDEFINE_update")
+    
+    
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BuildDormDefine entity, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IOException, IllegalAccessException, InvocationTargetException {
@@ -221,8 +136,18 @@ public class BaseRoomdefineController extends FrameWorkController<BuildRoominfo>
 
 	}
 
-	@RequestMapping("/doDormEntity")
-	public void doDormEntity(String roomId, HttpServletRequest request, HttpServletResponse response)
+	/**
+	 * 获取宿舍实体
+	 * @param roomId
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@RequestMapping("/getDormEntity")
+	public void getDormEntity(String roomId, HttpServletRequest request, HttpServletResponse response)
 			throws Exception, IOException, IllegalAccessException, InvocationTargetException {
 		BuildDormDefine entity = null;
 		if (!roomId.isEmpty()) {

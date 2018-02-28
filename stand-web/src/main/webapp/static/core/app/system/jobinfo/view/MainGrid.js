@@ -67,7 +67,8 @@ Ext.define("core.system.jobinfo.view.MainGrid", {
     extParams: {},
     columns:  {        
         defaults:{
-            titleAlign:"center"
+            titleAlign:"center",
+            align:'center'
         },
         items: [{
             xtype: "rownumberer",

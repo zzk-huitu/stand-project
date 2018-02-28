@@ -13,28 +13,10 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
     control: {
     	"basepanel basegrid[xtype=basedevice.baserate.maingrid]": {
               afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="BASERATE";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridBinding")==-1){
-                        var btnBinding = grid.down("button[ref=gridBinding]");
-                        btnBinding.setHidden(true);
-                        
-                     }
-                 }
+                this.hideFuncBtn(grid);
             },
             beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=basedevice.baserate.maingrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnBinding = basegrid.down("button[ref=gridBinding]");
-                if (records.length == 0) {
-                    btnBinding.setDisabled(true);
-                } else if (records.length == 1) {
-                    btnBinding.setDisabled(false);
-                } else {
-                    btnBinding.setDisabled(true);
-                }
+                this.disabledFuncBtn(grid);
             },
         },
     	 //费率列表添加按钮
@@ -71,31 +53,31 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
 
          //快速搜索
          "basegrid[xtype=basedevice.baserate.maingrid] button[ref=gridFastSearchBtn]": {
-           beforeclick: function(btn) {
-                var self=this;
-                var basepanel = btn.up("basepanel[xtype=basedevice.baserate.mainlayout]");
-                var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
-                var store = categroygrid.getSelectionModel().getSelection();
-                if(store.length==0){
-                    self.msgbox("请选择类型！");
-                    return;
+               beforeclick: function(btn) {
+                    var self=this;
+                    var basepanel = btn.up("basepanel[xtype=basedevice.baserate.mainlayout]");
+                    var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
+                    var store = categroygrid.getSelectionModel().getSelection();
+                    if(store.length==0){
+                        self.msgbox("请选择类型！");
+                        return;
+                    }
+             },
+          },
+           "basegrid[xtype=basedevice.baserate.maingrid] field[funCode=girdFastSearchText]": {
+            specialkey: function (field, e) {
+                if (e.getKey() == e.ENTER) {
+                    var self=this;
+                    var basepanel = field.up("basepanel[xtype=basedevice.baserate.mainlayout]");
+                    var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
+                    var store = categroygrid.getSelectionModel().getSelection();
+                    if(store.length==0){
+                        self.msgbox("请选择类型！");
+                        return;
+                    }                
                 }
-         },
-      },
-       "basegrid[xtype=basedevice.baserate.maingrid] field[funCode=girdFastSearchText]": {
-        specialkey: function (field, e) {
-            if (e.getKey() == e.ENTER) {
-                var self=this;
-                var basepanel = field.up("basepanel[xtype=basedevice.baserate.mainlayout]");
-                var categroygrid = basepanel.down("panel[xtype=basedevice.baserate.categroygrid]");
-                var store = categroygrid.getSelectionModel().getSelection();
-                if(store.length==0){
-                    self.msgbox("请选择类型！");
-                    return;
-                }                
             }
-        }
-    },
+        },
 
          
 
@@ -354,7 +336,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
             controller:"basedevice.baserate.othercontroller",
             meterId: rows[0].get('uuid'),
             categroy:categroyValue,
-            width: 1200,
+            width: 1050,
             height: 520,
             operType:"add",
             detCode:detCode,
@@ -365,5 +347,30 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
         }).show();	
      },
     
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="BASERATE";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridBinding")==-1){
+                var btnBinding = grid.down("button[ref=gridBinding]");
+                btnBinding.setHidden(true);
+                
+             }
+         }
+    },
+
+    disabledFuncBtn:function(grid){
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=basedevice.baserate.maingrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnBinding = basegrid.down("button[ref=gridBinding]");
+        if (records.length == 0) {
+            btnBinding.setDisabled(true);
+        } else if (records.length == 1) {
+            btnBinding.setDisabled(false);
+        } else {
+            btnBinding.setDisabled(true);
+        }
+    }
     
 });

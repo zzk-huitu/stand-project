@@ -13,34 +13,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
         this.control({
             "basetreegrid[xtype=baseset.roomdefine.roomdefinetree]":{
                 itemclick: function (tree, record, item, index, e, eOpts) {
-                    var mainLayout = tree.up("panel[xtype=baseset.roomdefine.mainlayout]");
-                    var areaType = record.get("areaType");
-                    var areaId = record.get("id");
-                    var funData = mainLayout.funData;
-                    mainLayout.funData = Ext.apply(funData, {
-                        areaId: record.get("id"),
-                        areaType: record.get("areaType"),
-                        areaName: record.get("text"),
-                        //filter: JSON.stringify(filter),
-                    });
-                    // 加载对应的房间信息
-                    var roomGrid = mainLayout.down("panel[xtype=baseset.roomdefine.maingrid]");
-                     //获取右边筛选框中的条件数据
-                     var filter=self.getFastSearchFilter(roomGrid);       
-                     filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});
-                     if(areaType=="04")
-                        filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
-                    filter = JSON.stringify(filter);
-
-                    var store = roomGrid.getStore();
-                    var proxy = store.getProxy();
-                    //附带参赛
-                    proxy.extraParams={
-                        areaId:areaId,
-                        areaType:areaType,
-                        filter:filter
-                    }
-                    store.loadPage(1); // 给form赋值
+                    this.loadMainGridStore(tree,record);                
                     return false;
                 }
             },
@@ -49,21 +22,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
             //区域列表刷新按钮事件
             "basetreegrid[xtype=baseset.roomdefine.roomdefinetree] button[ref=gridRefresh]": {
                 click: function (btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var store = baseGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        whereSql: " and isDelete='0' ",
-                        orderSql: "",
-                        excludes:"checked"
-                    };
-                    store.load(); //刷新父窗体的grid
-                    var mainlayout = btn.up("basepanel[xtype=baseset.roomdefine.mainlayout]");
-                    var mianGrid = mainlayout.down("basegrid[xtype=baseset.roomdefine.maingrid]");
-                    var store = mianGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams.areaId= "";
-                    proxy.extraParams.areaType= "";
+                    this.refreshTreeStore(btn);
                     return false;
                 }
             },
@@ -177,7 +136,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                 recordData=record.getData();
                  //通过recordData.uuid 获取宿舍对象
                 var resObj= self.ajax({
-                    url: funData.action + "/doDormEntity",
+                    url: funData.action + "/getDormEntity",
                     params: {
                         roomId: recordData.uuid,
                     },                       
@@ -309,7 +268,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                     var dormBaseContainer = tabItem.down("container[ref=dormBaseInfo]");
                     dormBaseContainer.setData(insertObj);
                     self.asyncAjax({
-                        url: comm.get("baseUrl") + "/BaseRoomdefine/doDormEntity",
+                        url: comm.get("baseUrl") + "/BaseRoomdefine/getDormEntity",
                         params: {
                             page: 1,
                             start: 0,
@@ -365,7 +324,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                 names.push(name);
             });
 
-            Ext.Msg.confirm('提示', '是否要将'+names.join(",")+'解除设置?', function (btn, text) {
+            Ext.Msg.confirm('提示', '是否要将【'+names.join("，")+'】解除设置?', function (btn, text) {
                 if (btn == 'yes') {
                     
                     var loading = new Ext.LoadMask(baseGrid, {
@@ -388,7 +347,7 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
                             }else {
 
                                 store.load(); //不刷新的方式
-                                self.Error(data.obj);
+                                self.Warning(data.obj);
                             }           
                             loading.hide();
                         },
@@ -458,5 +417,57 @@ Ext.define("core.baseset.roomdefine.controller.MainController", {
             filter.push({"type": "string", "value": girdSearchTexts[1].getValue(), "field": "roomName", "comparison": ""})
         }
         return filter;
+    },
+
+    loadMainGridStore:function(tree,record){
+        var self=this;
+        var mainLayout = tree.up("panel[xtype=baseset.roomdefine.mainlayout]");
+        var areaType = record.get("areaType");
+        var areaId = record.get("id");
+
+        Ext.apply(mainLayout.funData, {
+            areaId: areaId,
+            areaType: areaType,
+            areaName: record.get("text"),
+            //filter: JSON.stringify(filter),
+        });
+        
+        var roomGrid = mainLayout.down("panel[xtype=baseset.roomdefine.maingrid]");
+
+        //获取右边筛选框中的条件数据
+        var filter=self.getFastSearchFilter(roomGrid);
+
+        //额外必须的参数
+        filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});                
+
+        filter = JSON.stringify(filter);
+
+        var store = roomGrid.getStore();
+        var proxy = store.getProxy();
+        //附带参赛
+        proxy.extraParams={
+            areaId:areaId,
+            areaType:areaType,
+            filter:filter
+        }
+        store.loadPage(1); // 给form赋值
+    },
+
+    refreshTreeStore:function(btn){
+        var baseTreeGrid = btn.up("basetreegrid");
+        var store = baseTreeGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams = {
+            whereSql: " and isDelete='0' ",
+            orderSql: "",
+            excludes:"checked"
+        };
+        store.load(); //刷新父窗体的grid
+        var mainlayout = btn.up("basepanel[xtype=baseset.roomdefine.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=baseset.roomdefine.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.areaId= "";
+        proxy.extraParams.areaType= "";
     }
 });

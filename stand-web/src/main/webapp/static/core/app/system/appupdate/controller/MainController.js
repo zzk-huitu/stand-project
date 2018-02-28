@@ -1,54 +1,28 @@
 
 Ext.define("core.system.appupdate.controller.MainController", {
-	  extend: "Ext.app.ViewController",
-	    alias: 'controller.system.appupdate.maincontroller',
-	    mixins: {
-	    	suppleUtil: "core.util.SuppleUtil",
-	        messageUtil: "core.util.MessageUtil",
-	        formUtil: "core.util.FormUtil",
-	        gridActionUtil: "core.util.GridActionUtil",
-	        dateUtil: 'core.util.DateUtil'
-	      },
-	    init: function() {
+	extend: "Ext.app.ViewController",
+	alias: 'controller.system.appupdate.maincontroller',
+	mixins: {
+    	suppleUtil: "core.util.SuppleUtil",
+        messageUtil: "core.util.MessageUtil",
+        formUtil: "core.util.FormUtil",
+        gridActionUtil: "core.util.GridActionUtil",
+        dateUtil: 'core.util.DateUtil'
+	},
+    init: function() {
 	        
-	    },
-	    control: {
-                 "basepanel basegrid[xtype=system.appupdate.maingrid]": {
-                  afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="APPUPDATE";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridUse")==-1){
-                            var btnUse = grid.down("button[ref=gridUse]");
-                            btnUse.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridCancel")==-1){
-                            var btnUse = grid.down("button[ref=gridCancel]");
-                            btnUse.setHidden(true);
-                            
-                        }
-                     }
-                 },
-                 beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basegrid[xtype=system.appupdate.maingrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnCancel = basegrid.down("button[ref=gridCancel]");
-                    var btnUse = basegrid.down("button[ref=gridUse]");
-                    if (records.length == 0) {
-                        btnCancel.setDisabled(true);
-                        btnUse.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnCancel.setDisabled(false);
-                        btnUse.setDisabled(false);
-                    } else {
-                        btnCancel.setDisabled(true);
-                        btnUse.setDisabled(true);
-                    }
-               }
-
+	},
+    control: {
+        "basepanel basegrid[xtype=system.appupdate.maingrid]": {
+            afterrender : function(grid) {
+                this.hideFuncBtn(grid);
+                
             },
+            beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                this.disabledFuncBtn(grid);
+            }
+
+        },
         "basegrid[xtype=system.appupdate.maingrid] button[ref=gridUse]": {
             beforeclick: function(btn) {
                 this.doUseOrCancel(btn,"use");
@@ -118,12 +92,54 @@ Ext.define("core.system.appupdate.controller.MainController", {
      						Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
      						loading.hide();
      					}
-     				});
-     				
-     			}
+     				});     			
+     			}else{
+                    loading.hide();
+                }
      		});  
      	}else{
      		self.msgbox("请选择一条数据！"); 
      	}
-     },
-	});
+    },
+
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="APPUPDATE";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridUse")==-1){
+                var btnUse = grid.down("button[ref=gridUse]");
+                btnUse.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridCancel")==-1){
+                var btnUse = grid.down("button[ref=gridCancel]");
+                btnUse.setHidden(true);
+                
+            }
+        }
+    },
+
+    disabledFuncBtn:function(grid){
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=system.appupdate.maingrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnCancel = basegrid.down("button[ref=gridCancel]");
+        var btnUse = basegrid.down("button[ref=gridUse]");
+        if (records.length == 0) {
+            btnCancel.setDisabled(true);
+            btnUse.setDisabled(true);
+        } else if (records.length == 1) {
+            if(records[0].get("appIsuse")!=1){
+                btnCancel.setDisabled(true);
+                btnUse.setDisabled(false);
+            }else{
+                btnCancel.setDisabled(false);
+                btnUse.setDisabled(true);
+            }
+            
+        } else {
+            btnCancel.setDisabled(true);
+            btnUse.setDisabled(true);
+        }
+    }
+});

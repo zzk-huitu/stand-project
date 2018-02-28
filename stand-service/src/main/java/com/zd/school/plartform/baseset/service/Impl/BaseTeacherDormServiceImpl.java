@@ -187,18 +187,7 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 			officeAllotService.mjUserRight(null, entity.getRoomId(), entity.getTteacId(), null, null);			
 			flag = this.deleteByPK(id);
 		}
-		/*
-		 * String[] roomIds = roomId.split(","); List list =new ArrayList<>();
-		 * for (String teacRoomId : roomIds) { teacDormSql=
-		 * "select a.ROOM_ID ,b.DORM_ID from DORM_T_TEACHERDORM a right join BUILD_T_DORMDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"
-		 * +teacRoomId+"'"; list = this.querySql(teacDormSql); for(int j=0;
-		 * j<list.size();j++){ Object[] object= (Object[]) list.get(j);
-		 * if(object[0]==null){ String dormId= (String) object[1]; dorm =
-		 * dormRoomService.get(dormId); dorm.setRoomStatus("0");
-		 * dorm.setUpdateTime(new Date()); dormRoomService.merge(dorm); } }
-		 * 
-		 * }
-		 */
+				
 		return flag;
 	}
 
@@ -207,11 +196,27 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 		String[] roomId = roomIds.split(",");
 		String teacDormSql = "";
 		BuildDormDefine dorm = null;
-		List list = new ArrayList<>();
+		//List list = new ArrayList<>();
 		for (String teacRoomId : roomId) {
+			teacDormSql = "select count(*) from DORM_T_TEACHERDORM a join BUILD_T_DORMDEFINE b  "
+					+ " on  a.ROOM_ID = b.ROOM_ID "
+					+ " where a.ISDELETE=0 and b.ISDELETE=0 and b.ROOM_ID='"
+					+ teacRoomId + "'";
+			
+			Integer count = this.getQueryCountBySql(teacDormSql);
+			if(count==0){		
+				dorm = dormRoomService.get(teacRoomId);
+				if (dorm.getRoomStatus().equals("1")) {
+					dorm.setRoomStatus("0");
+					dorm.setUpdateTime(new Date());
+					dormRoomService.merge(dorm);			
+				}
+			}
+			/*
 			teacDormSql = "select a.ROOM_ID ,b.DORM_ID from DORM_T_TEACHERDORM a right join BUILD_T_DORMDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"
 					+ teacRoomId + "'";
 			list = this.querySql(teacDormSql);
+			
 			for (int j = 0; j < list.size(); j++) {
 				Object[] object = (Object[]) list.get(j);
 				if (object[0] == null) {
@@ -221,12 +226,11 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 						dorm.setRoomStatus("0");
 						dorm.setUpdateTime(new Date());
 						dormRoomService.merge(dorm);
+					
 					}
-
 				}
-			}
-
+			}*/
+			
 		}
-
 	}
 }

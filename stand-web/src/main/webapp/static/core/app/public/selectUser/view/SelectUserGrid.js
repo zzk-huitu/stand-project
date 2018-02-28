@@ -124,7 +124,12 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
             minWidth:100,
             text: "姓名",
             dataIndex: "xm"
-        }, {
+        },{
+            flex:1,
+            minWidth:100,
+            text: "工号/学号",
+            dataIndex: "userNumb"
+        },  {
             width:50,
             text: "性别",
             dataIndex: "xbm",

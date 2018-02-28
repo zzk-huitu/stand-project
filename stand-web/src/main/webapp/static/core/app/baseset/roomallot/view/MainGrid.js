@@ -70,22 +70,25 @@ Ext.define("core.baseset.roomallot.view.MainGrid", {
         text: "老师姓名",
         dataIndex: "xm",
     }, {
-        width: 120,
+        flex: 1,
+        minWidth: 120,
         text: "房间名",
         dataIndex: "roomName",
     }, {
-        width: 120,
+        flex: 1,
+        minWidth: 120,
         text: "所属楼层",
         dataIndex: "areaName",
     }, {
-        width: 120,
+        flex: 1,
+        minWidth: 120,
         text: "所属楼栋",
         dataIndex: "upAreaName",
     },{
         xtype: 'actiontextcolumn',
         text: "操作",
         align: 'center',
-        width: 200,
+        width: 100,
         fixed: true,
         items: [{
             text:'解除设置',  

@@ -23,13 +23,9 @@ import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysMenuPermissionService;
 
 /**
- * 
- * ClassName: BaseTPerimissonController Function: TODO ADD FUNCTION. Reason:
- * TODO ADD REASON(可选). Description: 菜单的功能权限表实体Controller. date: 2016-07-17
+ * 菜单功能权限管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysMenuPermission")
@@ -76,10 +72,13 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 	}
 
 	/**
-	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param SysDatapermission
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 添加菜单功能权限
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("SYSPERIMISSON_add")
 	@RequestMapping("/doAdd")
@@ -102,11 +101,6 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 				writeJSON(response, jsonBuilder.returnFailureJson("\"菜单按钮别名不能重复！\""));
 				return;
 			}
-			hql1 = " o.isDelete='0' and o.perBtnName='" + entity.getPerBtnName() + "'";
-			if (thisService.IsFieldExist("menuId", menuId, "-1", hql1)) {
-				writeJSON(response, jsonBuilder.returnFailureJson("\"菜单按钮别名不能重复！\""));
-				return;
-			}
 							
 			entity = thisService.doAddEntity(entity, currentUser);// 执行增加方法
 			if (entity!=null)
@@ -116,11 +110,6 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 		} catch (Exception e) {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"请求失败，请重试或联系管理员！\""));
 		}
-		
-		
-
-		
-		
 		
 	}
 
@@ -167,11 +156,6 @@ public class SysMenuPermissionController extends FrameWorkController<SysMenuPerm
 			writeJSON(response, jsonBuilder.returnFailureJson("\"菜单功能权限名称不能重复！\""));
 			return;
 		}		
-		hql1 = " o.isDelete='0' and o.perBtnName='" + entity.getPerBtnName() + "'";
-		if (thisService.IsFieldExist("menuId", menuId, entity.getUuid(), hql1)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"菜单按钮别名不能重复！\""));
-			return;
-		}
 		hql1 = " o.isDelete='0' and o.perBtnName='" + entity.getPerBtnName() + "'";
 		if (thisService.IsFieldExist("menuId", menuId, entity.getUuid(), hql1)) {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"菜单按钮别名不能重复！\""));

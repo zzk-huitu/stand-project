@@ -14,7 +14,7 @@ Ext.define("core.baseset.campus.controller.MainController", {
     },
     control: {
 
-         "basegrid[xtype=baseset.campus.maingrid] button[ref=gridDetail_Tab]": {
+        "basegrid[xtype=baseset.campus.maingrid] button[ref=gridDetail_Tab]": {
             beforeclick: function(btn) {
                 this.doDetail_Tab(btn);
                 return false;
@@ -47,7 +47,7 @@ Ext.define("core.baseset.campus.controller.MainController", {
             }
             recordData = rescords[0].getData();
         }else{
-         recordData =  record.getData();
+            recordData =  record.getData();
         }
         var funCode = baseGrid.funCode;                 //主界面的funCode
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");
@@ -79,14 +79,14 @@ Ext.define("core.baseset.campus.controller.MainController", {
         if(!tabItem){
 
            var tabItem = Ext.create({
-            xtype:'container',
-            title: tabTitle,
-            scrollable :true, 
-            itemId:tabItemId,
-            itemPKV:pkValue,
-            layout:'fit', 
-        });
-           tabPanel.add(tabItem); 
+                xtype:'container',
+                title: tabTitle,
+                scrollable :true, 
+                itemId:tabItemId,
+                itemPKV:pkValue,
+                layout:'fit', 
+            });
+            tabPanel.add(tabItem); 
               setTimeout(function(){
                var item=Ext.widget("baseformtab",{
                     operType:operType,                            
@@ -111,6 +111,7 @@ Ext.define("core.baseset.campus.controller.MainController", {
 
         tabPanel.setActiveTab( tabItem);   
     },  
+    
     doDeleteRecords:function(btn){
         var self=this;
         //得到组件

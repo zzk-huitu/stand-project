@@ -21,15 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-
 /**
- * 
- * ClassName: BaseSchoolController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 学校信息实体Controller. date: 2016-08-13
+ * 校区信息
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseSchool")

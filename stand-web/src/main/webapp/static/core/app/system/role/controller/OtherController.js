@@ -42,60 +42,7 @@ Ext.define("core.system.role.controller.OtherController", {
          */
         "baseformwin[funCode=selectuser_detail] button[ref=formSave]": {
             beforeclick: function (btn) {
-                var self = this;
-                var win = btn.up('window');
-                var funCode = win.funCode;
-                var winFunData = win.funData;
-                var roleId = winFunData.roleId;
-                var baseGrid = winFunData.grid;
-                var basePanel = win.down("basepanel[funCode=" + funCode + "]");
-                var isSelectGrid = basePanel.down("grid[xtype=system.role.isselectusergrid]");
-                var isSelectStore = isSelectGrid.getStore();
-                var storeCount = isSelectStore.getCount();
-                if (storeCount == 0) {
-                    self.msgbox("没有要设置的用户，请重新选择");
-                    return false;
-                }
-                var userIds = new Array();
-                for (var i = 0; i < storeCount; i++) {
-                    var tempId=isSelectStore.getAt(i).get("uuid");
-                    if(userIds.indexOf(tempId)==-1)
-                        userIds.push(tempId);
-                }
-                var title = "确定设置这些用户吗？";
-                Ext.Msg.confirm('提示', title, function (btnOper, text) {
-                    if (btnOper == 'yes') {
-                        //发送ajax请求
-                        var loading = self.LoadMask(win);
-                        self.asyncAjax({
-                            url: funData.action + "/doAddRoleUser",
-                            params: {
-                                ids: roleId,
-                                userId: userIds.join(",")
-                            },            
-                            //回调代码必须写在里面
-                            success: function (response) {
-                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                                
-                                if (data.success) {
-                                    var store = baseGrid.getStore();
-                                    store.load();
-                                    self.msgbox(data.obj);
-                                    loading.hide();
-                                    win.close();
-                                } else {
-                                    self.Error(data.obj); 
-                                    loading.hide();                                
-                                }
-                            },
-                            failure: function(response) {                   
-                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                                loading.hide();
-                            }
-                        });
-                    }
-                });
+                this.saveRoleUser(btn);            
                 return false;
             }
         },
@@ -340,6 +287,63 @@ Ext.define("core.system.role.controller.OtherController", {
         var selectProxy = selectStore.getProxy();
         selectProxy.extraParams.xm = xm;
         selectStore.loadPage(1);
+    },
+
+    saveRoleUser:function(btn){
+        var self = this;
+        var win = btn.up('window');
+        var funCode = win.funCode;
+        var winFunData = win.funData;
+        var roleId = winFunData.roleId;
+        var baseGrid = winFunData.grid;
+        var basePanel = win.down("basepanel[funCode=" + funCode + "]");
+        var isSelectGrid = basePanel.down("grid[xtype=system.role.isselectusergrid]");
+        var isSelectStore = isSelectGrid.getStore();
+        var storeCount = isSelectStore.getCount();
+        if (storeCount == 0) {
+            self.msgbox("没有要设置的用户，请重新选择");
+            return false;
+        }
+        var userIds = new Array();
+        for (var i = 0; i < storeCount; i++) {
+            var tempId=isSelectStore.getAt(i).get("uuid");
+            if(userIds.indexOf(tempId)==-1)
+                userIds.push(tempId);
+        }
+        var title = "确定设置这些用户吗？";
+        Ext.Msg.confirm('提示', title, function (btnOper, text) {
+            if (btnOper == 'yes') {
+                //发送ajax请求
+                var loading = self.LoadMask(win);
+                self.asyncAjax({
+                    url: funData.action + "/doAddRoleUser",
+                    params: {
+                        ids: roleId,
+                        userId: userIds.join(",")
+                    },            
+                    //回调代码必须写在里面
+                    success: function (response) {
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        
+                        if (data.success) {
+                            var store = baseGrid.getStore();
+                            store.load();
+                            self.msgbox(data.obj);
+                            loading.hide();
+                            win.close();
+                        } else {
+                            self.Error(data.obj); 
+                            loading.hide();                                
+                        }
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                });
+            }
+        });
     }
 
 });

@@ -29,16 +29,9 @@ import com.zd.school.plartform.baseset.service.BaseCalenderdetailService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 
- * ClassName: JwCalenderdetailController
- * Function: TODO ADD FUNCTION. 
- * Reason: TODO ADD REASON(可选). 
- * Description: 校历节次信息表(JW_T_CALENDERDETAIL)实体Controller.
- * date: 2016-08-30
+ * 作息节次信息
+ * @author Administrator
  *
- * @author  luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseCalenderdetail")
@@ -48,50 +41,17 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
     BaseCalenderdetailService thisService; // service层接口
 
     /**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 */
+     * 作息时间列表
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute JwCalenderdetail entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		/*String strData = ""; // 返回给js的数据
-		// hql语句
-		StringBuffer hql = new StringBuffer("from " + entity.getClass().getSimpleName() + " where 1=1 and isDelete=0 ");
-		// 总记录数
-		StringBuffer countHql = new StringBuffer(
-				"select count(*) from " + entity.getClass().getSimpleName() + " where  1=1 and isDelete=0 ");
 		
-		String whereSql = request.getParameter("whereSql");// 查询条件
-		String parentSql = request.getParameter("parentSql");// 条件
-		String querySql = request.getParameter("querySql");// 查询条件
-		String orderSql = request.getParameter("orderSql");// 排序
-		
-		whereSql=whereSql==null?"":whereSql;
-		parentSql=parentSql==null?"":parentSql;
-		querySql=querySql==null?"":querySql;
-		orderSql=orderSql==null?"":orderSql;
-		
-		if(whereSql.equals("")){
-			writeJSON(response, "[]");// 返回数据
-			return;
-		}
-		
-		int limit = Integer.parseInt(request.getParameter("limit"));// 每页记录数
-		int start = super.start(request); // 起始记录数
-		hql.append(whereSql);
-		hql.append(parentSql);
-		hql.append(querySql);
-		hql.append(orderSql);
-		countHql.append(whereSql);
-		countHql.append(querySql);
-		countHql.append(parentSql);
-		List<JwCalenderdetail> lists = thisService.queryByHql(hql.toString(), start, limit);// 执行查询方法
-		Integer count = thisService.getQueryCountByHql(countHql.toString());// 查询总记录数
-		strData = jsonBuilder.buildObjListToJson(new Long(count), lists, true);// 处理数据
-		writeJSON(response, strData);// 返回数据
-*/	
 		String strData = ""; // 返回给js的数据
 
 		QueryResult<JwCalenderdetail> qr = thisService.queryPageResult(super.start(request), super.limit(request),
@@ -103,12 +63,13 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	}
 
 	/**
-	 * 
-	 * doAdd @Title: doAdd @Description: TODO @param @param JwTCanderdetail
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	 * 添加作息时间
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("SCHOOLCALENDAR_add")
 	@RequestMapping("/doAdd")
@@ -130,9 +91,10 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	}
 
 	/**
-	 * doDelete @Title: doDelete @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 删除作息时间
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("SCHOOLCALENDAR_delete")
 	@RequestMapping("/doDelete")
@@ -179,9 +141,13 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * JwTCanderdetail @param @param request @param @param
-	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
+	 * 编辑作息时间
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("SCHOOLCALENDAR_update")
 	@RequestMapping("/doUpdate")
@@ -200,6 +166,7 @@ public class BaseCalenderdetailController extends FrameWorkController<JwCalender
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 	}
+	
 	@Auth("SCHOOLCALENDAR_export")
 	@RequestMapping("/doExportExcel")
     public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {

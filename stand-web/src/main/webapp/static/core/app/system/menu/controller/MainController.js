@@ -15,83 +15,26 @@ Ext.define("core.system.menu.controller.MainController", {
 		var self = this;
 
         this.control({
-          "basepanel basetreegrid[xtype=system.menu.menutree]": {
-            afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="MENUMANAGE";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                        var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                         btnAdd.setHidden(true);
-                         
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridAddBrother_Tab")==-1){
-                        var btnAddBro = grid.down("button[ref=gridAddBrother_Tab]");
-                         btnAddBro.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                        var btnEdit = grid.down("button[ref=gridEdit_Tab]");
-                         btnEdit.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
-                        var btnUnLock = grid.down("button[ref=gridUnLock]");
-                         btnUnLock.setHidden(true);
-                      }
-                    if(userBtn.indexOf(menuCode+"_gridLock")==-1){
-                        var btnLock = grid.down("button[ref=gridLock]");
-                         btnLock.setHidden(true);
-                      }
-                  }
-                  return false;
-                },
-            },
-         "basepanel basetreegrid[xtype=system.menu.menutree]": {
-			beforeitemclick: function(grid) {
-				var basePanel = grid.up("basepanel");
-				var funCode = basePanel.funCode;
-				var basegrid = basePanel.down("basetreegrid[funCode=" + funCode + "]");
-				var records = basegrid.getSelectionModel().getSelection();
-				var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
-				var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
-				var btnAddBrother = basegrid.down("button[ref=gridAddBrother_Tab]");
-				var btnUnLock = basegrid.down("button[ref=gridUnLock]");
-				var btnLock = basegrid.down("button[ref=gridLock]");
-				if (records.length == 0) {
-					btnEdit.setDisabled(true);
-					btnAdd.setDisabled(true);
-					btnAddBrother.setDisabled(true);
-					btnUnLock.setDisabled(true);
-					btnLock.setDisabled(true);
-				} else if (records.length == 1) {
-					btnEdit.setDisabled(false);
-					btnAdd.setDisabled(false);
-					btnAddBrother.setDisabled(false);
-					btnUnLock.setDisabled(false);
-					btnLock.setDisabled(false);
-				} else {
-					btnEdit.setDisabled(true);
-					btnAdd.setDisabled(true);
-					btnAddBrother.setDisabled(true);
-					btnUnLock.setDisabled(false);
-					btnLock.setDisabled(false);
+       
+          	"basepanel basetreegrid[xtype=system.menu.menutree]": {
+
+          		/*在界面渲染之后，根据权限数据，来隐藏没有权限的按钮*/
+            	afterrender : function(grid) {
+            		this.hideFuncBtn(grid);            	
+	                return false;
+	            },
+         	
+         		/*通过点击列项，设置按钮是否可用*/
+				beforeitemclick: function(grid) {
+					this.disabledFuncBtn(grid);				
+					return false;
 				}
-				return false;
-			}
             },
+
         	//刷新按钮事件
 			"panel[xtype=system.menu.menutree] button[ref=gridRefresh]": {
 				beforeclick: function(btn) {
-					var baseGrid = btn.up("basetreegrid");
-					var funCode = baseGrid.funCode;
-					var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-					var funData = basePanel.funData;
-					var store = baseGrid.getStore();
-					// var proxy = store.getProxy();
-					// proxy.extraParams = {
-					// 	whereSql: funData.whereSql,
-					// 	orderSql: funData.orderSql
-					// };
-					store.load(); //刷新父窗体的grid
+					this.refreshTree(btn);				
 					return false;
 				}
 			},
@@ -185,7 +128,7 @@ Ext.define("core.system.menu.controller.MainController", {
 			case "child":
 				iconCls = "x-fa fa-plus-square";
 				operType = "add";
-				insertObj = Ext.apply(insertObj, {
+				Ext.apply(insertObj, {
 					parentNode: just,
 					parentName: justName,
 					uuid: ''
@@ -196,7 +139,7 @@ Ext.define("core.system.menu.controller.MainController", {
 				title = "增加同级菜单";
 				iconCls = "x-fa fa-plus-square-o";
 				operType = "add";
-				insertObj = Ext.apply(insertObj, {
+				Ext.apply(insertObj, {
 					parentNode: parent,
 					parentName: parentName,
 					uuid: ''
@@ -209,7 +152,7 @@ Ext.define("core.system.menu.controller.MainController", {
 				title = "编辑菜单";
                 
                 insertObj = records[0].getData();
-				insertObj = Ext.apply(insertObj, {
+				Ext.apply(insertObj, {
 					parentNode: parent,
 					parentName: parentName,
 					uuid: just,
@@ -332,5 +275,77 @@ Ext.define("core.system.menu.controller.MainController", {
 			}
         });             
 	},
+
+	hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="MENUMANAGE";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                btnAdd.setHidden(true);                        
+            }
+            if(userBtn.indexOf(menuCode+"_gridAddBrother_Tab")==-1){
+                var btnAddBro = grid.down("button[ref=gridAddBrother_Tab]");
+                btnAddBro.setHidden(true);
+            }
+            if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                btnEdit.setHidden(true);
+            }
+            if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                var btnUnLock = grid.down("button[ref=gridUnLock]");
+                btnUnLock.setHidden(true);
+            }
+            if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                var btnLock = grid.down("button[ref=gridLock]");
+               	btnLock.setHidden(true);
+            }
+        }
+	},
+
+	disabledFuncBtn:function(grid){
+		var basePanel = grid.up("basepanel");
+		var funCode = basePanel.funCode;
+		var basegrid = basePanel.down("basetreegrid[funCode=" + funCode + "]");
+		var records = basegrid.getSelectionModel().getSelection();
+		var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+		var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
+		var btnAddBrother = basegrid.down("button[ref=gridAddBrother_Tab]");
+		var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+		var btnLock = basegrid.down("button[ref=gridLock]");
+		if (records.length == 0) {
+			btnEdit.setDisabled(true);
+			btnAdd.setDisabled(true);
+			btnAddBrother.setDisabled(true);
+			btnUnLock.setDisabled(true);
+			btnLock.setDisabled(true);
+		} else if (records.length == 1) {
+			btnEdit.setDisabled(false);
+			btnAdd.setDisabled(false);
+			btnAddBrother.setDisabled(false);
+			btnUnLock.setDisabled(false);
+			btnLock.setDisabled(false);
+		} else {
+			btnEdit.setDisabled(true);
+			btnAdd.setDisabled(true);
+			btnAddBrother.setDisabled(true);
+			btnUnLock.setDisabled(false);
+			btnLock.setDisabled(false);
+		}
+	},
+
+	refreshTree:function(btn){
+		var baseGrid = btn.up("basetreegrid");
+		var funCode = baseGrid.funCode;
+		var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+		var funData = basePanel.funData;
+		var store = baseGrid.getStore();
+		// var proxy = store.getProxy();
+		// proxy.extraParams = {
+		// 	whereSql: funData.whereSql,
+		// 	orderSql: funData.orderSql
+		// };
+		store.load(); //刷新父窗体的grid
+	}
 
 });

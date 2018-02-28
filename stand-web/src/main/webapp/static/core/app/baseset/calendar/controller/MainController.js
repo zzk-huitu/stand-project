@@ -15,120 +15,24 @@ Ext.define("core.baseset.calendar.controller.MainController", {
             //事件注册
         this.control({
             "basepanel basegrid[xtype=baseset.calendar.calendargrid]": {
-                  afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="SCHOOLCALENDAR";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridUse")==-1){
-                            var btnUse = grid.down("button[ref=gridUse]");
-                            btnUse.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridDelTime")==-1){
-                            var btnUse = grid.down("button[ref=gridDelTime]");
-                            btnUse.setHidden(true);
-                            
-                        }
-                     }
-                 },
-                 beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnEdit = basegrid.down("button[ref=gridEdit]");
-                    var btnDelTime = basegrid.down("button[ref=gridDelTime]");
-                    var btnUse = basegrid.down("button[ref=gridUse]");
-                    if (records.length == 0) {
-                        btnEdit.setDisabled(true);
-                        btnDelTime.setDisabled(true);
-                        btnUse.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnEdit.setDisabled(false);
-                        btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(false);
-                    } else {
-                        btnEdit.setDisabled(true);
-                        btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(false);
-                    }
-                    var funData = basePanel.funData;
-                    funData = Ext.apply(funData, {
-                        canderId: record.get("uuid"),
-                        canderName: record.get("canderName"),
-                        activityState: record.get("activityState"),
-                        campusName: record.get("campusName")
-                    });
-                    //加载作息时间项信息
-                    var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
-                    var btn3 = mainGrid.down("button[ref=gridAdd_Tab]");
-                    if(record.get("activityState")==1){
-                        btn3.setDisabled(true);
-                    }else{
-                       btn3.setDisabled(false); 
-                   }
-                   var store = mainGrid.getStore();
-                   var proxy = store.getProxy();
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);
+                },
+                beforeitemclick: function(grid, record, item, index, e, eOpts) {
+                    this.disabledFuncBtn(grid);
 
-                   proxy.extraParams.filter='[{"type":"string","value":"'+record.get("uuid")+'","field":"canderId","comparison":""}]';
-                   store.load();
-
+                    this.loadMainGridStore(grid,record);
+                    
                    // return false;
                }
-/*                 beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnEdit = basegrid.down("button[ref=gridEdit]");
-                    var btnDelTime = basegrid.down("button[ref=gridDelTime]");
-                    var btnUse = basegrid.down("button[ref=gridUse]");
-                    if (records.length == 0) {
-                        btnEdit.setDisabled(true);
-                        btnDelTime.setDisabled(true);
-                        btnUse.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnEdit.setDisabled(false);
-                        btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(false);
-                    } else {
-                        btnEdit.setDisabled(true);
-                        btnDelTime.setDisabled(false);
-                        btnUse.setDisabled(true);
-                    }
-                },*/
+
             },
             "basepanel basegrid[xtype=baseset.calendar.maingrid]": {
-               beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var funData = basePanel.funData;
-                var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.maingrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
-                var btnDelete = basegrid.down("button[ref=gridDelete]");
-                var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
-                if(funData.activityState==1){//启用 
-                  btnAdd.setDisabled(true);
-                  btnEdit.setDisabled(true);
-                  btnDelete.setDisabled(true);
-                }else{
-                if (records.length == 0) {
-                    btnAdd.setDisabled(false);
-                    btnEdit.setDisabled(true);
-                    btnDelete.setDisabled(true);
-                } else if (records.length == 1) {
-                    btnAdd.setDisabled(false);
-                    btnEdit.setDisabled(false);
-                    btnDelete.setDisabled(false);
-                }else{
-                    btnAdd.setDisabled(false);
-                    btnEdit.setDisabled(true);
-                    btnDelete.setDisabled(false);
-                }
-                }
-             
-
-                return false;
+                beforeitemclick: function(grid) {
+                    this.disabledMainFuncBtn(grid);    
+                    return false;
+                },
             },
-        },
             //增加作息时间目录事件
             "basegrid[xtype=baseset.calendar.calendargrid] button[ref=gridAdd]": {
                 beforeclick: function(btn) {                
@@ -157,26 +61,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                     return false;
                }
             },
-
-
-           /**
-             * 操作列的操作事件
-             */
-            /*"basegrid[xtype=baseset.calendar.maingrid] actioncolumn": {
-                deleteClick:function(data){
-                  // self.doDeleteRecords(btn,data.view,data.record) 
-                          
-                },        
-
-                //弹出tab页的方式
-                editClick_Tab: function(data) {
-                   self.doItemDetail_Tab(null, "eidt",data.view,data.record);           
-                },
-                //弹出tab页的方式
-                detailClick_Tab: function(data) {
-                    this.doItemDetail_Tab(null,"detail",data.view,data.record);
-                },
-            },*/
+          
 
             //添加作息时间详细信息事件
             "basegrid[xtype=baseset.calendar.maingrid] button[ref=gridAdd_Tab]": {
@@ -209,67 +94,7 @@ Ext.define("core.baseset.calendar.controller.MainController", {
                 }
             },
 
-
-      
-
-            // 作息时间详细信息事件表格节点击事件
-            "panel[xtype=baseset.calendar.maingrid]": {
-                beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                    var basePanel = grid.up("basepanel");
-                    var funData = basePanel.funData;
-                    var activityState = funData.activityState;
-                    var campusName = funData.campusName;
-                    var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
-                    var records = mainGrid.getSelectionModel().getSelection();
-                    var btn1 = mainGrid.down("button[ref=gridEdit_Tab]");
-                    var btn2 = mainGrid.down("button[ref=gridDelete]");
-
-                    if (records.length == 1 && activityState != 1) {
-                        if(btn1)
-                            btn1.setDisabled(false);
-                        if(btn2)
-                            btn2.setDisabled(false);
-                    } else {
-                        if(btn1)
-                            btn1.setDisabled(true);
-                        if(btn2)
-                            btn2.setDisabled(true);
-                    }
-
-                    return false;
-                }
-            },
-
-            "combobox[name=isafgernoon]": {
-                change: function(combo, newValue, oldValue, eOpts) {
-
-                    var objDetForm = combo.up("baseform[xtype=baseset.calendar.mainform]");
-                    var beginTime = objDetForm.down("timefield[name=beginTime]");
-                    var endTime = objDetForm.down("timefield[name=endTime]");
-                    if (newValue == 0) {
-                        beginTime.setMinValue('06:00');
-                        beginTime.setMaxValue('14:00');
-                        endTime.setMinValue('06:00');
-                        endTime.setMaxValue('14:00');
-                    } else if (newValue == 1) {
-                        beginTime.setMinValue('13:00');
-                        beginTime.setMaxValue('19:00');
-                        endTime.setMinValue('13:00');
-                        endTime.setMaxValue('19:00');
-                    } else if (newValue == 2) {
-                        beginTime.setMinValue('18:00');
-                        beginTime.setMaxValue('23:00');
-                        endTime.setMinValue('18:00');
-                        endTime.setMaxValue('23:00');
-                    }
-
-                }
-            },
-
-         
-
-             
-      });
+        });
     },
 
 
@@ -804,6 +629,98 @@ Ext.define("core.baseset.calendar.controller.MainController", {
             }
         });
        return false;
- 	}
+ 	},
+
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="SCHOOLCALENDAR";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridUse")==-1){
+                var btnUse = grid.down("button[ref=gridUse]");
+                btnUse.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridDelTime")==-1){
+                var btnUse = grid.down("button[ref=gridDelTime]");
+                btnUse.setHidden(true);
+                
+            }
+         }
+    },
+
+    disabledFuncBtn:function(grid){
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.calendargrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnEdit = basegrid.down("button[ref=gridEdit]");
+        var btnDelTime = basegrid.down("button[ref=gridDelTime]");
+        var btnUse = basegrid.down("button[ref=gridUse]");
+        if (records.length == 0) {
+            btnEdit.setDisabled(true);
+            btnDelTime.setDisabled(true);
+            btnUse.setDisabled(true);
+        } else if (records.length == 1) {
+            btnEdit.setDisabled(false);
+            btnDelTime.setDisabled(false);
+            btnUse.setDisabled(false);
+        } else {
+            btnEdit.setDisabled(true);
+            btnDelTime.setDisabled(false);
+            btnUse.setDisabled(false);
+        }
+    },
+
+    loadMainGridStore:function(grid,record){
+        var basePanel = grid.up("basepanel");
+        var funData = basePanel.funData;
+        Ext.apply(funData, {
+            canderId: record.get("uuid"),
+            canderName: record.get("canderName"),
+            activityState: record.get("activityState"),
+            campusName: record.get("campusName")
+        });
+        //加载作息时间项信息
+        var mainGrid = basePanel.down("panel[xtype=baseset.calendar.maingrid]");
+        var btn3 = mainGrid.down("button[ref=gridAdd_Tab]");
+        if(record.get("activityState")==1){
+            btn3.setDisabled(true);
+        }else{
+           btn3.setDisabled(false); 
+       }
+       var store = mainGrid.getStore();
+       var proxy = store.getProxy();
+
+       proxy.extraParams.filter='[{"type":"string","value":"'+record.get("uuid")+'","field":"canderId","comparison":""}]';
+       store.load();
+    },
+
+    disabledMainFuncBtn:function(grid){        
+        var basePanel = grid.up("basepanel");
+        var funData = basePanel.funData;
+        var basegrid = basePanel.down("basegrid[xtype=baseset.calendar.maingrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+        var btnDelete = basegrid.down("button[ref=gridDelete]");
+        var btnAdd = basegrid.down("button[ref=gridAdd_Tab]");
+        if(funData.activityState==1){//启用 
+            btnAdd.setDisabled(true);
+            btnEdit.setDisabled(true);
+            btnDelete.setDisabled(true);
+        }else{
+            if (records.length == 0) {
+                btnAdd.setDisabled(false);
+                btnEdit.setDisabled(true);
+                btnDelete.setDisabled(true);
+            } else if (records.length == 1) {
+                btnAdd.setDisabled(false);
+                btnEdit.setDisabled(false);
+                btnDelete.setDisabled(false);
+            }else{
+                btnAdd.setDisabled(false);
+                btnEdit.setDisabled(true);
+                btnDelete.setDisabled(false);
+            }
+        }
+    }
 
 });

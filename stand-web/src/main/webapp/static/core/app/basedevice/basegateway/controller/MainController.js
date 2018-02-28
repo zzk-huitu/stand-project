@@ -13,31 +13,13 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
     init: function () {
          this.control({
          "basepanel basegrid[xtype=basedevice.basegateway.miangrid]": {
-              afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="BASEGATEWAY";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridSetFront")==-1){
-                        var btnSetFront = grid.down("button[ref=gridSetFront]");
-                        btnSetFront.setHidden(true);
-                        
-                     }
-                 }
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);
+                },
+                beforeitemclick: function(grid) {
+                    this.disabledFuncBtn(grid);
+                },
             },
-            beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=basedevice.basegateway.miangrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnSetFront = basegrid.down("button[ref=gridSetFront]");
-                if (records.length == 0) {
-                    btnSetFront.setDisabled(true);
-                } else if (records.length == 1) {
-                    btnSetFront.setDisabled(false);
-                } else {
-                    btnSetFront.setDisabled(false);
-                }
-            },
-        },
     
               //区域列表刷新按钮事件
             "basetreegrid[xtype=basedevice.basegateway.ptgatewaytree] button[ref=gridRefresh]": {
@@ -272,5 +254,31 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
             }]
         }).show();
         return false;
+    },
+
+    hideFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="BASEGATEWAY";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridSetFront")==-1){
+                var btnSetFront = grid.down("button[ref=gridSetFront]");
+                btnSetFront.setHidden(true);
+                
+             }
+         }
+    },
+
+    disabledFuncBtn:function(grid){
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=basedevice.basegateway.miangrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnSetFront = basegrid.down("button[ref=gridSetFront]");
+        if (records.length == 0) {
+            btnSetFront.setDisabled(true);
+        } else if (records.length == 1) {
+            btnSetFront.setDisabled(false);
+        } else {
+            btnSetFront.setDisabled(false);
+        }
     }
 });

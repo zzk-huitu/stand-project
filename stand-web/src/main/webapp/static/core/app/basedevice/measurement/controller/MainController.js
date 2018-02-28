@@ -12,6 +12,12 @@ Ext.define("core.basedevice.measurement.controller.MainController", {
     init: function() {
     },
     control: {
+        "basepanel basegrid[xtype=basedevice.measurement.maingrid]": {
+              afterrender : function(grid) {
+                this.hideFuncBtn(grid);
+             },
+         },
+
 /*
         "basegrid[xtype=baseset.campus.maingrid] button[ref=gridDetail_Tab]": {
             beforeclick: function(btn) {
@@ -104,4 +110,26 @@ Ext.define("core.basedevice.measurement.controller.MainController", {
 
         tabPanel.setActiveTab( tabItem);   
     },
+
+    hideFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="JLCS";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                btnAdd.setHidden(true);
+                
+             }                    
+             if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                btnEdit.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                var btnDel = grid.down("button[ref=gridDelete]");
+                btnDel.setHidden(true);
+                
+             }
+         }
+    }
 });

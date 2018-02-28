@@ -27,13 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
- * ClassName: BuildRoomareaController Function: TODO ADD FUNCTION. Reason: TODO
- * ADD REASON(可选). Description: 教室区域实体Controller. date: 2016-08-23
+ * 建筑物
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseRoomarea")
@@ -43,9 +39,11 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
     BaseRoomareaService thisService; // service层接口
 
     /**
-     * list查询 @Title: list @Description: TODO @param @param entity
-     * 实体类 @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 区域的树列表
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -61,10 +59,13 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
     }
 
     /**
-     * 
-     * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BuildRoomarea
-     *         实体类 @param @param request @param @param response @param @throws
-     *         IOException 设定参数 @return void 返回类型 @throws
+     * 添加区域
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("JWTROOMINFO_add")
     @RequestMapping("/doAdd")
@@ -85,6 +86,7 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
             return;
         }
 		// 获取同一级别的顺序号
+        /*
 		String hql = " from BuildRoomarea where orderIndex = (select max(o.orderIndex) from BuildRoomarea o where  o.isDelete='0' and o.parentNode='"
 				+ parentNode + "' )";
 		List list = thisService.queryByHql(hql);
@@ -92,6 +94,15 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
 			defaultOrderIndex = (Integer) EntityUtil.getPropertyValue(list.get(0), "orderIndex") + 1;
 		} else
 			defaultOrderIndex = 0;
+		*/
+        String hql = "select max(o.orderIndex) from BuildRoomarea o where  o.isDelete=0 and o.parentNode='"
+				+ parentNode + "'";
+        defaultOrderIndex = thisService.getEntityByHql(hql);
+        if(defaultOrderIndex!=null)
+        	defaultOrderIndex++;
+        else
+        	defaultOrderIndex=1;
+        
 		entity.setOrderIndex(defaultOrderIndex);
         SysUser currentUser = getCurrentSysUser();    
         
@@ -105,9 +116,10 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
     }
 
     /**
-     * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-     * request @param @param response @param @throws IOException 设定参数 @return
-     * void 返回类型 @throws
+     * 删除区域
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @Auth("JWTROOMINFO_delete")
     @RequestMapping("/doDelete")
@@ -159,9 +171,13 @@ public class BaseRoomareaController extends FrameWorkController<BuildRoomarea> i
     }
 
     /**
-     * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-     * BuildRoomarea @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 编辑区域
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("JWTROOMINFO_update")
     @RequestMapping("/doUpdate")

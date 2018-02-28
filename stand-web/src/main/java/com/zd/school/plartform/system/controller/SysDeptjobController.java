@@ -26,13 +26,9 @@ import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysDeptjobService;
 
 /**
- * 
- * ClassName: BaseDeptjobController Function: ADD FUNCTION. Reason: ADD
- * REASON(可选). Description: 部门岗位信息(BASE_T_DEPTJOB)实体Controller. date: 2017-03-27
+ * 部门岗位管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysDeptjob")

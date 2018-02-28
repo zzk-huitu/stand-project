@@ -23,13 +23,9 @@ import com.zd.school.plartform.baseset.service.BaseCalenderService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 
- * ClassName: JwCalenderController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 校历信息(JW_T_CALENDER)实体Controller. date: 2016-08-30
+ * 作息目录
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseCalender")
@@ -37,7 +33,13 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 
 	@Resource
 	BaseCalenderService thisService; // service层接口
-
+	
+	/**
+	 * 获取目录树列表
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping("/getCanderTree")
 	public void getDicTree(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		StringBuffer pageJson = null;
@@ -68,9 +70,11 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	}
 
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 获取目录列表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -85,11 +89,13 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	}
 
 	/**
-	 * @throws InvocationTargetException @throws IllegalAccessException
-	 * 
-	 * doAdd @Title: doAdd @Description: TODO @param @param JwTCander
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 添加目录
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("SCHOOLCALENDAR_add")
 	@RequestMapping("/doAdd")
@@ -109,9 +115,10 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	 }
 
 	/**
-	 * doDelete @Title: doDelete @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 删除目录
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("SCHOOLCALENDAR_delete")
 	@RequestMapping("/doDelete")
@@ -159,9 +166,13 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * JwTCander @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 更新目录
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("SCHOOLCALENDAR_update")
 	@RequestMapping("/doUpdate")
@@ -183,10 +194,14 @@ public class BaseCalenderController extends FrameWorkController<JwCalender> impl
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * JwTCander @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 */	
+	 * 启用目录
+	 * 把之前此校区的启用目录给设置为未启用
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@Auth("SCHOOLCALENDAR_use")
 	@RequestMapping("/doUpdateState")
 	public void doUpdateState(HttpServletRequest request, HttpServletResponse response)

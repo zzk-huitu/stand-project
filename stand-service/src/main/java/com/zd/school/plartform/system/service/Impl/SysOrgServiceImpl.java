@@ -348,7 +348,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			this.merge(org);
 		}
 		
-		//删除redis部门数据
+		//删除所有redis部门缓存数据，以免产生误会
 		this.delDeptTreeAll();
 				
 		return "1";
@@ -390,7 +390,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		saveEntity.setCreateUser(currentUser.getUuid()); // 创建人
 		saveEntity.setLeaf(true);
 		saveEntity.setIssystem(0);
-		saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
+		//saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
 				
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			BaseOrg parEntity = this.get(parentNode);
@@ -442,7 +442,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			break;
 		}
 		
-		//删除当前用户的redis部门数据
+		//删除所有redis部门缓存数据，以免产生误会
 		this.delDeptTreeAll();
 		return entity;
 	}
@@ -834,7 +834,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 				this.setChildAllDeptName(entity,"ROOT");
 		}
 		
-		//删除redis部门数据
+		//删除所有redis部门缓存数据，以免产生误会
 		this.delDeptTreeAll();
 				
 		return entity;
@@ -1101,6 +1101,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	}
 	
 	
+	@Transactional(readOnly=true)
 	@Override
 	public BaseOrgChkTree getUserRightDeptTree(SysUser currentUser, String rootId) {
 		//1.查询部门的数据，并封装到实体类中
@@ -1121,6 +1122,8 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		createTreeChildren(list, root);
 		return root;
 	}
+	
+	@Transactional(readOnly=true)
 	@Override
 	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser) {
 		String userId = currentUser.getUuid();
@@ -1200,6 +1203,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	/**
 	 * 获取用户有权限的部门班级树
 	 */
+	@Transactional(readOnly=true)
 	@Override
 	public List<CommTreeChk> getUserRightDeptClassTreeList(SysUser currentUser) {
 				
@@ -1256,7 +1260,6 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	/**
 	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
 	 * 
-	 * @param userIds
 	 */
 	public void delDeptTreeAll() {
 		// TODO Auto-generated method stub

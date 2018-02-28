@@ -1,5 +1,6 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -46,7 +47,7 @@ public class BaseOfficeDefineServiceImpl extends BaseServiceImpl<BuildOfficeDefi
 	}
 
 	@Override
-	public void addOffRoom(BuildRoominfo entity, String id, String userCh) throws Exception {
+	public void addOffRoom(BuildRoominfo entity, String id, String userCh) throws IllegalAccessException, InvocationTargetException {
 		BuildRoominfo roomInfo = null;
 		BuildOfficeDefine offRoom = null;// 办公室定义
 		offRoom = new BuildOfficeDefine();
@@ -72,7 +73,7 @@ public class BaseOfficeDefineServiceImpl extends BaseServiceImpl<BuildOfficeDefi
 	}
 
 	@Override
-	public Boolean delOffRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delOffRoom(BuildRoominfo roomInfo, String delId, String xm) {
 		Boolean flag=false;
 		BuildOfficeDefine offRoom = null;// 办公室定义
 		offRoom = this.getByRoomId(delId);

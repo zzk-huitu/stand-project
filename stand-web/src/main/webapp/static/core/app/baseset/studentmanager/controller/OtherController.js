@@ -73,53 +73,7 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
          */
         "mtsswinview[funcPanel=student.studentdeptjob] button[ref=ssOkBtn]": {
             beforeclick: function(btn) {
-                var self=this;
-                var win = btn.up("mtsswinview");
-                var setIds = win.setIds;
-                var funData = win.funData;
-                var deptJobGrid = win.grid;
-                var arry = new Array();
-                //树形查询处理
-                if (win.queryType == "mttreeview") {                    
-                    var tree = win.down("mttreeview");
-                    var records = tree.getSelectionModel().getSelection();
-                    if (records.length == 1) {                       
-                        if (records[0].get("level") < 99) {
-                            self.msgbox("请选择岗位");
-                            return false;
-                        }
-                    }
-                    Ext.each(records, function(rec) {
-                        if (rec.get("level") == 99)
-                            arry.push(rec.get("id"));
-                    });
-                    if (arry.length == 0) {
-                        self.msgbox("请选择岗位");
-                        return false;
-                    }
-                    
-                    self.asyncAjax({
-                        url: funData.action + "/doAddUserToDeptJob",
-                        params: {
-                            ids: arry.join(","),
-                            setIds: setIds
-                        },
-                        timeout: 360000,
-                        loadMask:true,
-                        //回调代码必须写在里面
-                        success: function(response) {
-                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                            Ext.Msg.hide(); //关闭loadMask
-                            if (data.success) {
-                                var deptJobStore = deptJobGrid.getStore();
-                                deptJobStore.load();
-                                self.msgbox(data.obj);
-                            } else
-                                self.Warning(data.obj);
-                            win.close();
-                        }
-                    });   
-                }
+                this.doAddUserToDeptJob(btn);
                 return false;
             }
         },
@@ -127,47 +81,14 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
         //选择班主任，界面加载事件
         "window[funcPanel=pbselectRole.selectrolelayout]":{
             afterrender:function(win){
-                var tabPanel=Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
-                var tabItem=tabPanel.getActiveTab();
-                var formpanel=tabItem.down('form[xtype=' + win.formPanel + ']');
-                //var formpanel = Ext.ComponentQuery.query('form[xtype=' + win.formPanel + ']')[0];
-                var classId = formpanel.getForm().findField("uuid").getValue();
-                var grid = win.down("grid[xtype=pbselectRole.isselectrolegrid]");
-                var store = grid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams = {
-                	uuid: classId
-                };
-                store.load();
+                this.loadSelectRoleStore(win);
                 return false;
             }
         },
         //选择班主任，勾选后提交事件
         "window[funcPanel=pbselectRole.selectrolelayout] button[ref=ssOkBtn]":{
             beforeclick: function(btn) {
-                var win=btn.up("window[funcPanel=pbselectRole.selectrolelayout]");
-                var grid=win.down("grid[xtype=pbselectRole.isselectrolegrid]");
-                var baseGrid=win.down("basegrid");
-
-                var tabPanel=Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
-                var tabItem=tabPanel.getActiveTab();
-                var formpanel=tabItem.down('form[xtype=' + win.formPanel + ']');
-                var store=grid.getStore();
-                var nameArray=new Array();
-                var idArray=new Array();                            
-
-                for(var i=0;i<store.getCount();i++){
-                    if(idArray.indexOf(store.getAt(i).get("uuid"))==-1||store.getAt(i).get("uuid")=="null"){
-                        nameArray.push(store.getAt(i).get("xm"));
-                        idArray.push(store.getAt(i).get("uuid")?store.getAt(i).get("uuid"):" ");  //为空的数据，要使用一个空格号隔开，否则后台split分割有误                        
-                    }                        
-                }
-                            
-                formpanel.getForm().findField("mettingEmpid").setValue(idArray.join(","));
-                formpanel.getForm().findField("mettingEmpname").setValue(nameArray.join(","));                  
-
-                baseGrid.getStore().getProxy().extraParams.filter="[]";
-                win.close();
+                this.doSelectedRole(btn);
                 return false;
             }
         },
@@ -487,4 +408,95 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
         });
 
     },
+
+    doAddUserToDeptJob:function(btn){
+        var self=this;
+        var win = btn.up("mtsswinview");
+        var setIds = win.setIds;
+        var funData = win.funData;
+        var deptJobGrid = win.grid;
+        var arry = new Array();
+        //树形查询处理
+        if (win.queryType == "mttreeview") {                    
+            var tree = win.down("mttreeview");
+            var records = tree.getSelectionModel().getSelection();
+            if (records.length == 1) {                       
+                if (records[0].get("level") < 99) {
+                    self.msgbox("请选择岗位");
+                    return false;
+                }
+            }
+            Ext.each(records, function(rec) {
+                if (rec.get("level") == 99)
+                    arry.push(rec.get("id"));
+            });
+            if (arry.length == 0) {
+                self.msgbox("请选择岗位");
+                return false;
+            }
+            
+            self.asyncAjax({
+                url: funData.action + "/doAddUserToDeptJob",
+                params: {
+                    ids: arry.join(","),
+                    setIds: setIds
+                },
+                timeout: 360000,
+                loadMask:true,
+                //回调代码必须写在里面
+                success: function(response) {
+                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                    Ext.Msg.hide(); //关闭loadMask
+                    if (data.success) {
+                        var deptJobStore = deptJobGrid.getStore();
+                        deptJobStore.load();
+                        self.msgbox(data.obj);
+                    } else
+                        self.Warning(data.obj);
+                    win.close();
+                }
+            });   
+        }
+    },
+
+    loadSelectRoleStore:function(win){    
+        var tabPanel=Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
+        var tabItem=tabPanel.getActiveTab();
+        var formpanel=tabItem.down('form[xtype=' + win.formPanel + ']');
+        //var formpanel = Ext.ComponentQuery.query('form[xtype=' + win.formPanel + ']')[0];
+        var classId = formpanel.getForm().findField("uuid").getValue();
+        var grid = win.down("grid[xtype=pbselectRole.isselectrolegrid]");
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams = {
+            uuid: classId
+        };
+        store.load();
+    },
+
+    doSelectedRole:function(btn){
+        var win=btn.up("window[funcPanel=pbselectRole.selectrolelayout]");
+        var grid=win.down("grid[xtype=pbselectRole.isselectrolegrid]");
+        var baseGrid=win.down("basegrid");
+
+        var tabPanel=Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
+        var tabItem=tabPanel.getActiveTab();
+        var formpanel=tabItem.down('form[xtype=' + win.formPanel + ']');
+        var store=grid.getStore();
+        var nameArray=new Array();
+        var idArray=new Array();                            
+
+        for(var i=0;i<store.getCount();i++){
+            if(idArray.indexOf(store.getAt(i).get("uuid"))==-1||store.getAt(i).get("uuid")=="null"){
+                nameArray.push(store.getAt(i).get("xm"));
+                idArray.push(store.getAt(i).get("uuid")?store.getAt(i).get("uuid"):" ");  //为空的数据，要使用一个空格号隔开，否则后台split分割有误                        
+            }                        
+        }
+                    
+        formpanel.getForm().findField("mettingEmpid").setValue(idArray.join(","));
+        formpanel.getForm().findField("mettingEmpname").setValue(nameArray.join(","));                  
+
+        baseGrid.getStore().getProxy().extraParams.filter="[]";
+        win.close();
+    }
 });

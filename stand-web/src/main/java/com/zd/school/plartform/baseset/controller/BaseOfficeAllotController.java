@@ -2,9 +2,11 @@ package com.zd.school.plartform.baseset.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -35,7 +38,7 @@ import com.zd.school.plartform.system.service.SysUserService;
  */
 @Controller
 @RequestMapping("/BaseOfficeAllot")
-public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot> implements Constant  {
+public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot> implements Constant {
 	@Resource
 	BaseOfficeAllotService thisService; // service层接口
 	@Resource
@@ -44,47 +47,56 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	SysUserService sysUserService; // service层接口
 	@Resource
 	BaseOfficeDefineService offdService;
+
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute JwOfficeAllot entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		String filter = "";
-		String roomId = request.getParameter("roomId");//获取区域或房间id（areaId/roomId）
-		if(roomId==null){
-			roomId="";
-		}
-		String hql="select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"+roomId+"%'";
-		List<String> lists=thisService.queryEntityByHql(hql);
-		StringBuffer sb=new StringBuffer();
-		String areaIds="";
-		for(int i=0;i<lists.size();i++){
-			sb.append(lists.get(i)+",");
-		}
-		if(sb.length()>0){
-			areaIds=sb.substring(0, sb.length()-1);
-		
-			hql="select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType='2' and a.areaId in ('"+areaIds.replace(",", "','")+"')";
-			List<String> roomLists=thisService.queryEntityByHql(hql);
-			sb.setLength(0);
-			for(int i=0;i<roomLists.size();i++){
-				sb.append(roomLists.get(i)+",");
+		String filter = request.getParameter("filter");
+		String roomId = request.getParameter("roomId"); // 获取区域或房间id（areaId/roomId）
+		String roomLeaf = request.getParameter("roomLeaf");
+
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}]";
+				}
+			} else { // 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+
+				if (!roomList.isEmpty()) {
+					String roomIds = roomList.stream().collect(Collectors.joining(","));
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}]";
+					}
+
+				} else { // 若区域之下没有房间，则直接返回空数据
+
+					strData = jsonBuilder.buildObjListToJson(0L, new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}
 			}
-			// 房间id
-			if(sb.length()>0){
-				filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ sb.substring(0,sb.length()-1)+"\",\"field\":\"roomId\"}]";			
-			}else{//楼层下不存在房间
-				filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";
-			}
-		}else{
-			filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ roomId+"\",\"field\":\"roomId\"}]";//不存在楼层,本身是roomid
 		}
-		
+
 		QueryResult<JwOfficeAllot> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
 
@@ -107,34 +119,38 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
+
 	/**
-	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param JwOfficeallot
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
+	 * 分配办公室
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("BASEROOMALLOT_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(JwOfficeAllot entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		Boolean flag=false;
+		Boolean flag = false;
 		BuildOfficeDefine off = null;
-		Map<String,Object> hashMap=new HashMap<String,Object>();
+		Map<String, Object> hashMap = new HashMap<String, Object>();
 		String[] name = { "roomId", "isDelete" };
 		Object[] value = { entity.getRoomId(), 0 };
 		off = offdService.getByProerties(name, value);
 		if (off != null) {
 			SysUser currentUser = getCurrentSysUser();
-			flag = thisService.doAddRoom(entity,hashMap,currentUser);// 执行增加方法
-			flag = (Boolean) hashMap.get("flag")== null?true:(Boolean) hashMap.get("flag");
+			flag = thisService.doAddRoom(entity, hashMap, currentUser);// 执行增加方法
+			flag = (Boolean) hashMap.get("flag") == null ? true : (Boolean) hashMap.get("flag");
 			if (flag) {
-                // 返回实体到前端界面
+				// 返回实体到前端界面
 				writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 			} else {
 				StringBuffer xm = (StringBuffer) hashMap.get("xm");
 				StringBuffer roomName = (StringBuffer) hashMap.get("roomName");
-				writeJSON(response, jsonBuilder
-						.returnFailureJson("'" + xm.substring(0, xm.length()-1) + "已存在" + roomName.substring(0, roomName.length()-1) + "办公室'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("'操作未完全成功！<br/><br/>【" + xm.substring(0, xm.length() - 1) + "】分别已存在【"
+						+ roomName.substring(0, roomName.length() - 1) + "】办公室'"));
 				return;
 			}
 
@@ -142,11 +158,8 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 			writeJSON(response, jsonBuilder.returnFailureJson("\"您刚已经在定义中删除了此办公室，请刷新树在重试\""));
 			return;
 		}
-		
-		
-		
-	}
 
+	}
 
 	/**
 	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
@@ -157,35 +170,36 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 	@RequestMapping("/doDelete")
 	public void doDelete(String uuid, String roomId, String tteacId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-	
+
 		if (StringUtils.isEmpty(uuid)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
-		//	boolean flag = thisService.doLogicDelOrRestore(uuid, StatuVeriable.ISDELETE,"");
-			boolean flag = thisService.doDeleteOff(uuid,roomId,tteacId);
-			//thisService.mjUserRight(null, roomId, tteacId, null, null);
+			boolean flag = thisService.doDeleteOff(uuid, roomId, tteacId);	
 			if (flag) {
+				thisService.doOffSetOff(roomId);
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
+	/*
 	@RequestMapping("/doSetOff")
 	public void doSetOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String roomIds = request.getParameter("roomId");
-        thisService.doOffSetOff(roomIds);
-			
+		thisService.doOffSetOff(roomIds);
 	}
+	*/
+
 	/**
 	 * 公用的教师查询（用于办公室分配使用）
 	 * 
-	*/
+	 */
 	@RequestMapping(value = { "/teacherAllot" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void teacherAllot(@ModelAttribute SysUser entity, HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	public void teacherAllot(@ModelAttribute SysUser entity, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
 		String strData = ""; // 返回给js的数据
 		QueryResult<SysUser> qr = sysUserService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), super.filter(request), true);
@@ -193,17 +207,44 @@ public class BaseOfficeAllotController extends FrameWorkController<JwOfficeAllot
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	//推送消息
+
+	// 推送消息
 	@Auth("BASEROOMALLOT_officeTs")
-	@RequestMapping("/pushMessage")
-	public void pushMessage(String roomId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Boolean flag=false;
-		flag=thisService.pushMessage(roomId);
+	@RequestMapping("/doPushMessage")
+	public void doPushMessage(String roomId, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		Boolean flag = false;
+		flag = thisService.doPushMessage(roomId);
 		if (flag) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"推送信息成功。\""));
 		} else {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"推送信息失败。\""));
 		}
-		
+
+	}
+
+	/**
+	 * 获取某个区域下的所有办公室数据
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getRoomIds(String areaId) {
+		List<String> result = new ArrayList<>();
+
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ areaId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+
+		if (lists.size() > 0) {
+			String areaIds = lists.stream().collect(Collectors.joining("','"));
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType='2' and a.areaId in ('"
+					+ areaIds + "')";
+			result = thisService.queryEntityByHql(hql);
+
+		}
+
+		return result;
 	}
 }

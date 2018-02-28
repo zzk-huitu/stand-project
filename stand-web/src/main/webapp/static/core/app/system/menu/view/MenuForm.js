@@ -20,7 +20,7 @@ Ext.define("core.system.menu.view.MenuForm", {
 		xtype: "container",
 		layout: "column", // 从左往右的布局
 		items: [{
-			columnWidth: 0.6,
+			columnWidth: 0.5,
 			beforeLabelTextTpl: comm.get("required"),
 			fieldLabel: "顺序号",
 			xtype: "numberfield",
@@ -33,7 +33,7 @@ Ext.define("core.system.menu.view.MenuForm", {
 			columnWidth: 0.4,
 			xtype: "label",
 			margin:'5 0 0 5 ',
-			html: "  (<font color=red,size=12>同级别的菜单的显示顺序,不能重复)</font>",
+			html: "<font color=red,size=12>（同级别的菜单的显示顺序,不能重复）</font>",
 		}]
 	}, {
 		xtype: "container",

@@ -28,13 +28,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
- * ClassName: BaseDicitemController Function: TODO ADD FUNCTION. Reason: TODO
- * ADD REASON(可选). Description: 数据字典项实体Controller. date: 2016-07-19
+ * 数据字典子项
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseDicitem")
@@ -50,9 +46,11 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	private RedisTemplate<String, Object> redisTemplate;
 
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 获取子项列表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -67,10 +65,13 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	}
 
 	/**
-	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseDicitem
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
+	 * 添加字典子项
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("DICTIONARY_add")
 	@RequestMapping("/doAdd")
@@ -103,9 +104,10 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	}
 
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 删除子项
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("DICTIONARY_delete")
 	@RequestMapping("/doDelete")
@@ -150,9 +152,13 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * BaseDicitem @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 更新字典子项
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("DICTIONARY_update")
 	@RequestMapping("/doUpdate")
@@ -183,27 +189,18 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
         	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
                
 	}
-
+	
+	/**
+	 * 获取某个字典的字典子项数据，并保存到redis
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/getDicItemByDicCode")
 	public void getDicItemByDicCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
 		String dicCode = request.getParameter("dicCode");
 
-		// if (DictionaryItemCache.get(dicCode) != null) {
-		// writeJSON(response, DictionaryItemCache.get(dicCode));
-		// } else {
-		// BaseDic dictionary = dictionaryService.getByProerties("dicCode",
-		// dicCode);
-		// String hql = " from BaseDicitem where isDelete=0 and dicId='" +
-		// dictionary.getUuid()
-		// + "' order by orderIndex asc, itemCode asc ";
-		// List<BaseDicitem> lists = thisService.queryByHql(hql);
-		// strData = jsonBuilder.buildObjListToJson(new Long(lists.size()),
-		// lists, false);
-		// DictionaryItemCache.push(dicCode, strData);
-		// writeJSON(response, strData);
-		// }
-		
 		//获取hash类型的操作对象
 		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 		Object baseDicItem = hashOper.get("baseDicItem", dicCode);

@@ -17,7 +17,7 @@ Ext.define("core.basedevice.baserate.view.DkMainLayout", {
     }, {
         region: "east",
         xtype: "basedevice.baserate.skdatagridtwo",
-        width: 400,
+        width: 280,
         margin:'5' ,
     }]
 })

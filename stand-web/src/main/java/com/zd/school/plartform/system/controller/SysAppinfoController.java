@@ -33,16 +33,9 @@ import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysAppinfoService ;
 
 /**
- * 
- * ClassName: SysAppinfoController
- * Function:  ADD FUNCTION. 
- * Reason:  ADD REASON(可选). 
- * Description: (SYS_T_APPINFO)实体Controller.
- * date: 2017-05-15
+ * App升级管理
+ * @author Administrator
  *
- * @author  luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysAppinfo")

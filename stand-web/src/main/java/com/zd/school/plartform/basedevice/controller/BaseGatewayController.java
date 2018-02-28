@@ -49,9 +49,11 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	@Resource
 	CommTreeService treeService; // 生成树
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 网关列表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -69,8 +71,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 
 	/**
-	 * 生成树
-	 * 
+	 * 前置列表树
 	 * @param request
 	 * @param response
 	 * @throws IOException
@@ -85,9 +86,10 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 	
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 逻辑删除网关
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("BASEGATEWAY_delete")
 	@RequestMapping("/doDelete")
@@ -192,7 +194,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 
 	
 	/**
-	 * 批量设置高级参数
+	 * 批量设置高级参数（弃用）
 	 * 
 	 * @param entity
 	 * @param request
@@ -221,7 +223,7 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 	}
 	
 	/**
-	 * 基础参数批量设置
+	 * 基础参数批量设置（弃用）
 	 * @param tlvs
 	 * @param termTypeID
 	 * @param request
@@ -248,6 +250,15 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			writeJSON(response, jsonBuilder.returnSuccessJson("'基础参数批量设置成功。'"));
 	}
 	
+	/**
+	 * 设置基础与高级参数
+	 * @param tlvs
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@Auth("BASEGATEWAY_baseAndHigh")
 	@RequestMapping("/doBaseAndHighParam")
 	public void baseAndHighParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)
@@ -352,6 +363,16 @@ public class BaseGatewayController extends FrameWorkController<PtGateway> implem
 			}
 			writeJSON(response, jsonBuilder.returnSuccessJson("'网关参数批量设置成功。'"));
 	}
+	
+	/**
+	 * 设置网关的网络、服务器参数
+	 * @param tlvs
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@Auth("BASEGATEWAY_gatewayParam")
 	@RequestMapping("/doGatewayParam")
 	public void gatewayParam(TLVModel tlvs, HttpServletRequest request, HttpServletResponse response)

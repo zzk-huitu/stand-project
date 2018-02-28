@@ -109,7 +109,7 @@ Ext.define("core.system.dept.view.MainGrid", {
             ref: 'gridFastSearchBtn',
             iconCls: 'x-fa fa-search'
         }
-        ],
+    ],
 
     columns:  {        
         defaults:{

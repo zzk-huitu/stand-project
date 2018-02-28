@@ -38,6 +38,7 @@ import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.AuthorType;
 import com.zd.core.constant.Constant;
+import com.zd.core.constant.StatuVeriable;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.ImportNotInfo;
@@ -64,13 +65,9 @@ import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
 
 /**
- * 
- * ClassName: BaseTUserController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 用户管理实体Controller. date: 2016-07-17
+ * 用户管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysUser")
@@ -124,8 +121,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 					super.sort(request), super.filter(request), true);
 			strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 
-		} else {
-			List<BaseUserdeptjob> udj=null;
+		} else {		
 			SysUser currentUser = getCurrentSysUser();
 			// 其他非管理员的，并且点击了学校部门，则查询出它有权限的部门
 			if (deptId.equals(AdminType.ADMIN_ORG_ID)) {
@@ -153,11 +149,11 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/**
-	 * 
+	 * 添加用户
+	 * @param entity
+	 * @param request
+	 * @param response
 	 * @throws Exception
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseTUser
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
 	@Auth("SYSUSER_add")
 	@RequestMapping("/doAdd")
@@ -179,21 +175,21 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 逻辑删除用户
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
-
+	@Auth("SYSUSER_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
-		String orgId = request.getParameter("deptId");
-		SysUser currentUser = getCurrentSysUser();
 		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"没有传入删除主键\""));
 			return;
-		} else {
-			boolean flag = thisService.doDeleteUser(delIds, orgId, currentUser);
+		} else {		
+			SysUser currentUser = getCurrentSysUser();
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, currentUser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
@@ -203,10 +199,10 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * BaseTUser @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 * 
+	 * 更新用户信息
+	 * @param entity
+	 * @param request
+	 * @param response
 	 * @throws Exception
 	 */
 	@Auth("SYSUSER_update")
@@ -217,7 +213,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		String userId = entity.getUuid();
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		if (thisService.IsFieldExist("userName", userName, userId)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'用户名不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
 			return;
 		}
 		// 获取当前的操作用户
@@ -227,7 +223,13 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
-
+	
+	/**
+	 * 获取用户菜单树
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping("/getUserMenuTree")
 	public void getUserMenuTree(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -367,9 +369,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 					request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
 				}
 							
-				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
@@ -396,7 +398,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		SysUser currentUser = getCurrentSysUser();
 
 		if (StringUtils.isEmpty(ids) || StringUtils.isEmpty(userId)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要添加的数据'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入要添加的数据\""));
 			return;
 		} else {
 			boolean flag = thisService.doAddUserRole(userId, ids, currentUser);
@@ -413,9 +415,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 					request.getSession().setAttribute(Constant.SESSION_ROLE_KEY, roleKeys);
 				}
 				
-				writeJSON(response, jsonBuilder.returnSuccessJson("'添加成功'"));
+				writeJSON(response, jsonBuilder.returnSuccessJson("\"添加成功\""));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("'添加失败'"));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败\""));
 			}
 		}
 	}
@@ -425,12 +427,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void doLock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要解锁的账户'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入要解锁的账户\""));
 			return;
 		} else {
 			String[] delId = delIds.split(",");
 			thisService.updateByProperties("uuid", delId, "state", "1");
-			writeJSON(response, jsonBuilder.returnSuccessJson("'锁定成功'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"锁定成功\""));
 		}
 	}
 
@@ -439,12 +441,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void doUnlock(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要解锁的账户'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入要解锁的账户\""));
 			return;
 		} else {
 			String[] delId = delIds.split(",");
 			thisService.updateByProperties("uuid", delId, "state", "0");
-			writeJSON(response, jsonBuilder.returnSuccessJson("'解锁成功'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"解锁成功\""));
 		}
 	}
 
@@ -453,47 +455,15 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void doSetpwd(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要设置密码的账户'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入要设置密码的账户\""));
 			return;
 		} else {
 			String[] delId = delIds.split(",");
 			String userPwd = new Sha256Hash("123456").toHex();
 			thisService.updateByProperties("uuid", delId, "userPwd", userPwd);
-			writeJSON(response, jsonBuilder.returnSuccessJson("'重置密码成功'"));
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"重置密码成功\""));
 		}
 	}
-
-	/**
-	 * 
-	 * batchSetDept:批量将选择的用户加入到指定的部门
-	 *
-	 * @author luoyibo
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 *             void
-	 * @throws @since
-	 *             JDK 1.8
-	 */
-	// @RequestMapping("/doBatchSetDept")
-	// public void batchSetDept(HttpServletRequest request, HttpServletResponse
-	// response) throws IOException {
-	// String delIds = request.getParameter("ids");
-	// String deptId = request.getParameter("deptId");
-	// if (StringUtils.isEmpty(delIds) || StringUtils.isEmpty(deptId)) {
-	// writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入要设置的账户'"));
-	// return;
-	// } else {
-	// //String[] delId = delIds.split(",");
-	// //thisService.updateByProperties("uuid", delId, "deptId", deptId);
-	// SysUser cuurentUser = getCurrentSysUser();
-	// boolean flag = thisService.batchSetDept(deptId, delIds, cuurentUser);
-	// if (flag)
-	// writeJSON(response, jsonBuilder.returnSuccessJson("'添加用户成功'"));
-	// else
-	// writeJSON(response, jsonBuilder.returnSuccessJson("'添加用户失败'"));
-	// }
-	// }
 
 	@RequestMapping(value = { "/userList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -521,6 +491,13 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 
+	/**
+	 * 获取用户部门岗位列表
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/userDeptJobList" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -609,56 +586,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				writeJSON(response, jsonBuilder.returnSuccessJson("'设置主部门失败'"));
 		}
 	}
-
-	/*
-	 * 单条数据调用同步UP的方式 用于修改单条人员数据的时候进行同步（貌似目前暂时未使用到） 弃用
-	 */
-	@RequestMapping("/doSyncUserInfoToUp/{userId}")
-	public void doSyncUserInfoToUp(@PathVariable("userId") String userId, HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		/*
-		 * StringBuffer returnJson = null; try {
-		 * 
-		 * // String userId="8a8a8834533a065601533a065ae80234";
-		 * 
-		 * // 1.查询这个userId的最新的用户、部门信息 String sql =
-		 * "select top 1 u.USER_ID as userId,u.XM as employeeName," +
-		 * " u.user_numb as employeeStrId," +
-		 * " '' as employeePwd,CASE u.XBM WHEN '2' THEN '0' ELSE '1' END AS sexId,"
-		 * + " job.JOB_NAME AS identifier,'1' AS cardState," // cardState // 和
-		 * sid // 都置默认值，现在不做特定的处理 +
-		 * " '' as sid,org.EXT_FIELD04 as departmentId " +
-		 * " from SYS_T_USER as u " +
-		 * " join BASE_T_UserDeptJOB udj on u.USER_ID=udj.USER_ID" +
-		 * " join BASE_T_ORG org on udj.dept_ID=org.dept_ID" +
-		 * " join BASE_T_JOB job on udj.job_id=job.JOB_ID" +
-		 * " where u.ISDELETE=0 and udj.ISDELETE=0 " + " and u.USER_ID='" +
-		 * userId + "' " + " order by udj.master_dept desc,udj.create_time asc";
-		 * 
-		 * List<SysUserToUP> userInfo = thisService.queryEntityBySql(sql,
-		 * SysUserToUP.class);
-		 * 
-		 * // 2.进入事物之前切换数据源
-		 * DBContextHolder.setDBType(DBContextHolder.DATA_SOURCE_Up6); int row =
-		 * 0; if (userInfo.size() != 0) { row =
-		 * thisService.syncUserInfoToUP(userInfo.get(0), userId); } else { row =
-		 * thisService.syncUserInfoToUP(null, userId); }
-		 * 
-		 * if (row == 0) { returnJson = new StringBuffer(
-		 * "{ \"success\" : true, \"msg\":\"未有人员数据需要同步！\"}"); } else if (row >
-		 * 0) { returnJson = new StringBuffer(
-		 * "{ \"success\" : true, \"msg\":\"同步人员数据成功！\"}"); } else { returnJson
-		 * = new StringBuffer(
-		 * "{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}"); }
-		 * 
-		 * } catch (Exception e) { returnJson = new StringBuffer(
-		 * "{ \"success\" : false, \"msg\":\"同步人员数据到UP失败，请联系管理员！\"}"); } finally
-		 * { // 恢复数据源 DBContextHolder.clearDBType(); }
-		 * 
-		 * writeAppJSON(response, returnJson.toString());
-		 */
-	}
-
+	
 	/*
 	 * 一键同步UP的方式
 	 */
@@ -760,6 +688,13 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeAppJSON(response, returnJson.toString());
 	}
 
+	/**
+	 * 获取不在某角色下的用户列表
+	 * @param roleId
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value = { "/getUserNotInRoleId" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -778,6 +713,12 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		writeJSON(response, strData);// 返回数据
 	}
 
+	/**
+	 * 导出用户信息
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@Auth("SYSUSER_export")
 	@RequestMapping("/doExportExcel")
 	public void doExportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -866,7 +807,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			request.getSession().setAttribute("exportTrainClassTraineeCardIIsState", "0");
 		}
 	}
-
+	
 	@RequestMapping("/checkExportEnd")
 	public void checkExportEnd(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

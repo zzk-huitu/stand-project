@@ -29,29 +29,26 @@ import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 
- * ClassName: BuildRoominfoController Function: TODO ADD FUNCTION. Reason: TODO
- * ADD REASON(可选). Description: 教室信息实体Controller. date: 2016-08-23
+ * 区域房间信息
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseRoominfo")
 public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> implements Constant {
 
-	private static Logger logger = Logger.getLogger(BaseRoominfoController.class);
-
+	
 	@Resource
 	private BaseRoominfoService thisService; // service层接口
 	@Resource
 	private CommTreeService treeService; // 生成树
 
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 根据传入的区域id，查询房间信息
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -84,25 +81,27 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 			if(areaId!=null){
 				if(filter.length()>0){
 					filter = filter.substring(0, filter.length()-1);
-					filter+=",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+areaId+"\",\"field\":\"areaId\"}"+"]";
+					filter+=",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+areaId+"\",\"field\":\"areaId\"}"+"]";
 				}else{
-					filter="[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\""+ areaId+"\",\"field\":\"areaId\"}]";
+					filter="[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\""+ areaId+"\",\"field\":\"areaId\"}]";
 				}
 			}
 		}
 		
 		QueryResult<BuildRoominfo> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), filter, true);
-
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 
 	/**
-	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BuildRoominfo
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
+	 * 添加房间
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("JWTROOMINFO_add")
 	@RequestMapping("/doAdd")
@@ -157,9 +156,10 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 	}
 
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 删除房间
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("JWTROOMINFO_delete")
 	@RequestMapping("/doDelete")
@@ -180,21 +180,25 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * BuildRoominfo @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 更新房间
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("JWTROOMINFO_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdate(BuildRoominfo entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 		String areaId = entity.getAreaId();
-		String roomName = entity.getRoomName();
+		String roomCode = entity.getRoomCode();
 		String roomId = entity.getUuid();
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String hql = " o.isDelete='0' and o.areaId='" + areaId + "' ";
-		if (thisService.IsFieldExist("roomName", roomName, roomId, hql)) {
-			writeJSON(response, jsonBuilder.returnFailureJson("\"同一区域已有此房间！\""));
+		if (thisService.IsFieldExist("roomCode", roomCode, roomId, hql)) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"同一区域已有此编号的房间！\""));
 			return;
 		}
 	
@@ -208,7 +212,7 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
         	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));              
 
 	}
-
+	
 	@RequestMapping("/allRoomTree")
 	public void treelist(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";

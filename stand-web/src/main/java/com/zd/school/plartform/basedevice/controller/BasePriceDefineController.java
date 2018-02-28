@@ -116,11 +116,11 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 		
 		SysUser currentUser = getCurrentSysUser();
 		if(categroy.equals("0")){
-        entity = skPriceDefineService.doUpdateEntity(entity, currentUser);// 执行修改方法
-        if (ModelUtil.isNotNull(entity))
-            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-        else
-            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
+	        entity = skPriceDefineService.doUpdateEntity(entity, currentUser);// 执行修改方法
+	        if (ModelUtil.isNotNull(entity))
+	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
+	        else
+	            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 		}
 		if(categroy.equals("1")){
 	        entitys = dkPriceDefineService.doUpdateEntity(entitys, currentUser);// 执行修改方法

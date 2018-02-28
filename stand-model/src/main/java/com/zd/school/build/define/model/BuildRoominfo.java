@@ -17,7 +17,7 @@ import com.zd.core.model.BaseEntity;
  * 
  * ClassName: BuildRoominfo Function: TODO ADD FUNCTION. Reason: TODO ADD
  * REASON(可选). Description: 教室信息实体类. date: 2016-08-23
- *
+ * 使用备用字段1-5，作为房间的门牌号1-5
  * @author luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8

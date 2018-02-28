@@ -31,13 +31,9 @@ import com.zd.school.plartform.system.model.SysUserToUP;
 import com.zd.school.plartform.system.service.SysOrgService;
 
 /**
- * 
- * ClassName: BaseOrgController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: BASE_T_ORG实体Controller. date: 2016-07-26
+ * 部门管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysOrg")
@@ -47,7 +43,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	private SysOrgService thisService; // service层接口
 
     /**
-     *
+     * 获取所有部门信息
      * @param request
      * @param response
      * @throws IOException
@@ -65,7 +61,13 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		strData = JsonBuilder.getInstance().buildList(lists, excludes);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+	
+	/**
+	 * 获取带有选择框的部门树（★见getUserRightDeptTree方法，通过参数来判断是否显示复选框）
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping("/chkTreeList")
 	public void getOrgChkTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
@@ -84,6 +86,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	/**
 	 * 根据用户的权限，来显示具备权限的树
 	 * 注：将每个人的权限树的值，存入到redis中；在修改部门权限或指定部门岗位时删除redis数据。
+	 * 通过excludes参数，来排除不需要的参数，如checked复选框参数
 	 * @param request
 	 * @param response
 	 * @throws IOException
@@ -118,7 +121,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	}
 	
     /**
-     *
+     * 添加部门
      * @param entity
      * @param request
      * @param response
@@ -167,7 +170,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 	}
 
     /**
-     *
+     * 删除部门
      * @param request
      * @param response
      * @throws IOException

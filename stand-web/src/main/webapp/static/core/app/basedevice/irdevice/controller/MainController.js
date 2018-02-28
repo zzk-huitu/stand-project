@@ -14,55 +14,10 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
     control: {
           "basepanel basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]": {
                   afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="IRDEVICE";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd]");
-                            btnAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
-                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
-                            btnBorAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
-                            var btnEdit = grid.down("button[ref=gridEdit]");
-                            btnEdit.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
-                            var btnDel = grid.down("button[ref=gridDel]");
-                            btnDel.setHidden(true);
-                            
-                         }
-                     }
+                    this.hideFuncBtn(grid);                
                  },
                  beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnAdd = basegrid.down("button[ref=gridAdd]");
-                    var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
-                    var btnEdit = basegrid.down("button[ref=gridEdit]");
-                    var btnDel = basegrid.down("button[ref=gridDel]");
-                    if (records.length == 0) {
-                        btnAdd.setDisabled(true);
-                        btnAddBrother.setDisabled(true);
-                        btnEdit.setDisabled(true);
-                        btnDel.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnAdd.setDisabled(false);
-                        btnAddBrother.setDisabled(false);
-                        btnEdit.setDisabled(false);
-                        btnDel.setDisabled(false);
-                    } else {
-                        btnAdd.setDisabled(true);
-                        btnAddBrother.setDisabled(true);
-                        btnEdit.setDisabled(true);
-                        btnDel.setDisabled(false);
-                    }
+                    this.disabledFuncBtn(grid);
                 },
             },
     	 //品牌列表增加下级按钮事件
@@ -572,6 +527,59 @@ Ext.define("core.basedevice.irdevice.controller.MainController", {
                 }
             });
            return false;
+        },
+
+        hideFuncBtn:function(grid){        
+            if(comm.get("isAdmin")!="1"){
+                var menuCode="IRDEVICE";     // 此菜单的前缀
+                var userBtn=comm.get("userBtn");
+                if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                    var btnAdd = grid.down("button[ref=gridAdd]");
+                    btnAdd.setHidden(true);
+                    
+                 }
+                 if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                    var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                    btnBorAdd.setHidden(true);
+                    
+                 }
+                 if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                    var btnEdit = grid.down("button[ref=gridEdit]");
+                    btnEdit.setHidden(true);
+                    
+                 }
+                 if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                    var btnDel = grid.down("button[ref=gridDel]");
+                    btnDel.setHidden(true);
+                    
+                 }
+             }
+        },
+
+        disabledFuncBtn:function(grid){
+            var basePanel = grid.up("basepanel");
+            var basegrid = basePanel.down("basetreegrid[xtype=basedevice.irdevice.irbrandtreegrid]");
+            var records = basegrid.getSelectionModel().getSelection();
+            var btnAdd = basegrid.down("button[ref=gridAdd]");
+            var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
+            var btnEdit = basegrid.down("button[ref=gridEdit]");
+            var btnDel = basegrid.down("button[ref=gridDel]");
+            if (records.length == 0) {
+                btnAdd.setDisabled(true);
+                btnAddBrother.setDisabled(true);
+                btnEdit.setDisabled(true);
+                btnDel.setDisabled(true);
+            } else if (records.length == 1) {
+                btnAdd.setDisabled(false);
+                btnAddBrother.setDisabled(false);
+                btnEdit.setDisabled(false);
+                btnDel.setDisabled(false);
+            } else {
+                btnAdd.setDisabled(true);
+                btnAddBrother.setDisabled(true);
+                btnEdit.setDisabled(true);
+                btnDel.setDisabled(false);
+            }
         }
     
 });

@@ -13,23 +13,23 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
         // 事件注册
         this.control({
             "basepanel basegrid[xtype=baseset.roomallot.maingrid]": {
-                  afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="BASEROOMALLOT";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_allotOffRoom")==-1){
-                            var btnAllotOff = grid.down("button[ref=allotOffRoom]");
-                            btnAllotOff.setHidden(true);
-                            
-                        }
-                        if(userBtn.indexOf(menuCode+"_officeTs")==-1){
-                            var btnOfficeTs = grid.down("button[ref=officeTs]");
-                            btnOfficeTs.setHidden(true);
-                            
-                        }
-                    }
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);
                 },
              },
+             "basetreegrid[xtype=baseset.roomallot.roomallottree]": {
+                /*
+                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                    1. 附带树节点的相关参数
+                    2. 当存在basegrid的默认参数，则附带上去
+                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+                */
+                itemclick: function(tree, record, item, index, e, eOpts) {                   
+                    this.loadMainGridStore(tree,record);   
+                    return false;
+               }
+            },
             //区域列表刷新按钮事件
             "panel[xtype=baseset.roomallot.roomallottree] button[ref=gridRefresh]": {
                 click: function(btn) {
@@ -71,11 +71,11 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
                 
             }, 
  
-      });
- },
+        });
+    },
 
- openRoomAllot_Win: function(btn) {
-    var self = this;
+    openRoomAllot_Win: function(btn) {
+        var self = this;
 
         //得到组件
         var baseGrid=btn.up("basegrid");
@@ -139,145 +139,194 @@ Ext.define("core.baseset.roomallot.controller.MainController", {
                     items: [{
                         xtype: detLayout
                     }]
-                }).show();
-                var selecTeacherPanel = win.down("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
-                var selectGrid=selecTeacherPanel.down("basegrid[xtype=baseset.roomallot.selectteachergrid]");
-                var selectStore = selectGrid.getStore();
-                var selectProxy = selectStore.getProxy();
-                selectProxy.extraParams = {
-                    filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]',
-                };
-                selectStore.loadPage(1);         
-     },
+        }).show();
+        var selecTeacherPanel = win.down("basepanel[xtype=baseset.roomallot.selectteacherlayout]");
+        var selectGrid=selecTeacherPanel.down("basegrid[xtype=baseset.roomallot.selectteachergrid]");
+        var selectStore = selectGrid.getStore();
+        var selectProxy = selectStore.getProxy();
+        selectProxy.extraParams = {
+            filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]',
+        };
+        selectStore.loadPage(1);         
+    },
 
    
-       doDeleteRecords:function(btn,grid,record){
-            var self=this;
-            var records;
-            var baseGrid = grid;
-            if(!baseGrid){
-                baseGrid=btn.up("basegrid");
-                records = baseGrid.getSelectionModel().getSelection();
-            }else{
-                records=new Array();
-                records.push(record);
-            }
-            funCode = baseGrid.funCode;
-            var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-            //得到配置信息
-            var funData = basePanel.funData;
-            var tteacId = '';
-            var uuid = '';
-            var roomId ='';
-            if (records.length <= 0) {
-                self.msgbox('请选择一条数据');
-                return;
-            }
-           // var roomId = records[0].get('roomId');
-            for (var i = 0; i < records.length; i++) {
-                tteacId += records[i].get('tteacId') + ',';
-                uuid += records[i].get('uuid') + ',';
-                roomId += records[i].get('roomId')+ ',';
-            };
-            if (records.length > 0) {
-                //封装ids数组
-                Ext.Msg.confirm('提示',"是否解除设置", function (btn, text) {
-                    if (btn == 'yes') {
-                        
-                        var loading = new Ext.LoadMask(baseGrid, {
-                            msg: '正在提交，请稍等...',
-                            removeMask: true// 完成后移除
-                        });
-                        loading.show();
+    doDeleteRecords:function(btn,grid,record){
+        var self=this;
+        var records;
+        var baseGrid = grid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+            records = baseGrid.getSelectionModel().getSelection();
+        }else{
+            records=new Array();
+            records.push(record);
+        }
+        funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var tteacId = '';
+        var uuid = '';
+        var roomId ='';
+        if (records.length <= 0) {
+            self.msgbox('请选择一条数据');
+            return;
+        }
+       // var roomId = records[0].get('roomId');
+        for (var i = 0; i < records.length; i++) {
+            tteacId += records[i].get('tteacId') + ',';
+            uuid += records[i].get('uuid') + ',';
+            roomId += records[i].get('roomId')+ ',';
+        };
+        if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm('提示',"是否解除设置", function (btn, text) {
+                if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
 
-                        self.asyncAjax({
-                            url: funData.action + "/doDelete",
-                            params: {
-                                 uuid: uuid,
-                                 roomId: roomId,
-                                 tteacId: tteacId
-                            },                    
-                            success: function(response) {
-                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete",
+                        params: {
+                             uuid: uuid,
+                             roomId: roomId,
+                             tteacId: tteacId
+                        },                    
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
-                                if(data.success){
-                                     baseGrid.getStore().load(); //不刷新的方式
-
-                                     setTimeout(function(){
-                                       self.ajax({
-                                          url: funData.action + "/doSetOff",
-                                          params: {
-                                            roomId: roomId,
+                            if(data.success){
+                                 baseGrid.getStore().load(); //不刷新的方式
+                                 /*
+                                setTimeout(function(){
+                                   self.ajax({
+                                      url: funData.action + "/doSetOff",//这个方法直接放在delete方法中一并执行了，防止事务问题
+                                      params: {
+                                         roomId: roomId,
                                         },
                                     })   
 
-                                   },30);
-                           
-                                    self.msgbox(data.obj);                               
-                                }else {
-                                    self.Error(data.obj);
-                                }
-                                loading.hide();
-                            },
-                            failure: function(response) {                   
-                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                                loading.hide();
-                            }
-                        });     
-                    }
-                });
-            } else {
-                self.msgbox("请选择数据");
-            }
-        },
-       officeTs:function(btn) {
-           var self=this;
-           var mainLayout = btn.up("basepanel[xtype=baseset.roomallot.mainlayout]");
-           var storeyGrid = mainLayout.down("basegrid[xtype=baseset.roomallot.maingrid]");
-           var jwtrTree = mainLayout.down("basetreegrid[xtype=baseset.roomallot.roomallottree]");
-           var selectTreeObject = jwtrTree.getSelectionModel().getSelection();
-           if (selectTreeObject.length <= 0) {
-                self.msgbox("请选择要推送的办公室！");
-                return;
-           }
-           var objDic = selectTreeObject[0];
-           var roomId = objDic.get("id");
-           var leaf = objDic.get("leaf");
-           if (leaf != true) {//true: 房间 false:区域
-                self.msgbox("推送消息时，请选择单个办公室!"); 
-                return;
-           }
-            var count = storeyGrid.getStore().getCount();
-            if (count <= 0) {
-                self.msgbox("列表中无任何数据!");
-                return;
-            }
-            Ext.Msg.confirm("推送消息", "您确定要推送信息吗？", function(btns) {
-                if (btns == 'yes') {
-                    var loading = self.LoadMask(mainLayout,'正在推送消息中，请等待...');
-                    self.asyncAjax({
-                      url: comm.get('baseUrl') + "/BaseOfficeAllot/pushMessage",
-                      params: {
-                         roomId: roomId,
-                     },                 
-                     success: function(response) {
-                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                        if(data.success){
-                                self.msgbox(data.obj); 
+                                },30);
+                               */
+                       
+                                self.msgbox(data.obj);                               
                             }else {
                                 self.Error(data.obj);
-                            }           
+                            }
                             loading.hide();
                         },
                         failure: function(response) {                   
                             Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
                             loading.hide();
                         }
-                    }); 
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
+    },
 
-                 }
-            })
+    officeTs:function(btn) {
+        var self=this;
+        var mainLayout = btn.up("basepanel[xtype=baseset.roomallot.mainlayout]");
+        var storeyGrid = mainLayout.down("basegrid[xtype=baseset.roomallot.maingrid]");
+        var jwtrTree = mainLayout.down("basetreegrid[xtype=baseset.roomallot.roomallottree]");
+        var selectTreeObject = jwtrTree.getSelectionModel().getSelection();
+        if (selectTreeObject.length <= 0) {
+            self.msgbox("请选择要推送的办公室！");
+            return;
+        }
+        var objDic = selectTreeObject[0];
+        var roomId = objDic.get("id");
+        var leaf = objDic.get("leaf");
+        if (leaf != true) {//true: 房间 false:区域
+            self.msgbox("推送消息时，请选择单个办公室!"); 
+            return;
+        }
+        var count = storeyGrid.getStore().getCount();
+        if (count <= 0) {
+            self.msgbox("列表中无任何数据!");
+            return;
+        }
+        Ext.Msg.confirm("推送消息", "您确定要推送信息吗？", function(btns) {
+            if (btns == 'yes') {
+                var loading = self.LoadMask(mainLayout,'正在推送消息中，请等待...');
+                self.asyncAjax({
+                  url: comm.get('baseUrl') + "/BaseOfficeAllot/doPushMessage",
+                  params: {
+                     roomId: roomId,
+                 },                 
+                 success: function(response) {
+                    var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                    if(data.success){
+                            self.msgbox(data.obj); 
+                        }else {
+                            self.Error(data.obj);
+                        }           
+                        loading.hide();
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide();
+                    }
+                }); 
 
-        },
+             }
+        })
 
-    });
+    },
+
+    hideFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="BASEROOMALLOT";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_allotOffRoom")==-1){
+                var btnAllotOff = grid.down("button[ref=allotOffRoom]");
+                btnAllotOff.setHidden(true);
+                
+            }
+            if(userBtn.indexOf(menuCode+"_officeTs")==-1){
+                var btnOfficeTs = grid.down("button[ref=officeTs]");
+                btnOfficeTs.setHidden(true);
+                
+            }
+        }
+    },
+
+    loadMainGridStore:function(tree,record){                
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=baseset.roomallot.mainlayout]");
+
+        var storeGrid = mainLayout.down("panel[xtype=baseset.roomallot.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取点击树节点的参数        
+        var roomId=record.get("id");
+        var roomLeaf=record.get("leaf");
+        Ext.apply(mainLayout.funData, {                       
+            roomId: roomId,
+            leaf:roomLeaf
+        });
+        
+
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf
+        }
+        store.loadPage(1); 
+    }
+
+});

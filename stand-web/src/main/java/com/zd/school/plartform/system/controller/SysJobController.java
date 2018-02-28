@@ -28,12 +28,9 @@ import com.zd.school.plartform.system.service.SysDeptjobService;
 import com.zd.school.plartform.system.service.SysJobService;
 
 /**
- * ClassName: BizTJobController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 岗位信息实体Controller. date: 2016-05-16
+ * 岗位管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysJob")
@@ -45,9 +42,11 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	SysDeptjobService deptService; // service层接口
 
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 标准的查询列表功能
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -61,13 +60,13 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	}
 
 	/**
-	 * 
-	 * doAdd @Title: doAdd @Description: TODO @param @param BizTJob
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
-	 * 
-	 * @throws InvocationTargetException
+	 * 标准的添加功能
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("JOBINFO_add")
 	@RequestMapping("/doAdd")
@@ -100,9 +99,10 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	}
 
 	/**
-	 * doDelete @Title: doDelete @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 标准的逻辑删除功能
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("JOBINFO_delete")
 	@RequestMapping("/doDelete")
@@ -156,9 +156,13 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * BizTJob @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 标准的更新数据功能
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("JOBINFO_update")
 	@RequestMapping("/doUpdate")
@@ -177,11 +181,17 @@ public class SysJobController extends FrameWorkController<BaseJob> implements Co
 			writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-
 	}
-	@RequestMapping(value = { "/doJobDept" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	
+	/**
+	 * 获取岗位的部门
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping(value = { "/getJobDept" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void doJobDept(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void getJobDept(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData="";
 		String jobId = request.getParameter("jobId"); // 获得传过来的roleId
 		String hql=" from BaseDeptjob a where  a.isDelete=0 and a.jobId = '"+jobId+"'";

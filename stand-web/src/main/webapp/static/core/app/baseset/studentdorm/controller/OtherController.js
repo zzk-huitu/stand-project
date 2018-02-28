@@ -16,10 +16,10 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
       //数据列表刷新按钮事件
       "panel[xtype=baseset.studentdorm.dormallottree] button[ref=gridRefresh]": {
           click: function(btn) {
-            var baseGrid = btn.up("basetreegrid");
-            var store = baseGrid.getStore();
-            store.load(); //刷新父窗体的grid
-            return false;
+              var baseGrid = btn.up("basetreegrid");
+              var store = baseGrid.getStore();
+              store.load(); //刷新父窗体的grid
+              return false;
            }
          },
           //添加班级宿舍

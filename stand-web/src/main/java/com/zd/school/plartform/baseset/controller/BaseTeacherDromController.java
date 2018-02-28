@@ -51,6 +51,13 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 	SysUserService userService; // service层接口
   
     
+    /**
+     * 显示某个区域或房间下的教师入住信息
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute DormTeacherDorm entity, HttpServletRequest request, HttpServletResponse response)
@@ -101,6 +108,12 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 
 	}
 
+    /**
+     * 显示所有有教师宿舍的区域树信息（与部门权限无关）
+     * @param request
+     * @param response
+     * @throws IOException
+     */
 	@RequestMapping("/treelist")
 	public void getGradeTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
@@ -110,12 +123,32 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		writeJSON(response, strData);// 返回数据
 	}
 
+	/**
+	 * 得到某个宿舍的信息
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@RequestMapping("/getDefineInfo")
 	public @ResponseBody BuildDormDefine getDefineInfo(DormTeacherDorm entity, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
 		String dormId = request.getParameter("dormId");
 		return dormService.get(dormId);
 	}
+	
+	/**
+	 * 入住教师
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
     @Auth("BASETEACHERDORM_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(DormTeacherDorm entity, HttpServletRequest request, HttpServletResponse response)
@@ -137,11 +170,18 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 		}
 
 	}
+    
+    /**
+     * 删除教师的入住或退住信息
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Auth("BASETEACHERDORM_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
-		
+		String roomIds = request.getParameter("roomIds");
 		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
@@ -149,18 +189,21 @@ public class BaseTeacherDromController extends FrameWorkController<DormTeacherDo
 			boolean flag = false;
 			flag = thisService.doDelete(delIds);
 			if (flag) {
+				thisService.doSettingOff(roomIds);	//判断此宿舍是否已经没数据了
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
 				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 			}
 		}
 	}
+    
+    /*
 	@RequestMapping("/doSetOff")
 	public void doSetOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String roomIds = request.getParameter("roomIds");
         thisService.doSettingOff(roomIds);
 			
-	}
+	}*/
 
 	// 退住
 	@Auth("BASETEACHERDORM_out")

@@ -18,7 +18,8 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
 			},
 		})
 	},
-  saveDetail_Win:function(btn){
+
+  	saveDetail_Win:function(btn){
         var self=this;
         var win = btn.up('window');
         var funCode = win.funCode;
@@ -39,7 +40,7 @@ Ext.define("core.baseset.roomallot.controller.OtherController", {
         	 if(uuid.indexOf(pkValue)==-1)
                 uuid.push(pkValue);
         };
-       var roomId = win.roomId;
+        var roomId = win.roomId;
         if (uuid.length > 0) {
 	        var loading = self.LoadMask(win);
 

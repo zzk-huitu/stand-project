@@ -1,5 +1,6 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -73,7 +74,7 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 	}
 
 	@Override
-	public void addDormRoom(BuildRoominfo entity, BuildDormDefine dormRoom, String id, String userCh) throws Exception {
+	public void addDormRoom(BuildRoominfo entity, BuildDormDefine dormRoom, String id, String userCh) throws IllegalAccessException, InvocationTargetException {
 		BuildRoominfo roomInfo = null;
 
 		roomInfo = thisService.get(id);
@@ -85,7 +86,9 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 		// 执行更新方法
 		thisService.merge(roomInfo);
 
+		
 		BeanUtils.copyPropertiesExceptNull(dormRoom, entity);
+		
 		// 生成默认的orderindex
 		Integer orderIndex = this.getDefaultOrderIndex(dormRoom);
 		dormRoom.setRoomId(id);// 设置房间id
@@ -98,7 +101,7 @@ public class BaseDormDefineServiceImpl extends BaseServiceImpl<BuildDormDefine> 
 	}
 
 	@Override
-	public Boolean delDormRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delDormRoom(BuildRoominfo roomInfo, String delId, String xm) {
 		Boolean flag=false;
 		BuildDormDefine dormRoom = null;// 宿舍定义
 		dormRoom = this.getByRoomId(delId);// roomId

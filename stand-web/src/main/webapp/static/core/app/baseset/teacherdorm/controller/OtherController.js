@@ -18,106 +18,25 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
           },
         
         "basepanel basegrid[xtype=pubselect.selectusergrid] field[funCode=girdFastSearchText]": {
-            specialkey: function (field, e) {
-                var self = this;
+            specialkey: function (field, e) {              
                 if (e.getKey() == e.ENTER) {
-                    self.doFastSearch(field);
+                    this.doFastSearch(field);
                     return false;
                 }
             }
         },
         "basepanel basegrid[xtype=pubselect.selectusergrid] button[ref=gridFastSearchBtn]": {
             beforeclick: function (btn) {
-                var self = this;
-                self.doFastSearch(btn);
+                this.doFastSearch(btn);
                 return false;
             }
         },
         "mtfuncwindow[funcPanel=pubselect.selectuserlayout] button[ref=ssOkBtn]": {
 
                 beforeclick: function(btn) {
-                    var win = btn.up('window');
-                    var dataField = win.dataField;
-                    var gridField = win.gridField;
-
-                    var funcPanel = win.down('basepanel[xtype='+ win.funcPanel+']');
-                    var IsSelectStore = funcPanel.down("panel[xtype=pubselect.isselectusergrid]");
-                    var tabPanel = Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
-                    var tabItem = tabPanel.getActiveTab();
-                    var formpanel = tabItem.down('form[xtype='+ win.formPanel+']');
-                    var bf = formpanel.getForm();
-                    var formDormId = bf.findField("dormId").getValue();
-                    var formRoomId = bf.findField("roomId").getValue();
-
-                    
-                  
-                     var date = self.ajax({
-                        url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getTeaDormXmb",
-                        params: {
-                            roomId:formRoomId
-                        },
-                    });
-
-                    var xmb = '';
-                    var dormType='';
-                    if(date!=null){
-                        dormType = date.dormType;
-                        if(dormType=="1" || dormType=="2"){
-                            if (dormType=='1'){
-                                xmb = '男';
-                            }else if(dormType=='2'){
-                               xmb = '女';
-                            }
-
-                            var isStoreXmb=new Array();;
-                            var store = IsSelectStore.getStore();
-                            for (var i = 0; i < store.getCount(); i++) {
-                                var record = store.getAt(i);
-                                var xbm = record.get("xbm");
-                                isStoreXmb.push(xbm);
-                            }
-
-                            
-                            for(var j=0; j<isStoreXmb.length; j++){
-                                if(isStoreXmb[j]!=dormType){
-                                    self.Warning("该教师宿舍为"+ xmb+ "宿舍,请均选择"+ xmb+ "教师。");
-                                    return false;
-
-                                }
-
-                            }
-                        }
-                        
-                    }
-
-                     
-
-                    var basePanel = win.down("basepanel[xtype=pubselect.selectuserlayout]");
-                    var baseGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
-                    var records = baseGrid.getStore().data.items;
-                    var valueArray = new Array();
-                    var arkNumArr=new Array();
-                    self.asyncAjax({
-                        url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getMax",
-                        params: {
-                            dormId:formDormId
-                        },
-                         //回调代码必须写在里面
-                        success: function (response) {
-                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                                Ext.each(records, function(r,index) {
-                                    valueArray.push(data.bedNum+index+1);
-                                    arkNumArr.push(data.arkNum+index+1);
-                                });
-                                var bff = bf.findField("bedCount").setValue(valueArray.join(","));
-                                bff = bf.findField("arkCount").setValue(arkNumArr.join(","));
-     
-                        },
-                        failure: function(response) {                   
-                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                        }
-                    });
-
+                    var result=this.doSelectedUser(btn);
+                    if(!result)
+                        return false;
                 }
             },
     	})
@@ -239,5 +158,99 @@ Ext.define("core.baseset.teacherdorm.controller.OtherController", {
         };
         selectStore.loadPage(1);
     },
+
+    doSelectedUser:function(btn){    
+        var self=this;
+        var win = btn.up('window');
+        var dataField = win.dataField;
+        var gridField = win.gridField;
+
+        var funcPanel = win.down('basepanel[xtype='+ win.funcPanel+']');
+        var IsSelectStore = funcPanel.down("panel[xtype=pubselect.isselectusergrid]");
+        var tabPanel = Ext.ComponentQuery.query('tabpanel[xtype=app-main]')[0];
+        var tabItem = tabPanel.getActiveTab();
+        var formpanel = tabItem.down('form[xtype='+ win.formPanel+']');
+        var bf = formpanel.getForm();
+        var formDormId = bf.findField("dormId").getValue();
+        var formRoomId = bf.findField("roomId").getValue();
+
+        var store = IsSelectStore.getStore();
+
+        for (var i = 0; i < store.getCount(); i++) {
+            var record = store.getAt(i); 
+            var userNumb = record.get("userNumb");
+            if(!userNumb){
+                self.Warning("不允许给工号为空的教师设置宿舍！");
+                return false;
+            }
+        }
+        
+           
+        
+        var date = self.ajax({
+            url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getTeaDormXmb",
+            params: {
+                roomId:formRoomId
+            },
+        });
+
+        var xmb = '';
+        var dormType='';
+        if(date!=null){
+            dormType = date.dormType;
+            if(dormType=="1" || dormType=="2"){
+                if (dormType=='1'){
+                    xmb = '男';
+                }else if(dormType=='2'){
+                   xmb = '女';
+                }
+                var isStoreXmb=new Array();
+                for (var i = 0; i < store.getCount(); i++) {
+                    var record = store.getAt(i);        
+                    var xbm = record.get("xbm");                
+                    isStoreXmb.push(xbm);
+                }
+            
+                for(var j=0; j<isStoreXmb.length; j++){
+                    if(isStoreXmb[j]!=dormType){
+                        self.Warning("该教师宿舍为"+ xmb+ "宿舍,请均选择"+ xmb+ "教师。");
+                        return false;
+                    }
+
+                }
+            }
+            
+        }
+
+         
+
+        var basePanel = win.down("basepanel[xtype=pubselect.selectuserlayout]");
+        var baseGrid = basePanel.down("panel[xtype=pubselect.isselectusergrid]");
+        var records = baseGrid.getStore().data.items;
+        var valueArray = new Array();
+        var arkNumArr=new Array();
+        self.asyncAjax({
+            url: comm.get('baseUrl') + "/BaseTeacherDrom" + "/getMax",
+            params: {
+                dormId:formDormId
+            },
+             //回调代码必须写在里面
+            success: function (response) {
+                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                    Ext.each(records, function(r,index) {
+                        valueArray.push(data.bedNum+index+1);
+                        arkNumArr.push(data.arkNum+index+1);
+                    });
+                    var bff = bf.findField("bedCount").setValue(valueArray.join(","));
+                    bff = bf.findField("arkCount").setValue(arkNumArr.join(","));
+
+            },
+            failure: function(response) {                   
+                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+            }
+        });
+
+        return true;
+    }
 
 });

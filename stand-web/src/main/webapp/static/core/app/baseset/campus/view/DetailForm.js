@@ -68,7 +68,7 @@ Ext.define("core.baseset.campus.view.DetailForm", {
         ref:"schoolContainer",
         hideen:true,
         items: [{
-            columnWidth:0.6,
+            columnWidth:0.5,
             xtype: "numberfield",
             fieldLabel: "排序字段",
             name: "orderIndex",
@@ -76,10 +76,10 @@ Ext.define("core.baseset.campus.view.DetailForm", {
             allowBlank: false,
             blankText: "排序字段不能为空",
         },{
-            columnWidth: 0.4,
+            columnWidth: 0.5,
             xtype: "label",
             margin:'5 0 0 5 ',
-            html: "  (<font color=red,size=12>显示顺序,不能重复)</font>",
+            html: "<font color=red,size=12>（显示顺序,不能重复）</font>",
         }]
     }, {
         xtype: "container",

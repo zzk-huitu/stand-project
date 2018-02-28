@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 
 	@Resource
 	private SysOrgService orgService;
-
+	
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
+	
 	@Override
 	public BaseCampus doAdd(BaseCampus entity, SysUser currentUser)
 			throws IllegalAccessException, InvocationTargetException {
@@ -92,7 +96,10 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		
 		orgSave.BuildNode(parEntity);
 		orgService.merge(orgSave);
-
+		
+		//删除所有redis部门缓存数据，以免产生误会
+		this.delDeptTreeAll();
+		
 		return entity;
 	}
 
@@ -140,8 +147,9 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 				
 			}				
 		}
-		
-		
+			
+		//删除所有redis部门缓存数据，以免产生误会
+		this.delDeptTreeAll();
 		
 		// TODO Auto-generated method stub
 		return entity;
@@ -201,12 +209,27 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 					
 			String s3 = StringUtils.trimLast(canSb.toString());
 			rs = this.doLogicDelOrRestore(s3, StatuVeriable.ISDELETE, currentUser.getXm());
+			
+			//删除所有redis部门缓存数据，以免产生误会
+			this.delDeptTreeAll();
+			
 		} else {
 			rs = false;
 		}
 		hashMap.put("notSb", notSb);
 		// TODO Auto-generated method stub
 		return rs;
+	}
+	
+	
+	/**
+	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
+	 * 
+	 */
+	public void delDeptTreeAll() {
+		// TODO Auto-generated method stub
+		redisTemplate.delete("userRightDeptTree");
+		redisTemplate.delete("userRightDeptClassTree");	
 	}
 
 }

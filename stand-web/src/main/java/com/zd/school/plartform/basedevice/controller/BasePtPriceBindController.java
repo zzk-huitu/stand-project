@@ -53,10 +53,15 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	}
 
 	/**
-	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param ContPerimisson
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
+	 * 给设备绑定具体的费率
+	 * @param termId
+	 * @param termSn
+	 * @param meterId
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("BASERATE_add")
 	@RequestMapping("/doAdd")

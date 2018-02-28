@@ -200,8 +200,11 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		return lists;
 	}
 
+	/**
+	 * 一键分配整个年级的班级宿舍
+	 */
 	@Override
-	public Boolean oneKeyAllotDorm(String gradId, String boyId, String girlId, SysUser currentUser) {
+	public Boolean doOneKeyAllotDorm(String gradId, String boyId, String girlId, SysUser currentUser) {
 		Boolean flag = false;
 		String boyDormId[] = null;
 		String girDormId[] = null;
@@ -223,7 +226,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		// 将某年级下的所有男生、女生分出来
 		boyList = classStuList.stream().filter((e) -> e.getXbm().equals("1")).collect(Collectors.toList());
 		girlList = classStuList.stream().filter((e) -> e.getXbm().equals("2")).collect(Collectors.toList());
-		;
+	
 
 		if (boyId != null) {
 			boyDormId = boyId.split(","); // 选中的所有供男生分配的男宿舍的ID
@@ -237,6 +240,9 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 				dormGirlList.add(girDormId[i]);
 			}
 		}
+		
+		//onKeyAllot：一键分配宿舍实现方法（优先分满班级的宿舍，剩余的再放入混合宿舍）
+		//onKeyAllot2：一键分配宿舍实现方法（按宿舍的先后顺序进行直接分配）
 		// 分配男
 		this.onKeyAllot2(gradeClassList, boyList, dormBoyList, currentUser.getUuid());
 		// 分配女
@@ -244,9 +250,12 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		flag = true;
 		return flag;
 	}
-
+	
+	/**
+	 * 手动分配宿舍
+	 */
 	@Override
-	public Boolean dormHandAllot(DormStudentDorm entity, Map hashMap, SysUser currentUser)
+	public Boolean doDormHandAllot(DormStudentDorm entity, Map hashMap, SysUser currentUser)
 			throws IllegalAccessException, InvocationTargetException {
 		Boolean flag = false;
 		BuildDormDefine buildDormDefine = null;// 宿舍信息
@@ -377,7 +386,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	}
 
 	@Override
-	public Boolean pushMessage(String classId) {
+	public Boolean doPushMessage(String classId) {
 		Boolean flag = false;
 		List<DormStudentDorm> claStudentList = null;
 		PushInfo pushInfo = null;
@@ -422,9 +431,12 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		return flag;
 
 	}
-
+	
+	/**
+	 * 自动分配宿舍
+	 */
 	@Override
-	public Boolean dormAutoAllot(String classId, SysUser currentUser) {
+	public Boolean doDormAutoAllot(String classId, SysUser currentUser) {
 		Boolean flag = false;
 		List<JwClassDormAllot> classDormList = null;// 获取该班级下所有有效宿舍
 		List<JwClassDormAllot> boydormList = new ArrayList<>(); // 男宿舍

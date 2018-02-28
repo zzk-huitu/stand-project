@@ -32,13 +32,9 @@ import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 
- * ClassName: BaseCampusController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 校区信息实体Controller. date: 2016-08-13
+ * 校区信息
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseCampus")
@@ -51,9 +47,11 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
     private BaseRoomareaService areaService;
 
     /**
-     * list查询 @Title: list @Description: TODO @param @param entity
-     * 实体类 @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 校区列表
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -68,10 +66,13 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
     }
 
     /**
-     * 
-     * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseCampus
-     *         实体类 @param @param request @param @param response @param @throws
-     *         IOException 设定参数 @return void 返回类型 @throws
+     * 添加校区
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("BASECAMPUS_add")
     @RequestMapping("/doAdd")
@@ -102,6 +103,7 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
             }
         }
 		// 获取同一级别的顺序号
+        /*
 		String hql1 = " from BaseCampus where orderIndex = (select max(o.orderIndex) from BaseCampus o where  o.isDelete='0' and o.schoolId='"
 				+ schoolId + "' )";
 		List list = thisService.queryByHql(hql1);
@@ -109,6 +111,15 @@ public class BaseCampusController extends FrameWorkController<BaseCampus> implem
 			defaultOrderIndex = (Integer) EntityUtil.getPropertyValue(list.get(0), "orderIndex") + 1;
 		} else
 			defaultOrderIndex = 0;
+		*/
+        String hql1 = "select max(o.orderIndex) from BaseCampus o where  o.isDelete='0' and o.schoolId='"
+				+ schoolId + "'";
+        defaultOrderIndex = thisService.getEntityByHql(hql1);
+        if(defaultOrderIndex!=null)
+        	defaultOrderIndex++;
+        else
+        	defaultOrderIndex=1;
+        
 		entity.setOrderIndex(defaultOrderIndex);
         SysUser currentUser = getCurrentSysUser();
         //持久化到数据库

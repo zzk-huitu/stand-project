@@ -14,33 +14,10 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
         this.control({
             "basepanel basegrid[xtype=baseset.teacherdorm.maingrid]": {
                   afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="BASETEACHERDORM";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridOut")==-1){
-                            var btnOut = grid.down("button[ref=gridOut]");
-                            btnOut.setHidden(true);
-                            
-                         }
-                     }
+                    this.hideFuncBtn(grid);
                  },
                  beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var funCode = basePanel.funCode;
-                    var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
-                    var records = baseGrid.getSelectionModel().getSelection();
-                    var btnOut = baseGrid.down("button[ref=gridOut]");
-                    var btnDelete = baseGrid.down("button[ref=gridDelete]");
-                    if (records.length == 0) {
-                        btnOut.setDisabled(true);
-                        btnDelete.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnOut.setDisabled(false);
-                        btnDelete.setDisabled(false);
-                    } else {
-                        btnOut.setDisabled(false);
-                        btnDelete.setDisabled(false);
-                    }
+                    this.disabledFuncBtn(grid);
                     return false;
                 }
             },
@@ -63,37 +40,7 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                     4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
                 */
                 itemclick: function(tree, record, item, index, e, eOpts) {
-                    var self = this;
-                    var mainLayout = tree.up("panel[xtype=baseset.teacherdorm.mainlayout]");
-
-                    Ext.apply(mainLayout.funData, {
-                        dormId: record.get("id"),
-                        //roomId: record.get("iconCls"),
-                        roomId: record.get("id"),
-                        roomName:record.get("text"),
-                        leaf: record.get("leaf"),
-                    });
-              
-
-                    var storeGrid = mainLayout.down("panel[xtype=baseset.teacherdorm.maingrid]");
-                    var store = storeGrid.getStore();
-                    var proxy = store.getProxy();
-    
-
-                    //获取点击树节点的参数            
-                    var roomId= record.get("id");
-                    var roomLeaf=record.get("leaf");
-                    if(roomLeaf==true)
-                        roomLeaf="1";
-                    else
-                        roomLeaf="0";
-
-                    //附带参赛
-                    proxy.extraParams={
-                        roomId:roomId,
-                        roomLeaf:roomLeaf
-                    }
-                    store.loadPage(1); 
+                    this.loadMainGridStore(tree,record);
                     return false;
                }
             },
@@ -122,22 +69,23 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
             },
 
             
-             /**
-             * 操作列的操作事件
-             */
-             "basegrid[xtype=baseset.teacherdorm.maingrid] actioncolumn": {
+            /**
+            * 操作列的操作事件
+            */
+            "basegrid[xtype=baseset.teacherdorm.maingrid] actioncolumn": {
 
                 //弹出tab页的方式
-             outClick: function(data) {
+                outClick: function(data) {
                     self.doGridOut(null,data.view,data.record);  
                     return false;      
                 },
-            },
+                
 
-             deleteClick: function(data) {
+                deleteClick: function(data) {
                     self.doDeleteRecords(null,data.view,data.record);
-                     return false;
+                    return false;
                 },
+            },
                 
         })
     },
@@ -252,7 +200,7 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
                 names.push(name);
             });
 
-            Ext.Msg.confirm('提示', '是否要将'+names.join(",")+'退住?', function (btn, text) {
+            Ext.Msg.confirm('提示', '是否要将【'+names.join("，")+'】退住?', function (btn, text) {
                 if (btn == 'yes') {
                     
                     var loading = new Ext.LoadMask(baseGrid, {
@@ -290,79 +238,144 @@ Ext.define("core.baseset.teacherdorm.controller.MainController", {
         }
     },
    
-       doDeleteRecords:function(btn,grid,record){
-            var self=this;
-            var records;
-            var baseGrid = grid;
-            if(!baseGrid){
-                baseGrid=btn.up("basegrid");
-                records = baseGrid.getSelectionModel().getSelection();
-            }else{
-                records=new Array();
-                records.push(record);
-            }
-            funCode = baseGrid.funCode;
-            var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-            //得到配置信息
-            var funData = basePanel.funData;
-            var ids = '';
-            var roomIds ='';
-            if (records.length <= 0) {
-                self.msgbox('请选择一条数据');
-                return;
-            }
-            //var roomId = records[0].get('roomId');
-            for (var i = 0; i < records.length; i++) {
-                ids += records[i].get('uuid') + ',';
-                roomIds += records[i].get('roomId')+ ',';
-            };
-            if (records.length > 0) {
-                //封装ids数组
-                Ext.Msg.confirm('提示',"是否删除", function (btn, text) {
-                    if (btn == 'yes') {
-                        
-                        var loading = new Ext.LoadMask(baseGrid, {
-                            msg: '正在提交，请稍等...',
-                            removeMask: true// 完成后移除
-                        });
-                        loading.show();
+    doDeleteRecords:function(btn,grid,record){
+        var self=this;
+        var records;
+        var baseGrid = grid;
+        if(!baseGrid){
+            baseGrid=btn.up("basegrid");
+            records = baseGrid.getSelectionModel().getSelection();
+        }else{
+            records=new Array();
+            records.push(record);
+        }
+        funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var ids = '';
+        var roomIds ='';
+        if (records.length <= 0) {
+            self.msgbox('请选择一条数据');
+            return;
+        }
+        //var roomId = records[0].get('roomId');
+        for (var i = 0; i < records.length; i++) {
+            ids += records[i].get('uuid') + ',';
+            roomIds += records[i].get('roomId')+ ',';
+        };
+        if (records.length > 0) {
+            //封装ids数组
+            Ext.Msg.confirm('提示',"是否删除", function (btn, text) {
+                if (btn == 'yes') {
+                    
+                    var loading = new Ext.LoadMask(baseGrid, {
+                        msg: '正在提交，请稍等...',
+                        removeMask: true// 完成后移除
+                    });
+                    loading.show();
 
-                        self.asyncAjax({
-                            url: funData.action + "/doDelete",
-                            params: {
-                                 ids: ids,
-                              //   roomId: roomId,
-                            },                    
-                            success: function(response) {
-                                var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                    self.asyncAjax({
+                        url: funData.action + "/doDelete",
+                        params: {
+                             ids: ids,
+                             roomIds: roomIds,
+                        },                    
+                        success: function(response) {
+                            var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
 
-                                if(data.success){
-                                     baseGrid.getStore().load(); //不刷新的方式
-                                     setTimeout(function(){
+                            if(data.success){
+                                 baseGrid.getStore().load(); //不刷新的方式
+                                 /*setTimeout(function(){
                                       self.ajax({
-                                          url: funData.action + "/doSetOff",
+                                          url: funData.action + "/doSetOff",    //这个方法直接放在delete方法中一并执行了，防止事务问题
                                           params: {
                                             roomIds: roomIds,
                                         },
                                     })
 
-                                  },30);
-                                    
-                                    self.msgbox(data.obj);                               
-                                }else {
-                                    self.Error(data.obj);
-                                }           
-                                loading.hide();
-                            },
-                            failure: function(response) {                   
-                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                                loading.hide();
-                            }
-                        });     
-                    }
-                });
-            } else {
-                self.msgbox("请选择数据");
-            }
-        },
+                                  },30);*/
+                                
+                                self.msgbox(data.obj);                               
+                            }else {
+                                self.Error(data.obj);
+                            }           
+                            loading.hide();
+                        },
+                        failure: function(response) {                   
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            loading.hide();
+                        }
+                    });     
+                }
+            });
+        } else {
+            self.msgbox("请选择数据");
+        }
+    },
+
+    hideFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="BASETEACHERDORM";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridOut")==-1){
+                var btnOut = grid.down("button[ref=gridOut]");
+                btnOut.setHidden(true);
+                
+             }
+         }
+    },
+
+    disabledFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var funCode = basePanel.funCode;
+        var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+        var records = baseGrid.getSelectionModel().getSelection();
+        var btnOut = baseGrid.down("button[ref=gridOut]");
+        var btnDelete = baseGrid.down("button[ref=gridDelete]");
+        if (records.length == 0) {
+            btnOut.setDisabled(true);
+            btnDelete.setDisabled(true);
+        } else if (records.length == 1) {
+            btnOut.setDisabled(false);
+            btnDelete.setDisabled(false);
+        } else {
+            btnOut.setDisabled(false);
+            btnDelete.setDisabled(false);
+        }
+    },
+
+    loadMainGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=baseset.teacherdorm.mainlayout]");
+
+        Ext.apply(mainLayout.funData, {
+            dormId: record.get("id"),
+            //roomId: record.get("iconCls"),
+            roomId: record.get("id"),
+            roomName:record.get("text"),
+            leaf: record.get("leaf"),
+        });
+  
+
+        var storeGrid = mainLayout.down("panel[xtype=baseset.teacherdorm.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+
+        //获取点击树节点的参数            
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf
+        }
+        store.loadPage(1); 
+    }
 });

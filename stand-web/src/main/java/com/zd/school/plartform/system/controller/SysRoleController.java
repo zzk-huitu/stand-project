@@ -36,13 +36,9 @@ import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 
 /**
- * 
- * ClassName: BaseTRoleController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 角色管理实体Controller. date: 2016-07-17
+ * 系统角色管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysRole")
@@ -61,11 +57,12 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     private SysRoleMenuPermissionService roleMenuPermissionService;
     	
     /**
-     * list查询 @Title: list @Description: TODO @param @param entity
-     * 实体类 @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 获取角色列表（非管理员只能看到非隐藏的角色）
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
     public void list(@ModelAttribute SysRole entity, HttpServletRequest request, HttpServletResponse response)
@@ -95,12 +92,13 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     }
 
     /**
-     * 
-     * @throws InvocationTargetException
+     * 添加角色（手动新添加的角色是非隐藏、非系统内置的）
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      * @throws IllegalAccessException
-     * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseTRole
-     *         实体类 @param @param request @param @param response @param @throws
-     *         IOException 设定参数 @return void 返回类型 @throws
+     * @throws InvocationTargetException
      */
     @Auth("SYSROLE_add")
     @RequestMapping("/doAdd")
@@ -136,9 +134,10 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     }
 
     /**
-     * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-     * request @param @param response @param @throws IOException 设定参数 @return
-     * void 返回类型 @throws
+     * 删除角色（只能删除未分配给用户的角色）
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @Auth("SYSROLE_delete")
     @RequestMapping("/doDelete")
@@ -159,29 +158,13 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
 				String sign = (String) hashMap.get("sign")== null ?"0":(String) hashMap.get("sign");
 				if (!sign.equals("1")) {
 					StringBuffer roleName = (StringBuffer) hashMap.get("roleName");
-					writeJSON(response, jsonBuilder.returnFailureJson(" '角色" + roleName + "正在被其他用户使用，不允许删除！'"));
+					writeJSON(response, jsonBuilder.returnFailureJson("\"角色" + roleName + "正在被其他用户使用，不允许删除！\""));
 				} else {
 					writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
 				}
 
 				
 			}
-        /*	//判断这些角色是否正在被其他用户使用
-        	String hql = "select u from SysUser as u inner join fetch u.sysRoles as r where r.uuid='" + delIds
-    				+ "' and r.isDelete=0 and u.isDelete=0 ";
-    		int count = userSerive.queryByHql(hql).size();
-    		if(count>0){
-    			writeJSON(response, jsonBuilder.returnFailureJson("\"此角色正在被其他用户使用，不允许删除！\""));
-    			return;
-    		}
-        	
-            SysUser currentUser = getCurrentSysUser();
-        	boolean flag = thisService.doDelete(delIds, StatuVeriable.ISDELETE, currentUser.getXm());         
-            if (flag) {            
-                writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
-            } else {
-                writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
-            }*/
         }
     }
 
@@ -208,9 +191,13 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     }
 
     /**
-     * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-     * BaseTRole @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 编辑角色
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("SYSROLE_update")
     @RequestMapping("/doUpdate")
@@ -242,17 +229,11 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     }
 
     /**
-     * 
-     * selectList:用户所属角色选择时的可选择角色.
-     *
-     * @author luoyibo
+     * 获取用户未分配的角色列表
      * @param entity
      * @param request
      * @param response
      * @throws IOException
-     *             void
-     * @throws @since
-     *             JDK 1.8
      */
     @RequestMapping(value = { "/selectList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -295,16 +276,10 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
     }
 
     /**
-     * 
-     * cancelRoleRightMenu:取消指定用户的授权菜单.
-     *
-     * @author luoyibo
+     * 取消某角色的菜单权限
      * @param request
      * @param response
      * @throws IOException
-     *             void
-     * @throws @since
-     *             JDK 1.8
      */
     @Auth("ROLERIGHT_update")
     @RequestMapping("/doDeleteRight")
@@ -325,18 +300,12 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         }
     }
 
-    /**
-     * 
-     * addRoleRightMenu:增加指定角色的授权菜单.
-     *
-     * @author luoyibo
-     * @param request
-     * @param response
-     * @throws IOException
-     *             void
-     * @throws @since
-     *             JDK 1.8
-     */
+	/**
+	 * 增加指定角色的授权菜单.
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
     @Auth("ROLERIGHT_add")
     @RequestMapping("/doAddRight")
     public void addRoleRightMenu(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -380,7 +349,12 @@ public class SysRoleController extends FrameWorkController<SysRole> implements C
         }
     }
     
-    //获取此角色的用户列表
+    /**
+     * 获取此角色的用户列表
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping(value = { "/roleUserList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
     public void roleUserList(HttpServletRequest request, HttpServletResponse response)

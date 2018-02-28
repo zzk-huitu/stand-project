@@ -136,7 +136,8 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			return false;
 		}
 	}
-
+	
+	
 	@Override
 	public Boolean doAddRoom(JwOfficeAllot entity, Map hashMap, SysUser currentUser)
 			throws IllegalAccessException, InvocationTargetException {
@@ -191,7 +192,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	}
 
 	@Override
-	public Boolean pushMessage(String roomId) {
+	public Boolean doPushMessage(String roomId) {
 		Boolean flag=false;
 		List<JwOfficeAllot> offTeas = null;
 		PushInfo pushInfo = null;
@@ -226,26 +227,8 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			offAllot = this.get(id);
 			offRoomId += offAllot.getRoomId()+',';
 			this.mjUserRight(null, offAllot.getRoomId(), offAllot.getTteacId(), null, null);
-			flag = this.deleteByPK(id);
-		
-	  }
-/*		String[] roomIds = offRoomId.split(",");
-		List list =new ArrayList<>();
-	    for (String officeRoomId : roomIds) {
-			sql="select a.ROOM_ID ,b.OFFICE_ID from JW_T_OFFICEALLOT a right join BUILD_T_OFFICEDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+officeRoomId+"'";
-			list = this.querySql(sql);
-			for(int j=0; j<list.size();j++){
-				Object[] object= (Object[]) list.get(j);
-				if(object[0]==null){
-					String dormId= (String) object[1];
-					office = offRoomService.get(dormId);
-					office.setRoomStatus("0");
-					office.setUpdateTime(new Date());
-					offRoomService.merge(office);
-				}
-			}
-			
-		}*/
+			flag = this.deleteByPK(id);	
+	    }
 		return flag;
   }
 	@Override
@@ -253,8 +236,23 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 		String[] roomId = roomIds.split(",");
 		BuildOfficeDefine office =null;
 		String sql="";
-		List list =new ArrayList<>();
+		//List list =new ArrayList<>();
 	    for (String officeRoomId : roomId) {
+	    	sql = "select count(*) from JW_T_OFFICEALLOT a join BUILD_T_OFFICEDEFINE b  "
+					+ " on  a.ROOM_ID = b.ROOM_ID "
+					+ " where a.ISDELETE=0 and b.ISDELETE=0 and b.ROOM_ID='"
+					+ officeRoomId + "'";
+			
+			Integer count = this.getQueryCountBySql(sql);
+			if(count==0){	
+				office = offRoomService.get(officeRoomId);
+				if (office.getRoomStatus().equals("1")) {
+					office.setRoomStatus("0");
+					office.setUpdateTime(new Date());
+					offRoomService.merge(office);			
+				}
+			}
+			/*
 			sql="select a.ROOM_ID ,b.OFFICE_ID from JW_T_OFFICEALLOT a right join BUILD_T_OFFICEDEFINE b  on  a.ROOM_ID = b.ROOM_ID where b.ROOM_ID='"+officeRoomId+"'";
 			list = this.querySql(sql);
 			for(int j=0; j<list.size();j++){
@@ -270,6 +268,7 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 					
 				}
 			}
+			*/
 	    }
 	}
 }

@@ -34,7 +34,7 @@ Ext.define("core.system.jobinfo.view.DetailHtml", {
             '<span style="width:20%" data-align="center">部门岗位名称</span><span style="width:20%" data-align="center">部门岗位全称</span>' ,
             '<span style="width:10%" data-align="center">岗位类型</span><span style="width:10%" data-align="center">岗位级别</span>' ,
             '{% if (values.rows.length == 0) %}',
-            '<li style="width:100%;font-size: 14px;font-weight: 400;text-align: center;line-height: 100px;">此用户暂无角色...</li>',
+            '<li style="width:100%;font-size: 14px;font-weight: 400;text-align: center;line-height: 100px;">此岗位暂无部门岗位信息...</li>',
             '{% if (values.rows.length == 0 ) return  %}',   //reutrun 表示不执行下面的了，在for里面可以使用break、continue
             '<tpl for="rows">',
             '<li>' ,

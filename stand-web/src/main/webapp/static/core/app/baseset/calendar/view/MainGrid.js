@@ -48,14 +48,14 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
     panelButtomBar:{},
    //排序字段及模式定义
     defSort: [{
-        property: 'updateTime',
-        direction: 'DESC'
+        property: 'beginTime',
+        direction: 'ASC'
     },{
         property: 'isafgernoon',
         direction: 'ASC'
     },{
-        property: 'beginTime',
-        direction: 'ASC'
+        property: 'updateTime',
+        direction: 'DESC'
     }],
     extParams: {},
     columns:  {        

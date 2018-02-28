@@ -49,15 +49,15 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
     panelButtomBar:{},
   //排序字段及模式定义
     defSort: [{
-        property: 'updateTime',
-        direction: 'DESC'
-    },{
         property: 'activityState',
         direction: 'DESC'
     },{
         property: 'activityTime',
         direction: 'DESC'
-   }],
+    },{
+        property: 'updateTime',
+        direction: 'DESC'
+    },],
    
     multiSelect: false,
    // sortableColumns: false,

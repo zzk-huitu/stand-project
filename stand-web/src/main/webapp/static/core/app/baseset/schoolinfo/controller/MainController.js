@@ -20,15 +20,15 @@ Ext.define("core.baseset.schoolinfo.controller.MainController", {
                     return false;
                 }
             },*/
-             "basegrid[xtype=baseset.schoolinfo.maingrid] actioncolumn": {
-                detailClick_Tab: function (data) {
-                    this.doDetail_Tab(null,data.view,data.record);
-                    return false;
-                }
-            },
+        "basegrid[xtype=baseset.schoolinfo.maingrid] actioncolumn": {
+            detailClick_Tab: function (data) {
+                this.doDetail_Tab(null,data.view,data.record);
+                return false;
+            }
+        },
 
     },
-     doDetail_Tab:function(btn,grid,record) {
+    doDetail_Tab:function(btn,grid,record) {
         var self = this;
         var recordData="";
         var baseGrid=grid;

@@ -49,25 +49,4 @@ Ext.define("core.baseset.roomallot.view.RoomAllotTree", {
             hidden:true
         }]
     },
-
-    listeners: {
-        itemclick: function(view, record, item, index, e) {
-            var mainLayout = view.up("basepanel[xtype=baseset.roomallot.mainlayout]");
-            var basetreegrid = mainLayout.down("basetreegrid[xtype=baseset.roomallot.roomallottree]");
-            var funData = mainLayout.funData;
-            var roomId=record.get("id");
-            mainLayout.funData = Ext.apply(funData, {
-                roomId: roomId,
-                leaf : record.get("leaf"),//true: 房间 false:区域
-                arealevel: record.get("level"),
-            });
-            // 加载房间的人员信息
-            var mianGrid = mainLayout.down("panel[xtype=baseset.roomallot.maingrid]");
-            var store = mianGrid.getStore();
-            var proxy = store.getProxy();
-            proxy.extraParams.roomId=roomId;
-            store.loadPage(1); // 给form赋值
-            return false;
-        }
-    }
 })

@@ -15,70 +15,11 @@ Ext.define("core.system.user.controller.MainController", {
             //事件注册
         this.control({
             "basepanel basegrid[xtype=system.user.usergrid]": {
-                 afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="SYSUSER";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridLock")==-1){
-                            var btnlock = grid.down("button[ref=gridLock]");
-                             btnlock.setHidden(true);
-                             
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
-                            var btnUnlock = grid.down("button[ref=gridUnLock]");
-                             btnUnlock.setHidden(true);
-                          }
-                        if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
-                            var btnPwd = grid.down("button[ref=gridSetPwd]");
-                             btnPwd.setHidden(true);
-                          }
-                        if(userBtn.indexOf(menuCode+"_gridExport")==-1){
-                            var btnExport = grid.down("button[ref=gridExport]");
-                            btnExport.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
-                            var btnSync = grid.down("button[ref=syncToUP]");
-                            btnSync.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                            var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
-                            btnUpdate.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                            btnAdd.setHidden(true);                    
-                        }
-
-                    }
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);                
                 },
                 beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basegrid[xtype=system.user.usergrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnLock = basegrid.down("button[ref=gridLock]");
-                    var btnUnLock = basegrid.down("button[ref=gridUnLock]");
-                    var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
-                    var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
-                    if (records.length == 0) {
-                        btnLock.setDisabled(true);
-                        btnUnLock.setDisabled(true);
-                        btnSetPwd.setDisabled(true);
-                        btnEdit.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnLock.setDisabled(false);
-                        btnUnLock.setDisabled(false);
-                        btnSetPwd.setDisabled(false);
-                        if(records[0].getData().issystem==0){
-                        btnEdit.setDisabled(true);
-                        }else{
-                        btnEdit.setDisabled(false);     
-                        }
-                    } else {
-                        btnLock.setDisabled(false);
-                        btnUnLock.setDisabled(false);
-                        btnSetPwd.setDisabled(false);
-                        btnEdit.setDisabled(true);
-                    }
+                    this.disabledFuncBtn(grid);                
                     return false;
                 },            
             },
@@ -121,163 +62,23 @@ Ext.define("core.system.user.controller.MainController", {
                     return false;
                 },
 
-                /*暂不开放此功能*/
                 deleteClick:function(data){
-                    var userGrid = data.view;
-                    var mainLayout = userGrid.up("panel[xtype=system.user.mainlayout]");
-                    var funData = mainLayout.funData;
-                    var deptId = funData.deptId;
-                    //用户所属角色的grid
-                    var userRoleGrid = mainLayout.down("panel[xtype=system.user.userrolegrid]");
-                    //选择的用户
-                    var selectUser = data.record;
-
-                    //拼装所选择的用户
-                    var ids = new Array();
-                    Ext.each(selectUser, function(rec) {
-                        var pkValue = rec.get("uuid");
-                        ids.push(pkValue);
-                    });
-                    var title = "确定删除所选择的用户吗？";
-                    Ext.Msg.confirm('信息', title, function(btn, text) {
-                        if (btn == 'yes') {
-
-                            //显示loadMask
-                            var myMask = self.LoadMask(userGrid);
-                            //提交入库
-                            self.asyncAjax({
-                                url: funData.action + "/doDelete",
-                                params: {
-                                    ids: ids.join(","),
-                                    deptId:deptId
-                                },
-                                //回调代码必须写在里面
-                                success: function(response) {
-                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                                    if (data.success) {
-                                        //刷新用户列表
-                                        var userStore = userGrid.getStore();
-                                        userStore.load();
-
-                                        self.msgbox(data.obj);
-
-                                    }else{
-                                        self.Error(data.obj);   
-                                    }
-                                    myMask.hide();
-                                },
-                                failure: function(response) {           
-                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
-                                    myMask.hide();
-                                }
-                            });                            
-                        }
-                    });
+                    var baseGrid = data.view;
+                    var record = data.record;
+                    this.doDeleteUser(baseGrid,record);
                     return false;
                 }
             },
 
-            //点击用户事件响应,刷新用户所属的角色
-            "panel[xtype=system.user.usergrid]": {
-                beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                    /*
-                    var basePanel = grid.up("panel[xtype=user.mainlayout]");
-                    var records = grid.getSelectionModel().getSelection();
-                    var selUserId = records[0].get("uuid");
-                    var roleGrid = basePanel.down("panel[xtype=user.userrolegrid]");
-                    var roleStore = roleGrid.getStore();
-                    var roleProxy = roleStore.getProxy();
-                    roleProxy.extraParams = {
-                        userId: selUserId
-                    };
-                    roleStore.load();
-                    */
-                }
-            },
+          
             
             "basegrid[xtype=system.user.usergrid] button[ref=gridExport]": {
                 beforeclick: function(btn) {
                     this.doExport(btn);
                     return false;
                 }
-            },
-            //添加用户事件
-            // "panel[xtype=system.user.usergrid] button[ref=gridAdd_Tab]": {
-            //     beforeclick: function(btn) {
-            //         var self = this;
-            //         var baseGrid = btn.up("basegrid");
-            //         var funCode = baseGrid.funCode;
-            //         var basePanel = baseGrid.up("panel[xtype=system.user.mainlayout]");
-            //         var funData = basePanel.funData;
-            //         var detCode = "selectsysuser_main";
-            //         var detLayout = "selectsysuser.mainlayout";
-            //         var deptId = funData.deptId;
-            //         var isRight = funData.isRight;
-            //         var deptType = funData.deptType; 
-            //         if (!deptId){
-            //             self.msgbox("请选择一个部门");
-            //             return false;
-            //         }
-            //         if (isRight=="1"){
-            //             self.Warning("您无权限给此部门添加用户，请重新选择");
-            //             return false;                        
-            //         }
-            //         if (deptType=="04"||deptType=="05"||deptType=="06"){
-            //             self.Warning("年级、班级及学科的教师由其它模块维护");
-            //             return false;                         
-            //         }
-            //         // var filterArry = new Array();
-            //         // filterArry.push("{'type':'string','comparison':'=','value':'" + funData.deptId + "','field':'deptId'}");
-            //         // filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
-            //         var popFunData = Ext.apply(funData, {
-            //             grid: baseGrid
-            //             //filter: "[" + filterArry.join(",") + "]"
-            //         });
-            //         // //选择的部门信息
-            //         // var deptTree = baseGrid.up("panel[xtype=user.mainlayout]").down("panel[xtype=user.depttree]");
-            //         // var selectDept = deptTree.getSelectionModel().getSelection();
-            //         // if (selectDept.length != 1) {
-            //         //     self.msgbox("请选择部门!");
-            //         //     return false;
-            //         // }
-            //         // var deptObj = selectDept[0];
-            //         // var deptId = deptObj.get("id");
-            //         // var deptName = deptObj.get("text");
-            //         // var deptCode = deptObj.get("code");
-            //         // //处理特殊默认值
-            //         // var defaultObj = funData.defaultObj;
-            //         // var insertObj = self.getDefaultValue(defaultObj);
-            //         // //根据选择的记录与操作确定form初始化的数据
-            //         // insertObj = Ext.apply(insertObj, {
-            //         //     deptId: deptId,
-            //         //     deptName: deptName
-            //         // }); //
-            //         var iconCls = "table_add";
-            //         var title = "新增用户";
-            //         var winId = detCode + "_win";
-            //         var win = Ext.getCmp(winId);
-            //         if (!win) {
-            //             win = Ext.create('core.app.base.BaseFormWin', {
-            //                 id: winId,
-            //                 title: title,
-            //                 width: comm.get("clientWidth")*0.6,
-            //                 height: 768,
-            //                 resizable: false,
-            //                 iconCls: iconCls,
-            //                 operType: "addReturn",
-            //                 funData: popFunData,
-            //                 funCode: detCode,
-            //                 items: [{
-            //                     xtype: detLayout
-            //                 }]
-            //             });
-            //         }
-            //         win.show();
-            //         return false;
-            //     }
-            // },
-            
+            },            
+            /*
             "panel[xtype=system.user.usergrid] button[ref=sync]": {
                 beforeclick: function(btn) {
                     var baseGrid=btn.up("panel[xtype=system.user.usergrid]");
@@ -309,52 +110,14 @@ Ext.define("core.system.user.controller.MainController", {
                     return false;
                 }
             },
-
+            */
             "panel[xtype=system.user.usergrid] button[ref=syncToUP]": {
-                beforeclick: function(btn) {         
-                     //同步人员数据事件                        
-                    var baseGrid = btn.up("grid");
-                   
-                    Ext.MessageBox.confirm('同步人员数据到UP', '您确定要执行同步人员数据到UP操作吗？', function(btn, text) {                  
-                        if (btn == 'yes') {
-                            
-                            Ext.Msg.wait('正在同步人员数据，请等待...','提示');
-                            
-                            setTimeout(function(){
-
-                                //异步ajax加载
-                                Ext.Ajax.request({
-                                    url: comm.get('baseUrl') + "/SysUser/doSyncAllUserInfoToUp",
-                                    params: { },
-                                    timeout:1000*60*60*10,     //10个小时
-                                    success: function(response){
-                                        var result=JSON.parse(response.responseText);
-
-                                        if (result.success) {      
-                                            Ext.Msg.hide();               
-                                            self.msgbox(result.msg);
-                                            baseGrid.getStore().loadPage(1);                                                                    
-                                        } else {
-                                            Ext.Msg.hide(); 
-                                            self.Error(result.msg);
-                                          
-                                        }
-                                       
-                                       
-                                    },
-                                    failure: function(response, opts) {
-                                        Ext.Msg.hide(); 
-                                        self.Error("请求失败，请联系管理员！");                                  
-                                    }
-                                });                              
-                            },100);                           
-                        }
-                    });
-
+                beforeclick: function(btn) {   
+                    this.doSyncToUp(btn);      
                     return false;
                 }
             },
-            
+            /*
             "panel[xtype=system.user.usergrid] button[ref=syncCardInfoFromUP]": {
                 beforeclick: function(btn) {         
                      //同步人员数据事件                        
@@ -399,71 +162,13 @@ Ext.define("core.system.user.controller.MainController", {
                     return false;
                 }
             },
-            
+            */
 
 
             //添加用户选择后确定事件
             "baseformwin[funCode=selectsysuser_main] button[ref=formSave]": {
                 beforeclick: function(btn) {
-                    var win = btn.up('window');
-                    var funCode = win.funCode;
-                    var funData = win.funData;
-                    var deptId = funData.deptId;
-                    var basePanel = win.down("basepanel[funCode=" + funCode + "]");
-                    var isSelectGrid = basePanel.down("panel[xtype=system.user.isselectusergrid]");
-                    var isSelectStore = isSelectGrid.getStore();
-                    var iCount = isSelectStore.getCount(); //已选的角色个数
-                    //拼装所选择的角色
-                    var ids = new Array();
-                    for (var i = 0; i < iCount; i++) {
-                        var record = isSelectStore.getAt(i);
-                        var pkValue = record.get("uuid");
-                        ids.push(pkValue);
-                    }
-                    if (ids.length > 0) {
-                         //显示loadMask
-                        var myMask = self.LoadMask(win);
-                        //提交入库
-                        self.asyncAjax({
-                            url: funData.action + "/doBatchSetDept",
-                            params: {
-                                deptId: deptId,
-                                ids: ids.join(",")
-                            },
-                            //回调代码必须写在里面
-                            success: function(response) {
-                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                                myMask.hide();
-                                if (data.success) {                                 
-                                    self.msgbox("保存成功!");
-                                    var grid = win.funData.grid; //窗体是否有grid参数
-                                    if (!Ext.isEmpty(grid)) {
-                                        var store = grid.getStore();
-                                        var proxy = store.getProxy();
-                                        proxy.extraParams = {
-                                            whereSql: win.funData.whereSql,
-                                            orderSql: win.funData.orderSql,
-                                            deptId: deptId
-                                        };
-                                        store.load(); //刷新父窗体的grid
-                                        win.close();
-                                    }
-
-                                }else{
-                                   self.Error(data.obj);
-                                }
-                            },
-                            failure: function(response) {           
-                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
-                                myMask.hide();
-                            }
-                        }); 
-
-                    } else {
-                        self.msgbox("没有选择用户");
-                    }
-
+                    this.doSelectUserSetDept(btn);
                     return false;
                 }
             },
@@ -474,17 +179,12 @@ Ext.define("core.system.user.controller.MainController", {
                     self.doDetail(btn, "edit");
                     return false;
                 }
-            },
+            },           
 
             //删除用户事件
             "panel[xtype=system.user.usergrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
-                    var userGrid = btn.up("basegrid");
-                    var mainLayout = userGrid.up("panel[xtype=system.user.mainlayout]");
-                    var funData = mainLayout.funData;
-                    var deptId = funData.deptId;
-                    //用户所属角色的grid
-                    var userRoleGrid = mainLayout.down("panel[xtype=system.user.userrolegrid]");
+                    var userGrid = btn.up("basegrid");                   
                     //选择的用户
                     var selectUser = userGrid.getSelectionModel().getSelection();
                     if (selectUser.length == 0) {
@@ -492,63 +192,7 @@ Ext.define("core.system.user.controller.MainController", {
                         return false;
                     }
 
-                    //拼装所选择的用户
-                    var ids = new Array();
-                    Ext.each(selectUser, function(rec) {
-                        var pkValue = rec.get("uuid");
-                        ids.push(pkValue);
-                    });
-                    var title = "确定删除所选择的用户吗？";
-                    Ext.Msg.confirm('信息', title, function(btn, text) {
-                        if (btn == 'yes') {
-
-                            //显示loadMask
-                            var myMask = self.LoadMask(userGrid);
-                            //提交入库
-                            self.asyncAjax({
-                                url: funData.action + "/doDelete",
-                                params: {
-                                    ids: ids.join(","),
-                                    deptId:deptId
-                                },
-                                //回调代码必须写在里面
-                                success: function(response) {
-                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                                    if (data.success) { 
-                                        var store = userRoleGrid.getStore();
-                                        var proxy = store.getProxy();
-                                        proxy.extraParams = {
-                                            userId: "0"
-                                        };
-                                        store.load();
-
-                                        //刷新用户列表
-                                        var userStore = userGrid.getStore();
-                                        var userPoxy = userStore.getProxy();
-                                        var filterArry = new Array();
-                                        filterArry.push("{'type':'string','comparison':'=','value':'" + deptId + "','field':'deptId'}");
-                                        filterArry.push("{'type':'numeric','comparison':'=','value':0,'field':'isDelete'}");
-                                        userPoxy.extraParams = {
-                                            filter: "[" + filterArry.join(",") + "]",
-                                            deptId:deptId
-                                        };
-                                        userStore.load();
-
-                                        self.msgbox(data.obj);
-
-                                    }else{
-                                        self.Error(data.obj);   
-                                    }
-                                    myMask.hide();
-                                },
-                                failure: function(response) {           
-                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
-                                    myMask.hide();
-                                }
-                            });                            
-                        }
-                    });
+                    this.doDeleteUser(userGrid,selectUser);
                     
                     return false;
                 }
@@ -1106,6 +750,234 @@ Ext.define("core.system.user.controller.MainController", {
         });
         win.show();
 
+    },
+
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="SYSUSER";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                var btnlock = grid.down("button[ref=gridLock]");
+                 btnlock.setHidden(true);
+                 
+            }
+            if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                var btnUnlock = grid.down("button[ref=gridUnLock]");
+                 btnUnlock.setHidden(true);
+              }
+            if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
+                var btnPwd = grid.down("button[ref=gridSetPwd]");
+                 btnPwd.setHidden(true);
+              }
+            if(userBtn.indexOf(menuCode+"_gridExport")==-1){
+                var btnExport = grid.down("button[ref=gridExport]");
+                btnExport.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
+                var btnSync = grid.down("button[ref=syncToUP]");
+                btnSync.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
+                btnUpdate.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                btnAdd.setHidden(true);                    
+            }
+
+        }
+    },
+
+    disabledFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=system.user.usergrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnLock = basegrid.down("button[ref=gridLock]");
+        var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+        var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
+        var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+        if (records.length == 0) {
+            btnLock.setDisabled(true);
+            btnUnLock.setDisabled(true);
+            btnSetPwd.setDisabled(true);
+            btnEdit.setDisabled(true);
+        } else if (records.length == 1) {
+            btnLock.setDisabled(false);
+            btnUnLock.setDisabled(false);
+            btnSetPwd.setDisabled(false);
+            if(records[0].getData().issystem==0){
+            btnEdit.setDisabled(true);
+            }else{
+            btnEdit.setDisabled(false);     
+            }
+        } else {
+            btnLock.setDisabled(false);
+            btnUnLock.setDisabled(false);
+            btnSetPwd.setDisabled(false);
+            btnEdit.setDisabled(true);
+        }
+    },
+
+    doDeleteUser:function(grid,records){
+        var self=this;
+        var userGrid = grid;
+        var selectUser = records;
+
+        var mainLayout = userGrid.up("panel[xtype=system.user.mainlayout]");
+        var funData = mainLayout.funData;
+
+        //拼装所选择的用户
+        var ids = new Array();
+        Ext.each(selectUser, function(rec) {
+            var pkValue = rec.get("uuid");
+            ids.push(pkValue);
+        });
+        var title = "确定删除所选择的用户吗？";
+        Ext.Msg.confirm('信息', title, function(btn, text) {
+            if (btn == 'yes') {
+
+                //显示loadMask
+                var myMask = self.LoadMask(userGrid);
+                //提交入库
+                self.asyncAjax({
+                    url: funData.action + "/doDelete",
+                    params: {
+                        ids: ids.join(","),                        
+                    },
+                    //回调代码必须写在里面
+                    success: function(response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        if (data.success) {
+                            //刷新用户列表
+                            var userStore=userGrid.getStore();
+                            //如果当前页的数据量和删除的数据量一致，则翻到上一页
+                            if(userStore.getData().length==records.length&&userStore.currentPage>1){    
+                                userStore.loadPage(userStore.currentPage-1);
+                            }else{
+                                //store.load();
+                                userStore.remove(records); //不刷新的方式
+                            }
+
+                            self.msgbox(data.obj);
+
+                        }else{
+                            self.Error(data.obj);   
+                        }
+                        myMask.hide();
+                    },
+                    failure: function(response) {           
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                        myMask.hide();
+                    }
+                });                            
+            }
+        });
+    },
+
+    doSyncToUp:function(btn){
+        var self=this;
+        //同步人员数据事件                        
+        var baseGrid = btn.up("grid");
+       
+        Ext.MessageBox.confirm('同步人员数据到UP', '您确定要执行同步人员数据到UP操作吗？', function(btn, text) {                  
+            if (btn == 'yes') {
+                
+                Ext.Msg.wait('正在同步人员数据，请等待...','提示');
+                
+                setTimeout(function(){
+
+                    //异步ajax加载
+                    Ext.Ajax.request({
+                        url: comm.get('baseUrl') + "/SysUser/doSyncAllUserInfoToUp",
+                        params: { },
+                        timeout:1000*60*60*10,     //10个小时
+                        success: function(response){
+                            var result=JSON.parse(response.responseText);
+
+                            if (result.success) {      
+                                Ext.Msg.hide();               
+                                self.msgbox(result.msg);
+                                baseGrid.getStore().loadPage(1);                                                                    
+                            } else {
+                                Ext.Msg.hide(); 
+                                self.Error(result.msg);
+                              
+                            }
+                           
+                           
+                        },
+                        failure: function(response, opts) {
+                            Ext.Msg.hide(); 
+                            self.Error("请求失败，请联系管理员！");                                  
+                        }
+                    });                              
+                },100);                           
+            }
+        });
+    },
+
+    doSelectUserSetDept:function(btn){
+        var self=this;
+        var win = btn.up('window');
+        var funCode = win.funCode;
+        var funData = win.funData;
+        var deptId = funData.deptId;
+        var basePanel = win.down("basepanel[funCode=" + funCode + "]");
+        var isSelectGrid = basePanel.down("panel[xtype=system.user.isselectusergrid]");
+        var isSelectStore = isSelectGrid.getStore();
+        var iCount = isSelectStore.getCount(); //已选的角色个数
+        //拼装所选择的角色
+        var ids = new Array();
+        for (var i = 0; i < iCount; i++) {
+            var record = isSelectStore.getAt(i);
+            var pkValue = record.get("uuid");
+            ids.push(pkValue);
+        }
+        if (ids.length > 0) {
+             //显示loadMask
+            var myMask = self.LoadMask(win);
+            //提交入库
+            self.asyncAjax({
+                url: funData.action + "/doBatchSetDept",
+                params: {
+                    deptId: deptId,
+                    ids: ids.join(",")
+                },
+                //回调代码必须写在里面
+                success: function(response) {
+                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                    myMask.hide();
+                    if (data.success) {                                 
+                        self.msgbox("保存成功!");
+                        var grid = win.funData.grid; //窗体是否有grid参数
+                        if (!Ext.isEmpty(grid)) {
+                            var store = grid.getStore();
+                            var proxy = store.getProxy();
+                            proxy.extraParams = {
+                                whereSql: win.funData.whereSql,
+                                orderSql: win.funData.orderSql,
+                                deptId: deptId
+                            };
+                            store.load(); //刷新父窗体的grid
+                            win.close();
+                        }
+
+                    }else{
+                       self.Error(data.obj);
+                    }
+                },
+                failure: function(response) {           
+                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                    myMask.hide();
+                }
+            }); 
+
+        } else {
+            self.msgbox("没有选择用户");
+        }
     }
 
 });

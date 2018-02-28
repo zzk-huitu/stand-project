@@ -19,8 +19,8 @@ Ext.define("core.system.permission.controller.MainController", {
     control: {      
         "basegrid button[ref=gridAdd_Tab]": {
             beforeclick: function (btn) {
-                var self= this;
 
+                var self= this;
                 //得到组件
                 var baseGrid = btn.up("basegrid");       
 
@@ -39,6 +39,9 @@ Ext.define("core.system.permission.controller.MainController", {
                     self.msgbox("只允许给功能菜单设置权限！");
                     return false;
                 }
+
+                //若没有return false， 则继续去执行公共的add方法。
+                
             }
         }
     }

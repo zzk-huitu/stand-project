@@ -68,6 +68,13 @@ public class PtIrDeviceBrandServiceImpl extends BaseServiceImpl<PtIrDeviceBrand>
 			perEntity.setUpdateTime(new Date()); // 设置修改时间
 			perEntity.setUpdateUser(currentUser.getXm()); // 设置修改人的中文名
 			entity = this.merge(perEntity);// 执行修改方法
+			
+			/*若修改的是第三层的品牌名称，则一并把第四层的品牌名称修改*/
+			if(entity.getLevel()==3){
+				String hql="update PtIrDeviceBrand set brandname='"+entity.getBrandname()+"'"
+						+ " where isDelete=0 and level=4 and parentNode='"+entity.getUuid()+"'";
+				this.doExecuteCountByHql(hql);
+			}
 			return entity;
 		} catch (IllegalAccessException e) {
 			logger.error(e.getMessage());

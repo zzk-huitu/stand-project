@@ -79,6 +79,12 @@ Ext.define("core.system.user.view.UserGrid", {
             ref: 'syncToUP',
             funCode:'girdFuntionBtn',
             iconCls: 'x-fa fa-rss'
+        },{
+            xtype: 'button',
+            text: '删除',
+            ref: 'gridDelete',
+            funCode:'girdFuntionBtn',
+            iconCls: 'x-fa fa-minus-circle'
         },/*{
             xtype: 'button',
             text: '部门权限',
@@ -142,26 +148,22 @@ Ext.define("core.system.user.view.UserGrid", {
 			text: "用户名",
 			dataIndex: "userName",
 			width:120,
-            align:'left'
 		}, {
 			text: "姓名",
 			dataIndex: "xm",
 			width:120,
-            align:'left'
 		}, {
 			text: "性别",
 			dataIndex: "xbm",
 			columnType: "basecombobox",
 			ddCode: "XBM",
 			width:80,
-            align:'left'
 		},{
             text: "身份",
             dataIndex: "category",
             columnType: "basecombobox",
             ddCode: "CATEGORY",
             width:80,
-            align:'left'
         }, {
 			text: "编制",
 			dataIndex: "zxxbzlb",
@@ -169,7 +171,6 @@ Ext.define("core.system.user.view.UserGrid", {
 			columnType: "basecombobox",
 			minWidth:100,
             flex:1,
-            align:'left'
 		}/*, {
 			text: "岗位",
 			dataIndex: "jobName"
@@ -177,7 +178,6 @@ Ext.define("core.system.user.view.UserGrid", {
 			text: "账户状态",
 			dataIndex: "state",
 			width:100,
-            align:'left',
 			renderer: function(value) {
 				return (value == '0') ? '<font color=green>正常</font>' : '<font color=red>锁定</font>';
 			}
@@ -185,12 +185,10 @@ Ext.define("core.system.user.view.UserGrid", {
             width:100,
             text: "卡片编号",
             dataIndex: "upCardId",
-            align:'left'       
         },{
             width:100,
             text: "发卡状态",
             dataIndex: "useState",
-            align:'left',
             renderer: function(value, metaData) {          
                 if(value==0)
                     return "<span style='color:red'>未发卡</span>";

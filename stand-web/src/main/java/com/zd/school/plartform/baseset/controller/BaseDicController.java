@@ -29,13 +29,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
- * ClassName: BaseDicController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 数据字典实体Controller. date: 2016-07-19
+ * 数据字典
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseDic")
@@ -48,32 +44,32 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
 	private RedisTemplate<String, Object> redisTemplate;
     
     /**
-     * list查询 @Title: list @Description: TODO @param @param entity
-     * 实体类 @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 数据字典类别列表
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
             org.springframework.web.bind.annotation.RequestMethod.POST })
     public void list(@ModelAttribute BaseDic entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String strData = ""; // 返回给js的数据
-        // QueryResult<BaseDic> qr =
-        // thisService.queryPageResult(super.start(request),
-        // super.limit(request),
-        // super.sort(request), super.filter(request), true);
+       
         List<BaseDicTree> lists = thisService.getDicTreeList(request.getParameter("whereSql"));
 
-        // strData = jsonBuilder.buildObjListToJson(Long.valueOf(lists.size()),
-        // lists, true);// 处理数据
         strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
         writeJSON(response, strData);// 返回数据
     }
 
     /**
-     * 
-     * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseDic
-     *         实体类 @param @param request @param @param response @param @throws
-     *         IOException 设定参数 @return void 返回类型 @throws
+     * 添加字典
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("DICTIONARY_add")
     @RequestMapping("/doAdd")
@@ -111,9 +107,10 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
     }
 
     /**
-     * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-     * request @param @param response @param @throws IOException 设定参数 @return
-     * void 返回类型 @throws
+     * 删除字典
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @RequestMapping("/doDelete")
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -155,9 +152,14 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
     }
 
     /**
-     * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-     * BaseDic @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 更新字典
+     * 删除redis的缓存数据，下次读取时再存入redis
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("DICTIONARY_update")
     @RequestMapping("/doUpdate")

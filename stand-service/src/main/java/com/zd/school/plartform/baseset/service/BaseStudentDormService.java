@@ -26,12 +26,12 @@ public interface BaseStudentDormService extends BaseService<DormStudentDorm> {
 
 	//public CommTree getCommTree(String rootId, String deptType, SysUser currentUser);
 	public List<DormStudentDorm> oneKeyList(DormStudentDorm entity,String whereSql);
-	public Boolean oneKeyAllotDorm(String gradId,String boyId,String girlId,SysUser currentUser);
-	public Boolean dormAutoAllot(String claiId,SysUser currentUser);
-	public Boolean dormHandAllot(DormStudentDorm entity,Map hashMap,SysUser currentUser)throws IllegalAccessException, InvocationTargetException ;
+	public Boolean doOneKeyAllotDorm(String gradId,String boyId,String girlId,SysUser currentUser);
+	public Boolean doDormAutoAllot(String claiId,SysUser currentUser);
+	public Boolean doDormHandAllot(DormStudentDorm entity,Map hashMap,SysUser currentUser)throws IllegalAccessException, InvocationTargetException ;
 	public List<JwClassDormAllot>  mixDormList(JwClassDormAllot entity);
 	public List<JwClassDormAllot>  emptyMixDormList(JwClassDormAllot entity);
-	public Boolean pushMessage(String classId);
+	public Boolean doPushMessage(String classId);
 	public Boolean doDeleteDorm(String[] delIds, String userId);
 	public Integer doUpdateBedArkNum(String[] list, String userId);
 	public Boolean doAddClassDorm(String classId, String dormIds, SysUser currentUser);

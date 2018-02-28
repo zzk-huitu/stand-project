@@ -1,5 +1,6 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -48,7 +49,7 @@ public class BaseClassroomServiceImpl extends BaseServiceImpl<BuildClassRoomDefi
 	}
 
 	@Override
-	public void addClassRoom(BuildRoominfo entity, String id, String userCh) throws Exception {
+	public void addClassRoom(BuildRoominfo entity, String id, String userCh) throws IllegalAccessException, InvocationTargetException {
 		BuildRoominfo roomInfo = null;
 		BuildClassRoomDefine classRoom = null;// 教室定义
 		roomInfo = thisService.get(id);
@@ -74,7 +75,7 @@ public class BaseClassroomServiceImpl extends BaseServiceImpl<BuildClassRoomDefi
 	}
 
 	@Override
-	public Boolean delClassRoom(BuildRoominfo roomInfo, String delId, String xm) throws Exception {
+	public Boolean delClassRoom(BuildRoominfo roomInfo, String delId, String xm){
 		Boolean flag=false;
 		BuildClassRoomDefine classRoom = null;// 教室定义
 		classRoom = this.getByRoomId(delId);

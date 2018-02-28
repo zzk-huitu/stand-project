@@ -16,58 +16,13 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 		
 
 		this.control({
-			  "basepanel basetreegrid[xtype=baseset.dictionary.dicgrid]": {
-                  afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="DICTIONARY";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd]");
-                            btnAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
-                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
-                            btnBorAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
-                            var btnEdit = grid.down("button[ref=gridEdit]");
-                            btnEdit.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
-                            var btnDel = grid.down("button[ref=gridDel]");
-                            btnDel.setHidden(true);
-                            
-                         }
-                     }
-                 },
-                 beforeitemclick: function(grid) {
-                 	var basePanel = grid.up("basepanel");
-                 	var basegrid = basePanel.down("basetreegrid[xtype=baseset.dictionary.dicgrid]");
-                 	var records = basegrid.getSelectionModel().getSelection();
-                 	var btnAdd = basegrid.down("button[ref=gridAdd]");
-                 	var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
-                 	var btnEdit = basegrid.down("button[ref=gridEdit]");
-                 	var btnDel = basegrid.down("button[ref=gridDel]");
-                 	if (records.length == 0) {
-                 		btnAdd.setDisabled(true);
-                 		btnAddBrother.setDisabled(true);
-                 		btnEdit.setDisabled(true);
-                 		btnDel.setDisabled(true);
-                 	} else if (records.length == 1) {
-                 		btnAdd.setDisabled(false);
-                 		btnAddBrother.setDisabled(false);
-                 		btnEdit.setDisabled(false);
-                 		btnDel.setDisabled(false);
-                 	} else {
-                 		btnAdd.setDisabled(true);
-                 		btnAddBrother.setDisabled(true);
-                 		btnEdit.setDisabled(true);
-                 		btnDel.setDisabled(false);
-                 	}
-                 },
+			"basepanel basetreegrid[xtype=baseset.dictionary.dicgrid]": {
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);                   
+                },
+                beforeitemclick: function(grid) {
+                 	this.disabledFuncBtn(grid);
+                },
             },
 			/**
 			 * 树形节点点击事件
@@ -76,36 +31,8 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 			 */
 			"panel[xtype=baseset.dictionary.dicgrid]": {
 				itemclick: function(grid, record, item, index, e, eOpts) {
-					var baseMainPanel = grid.up("panel[xtype=baseset.dictionary.mainlayout]");
-					var funCode = baseMainPanel.funCode;
-					var records = grid.getSelectionModel().getSelection();
-					var itemGrid = baseMainPanel.down("panel[xtype=baseset.dictionary.itemgrid]");
-
-					//加载对应的字典项信息
-					var store = itemGrid.getStore();
-					var proxy = store.getProxy();
-					proxy.extraParams = {
-						filter: "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'dicId'}]"
-					};
-					store.load();
+					this.loadItemGridStore(grid,record);				
 				},
-				// checkchange: function(node, checked, options) {
-    //                 // node.expand(true);
-    //                 node.expand();  //只展开第一层
-                  
-    //                 //递归选中孩子节点
-    //                 var eachChild = function(node, checked) {
-    //                     node.eachChild(function(n) {
-    //                         if (!Ext.isEmpty(n.get('checked'))) {
-    //                             n.set('checked', checked);
-    //                             n.commit();
-    //                         }
-    //                         eachChild(n, checked);
-    //                     });
-    //                 };
-    //                 eachChild(node, checked);                    
-    //                 return false;
-    //             }
 			},
 
 			//增加下级按钮事件
@@ -130,53 +57,7 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 			//删除按钮事件
 			"panel[xtype=baseset.dictionary.dicgrid] button[ref=gridDel]": {
 				beforeclick: function(btn) {
-					var baseGrid = btn.up("basetreegrid");
-					var funCode = baseGrid.funCode;
-					var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-					//得到配置信息
-					var funData = basePanel.funData;
-					var pkName = funData.pkName;
-					var records = baseGrid.getSelectionModel().getSelection();
-					//var records = baseGrid.getView().getChecked();
-					if (records.length == 0) {
-						self.msgbox("请选择要删除的数据字典");
-						return false;
-					}
-					var ids = new Array();
-					Ext.each(records, function(rec) {
-						var pkValue = rec.get("id");
-						var child = rec.childNodes.length;
-						if (child == 0) {
-							//仅能删除无子数据字典
-							ids.push(pkValue);
-						}
-					});
-					var title = "确定要删除所选的数据字典吗？";
-					if (ids.length == 0) {
-						self.Warning("所选数据字典都有子项，不能删除");
-						return;
-					}
-					if (ids.length < records.length) {
-						title = "有些数据字典有子项，仅删除不含子项的数据字典。确定吗？";
-					}
-					Ext.Msg.confirm('警告', title, function(btn, text) {
-						if (btn == 'yes') {
-							//发送ajax请求
-							var resObj = self.ajax({
-								url: funData.action + "/doDelete",
-								params: {
-									ids: ids.join(","),
-									pkName: pkName
-								}
-							});
-							if (resObj.success) {
-								baseGrid.getStore().load(0);
-								self.msgbox(resObj.obj);
-							} else {
-								self.Error(resObj.obj);
-							}
-						}
-					});
+					this.doDeleteDic(btn);				
 					return false;
 				}
 			},
@@ -231,49 +112,7 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 			//字典项删除按钮事件
 			"panel[xtype=baseset.dictionary.itemgrid] button[ref=gridDelete]": {
 				beforeclick: function(btn) {
-					var baseGrid = btn.up("basegrid");
-					var pkName = "uuid";
-					var records = baseGrid.getSelectionModel().getSelection();
-					if (records.length == 0) {
-						self.msgbox("请选择要删除的字典项");
-						return false;
-					}
-					var ids = new Array();
-					var dicId = "";
-					Ext.each(records, function(rec) {
-						var pkValue = rec.get(pkName);
-						dicId = rec.get("dicId");
-						ids.push(pkValue);
-					});
-					var title = "确定要删除所选的字典项吗？";
-					Ext.Msg.confirm('警告', title, function(btn, text) {
-						if (btn == 'yes') {
-							//发送ajax请求
-							var resObj = self.ajax({
-								url: comm.get('baseUrl') + "/BaseDicitem" + "/doDelete",
-								params: {
-									ids: ids.join(","),
-									pkName: pkName
-								}
-							});
-							if (resObj.success) {
-								//baseGrid.getStore().load(0);
-								var store = baseGrid.getStore();
-								var proxy = store.getProxy();
-								proxy.extraParams = {
-									filter: "[{'type':'string','comparison':'=','value':'" + dicId + "','field':'dicId'}]"
-								};
-								store.load();
-								self.msgbox(resObj.obj);
-							} else {
-								self.Error(resObj.obj);
-							}
-						}
-					});
-					//执行回调函数
-					if (btn.callback) {
-						btn.callback();
-					}
+					this.doDeleteDicItem(btn);					
 					return false;
 				}
 			}
@@ -521,89 +360,165 @@ Ext.define("core.baseset.dictionary.controller.MainController", {
 		self.setFormValue(formDeptObj, insertObj);
 	},
 
-	//增加或修改字典项
-//	doItmeDetail: function(btn, cmd) {
-//		//debugger;
-//		var self = this;
-//		//当前的grid
-//		var baseGrid = btn.up("basegrid");
-//		var funCode = baseGrid.funCode;
-//		var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-//		var funData = basePanel.funData;
-//		//选择的字典信息
-//		var dicGrid = baseGrid.up("panel[xtype=dictionary.mainlayout]").down("panel[xtype=dic.dicgrid]");
-//		var selectObject = dicGrid.getSelectionModel().getSelection();
-//		if (selectObject.length <= 0) {
-//			self.Warning("请选择数据字典!");
-//			return false;
-//		}
-//		//得到选择的字典
-//		var objDic = selectObject[0];
-//		var dicId = objDic.get("id");
-//		var dicName = objDic.get("text");
-//		var detCode = "dicItem_main";
-//		//处理特殊默认值
-//		var defaultObj = funData.defaultObj;
-//		var insertObj = self.getDefaultValue(defaultObj);
-//		insertObj = Ext.apply(insertObj, {
-//			dicId: dicId,
-//			dicName: dicName
-//		});
-//		var popFunData = Ext.apply(funData, {
-//			grid: baseGrid,
-//			filter: "[{'type':'string','comparison':'=','value':'" + dicId + "','field':'dicId'}]"
-//		});
-//		var iconCls = "x-fa fa-plus-circle";
-//		if (cmd == "edit" || cmd == "detail") {
-//			if (cmd == "edit")
-//				iconCls = "x-fa fa-pencil-square";
-//			else
-//				iconCls = "x-fa fa-pencil-square";
-//
-//			var rescords = baseGrid.getSelectionModel().getSelection();
-//			if (rescords.length != 1) {
-//				self.msgbox("请选择数据");
-//				return;
-//			}
-//			insertObj = rescords[0].data;
-//			insertObj = Ext.apply(insertObj, {
-//				dicId: dicId,
-//				dicName: dicName
-//			});
-//		}
-//		var winId = detCode + "_win";
-//		var win = Ext.getCmp(winId);
-//		if (!win) {
-//			win = Ext.create('core.base.view.BaseFormWin', {
-//				id: winId,
-//				width: 400,
-//				height: 320,
-//				resizable: false,
-//				iconCls: iconCls,
-//				operType: cmd,
-//				funData: popFunData,
-//				funCode: detCode,
-//				//给form赋初始值
-//				insertObj: insertObj,
-//				items: [{
-//					xtype: "dic.itemlayout"
-//				}]
-//			});
-//		}
-//		win.show();
-//		var detailPanel = win.down("basepanel[funCode=" + detCode + "]");
-//		var objDetForm = detailPanel.down("baseform[funCode=" + detCode + "]");
-//		var formDeptObj = objDetForm.getForm();
-//
-//		//表单赋值
-//		self.setFormValue(formDeptObj, insertObj);
-//		//根据操作设置是否只读
-//		if (cmd == "detail") {
-//			self.setFuncReadOnly(funData, objDetForm, true);
-//		}
-//		//执行回调函数
-//		if (btn.callback) {
-//			btn.callback();
-//		}
-//	}
+	hideFuncBtn:function(grid){	
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="DICTIONARY";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd]");
+                btnAdd.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                btnBorAdd.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                var btnEdit = grid.down("button[ref=gridEdit]");
+                btnEdit.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                var btnDel = grid.down("button[ref=gridDel]");
+                btnDel.setHidden(true);
+                
+            }
+        }
+	},
+
+	disabledFuncBtn:function(grid){	
+     	var basePanel = grid.up("basepanel");
+     	var basegrid = basePanel.down("basetreegrid[xtype=baseset.dictionary.dicgrid]");
+     	var records = basegrid.getSelectionModel().getSelection();
+     	var btnAdd = basegrid.down("button[ref=gridAdd]");
+     	var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
+     	var btnEdit = basegrid.down("button[ref=gridEdit]");
+     	var btnDel = basegrid.down("button[ref=gridDel]");
+     	if (records.length == 0) {
+     		btnAdd.setDisabled(true);
+     		btnAddBrother.setDisabled(true);
+     		btnEdit.setDisabled(true);
+     		btnDel.setDisabled(true);
+     	} else if (records.length == 1) {
+     		btnAdd.setDisabled(false);
+     		btnAddBrother.setDisabled(false);
+     		btnEdit.setDisabled(false);
+     		btnDel.setDisabled(false);
+     	} else {
+     		btnAdd.setDisabled(true);
+     		btnAddBrother.setDisabled(true);
+     		btnEdit.setDisabled(true);
+     		btnDel.setDisabled(false);
+     	}
+	},
+
+	loadItemGridStore:function(grid,record){
+		var baseMainPanel = grid.up("panel[xtype=baseset.dictionary.mainlayout]");
+		var funCode = baseMainPanel.funCode;
+		var records = grid.getSelectionModel().getSelection();
+		var itemGrid = baseMainPanel.down("panel[xtype=baseset.dictionary.itemgrid]");
+
+		//加载对应的字典项信息
+		var store = itemGrid.getStore();
+		var proxy = store.getProxy();
+		proxy.extraParams = {
+			filter: "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'dicId'}]"
+		};
+		store.load();
+	},
+
+	doDeleteDic:function(btn){
+		var self=this;
+		var baseGrid = btn.up("basetreegrid");
+		var funCode = baseGrid.funCode;
+		var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+		//得到配置信息
+		var funData = basePanel.funData;
+		var pkName = funData.pkName;
+		var records = baseGrid.getSelectionModel().getSelection();
+		//var records = baseGrid.getView().getChecked();
+		if (records.length == 0) {
+			self.msgbox("请选择要删除的数据字典");
+			return false;
+		}
+		var ids = new Array();
+		Ext.each(records, function(rec) {
+			var pkValue = rec.get("id");
+			var child = rec.childNodes.length;
+			if (child == 0) {
+				//仅能删除无子数据字典
+				ids.push(pkValue);
+			}
+		});
+		var title = "确定要删除所选的数据字典吗？";
+		if (ids.length == 0) {
+			self.Warning("所选数据字典都有子项，不能删除");
+			return;
+		}
+		if (ids.length < records.length) {
+			title = "有些数据字典有子项，仅删除不含子项的数据字典。确定吗？";
+		}
+		Ext.Msg.confirm('警告', title, function(btn, text) {
+			if (btn == 'yes') {
+				//发送ajax请求
+				var resObj = self.ajax({
+					url: funData.action + "/doDelete",
+					params: {
+						ids: ids.join(","),
+						pkName: pkName
+					}
+				});
+				if (resObj.success) {
+					baseGrid.getStore().load(0);
+					self.msgbox(resObj.obj);
+				} else {
+					self.Error(resObj.obj);
+				}
+			}
+		});
+	},
+
+	doDeleteDicItem:function(btn){
+		var self=this;
+		var baseGrid = btn.up("basegrid");
+		var pkName = "uuid";
+		var records = baseGrid.getSelectionModel().getSelection();
+		if (records.length == 0) {
+			self.msgbox("请选择要删除的字典项");
+			return false;
+		}
+		var ids = new Array();
+		var dicId = "";
+		Ext.each(records, function(rec) {
+			var pkValue = rec.get(pkName);
+			dicId = rec.get("dicId");
+			ids.push(pkValue);
+		});
+		var title = "确定要删除所选的字典项吗？";
+		Ext.Msg.confirm('警告', title, function(btn, text) {
+			if (btn == 'yes') {
+				//发送ajax请求
+				var resObj = self.ajax({
+					url: comm.get('baseUrl') + "/BaseDicitem" + "/doDelete",
+					params: {
+						ids: ids.join(","),
+						pkName: pkName
+					}
+				});
+				if (resObj.success) {
+					//baseGrid.getStore().load(0);
+					var store = baseGrid.getStore();
+					var proxy = store.getProxy();
+					proxy.extraParams = {
+						filter: "[{'type':'string','comparison':'=','value':'" + dicId + "','field':'dicId'}]"
+					};
+					store.load();
+					self.msgbox(resObj.obj);
+				} else {
+					self.Error(resObj.obj);
+				}
+			}
+		});
+	}
 });

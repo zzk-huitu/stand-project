@@ -39,7 +39,7 @@ Ext.define("core.baseset.room.view.AreaForm", {
         }, {
             columnWidth: 0.4,
             xtype: "label",
-            html: "  (<font color=red,size=12>同级别的区域的显示顺序,不能重复)</font>",
+            html: "<font color=red,size=12>（同级别的区域的显示顺序,不能重复）</font>",
         }]
     },{
         xtype: "container",

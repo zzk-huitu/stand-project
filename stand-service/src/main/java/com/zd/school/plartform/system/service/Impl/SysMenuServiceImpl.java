@@ -553,7 +553,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements SysM
 		String menuLeaf = "LEAF";
 		if (menuType.equals(MenuType.TYPE_MENU))
 			menuLeaf = "GENERAL";
-		// String parentName = menu.getp
+	
 		SysMenu saveEntity = new SysMenu();
 		List<String> excludedProp = new ArrayList<>();
 		excludedProp.add("uuid");
@@ -575,8 +575,6 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements SysM
 		menu.setParentName(parentName);
 		menu.setParentNode(parentNode);
 
-		// 给超级管理员授权
-		// TODO Auto-generated method stub
 		return menu;
 	}
 

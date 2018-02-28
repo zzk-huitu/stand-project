@@ -18,5 +18,5 @@ Ext.define("core.system.dept.store.CourseStore", {
 			type: "json"
 		}
 	},
-	autoLoad: true
+	autoLoad: false
 })

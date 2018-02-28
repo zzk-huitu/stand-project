@@ -22,14 +22,9 @@ import com.zd.school.plartform.system.service.SysDeptRightService;
 import com.zd.school.plartform.system.service.SysUserService;
 
 /**
- * 
- * ClassName: SysDeptrightController Function: ADD FUNCTION. Reason: ADD
- * REASON(可选). Description: 用户权限部门(SYS_T_DEPTRIGHT)实体Controller. date:
- * 2017-04-06
+ * 用户权限部门
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysDeptright")

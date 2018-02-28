@@ -160,7 +160,7 @@ Ext.define("core.system.jobinfo.controller.MainController", {
             var jobBaseContainer = tabItem.down("container[ref=jobBaseInfo]");
             jobBaseContainer.setData(insertObj);
             self.asyncAjax({
-                url: comm.get("baseUrl") + "/SysJob/doJobDept",
+                url: comm.get("baseUrl") + "/SysJob/getJobDept",
                 params: {
                     page: 1,
                     start: 0,

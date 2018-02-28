@@ -35,13 +35,17 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
         text: "序列号",
         dataIndex: "termSN",
         flex:1,
-        minWidth:150
+        minWidth:100
     }, {
         text: "设备类型",
         dataIndex: "termTypeID",
         columnType: "basecombobox", //列类型
         ddCode: "PTTERMTYPE", //字典代码
-        width:100
+        width:80
+    },{
+        text: "当前费率",
+        dataIndex: "skprice",
+        width:80
     }],
     viewConfig: {
         plugins: {

@@ -15,68 +15,15 @@ Ext.define("core.baseset.room.controller.MainController", {
         this.control({
         	  "basepanel basetreegrid[xtype=baseset.room.areagrid]": {
                   afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="JWTROOMINFO";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd]");
-                            btnAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
-                            var btnBorAdd = grid.down("button[ref=gridAddBrother]");
-                            btnBorAdd.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
-                            var btnEdit = grid.down("button[ref=gridEdit]");
-                            btnEdit.setHidden(true);
-                            
-                         }
-                         if(userBtn.indexOf(menuCode+"_gridDel")==-1){
-                            var btnDel = grid.down("button[ref=gridDel]");
-                            btnDel.setHidden(true);
-                            
-                         }
-                     }
+                    this.hideFuncBtn(grid);
                  },
                  beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basetreegrid[xtype=baseset.room.areagrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnAdd = basegrid.down("button[ref=gridAdd]");
-                    var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
-                    var btnEdit = basegrid.down("button[ref=gridEdit]");
-                    var btnDel = basegrid.down("button[ref=gridDel]");
-                    if (records.length == 0) {
-                        btnAdd.setDisabled(true);
-                        btnAddBrother.setDisabled(true);
-                        btnEdit.setDisabled(true);
-                        btnDel.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnAdd.setDisabled(false);
-                        btnAddBrother.setDisabled(false);
-                        btnEdit.setDisabled(false);
-                        btnDel.setDisabled(false);
-                    } else {
-                        btnAdd.setDisabled(true);
-                        btnAddBrother.setDisabled(true);
-                        btnEdit.setDisabled(true);
-                        btnDel.setDisabled(false);
-                    }
+                    this.disabledFuncBtn(grid);
                 },
             },
              "basepanel basegrid[xtype=baseset.room.maingrid]": {
                   afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="JWTROOMINFO";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridBatchAdd_Tab")==-1){
-                            var btnAdd = grid.down("button[ref=gridBatchAdd_Tab]");
-                            btnAdd.setHidden(true);
-                            
-                         }
-                     }
+                    this.hideMainFuncBtn(grid);
                  },
             },
         	"basegrid[xtype=baseset.room.maingrid] button[ref=gridBatchAdd_Tab]": {
@@ -89,116 +36,21 @@ Ext.define("core.baseset.room.controller.MainController", {
             //区域列表点击事件
             "panel[xtype=baseset.room.areagrid]": {
                 itemclick: function (tree, record, item, index, e, eOpts) {
-                    var self = this;
-                    var mainLayout = tree.up("panel[xtype=baseset.room.mainlayout]");
-                    var areaType = record.get("areaType");
-                    var areaId = record.get("id");
-                    var roomGrid = mainLayout.down("panel[xtype=baseset.room.maingrid]");
-
-                    var filter=self.getFastSearchFilter(roomGrid);
-                    if(areaType=="04")
-                          filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
-                    if(filter.length==0)
-                        filter=null;
-                    else 
-                        filter = JSON.stringify(filter);
-
-                    var funData = mainLayout.funData;
-                    mainLayout.funData = Ext.apply(funData, {
-                        areaId: record.get("id"),
-                        areaType: record.get("areaType"),
-                        areaName: record.get("text"),
-                        filter: '[{"type":"string","comparison":"=","value":"' + areaId + '","field":"areaId"}]',
-                    });
-                    // 加载对应的房间信息
-                    var store = roomGrid.getStore();
-                    var proxy = store.getProxy();
-
-                      //附带参赛
-                    proxy.extraParams={
-                        areaId:areaId,
-                        areaType:areaType,
-                        filter:filter
-                    }
-                    store.loadPage(1); // 给form赋值
+                    this.loadMainGridStore(tree,record);
                     // return false;
                 }
             },
             //区域列表刷新按钮事件
             "panel[xtype=baseset.room.areagrid] button[ref=gridRefresh]": {
                 click: function (btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var store = baseGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        whereSql: " and isDelete='0' ",
-                        orderSql: "",
-                        excludes:"checked"
-                    };
-                    store.load(); //刷新父窗体的grid
-                    var mainlayout = btn.up("basepanel[xtype=baseset.room.mainlayout]");
-                    var mianGrid = mainlayout.down("basegrid[xtype=baseset.room.maingrid]");
-                    var store = mianGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams.areaId= "";
-                    proxy.extraParams.areaType= "";
+                    this.refreshAreaStore(btn);
                     return false;
                 }
             },
             //区域列表删除按钮事件
             "panel[xtype=baseset.room.areagrid] button[ref=gridDel]": {
                 beforeclick: function (btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var funCode = baseGrid.funCode;
-                    var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-                    //得到配置信息
-                    var funData = basePanel.funData;
-                    var pkName = funData.pkName;
-                    var records = baseGrid.getSelectionModel().getSelection();
-                    if (records.length == 0) {
-                        self.Error("请选择要删除的区域");
-                        return;
-                    }
-                    var ids = new Array();
-                    Ext.each(records, function (rec) {
-                        var pkValue = rec.get("id");
-                        var roomCount = rec.get("roomCount");
-                        var child = rec.childNodes.length;
-                        //仅能删除无子节点并且无房间的区域
-                        if (child == 0 && roomCount == 0) {
-                            ids.push(pkValue);
-                        }
-                    });
-                    var title = "确定要删除所选的区域吗？";
-                    if (ids.length == 0) {
-                        self.Warning("所选区域都有子项或房间，不能删除");
-                        return;
-                    }
-                    if (ids.length < records.length) {
-                        title = "有些区域有子项或房间，仅删除不含子项(房间)的区域。确定吗？";
-                    }
-                    Ext.Msg.confirm('警告', title, function (btn, text) {
-                        if (btn == 'yes') {
-                            //发送ajax请求
-                            var resObj = self.ajax({
-                                url: comm.get('baseUrl') + "/BaseRoomarea/doDelete",
-                                params: {
-                                    ids: ids.join(","),
-                                    pkName: pkName
-                                }
-                            });
-                            if (resObj.success) {
-                                baseGrid.getStore().load(0);
-                                self.msgbox(resObj.obj);
-                            } else {
-                                self.Error(resObj.obj);
-                            }
-                        }
-                    });
-                    //执行回调函数
-                    if (btn.callback) {
-                        btn.callback();
-                    }
+                    this.doDeleteArea(btn);
                     return false;
                 }
             },
@@ -222,18 +74,10 @@ Ext.define("core.baseset.room.controller.MainController", {
             },
             //grid删除
             "panel[xtype=baseset.room.maingrid] button[ref=gridDelete]": {
-                beforeclick: function (btn) {
-                    var grid = btn.up("panel[xtype=baseset.room.maingrid]");
-                    var rows = grid.getSelectionModel().getSelection();
-                    //判断性别
-                    for (var i = 0; i < rows.length; i++) {
-                        //将学生主键加入到list
-                        var areaStatu = rows[i].get('areaStatu');
-                        if (areaStatu == 1) {
-                            self.Warning("已分配的房间不能删除。!");
-                            return false;
-                        }
-                    }
+                beforeclick: function (btn) {                
+                    var isOk=this.doDeleteRoom(btn);
+                    if(isOk==false)
+                        return false;
                 }
             },
             "basegrid[xtype=baseset.room.maingrid] button[ref=gridAdd_Tab]": {
@@ -656,5 +500,188 @@ Ext.define("core.baseset.room.controller.MainController", {
         }
       
         return filter;
+    },
+
+    hideFuncBtn:function(grid){        
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="JWTROOMINFO";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridAdd")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd]");
+                btnAdd.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridAddBrother")==-1){
+                var btnBorAdd = grid.down("button[ref=gridAddBrother]");
+                btnBorAdd.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridEdit")==-1){
+                var btnEdit = grid.down("button[ref=gridEdit]");
+                btnEdit.setHidden(true);
+                
+             }
+             if(userBtn.indexOf(menuCode+"_gridDel")==-1){
+                var btnDel = grid.down("button[ref=gridDel]");
+                btnDel.setHidden(true);
+                
+            }
+        }
+    },
+    disabledFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basetreegrid[xtype=baseset.room.areagrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnAdd = basegrid.down("button[ref=gridAdd]");
+        var btnAddBrother = basegrid.down("button[ref=gridAddBrother]");
+        var btnEdit = basegrid.down("button[ref=gridEdit]");
+        var btnDel = basegrid.down("button[ref=gridDel]");
+        if (records.length == 0) {
+            btnAdd.setDisabled(true);
+            btnAddBrother.setDisabled(true);
+            btnEdit.setDisabled(true);
+            btnDel.setDisabled(true);
+        } else if (records.length == 1) {
+            btnAdd.setDisabled(false);
+            btnAddBrother.setDisabled(false);
+            btnEdit.setDisabled(false);
+            btnDel.setDisabled(false);
+        } else {
+            btnAdd.setDisabled(true);
+            btnAddBrother.setDisabled(true);
+            btnEdit.setDisabled(true);
+            btnDel.setDisabled(false);
+        }
+    },
+
+    hideMainFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="JWTROOMINFO";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridBatchAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridBatchAdd_Tab]");
+                btnAdd.setHidden(true);
+                
+             }
+         }
+    },
+
+    loadMainGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=baseset.room.mainlayout]");
+        var areaType = record.get("areaType");
+        var areaId = record.get("id");
+        var roomGrid = mainLayout.down("panel[xtype=baseset.room.maingrid]");
+
+        var filter=self.getFastSearchFilter(roomGrid);
+        if(areaType=="04")
+              filter.push({"type":"string","comparison":"=","value": areaId ,"field":"areaId"});
+        if(filter.length==0)
+            filter=null;
+        else 
+            filter = JSON.stringify(filter);
+
+        Ext.apply(mainLayout.funData, {
+            areaId: record.get("id"),
+            areaType: record.get("areaType"),
+            areaName: record.get("text"),
+            filter: '[{"type":"string","comparison":"=","value":"' + areaId + '","field":"areaId"}]',
+        });
+
+        // 加载对应的房间信息
+        var store = roomGrid.getStore();
+        var proxy = store.getProxy();
+
+          //附带参赛
+        proxy.extraParams={
+            areaId:areaId,
+            areaType:areaType,
+            filter:filter
+        }
+        store.loadPage(1); // 给form赋值
+    },
+
+    refreshAreaStore:function(btn){
+        var baseGrid = btn.up("basetreegrid");
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams = {
+            whereSql: " and isDelete='0' ",
+            orderSql: "",
+            excludes:"checked"
+        };
+        store.load(); //刷新父窗体的grid
+        var mainlayout = btn.up("basepanel[xtype=baseset.room.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=baseset.room.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.areaId= "";
+        proxy.extraParams.areaType= "";
+    },
+
+    doDeleteArea:function(btn){
+        var self=this;
+        var baseGrid = btn.up("basetreegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        var records = baseGrid.getSelectionModel().getSelection();
+        if (records.length == 0) {
+            self.Error("请选择要删除的区域");
+            return;
+        }
+        var ids = new Array();
+        Ext.each(records, function (rec) {
+            var pkValue = rec.get("id");
+            var roomCount = rec.get("roomCount");
+            var child = rec.childNodes.length;
+            //仅能删除无子节点并且无房间的区域
+            if (child == 0 && roomCount == 0) {
+                ids.push(pkValue);
+            }
+        });
+        var title = "确定要删除所选的区域吗？";
+        if (ids.length == 0) {
+            self.Warning("所选区域都有子项或房间，不能删除");
+            return;
+        }
+        if (ids.length < records.length) {
+            title = "有些区域有子项或房间，仅删除不含子项(房间)的区域，确定吗？";
+        }
+        Ext.Msg.confirm('警告', title, function (btn, text) {
+            if (btn == 'yes') {
+                //发送ajax请求
+                var resObj = self.ajax({
+                    url: comm.get('baseUrl') + "/BaseRoomarea/doDelete",
+                    params: {
+                        ids: ids.join(","),
+                        pkName: pkName
+                    }
+                });
+                if (resObj.success) {
+                    baseGrid.getStore().load();
+                    self.msgbox(resObj.obj);
+                } else {
+                    self.Error(resObj.obj);
+                }
+            }
+        });
+    },
+
+    doDeleteRoom:function(btn){
+        var self=this;
+        var grid = btn.up("panel[xtype=baseset.room.maingrid]");
+        var rows = grid.getSelectionModel().getSelection();
+        
+        for (var i = 0; i < rows.length; i++) {
+            var areaStatu = rows[i].get('areaStatu');
+            if (areaStatu == 1) {
+                self.Warning("已定义或分配的房间不能删除！");
+                return false;
+            }
+        }
+        return true;
     }
 });

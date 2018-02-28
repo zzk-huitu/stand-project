@@ -29,13 +29,9 @@ import com.zd.school.plartform.system.service.SysPerimissonService;
 import com.zd.school.plartform.system.service.SysUserService;
 
 /**
- * 
- * ClassName: BaseTMenuController Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 系统菜单表实体Controller. date: 2016-07-17
+ * 系统菜单管理
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/SysMenu")
@@ -50,9 +46,10 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
 
 
     /**
-     * list查询 @Title: list @Description: TODO @param @param entity
-     * 实体类 @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 获取菜单列表（非管理员只能看到解锁的菜单）
+     * @param request
+     * @param response
+     * @throws IOException
      */
     @RequestMapping("/treeList")
     public void getTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -74,16 +71,10 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
     }
 
     /**
-     * 
-     * getRoleMenuList:获取指定角色的授权菜单.
-     * 
-     * @author luoyibo
+     * 获取某个角色的菜单列表
      * @param request
      * @param response
      * @throws IOException
-     *             void
-     * @throws @since
-     *             JDK 1.8
      */
     @RequestMapping("/roleMenuList")
     public void getRoleMenuList(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -102,8 +93,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
 
     /**
      * 
-     * getUserCanPerissonMenuToRole:获取指定用户对指定角色的可授权菜单.
-     * 要从用户所有的权限菜单中排除掉已对指定角色授权的菜单.
+     * 获取指定用户对指定角色的可授权菜单.（排除掉已对指定角色授权的菜单）.
      *
      * @author luoyibo
      * @param request
@@ -132,12 +122,13 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
     }
 
     /**
-     * 
-     * @throws InvocationTargetException
+     * 添加菜单
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
      * @throws IllegalAccessException
-     * @Title: 增加新实体信息至数据库 @Description: TODO @param @param BaseTMenu
-     *         实体类 @param @param request @param @param response @param @throws
-     *         IOException 设定参数 @return void 返回类型 @throws
+     * @throws InvocationTargetException
      */
     @Auth("MENUMANAGE_add")
     @RequestMapping("/doAdd")
@@ -166,14 +157,7 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
         }
         //获取当前操作用户
         SysUser currentUser = getCurrentSysUser();
-        //        if (currentUser != null)
-        //            userCh = currentUser.getXm();
-        //
-        //        SysMenu saveEntity = new SysMenu();
-        //        BeanUtils.copyPropertiesExceptNull(entity, saveEntity);
-        //        //增加时要设置创建人
-        //        entity.setCreateUser(userCh); //创建人
-        //        entity.setLeaf(true);
+        
         //持久化到数据库
         entity = thisService.addMenu(entity, currentUser);
         
@@ -185,9 +169,13 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
     }
 
     /**
-     * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-     * BaseTMenu @param @param request @param @param response @param @throws
-     * IOException 设定参数 @return void 返回类型 @throws
+     * 更新菜单
+     * @param entity
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
      */
     @Auth("MENUMANAGE_update")
     @RequestMapping("/doUpdate")
@@ -227,16 +215,10 @@ public class SysMenuController extends FrameWorkController<SysMenu> implements C
     }
 
     /**
-     * 
-     * setUse:解锁菜单.
-     *
-     * @author luoyibo
+     * 解锁或锁定菜单
      * @param request
      * @param response
      * @throws IOException
-     *             void
-     * @throws @since
-     *             JDK 1.8
      */
     @Auth("MENUMANAGE_lockFlag")
     @RequestMapping("/doSetLockFlag")

@@ -61,7 +61,8 @@ Ext.define("core.system.appupdate.view.MainGrid", {
     }],
     columns:  {
         defaults: {
-            titleAlign:"center"
+            titleAlign:"center",
+            align:'center'
         },
         items:[{
             text: "主键",
@@ -130,7 +131,10 @@ Ext.define("core.system.appupdate.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '启用',
                 ref: 'gridUse',
-                  getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){
+                    if(record.get("appIsuse")==1)
+                        return 'x-hidden-display';     
+                                               
                     if(comm.get("isAdmin")!="1"){
                         var userBtn=comm.get("userBtn");                 
                         if(userBtn.indexOf(this.menuCode+"_gridUse")==-1){
@@ -151,7 +155,10 @@ Ext.define("core.system.appupdate.view.MainGrid", {
                 style:'font-size:12px;', 
                 tooltip: '取消启用',
                 ref: 'gridCancel',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){
+                    if(record.get("appIsuse")!=1)
+                        return 'x-hidden-display';
+
                     if(comm.get("isAdmin")!="1"){
                         var userBtn=comm.get("userBtn");                 
                         if(userBtn.indexOf(this.menuCode+"_gridCancel")==-1){

@@ -15,79 +15,14 @@ Ext.define("core.system.dept.controller.MainController", {
 
         this.control({
             "basepanel basetreegrid[xtype=system.dept.maingrid]": {
-              afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="DEPARTMENT";     // 此菜单的前缀
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                             btnAdd.setHidden(true);
-                             
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                            var btnEdit = grid.down("button[ref=gridEdit_Tab]");
-                             btnEdit.setHidden(true);
-                          }
-                        if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
-                            var btnDel = grid.down("button[ref=gridDelete]");
-                             btnDel.setHidden(true);
-                          }
-                        if(userBtn.indexOf(menuCode+"_sync")==-1){
-                            var btnSync = grid.down("button[ref=sync]");
-                             btnSync.setHidden(true);
-                             
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridSetJob")==-1){
-                            var btnSetJob = grid.down("button[ref=gridSetJob]");
-                             btnSetJob.setHidden(true);
-                          }
-                        if(userBtn.indexOf(menuCode+"_gridSetMainJob")==-1){
-                            var btnSetMainJob = grid.down("button[ref=gridSetMainJob]");
-                             btnSetMainJob.setHidden(true);
-                          }
-                    }
-
-                    //给表格的store添加load事件，并展开第一层
-                    /*
-                    grid.getStore().setListeners ({
-                        load:function( store , records , successful , operation , eOpts ){   
-                            if(successful==true)              
-                                grid.getRootNode().childNodes[0].expand();   //展开第一层
-
-                            return true;    //继续去执行base层的load事件
-                        }
-                    });
-                    grid.getStore().load();
-                    */
-
+                afterrender : function(grid) {
+                    this.hideFuncBtn(grid);
                     return false;
                 },
-            beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basetreegrid[xtype=system.dept.maingrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
-                var btnDelete = basegrid.down("button[ref=gridDelete]");
-                var btnsetJob = basegrid.down("button[ref=gridSetJob]");
-                var btnsetMainJob = basegrid.down("button[ref=gridSetMainJob]");
-                if (records.length == 0) {
-                    btnEdit.setDisabled(true);
-                    btnDelete.setDisabled(true);
-                    btnsetJob.setDisabled(true);
-                    btnsetMainJob.setDisabled(true);
-                } else if (records.length == 1) {
-                    btnEdit.setDisabled(false);
-                    btnDelete.setDisabled(false);
-                    btnsetJob.setDisabled(false);
-                    btnsetMainJob.setDisabled(false);
-                } else {
-                    btnEdit.setDisabled(true);
-                    btnDelete.setDisabled(false);
-                    btnsetJob.setDisabled(true);
-                    btnsetMainJob.setDisabled(false);
-                }
-                return false;
-             },
+                beforeitemclick: function(grid) {
+                    this.disabledFuncBtn(grid);
+                    return false;
+                 },
             },
             
 
@@ -140,77 +75,7 @@ Ext.define("core.system.dept.controller.MainController", {
             //删除按钮事件
             "panel[xtype=system.dept.maingrid] button[ref=gridDelete]": {
                 beforeclick: function(btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var funCode = baseGrid.funCode;
-                    var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-                    //得到配置信息
-                    var funData = basePanel.funData;
-                    var pkName = funData.pkName;
-                    var records = baseGrid.getSelectionModel().getSelection();
-                    //var records = baseGrid.getView().getChecked();
-                    if (records.length == 0) {
-                        self.msgbox("请选择要删除的部门");
-                        return;
-                    }
-                    var ids = new Array();
-                    Ext.each(records, function(rec) {
-                        var pkValue = rec.get("id");
-                        var deptType = rec.get("deptType");
-                        var isSystem = rec.get("isSystem"); //系统内置
-                        var isRight = rec.get("isRight"); //系统内置
-                        var child = rec.childNodes.length;
-                        if (child == 0 && deptType != "01" && deptType != "02" && isSystem!="1" && isRight=="1") {
-                            //仅能删除无子部门而且类型不为学校的部门
-                            ids.push(pkValue);
-                        }
-                    });
-                    var title = "确定要删除所选的部门吗？";
-                    if (ids.length == 0) {
-                        self.msgbox("所选部门不符合要求，不能删除！<br/>不能删除的部门为：存在子部门、类别为学校/校区、系统内置、无部门权限");
-                        return;
-                    }
-                    if (ids.length < records.length) {
-                        title = "有些部门有子部门、无权限，仅删除符合条件的部门，确定执行吗？";
-                    }
-
-                    Ext.Msg.confirm('警告', title, function(btn, text) {
-                        if (btn == 'yes') {                                                    
-
-                            //显示loadMask
-                            var myMask = self.LoadMask(baseGrid);
-                            //提交入库
-                            self.asyncAjax({
-                                url: funData.action + "/doDelete",
-                                params: {
-                                    ids: ids.join(","),
-                                    pkName: pkName
-                                },
-                                //loadMask:true,
-                                //回调代码必须写在里面
-                                success: function(response) {
-                                    data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-
-                                    if (data.success) { 
-                                        baseGrid.getStore().load();
-                                        self.msgbox(data.obj);
-
-                                    }else{
-                                        self.Error(data.obj);   
-                                    }
-                                    myMask.hide();
-                                },
-                                failure: function(response) {           
-                                    Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
-                                    myMask.hide();
-                                }
-                            }); 
-
-                        }
-                    });
-                    //执行回调函数
-                    if (btn.callback) {
-                        btn.callback();
-                    }
+                    this.doDeleteDept(btn);                        
                     return false;
                 }
             },
@@ -218,67 +83,14 @@ Ext.define("core.system.dept.controller.MainController", {
             //刷新按钮事件
             "panel[xtype=system.dept.maingrid] button[ref=gridRefresh]": {
                 click: function(btn) {
-                    var baseGrid = btn.up("basetreegrid");
-                    var funCode = baseGrid.funCode;
-                    var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
-                    var funData = basePanel.funData;
-                    var store = baseGrid.getStore();
-                    var proxy = store.getProxy();
-                  
-                    store.load(); //刷新父窗体的grid
-                    /*
-                    store.load(function(records, operation, success) {    
-                        if(baseGrid.getRootNode().childNodes.length>0){
-                            baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
-                        }                
-                    });*/
+                    this.gridRefresh(btn);
                     return false;
                 }
             },
             
             "panel[xtype=system.dept.maingrid] button[ref=sync]": {
-                beforeclick: function(btn) {         
-                     //同步人员数据事件                        
-                    var baseGrid = btn.up("grid");
-                   
-                    Ext.MessageBox.confirm('同步部门数据到UP', '您确定要执行同步部门数据到UP操作吗？', function(btn, text) {                  
-                        if (btn == 'yes') {
-                            
-                            Ext.Msg.wait('正在同步部门数据，请等待...','提示');
-                            
-                            setTimeout(function(){
-
-                                //异步ajax加载
-                                Ext.Ajax.request({
-                                    url: comm.get('baseUrl') + "/SysOrg/doSyncAllDeptInfoToUp",
-                                    params: { },
-                                    timeout:1000*60*60*10,     //10个小时
-                                    success: function(response){
-                                        var result=JSON.parse(response.responseText);
-
-                                        if (result.success) {   
-                                            Ext.Msg.hide();                                
-                                            self.msgbox(result.msg);
-                                            //baseGrid.getStore().loadPage(1);
-                                                                            
-                                        } else {
-                                            Ext.Msg.hide(); 
-
-                                            self.Error(result.msg);
-                                            
-                                        }
-                                       
-                                       
-                                    },
-                                    failure: function(response, opts) {
-                                        Ext.Msg.hide(); 
-                                        self.Error("请求失败，请联系管理员！");                                    
-                                    }
-                                });                              
-                            },100);                           
-                        }
-                    });
-
+                beforeclick: function(btn) { 
+                    this.doSyncDeptToUp(btn); 
                     return false;
                 }
             },
@@ -286,51 +98,11 @@ Ext.define("core.system.dept.controller.MainController", {
            
             
             "panel[xtype=system.dept.maingrid]": {
-                checkchange: function(node, checked, options) {
-                    // if (node.data.leaf == false) {
-                    //     if (checked) {
-                    //         //打开节点
-                    //         node.expand();
-                    //         //遍历孩子
-                    //         node.eachChild(function(n) {
-                    //             n.set('checked', checked);
-                    //             //n.data.checked = true;
-                    //             // n.updateInfo({
-                    //             //  checked: true
-                    //             // });
-                    //         });
-                    //     } else {
-                    //         node.expand();
-                    //         node.eachChild(function(n) {
-                    //             n.set('checked', checked);
-                    //             // n.updateInfo({
-                    //             //  checked: false
-                    //             // });
-                    //         });
-                    //     }
-                    // } else { //单击叶子时候
-                    //     if (checked) { //未被选中时，取消父节点的选择状态
-                    //         //node.parentNode.set('checked', checked);
-                    //         //node.parentNode.data.checked = true;
-                    //         // node.parentNode.updateInfo({
-                    //         //  checked: true
-                    //         // });
-                    //     }
-                    // }
+                checkchange: function(node, checked, options) {                   
 
                     // node.expand(true);
                     node.expand();  //只展开第一层
-                    //递归选中父节点
-                    // var eachParent = function(node, checked) {
-                    //     if (!node.isRoot() && checked == true) {
-                    //         if (!Ext.isEmpty(node.get('checked'))) {
-                    //             node.set('checked', checked);
-                    //             node.commit();
-                    //         }
-                    //         eachParent(node.parentNode, checked);
-                    //     }
-                    // }
-                    // eachParent(node.parentNode, checked);
+                
                     //递归选中孩子节点
                     var eachChild = function(node, checked) {
                         node.eachChild(function(n) {
@@ -702,4 +474,196 @@ Ext.define("core.system.dept.controller.MainController", {
             }
         }); 
     },
+
+    hideFuncBtn:function(grid){    
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="DEPARTMENT";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                 btnAdd.setHidden(true);
+                 
+            }
+            if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                var btnEdit = grid.down("button[ref=gridEdit_Tab]");
+                 btnEdit.setHidden(true);
+              }
+            if(userBtn.indexOf(menuCode+"_gridDelete")==-1){
+                var btnDel = grid.down("button[ref=gridDelete]");
+                 btnDel.setHidden(true);
+              }
+            if(userBtn.indexOf(menuCode+"_sync")==-1){
+                var btnSync = grid.down("button[ref=sync]");
+                 btnSync.setHidden(true);
+                 
+            }
+            if(userBtn.indexOf(menuCode+"_gridSetJob")==-1){
+                var btnSetJob = grid.down("button[ref=gridSetJob]");
+                 btnSetJob.setHidden(true);
+              }
+            if(userBtn.indexOf(menuCode+"_gridSetMainJob")==-1){
+                var btnSetMainJob = grid.down("button[ref=gridSetMainJob]");
+                 btnSetMainJob.setHidden(true);
+              }
+        }    
+    },
+
+    disabledFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basetreegrid[xtype=system.dept.maingrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnEdit = basegrid.down("button[ref=gridEdit_Tab]");
+        var btnDelete = basegrid.down("button[ref=gridDelete]");
+        var btnsetJob = basegrid.down("button[ref=gridSetJob]");
+        var btnsetMainJob = basegrid.down("button[ref=gridSetMainJob]");
+        if (records.length == 0) {
+            btnEdit.setDisabled(true);
+            btnDelete.setDisabled(true);
+            btnsetJob.setDisabled(true);
+            btnsetMainJob.setDisabled(true);
+        } else if (records.length == 1) {
+            btnEdit.setDisabled(false);
+            btnDelete.setDisabled(false);
+            btnsetJob.setDisabled(false);
+            btnsetMainJob.setDisabled(false);
+        } else {
+            btnEdit.setDisabled(true);
+            btnDelete.setDisabled(false);
+            btnsetJob.setDisabled(true);
+            btnsetMainJob.setDisabled(false);
+        }
+    },
+
+    doDeleteDept:function(btn){
+        var self=this;
+        var baseGrid = btn.up("basetreegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        //得到配置信息
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        var records = baseGrid.getSelectionModel().getSelection();
+        //var records = baseGrid.getView().getChecked();
+        if (records.length == 0) {
+            self.msgbox("请选择要删除的部门");
+            return;
+        }
+        var ids = new Array();
+        Ext.each(records, function(rec) {
+            var pkValue = rec.get("id");
+            var deptType = rec.get("deptType");
+            var isSystem = rec.get("isSystem"); //系统内置
+            var isRight = rec.get("isRight"); //系统内置
+            var child = rec.childNodes.length;
+            if (child == 0 && deptType != "01" && deptType != "02" && isSystem!="1" && isRight=="1") {
+                //仅能删除无子部门而且类型不为学校的部门
+                ids.push(pkValue);
+            }
+        });
+        var title = "确定要删除所选的部门吗？";
+        if (ids.length == 0) {
+            self.msgbox("所选部门不符合要求，不能删除！<br/>不能删除的部门为：存在子部门、类别为学校/校区、系统内置、无部门权限");
+            return;
+        }
+        if (ids.length < records.length) {
+            title = "有些部门有子部门、无权限，仅删除符合条件的部门，确定执行吗？";
+        }
+
+        Ext.Msg.confirm('警告', title, function(btn, text) {
+            if (btn == 'yes') {                                                    
+
+                //显示loadMask
+                var myMask = self.LoadMask(baseGrid);
+                //提交入库
+                self.asyncAjax({
+                    url: funData.action + "/doDelete",
+                    params: {
+                        ids: ids.join(","),
+                        pkName: pkName
+                    },
+                    //loadMask:true,
+                    //回调代码必须写在里面
+                    success: function(response) {
+                        data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+
+                        if (data.success) { 
+                            baseGrid.getStore().load();
+                            self.msgbox(data.obj);
+
+                        }else{
+                            self.Error(data.obj);   
+                        }
+                        myMask.hide();
+                    },
+                    failure: function(response) {           
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);           
+                        myMask.hide();
+                    }
+                }); 
+
+            }
+        });
+    },
+
+    gridRefresh:function(btn){    
+        var baseGrid = btn.up("basetreegrid");
+        var funCode = baseGrid.funCode;
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
+        var funData = basePanel.funData;
+        var store = baseGrid.getStore();
+        var proxy = store.getProxy();
+      
+        store.load(); //刷新父窗体的grid
+        /*
+        store.load(function(records, operation, success) {    
+            if(baseGrid.getRootNode().childNodes.length>0){
+                baseGrid.getRootNode().childNodes[0].expand();   //展开第一层
+            }                
+        });*/
+    },
+
+    doSyncDeptToUp:function(btn){
+        var self=this;
+        //同步人员数据事件                        
+        var baseGrid = btn.up("grid");
+       
+        Ext.MessageBox.confirm('同步部门数据到UP', '您确定要执行同步部门数据到UP操作吗？', function(btn, text) {                  
+            if (btn == 'yes') {
+                
+                Ext.Msg.wait('正在同步部门数据，请等待...','提示');
+                
+                setTimeout(function(){
+
+                    //异步ajax加载
+                    Ext.Ajax.request({
+                        url: comm.get('baseUrl') + "/SysOrg/doSyncAllDeptInfoToUp",
+                        params: { },
+                        timeout:1000*60*60*10,     //10个小时
+                        success: function(response){
+                            var result=JSON.parse(response.responseText);
+
+                            if (result.success) {   
+                                Ext.Msg.hide();                                
+                                self.msgbox(result.msg);
+                                //baseGrid.getStore().loadPage(1);
+                                                                
+                            } else {
+                                Ext.Msg.hide(); 
+
+                                self.Error(result.msg);
+                                
+                            }
+                           
+                           
+                        },
+                        failure: function(response, opts) {
+                            Ext.Msg.hide(); 
+                            self.Error("请求失败，请联系管理员！");                                    
+                        }
+                    });                              
+                },100);                           
+            }
+        });
+
+    }
 });

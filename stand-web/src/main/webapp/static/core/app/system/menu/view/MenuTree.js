@@ -2,7 +2,7 @@ Ext.define("core.system.menu.view.MenuTree", {
 	extend: "core.base.view.BaseTreeGrid",
 	alias: "widget.system.menu.menutree",
 	dataUrl: comm.get('baseUrl') + "/SysMenu/treeList",
-	model: factory.ModelFactory.getModelByName("com.zd.school.plartform.system.model.SysMenuTree", "checked").modelName,
+	model: "com.zd.school.plartform.system.model.SysMenuTree",
 	al: true,
 	//menuCode:"MENUMANAGE",
 	//expandFirst:true,

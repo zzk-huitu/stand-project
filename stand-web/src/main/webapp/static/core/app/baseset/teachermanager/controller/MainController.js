@@ -14,60 +14,10 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
    control: {
             "basepanel basegrid[xtype=baseset.teachermanager.teachergrid]": {
                afterrender : function(grid) {
-                    if(comm.get("isAdmin")!="1"){
-                        var menuCode="TEACHERMANAGER";    
-                        var userBtn=comm.get("userBtn");
-                        if(userBtn.indexOf(menuCode+"_gridLock")==-1){
-                            var btnlock = grid.down("button[ref=gridLock]");
-                            btnlock.setHidden(true);
-
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
-                            var btnUnlock = grid.down("button[ref=gridUnLock]");
-                            btnUnlock.setHidden(true);
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
-                            var btnPwd = grid.down("button[ref=gridSetPwd]");
-                            btnPwd.setHidden(true);
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridExport")==-1){
-                            var btnExport = grid.down("button[ref=gridExport]");
-                            btnExport.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
-                            var btnSync = grid.down("button[ref=syncToUP]");
-                            btnSync.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                            var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
-                            btnUpdate.setHidden(true);                    
-                        }
-                        if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
-                            var btnAdd = grid.down("button[ref=gridAdd_Tab]");
-                            btnAdd.setHidden(true);                    
-                        }
-                    }
+                    this.hideFuncBtn(grid);
                 },
                 beforeitemclick: function(grid) {
-                    var basePanel = grid.up("basepanel");
-                    var basegrid = basePanel.down("basegrid[xtype=baseset.teachermanager.teachergrid]");
-                    var records = basegrid.getSelectionModel().getSelection();
-                    var btnLock = basegrid.down("button[ref=gridLock]");
-                    var btnUnLock = basegrid.down("button[ref=gridUnLock]");
-                    var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
-                    if (records.length == 0) {
-                        btnLock.setDisabled(true);
-                        btnUnLock.setDisabled(true);
-                        btnSetPwd.setDisabled(true);
-                    } else if (records.length == 1) {
-                        btnLock.setDisabled(false);
-                        btnUnLock.setDisabled(false);
-                        btnSetPwd.setDisabled(false);
-                    } else {
-                        btnLock.setDisabled(false);
-                        btnUnLock.setDisabled(false);
-                        btnSetPwd.setDisabled(false);
-                    }
+                    this.disabledFuncBtn(grid);
                 },
 
             },
@@ -491,4 +441,62 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
      });
 
    },
+
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="TEACHERMANAGER";    
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridLock")==-1){
+                var btnlock = grid.down("button[ref=gridLock]");
+                btnlock.setHidden(true);
+
+            }
+            if(userBtn.indexOf(menuCode+"_gridUnLock")==-1){
+                var btnUnlock = grid.down("button[ref=gridUnLock]");
+                btnUnlock.setHidden(true);
+            }
+            if(userBtn.indexOf(menuCode+"_gridSetPwd")==-1){
+                var btnPwd = grid.down("button[ref=gridSetPwd]");
+                btnPwd.setHidden(true);
+            }
+            if(userBtn.indexOf(menuCode+"_gridExport")==-1){
+                var btnExport = grid.down("button[ref=gridExport]");
+                btnExport.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_syncToUP")==-1){
+                var btnSync = grid.down("button[ref=syncToUP]");
+                btnSync.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
+                var btnUpdate = grid.down("button[ref=gridEdit_Tab]");
+                btnUpdate.setHidden(true);                    
+            }
+            if(userBtn.indexOf(menuCode+"_gridAdd_Tab")==-1){
+                var btnAdd = grid.down("button[ref=gridAdd_Tab]");
+                btnAdd.setHidden(true);                    
+            }
+        }
+    },
+
+    disabledFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=baseset.teachermanager.teachergrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnLock = basegrid.down("button[ref=gridLock]");
+        var btnUnLock = basegrid.down("button[ref=gridUnLock]");
+        var btnSetPwd = basegrid.down("button[ref=gridSetPwd]");
+        if (records.length == 0) {
+            btnLock.setDisabled(true);
+            btnUnLock.setDisabled(true);
+            btnSetPwd.setDisabled(true);
+        } else if (records.length == 1) {
+            btnLock.setDisabled(false);
+            btnUnLock.setDisabled(false);
+            btnSetPwd.setDisabled(false);
+        } else {
+            btnLock.setDisabled(false);
+            btnUnLock.setDisabled(false);
+            btnSetPwd.setDisabled(false);
+        }
+    }
 });

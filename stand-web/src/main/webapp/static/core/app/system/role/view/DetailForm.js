@@ -1,15 +1,15 @@
 Ext.define("core.system.role.view.DetailForm", {
     extend: "core.base.view.BaseForm",
     alias: "widget.system.role.deailform",
-    layout: "form",  
-    autoHeight: true,
-    frame: false,
+
     fieldDefaults: { // 统一设置表单字段默认属性
+        xtype : 'textfield',
         labelSeparator: '：', // 分隔符
         msgTarget: 'qtip',
         labelAlign: "right",
         labelWidth:80
     },
+    
     items: [{
         fieldLabel: '主键',
         name: "uuid",

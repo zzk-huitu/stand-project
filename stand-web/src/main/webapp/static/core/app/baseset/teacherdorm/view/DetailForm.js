@@ -76,7 +76,7 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
             fieldLabel: "工号",
             name: "userNumb",
             allowBlank: false,
-            blankText: "房间名称不能为空",
+            blankText: "工号不能为空",
             readOnly:true
         }]
     },{
@@ -89,7 +89,7 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
             fieldLabel: "床号",
             name: "bedCount",
             allowBlank: false,
-            blankText: "房间名称不能为空",
+            blankText: "床号不能为空",
          },{
             columnWidth:0.5,
             beforeLabelTextTpl: comm.get('required'),
@@ -97,7 +97,7 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
             fieldLabel: "柜号",
             name: "arkCount",
             allowBlank: false,
-            blankText: "房间名称不能为空",
+            blankText: "柜号不能为空",
         }]
     }]
 });

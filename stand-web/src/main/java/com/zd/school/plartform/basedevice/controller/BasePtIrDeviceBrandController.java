@@ -35,8 +35,8 @@ import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 水控流量计表
- * @author hucy
+ * 红外设备品牌型号
+ * @author Administrator
  *
  */
 @Controller
@@ -51,8 +51,7 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 	CommTreeService treeService;
 
 	/**
-	 * 生成树
-	 * 
+	 * 品牌树
 	 * @param request
 	 * @param response
 	 * @throws IOException
