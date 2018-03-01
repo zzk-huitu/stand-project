@@ -44,8 +44,16 @@ Ext.define("core.basedevice.baserate.view.SkDataGrid", {
         width:80
     },{
         text: "当前费率",
-        dataIndex: "skprice",
-        width:80
+        dataIndex: "price",
+        width:80,
+        renderer:function(value,matedate,record){
+            if(record.get("termTypeID")==8){
+              return record.get("skprice");
+            }else if(record.get("termTypeID")==9){
+              return record.get("dkprice");
+          }
+
+      }
     }],
     viewConfig: {
         plugins: {
