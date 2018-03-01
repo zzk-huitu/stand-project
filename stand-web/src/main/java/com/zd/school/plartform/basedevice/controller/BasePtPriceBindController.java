@@ -136,7 +136,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 				 PtPriceBind entity = thisService.getEntityByHql(hql);
 				 thisService.delete(entity);
 			}
-		  
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 		}
 	}
 	/**
