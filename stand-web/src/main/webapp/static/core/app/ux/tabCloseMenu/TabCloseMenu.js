@@ -197,7 +197,7 @@ Ext.define('Ext.ux.TabCloseMenu', {
     },
  
     onClose : function(){
-        console.log(this.item);
+        //console.log(this.item);
         this.tabPanel.remove(this.item);
     },
  
@@ -211,7 +211,7 @@ Ext.define('Ext.ux.TabCloseMenu', {
  
     doClose : function(excludeActive){
         var items = [];
-    
+        
         this.tabPanel.items.each(function(item){
             if(item.closable){
                 if(!excludeActive || item !== this.item){

@@ -84,6 +84,7 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             hidden: true
         }]
     },
+    /*
     listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("panel[xtype=basedevice.irdevice.mainlayout]");
@@ -115,5 +116,5 @@ Ext.define("core.basedevice.irdevice.view.IrBrandTreeGrid", {
             store.loadPage(1); // 给form赋值
             return false;
         }
-    }
+    }*/
 });

@@ -60,7 +60,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 */
-	@Auth("PtRoombagStatus_look")
+	//查询方法不用设置@Auth("PtRoombagStatus_look")
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void list(@ModelAttribute PtTerm entity, HttpServletRequest request, HttpServletResponse response)
@@ -175,9 +175,13 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * MjUserright @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 修改设备数据
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("DEVICEALLOT_update")
 	@RequestMapping("/doUpdate")
@@ -193,9 +197,13 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 	}
 
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 移除房间设备，将房间ID置为空
+	 * @param uuid
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("DEVICEALLOT_delete")
 	@RequestMapping("/doDelete")
@@ -625,7 +633,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		}
 	}
 	/**
-	 * 获取某个区域下的所有房间数据
+	 * 获取某个区域下的所有房间数据（只查询出已定义的房间）
 	 * 
 	 * @param roomId
 	 * @param roomLeaf
@@ -640,7 +648,7 @@ public class BasePtTermController extends FrameWorkController<PtTerm> implements
 		List<String> lists = thisService.queryEntityByHql(hql);
 		if (lists.size() > 0) {
 			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
-			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.areaId in (" + areaIds + ")";
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType!='0' and a.areaId in (" + areaIds + ")";
 			result = thisService.queryEntityByHql(hql);
 		}
 

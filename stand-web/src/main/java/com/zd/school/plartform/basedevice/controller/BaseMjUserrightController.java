@@ -33,14 +33,9 @@ import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.teacher.teacherinfo.model.ViewUserRoom;
 
 /**
- * 
- * ClassName: MjUserrightController Function: TODO ADD FUNCTION. Reason: TODO
- * ADD REASON(可选). Description: 门禁权限表(MJ_UserRight)实体Controller. date:
- * 2016-09-08
+ * 门禁权限
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 @Controller
 @RequestMapping("/BaseMjUserright")

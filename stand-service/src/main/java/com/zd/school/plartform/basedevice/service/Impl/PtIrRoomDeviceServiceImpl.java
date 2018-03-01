@@ -1,5 +1,7 @@
 package com.zd.school.plartform.basedevice.service.Impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -34,5 +36,35 @@ public class PtIrRoomDeviceServiceImpl extends BaseServiceImpl<PtIrRoomDevice> i
 	 }
 		
 	 private static Logger logger = Logger.getLogger(PtIrRoomDeviceServiceImpl.class);
+
+	@Override
+	public void doBindRoomBrand(String roomIds, String brandIds, String xm) {
+		
+		String[] roomId = roomIds.split(",");
+		String[] brandId = brandIds.split(",");
+		// TODO Auto-generated method stub
+		PtIrRoomDevice roomDevice = null;
+		for (int i = 0; i < brandId.length; i++) {
+			for (int j = 0; j < roomId.length; j++) {
+				String[] name = { "roomId", "brandId" };
+				String[] value = { roomId[j], brandId[i] };
+				roomDevice = this.getByProerties(name, value);
+				if (roomDevice != null) {
+					roomDevice.setBrandId(brandId[i]);
+					roomDevice.setUpdateTime(new Date());
+					roomDevice.setIsDelete(0);
+					roomDevice.setUpdateUser(xm);
+					this.merge(roomDevice);
+				} else {
+					roomDevice = new PtIrRoomDevice();
+					roomDevice.setBrandId(brandId[i]);
+					roomDevice.setRoomId(roomId[j]);
+					roomDevice.setCreateTime(new Date());
+					roomDevice.setCreateUser(xm);
+					this.merge(roomDevice);
+				}
+			}
+		}
+	}
 	
 }

@@ -46,6 +46,7 @@ Ext.define("core.basedevice.smartdevice.view.RoominfoTree", {
             hidden: true
         }]
     },
+    /*
     listeners: {
         itemclick: function (tree, record, item, index, e, eOpts) {
         	var mainLayout = tree.up("panel[xtype=basedevice.smartdevice.mainlayout]");
@@ -86,5 +87,5 @@ Ext.define("core.basedevice.smartdevice.view.RoominfoTree", {
             return false;
         	
         }
-    }
+    }*/
 });

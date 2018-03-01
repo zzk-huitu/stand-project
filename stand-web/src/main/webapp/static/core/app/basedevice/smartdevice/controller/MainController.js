@@ -12,18 +12,25 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
     init: function() {
     },
     control: {
+        "basetreegrid[xtype=basedevice.smartdevice.roominfotree] ": {
+                /*
+                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                    1. 附带树节点的相关参数
+                    2. 当存在basegrid的默认参数，则附带上去
+                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+                */
+                itemclick: function(tree, record, item, index, e, eOpts) {                   
+                    this.loadMainGridStore(tree,record);   
+                    return false;
+               }
+        },
+
+
         //区域列表刷新按钮事件
         "basetreegrid[xtype=basedevice.smartdevice.roominfotree] button[ref=gridRefresh]": {
             click: function(btn) {
-                var baseGrid = btn.up("basetreegrid");
-                var store = baseGrid.getStore();
-                store.load(); //刷新父窗体的grid
-                var mainlayout = btn.up("basepanel[xtype=basedevice.smartdevice.mainlayout]");
-                var mianGrid = mainlayout.down("basegrid[xtype=basedevice.smartdevice.maingrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId="";
-                proxy.extraParams.roomLeaf="";
+                this.refreshTreeStore(btn);
                 return false;
             }
         },
@@ -650,6 +657,57 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);   
            
+    },
+
+    loadMainGridStore:function(tree,record){
+        var mainLayout = tree.up("panel[xtype=basedevice.smartdevice.mainlayout]");
+        var funData = mainLayout.funData;
+        mainLayout.funData = Ext.apply(funData, {
+            roomId: record.get("id"),
+            leaf : record.get("leaf"),//true: 房间 false:区域
+            arealevel: record.get("level"),
+        });
+        // 加载房间的人员信息
+        var mianGrid = mainLayout.down("panel[xtype=basedevice.smartdevice.maingrid]");
+        var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "termName", "comparison": ""})
+        }
+        if(filter.length==0)
+            filter=null;
+        else
+            filter = JSON.stringify(filter);
+        //获取点击树节点的参数
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf,
+            filter:filter
+        };
+       // proxy.extraParams.roomId=roomId;
+        store.loadPage(1);
+    },
+
+
+    refreshTreeStore:function(btn){        
+        var baseGrid = btn.up("basetreegrid");
+        var store = baseGrid.getStore();
+        store.load(); //刷新父窗体的grid
+        var mainlayout = btn.up("basepanel[xtype=basedevice.smartdevice.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=basedevice.smartdevice.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.roomId="";
+        proxy.extraParams.roomLeaf="";
     }
     
     

@@ -136,70 +136,51 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+	
+	/**
+	 * 区域和房间树
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping("/treelist")
 	public void getTreeList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = "";
 		String whereSql = request.getParameter("whereSql");
-		List<CommTree> lists = treeService.getCommTree("JW_V_AREAROOMINFOTREE", whereSql);
+		//List<CommTree> lists = treeService.getCommTree("JW_V_AREAROOMINFOTREE", whereSql);
+		//只显示已定义的房间
+		List<CommTree> lists = treeService.getCommTree("JW_V_AREAROOMINFOTREE_DEFINED", whereSql);
 		strData = JsonBuilder.getInstance().buildList(lists, "");// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 
 	/**
-	 * 
-	 * @Title: doadd
-	 * @Description: 增加新实体信息至数据库
-	 * @param PtIrRoomDevice
-	 *            实体类
+	 * 将设备绑定到房间
+	 * @param entity
 	 * @param request
 	 * @param response
-	 * @return void 返回类型
 	 * @throws IOException
-	 *             抛出异常
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("PTIRROOMDEVICE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(PtIrRoomDevice entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		String[] roomId = entity.getRoomId().split(",");
-		String[] brandId = entity.getBrandId().split(",");
+		
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-		PtIrRoomDevice roomDevice = null;
-		for (int i = 0; i < brandId.length; i++) {
-			for (int j = 0; j < roomId.length; j++) {
-				String[] name = { "roomId", "brandId" };
-				String[] value = { roomId[j], brandId[i] };
-				roomDevice = thisService.getByProerties(name, value);
-				if (roomDevice != null) {
-					roomDevice.setBrandId(brandId[i]);
-					roomDevice.setUpdateTime(new Date());
-					roomDevice.setIsDelete(0);
-					roomDevice.setUpdateUser(currentUser.getXm());
-					thisService.merge(roomDevice);
-				} else {
-					roomDevice = new PtIrRoomDevice();
-					roomDevice.setBrandId(brandId[i]);
-					roomDevice.setRoomId(roomId[j]);
-					roomDevice.setCreateTime(new Date());
-					roomDevice.setCreateUser(currentUser.getXm());
-					thisService.merge(roomDevice);
-				}
-			}
-		}
+		
+		thisService.doBindRoomBrand(entity.getRoomId(),entity.getBrandId(),currentUser.getXm());
+			
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"绑定成功\""));
 	}
 
 	/**
-	 * 
-	 * @Title: doDelete
-	 * @Description: 逻辑删除指定的数据
+	 * 解绑
 	 * @param request
 	 * @param response
-	 * @return void 返回类型
 	 * @throws IOException
-	 *             抛出异常
 	 */
 	@Auth("PTIRROOMDEVICE_delete")
 	@RequestMapping("/doDelete")
@@ -391,7 +372,7 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		return "失败";
 	}
 	/**
-	 * 获取某个区域下的所有房间数据
+	 * 获取某个区域下的所有房间数据（只查询出已定义的房间）
 	 * 
 	 * @param roomId
 	 * @param roomLeaf
@@ -406,7 +387,7 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		List<String> lists = thisService.queryEntityByHql(hql);
 		if (lists.size() > 0) {
 			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
-			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.areaId in (" + areaIds + ")";
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType!='0' and a.areaId in (" + areaIds + ")";
 			result = thisService.queryEntityByHql(hql);
 		}
 
