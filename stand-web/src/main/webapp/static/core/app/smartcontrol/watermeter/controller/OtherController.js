@@ -29,6 +29,13 @@ Ext.define("core.smartcontrol.watermeter.controller.OtherController", {
                 return false;
             }
         },
+           //费率设备删除
+        "basegrid[xtype=smartcontrol.watermeter.meterbinggrid] button[ref=gridDelete]": {
+            beforeclick: function(btn) {
+                this.deleteMeterBingTerm(btn);
+                return false;
+             },
+         },
     },
 
 
@@ -43,13 +50,27 @@ Ext.define("core.smartcontrol.watermeter.controller.OtherController", {
         var tabItem = tabPanel.getComponent(tabItemId);   //当前tab页
 
         var deviceGrid = basetab.down('panel[xtype=smartcontrol.watermeter.deviceselsectgrid]');
-        var selectGrid = deviceGrid.getSelectionModel().getSelection();
-
-        if(selectGrid.length<1){
+       /* var selectGrid = deviceGrid.getSelectionModel().getSelection();
+         if(selectGrid.length<1){
             self.msgbox("请选择绑定汇率的设备!");
             return false;
-        }
-
+        }*/
+       var getCount = deviceGrid.getStore().getCount();
+       if (getCount <= 0) {
+            self.msgbox("有数据才能继续操作!");
+            return;
+       } 
+        //汇率规则
+        var meterId = tabItem.itemPKV;
+        //获取设置指定扣费的房间
+       var termId =new Array();  
+       var termSn =new Array();
+       var isSelectStore = deviceGrid.getStore();
+        for (var i = 0; i < getCount; i++) {
+             var record = isSelectStore.getAt(i);
+             termId.push(record.get('uuid'));
+             termSn.push(record.get('termSN'))
+        };
         Ext.Msg.confirm('提示', "您确定要绑定这些设备吗？", function (btn2, text) {
             if (btn2 == 'yes') {
 
@@ -58,19 +79,8 @@ Ext.define("core.smartcontrol.watermeter.controller.OtherController", {
                     removeMask: true// 完成后移除
                 });
                 loading.show();
-
-                 //汇率规则
-                var meterId = tabItem.itemPKV;
-                //获取设置指定扣费的房间
-                var termId =new Array();  
-                var termSn =new Array();    
-                for(var i=0;i<selectGrid.length;i++){
-                    termId.push(selectGrid[i].get('uuid'));
-                    termSn.push(selectGrid[i].get('termSN'));
-                }
-
                 self.asyncAjax({
-                    url: comm.get('baseUrl') + "/BasePtPriceBind/doAdd",
+                    url: comm.get('baseUrl') + "/BasePtSkMeterbind/doAdd",
                     params: {
                         termId: termId,
                         termSn:termSn,
@@ -109,12 +119,12 @@ Ext.define("core.smartcontrol.watermeter.controller.OtherController", {
             meterInfoContainer.setData(recordData);
 
             self.asyncAjax({
-                url: comm.get("baseUrl") + "/BasePtPriceBind/list",
+                url: comm.get("baseUrl") + "/BasePtSkMeterbind/list",
                 params: {
                     page: 1,
                     start: 0,
                     limit: 0,
-                    filter: "[{'type':'string','comparison':'=','value':'" + recordData.uuid + "','field':'priceId'}]",
+                    filter: "[{'type':'string','comparison':'=','value':'" + recordData.uuid + "','field':'meterId'}]",
                 },
                 success: function (response) {
                     var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
@@ -125,6 +135,44 @@ Ext.define("core.smartcontrol.watermeter.controller.OtherController", {
         }
 
         
-    }
+    },
+    deleteMeterBingTerm:function(btn){
+        var self=this;
+
+        var baseGrid = btn.up("basegrid");
+        //选择的设备
+        var selectTerm= baseGrid.getSelectionModel().getSelection();
+        if (selectTerm.length == 0) {
+            self.msgbox("没有选择要删除的设备，请选择!");
+            return false;
+        }
+       
+        //拼装所选择的设备
+        var termIds = new Array();
+        Ext.each(selectTerm, function(rec) {
+            var pkValue = rec.get("uuid");
+            termIds.push(pkValue);
+        });
+        var title = "确定删除绑定该计量的设备吗？";
+        Ext.Msg.confirm('警告', title, function(btn, text) {
+            if (btn == 'yes') {
+                //发送ajax请求
+                var resObj = self.ajax({
+                    url: comm.get('baseUrl') + "/BasePtSkMeterbind/doPtTermDelete",
+                    params: {
+                        termIds: termIds.join(","),
+                     }
+                });
+                if (resObj.success) {
+                    var store = baseGrid.getStore();
+                    store.load();
+                    self.msgbox(resObj.obj);
+                } else {
+                    self.Error(resObj.obj);
+                }
+            }
+        });
+       
+    },
 
 });
