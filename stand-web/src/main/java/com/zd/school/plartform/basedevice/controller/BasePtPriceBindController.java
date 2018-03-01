@@ -71,7 +71,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		for(PtPriceBind priceBind:qr.getResultList()){
 			termId.append(priceBind.getTermId()+",");
 		}
-		String filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + termId.substring(0, termId.length() - 1)
+		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + termId.substring(0, termId.length() - 1)
 			+ "\",\"field\":\"uuid\"}]";
 		
 		QueryResult<PtTerm> termQr = ptTermService.queryPageResult(super.start(request), super.limit(request),
@@ -132,7 +132,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		} else {
 			String[] ids =termIds.split(",");
 			for(int i=0;i<ids.length;i++){
-				 String hql = " select * from PtPriceBind where termId = "+"'ids[i]'";
+				 String hql = " from PtPriceBind where termId = '"+ ids[i]+"'";
 				 PtPriceBind entity = thisService.getEntityByHql(hql);
 				 thisService.delete(entity);
 			}

@@ -43,15 +43,11 @@ Ext.define("core.basedevice.baserate.view.PriceBingGrid", {
             flex:1,
         }, {
             text: "设备序列号",
-            dataIndex: "termSn",
+            dataIndex: "termSN",
             flex:1,
         },{
             text: "设备名称",
             dataIndex: "termName",
-            flex:1,
-        }, {
-            text: "设备类型",
-            dataIndex: "termTypeID",
             flex:1,
         },{
             text: "房间名称",
@@ -65,6 +61,16 @@ Ext.define("core.basedevice.baserate.view.PriceBingGrid", {
             text: "设备状态",
             dataIndex: "termStatus",
             flex:1,
+            renderer: function(value) {
+                switch (value) {
+                  case 0:
+                    return '<font color=red>禁用</font>';
+                    break;
+                  case 1:
+                    return '<font color=green>启用</font>';                    
+                    break;
+                }
+            }
         }]
     }
 });
