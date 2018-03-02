@@ -47,7 +47,11 @@ Ext.define("core.smartcontrol.roomuserauthority.controller.MainController", {
                 var proxy = store.getProxy();
 
                 //获取右边筛选框中的条件数据
-                var querySql2=self.getFastSearchFilter(storeGrid);            
+                var filter=self.getFastSearchFilter(storeGrid);            
+                if(filter.length!=0)
+                    filter = JSON.stringify(filter);
+                else
+                    filter = "";
 
                 //获取点击树节点的参数            
                 var roomId= record.get("id");
@@ -61,7 +65,8 @@ Ext.define("core.smartcontrol.roomuserauthority.controller.MainController", {
                 proxy.extraParams={
                     roomId:roomId,
                     roomLeaf:roomLeaf,
-                    querySql2:querySql2
+                    //querySql2:querySql2,
+                    filter:filter
                 }
                 store.loadPage(1); 
                 return false;
@@ -90,25 +95,41 @@ Ext.define("core.smartcontrol.roomuserauthority.controller.MainController", {
         var toolBar = btn.up("toolbar");    
 
         //获取快速搜索框的值    
-        var querySql2=self.getFastSearchFilter(toolBar);
-
+        var filter=self.getFastSearchFilter(toolBar);
+        
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.querySql2 =  querySql2 ;
+
+        if(filter.length!=0)
+            filter = JSON.stringify(filter);
+        else
+            filter = "";
+        //proxy.extraParams.querySql2 =  querySql2 ;
+        proxy.extraParams.filter = filter;
         store.loadPage(1);
     },
 
     getFastSearchFilter:function(cpt){
         var girdSearchTexts = cpt.query("field[funCode=girdFastSearchText]");
-        var querySql="";
         var value1 =girdSearchTexts[0].getValue();
         var value2 =girdSearchTexts[1].getValue();
+
+        var filter=new Array();
+        if(value1){
+            filter.push({"type": "string", "value": value1, "field": "xm", "comparison": ""})
+        }
+        if(value2){
+            filter.push({"type": "string", "value": value2, "field": "termName", "comparison": ""})
+        }
+
+        /*
+        var querySql="";
         if(value1){    
             querySql+=" and XM like '%"+value1+"%'";
         }
         if(value2){
             querySql+=" and ROOM_NAME like '%"+value2+"%'";
-        }
-        return querySql;
+        }*/
+        return filter;
     }
 });

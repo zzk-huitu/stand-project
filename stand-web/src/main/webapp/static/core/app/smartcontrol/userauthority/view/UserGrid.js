@@ -17,7 +17,7 @@ Ext.define("core.smartcontrol.userauthority.view.UserGrid", {
         direction: 'ASC'
     }],
     extParams: {
-        filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]'
+        //filter: '[{"type":"string","comparison":"=","value":"1","field":"category"}]'
     },
 	selModel:null,
     panelTopBar:{

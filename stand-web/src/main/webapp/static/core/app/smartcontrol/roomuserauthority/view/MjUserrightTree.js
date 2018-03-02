@@ -1,10 +1,11 @@
 Ext.define("core.smartcontrol.roomuserauthority.view.MjUserrightTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.smartcontrol.roomuserauthority.mjuserrighttree",
-    dataUrl: comm.get('baseUrl') + "/BaseMjUserright/treelist",
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
     model: "com.zd.school.plartform.comm.model.CommTree",
     expandFirst:true,
     sortableColumns:false,
+    selModel:null,
     /*
     selModel: {
         mode : 'single',

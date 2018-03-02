@@ -1,7 +1,7 @@
 Ext.define("core.smartcontrol.userauthority.view.DeptTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.smartcontrol.userauthority.depttree",
-    dataUrl: comm.get('baseUrl') + "/SysOrg/treeList",
+    dataUrl: comm.get('baseUrl') + "/SysOrg/getUserRightDeptTree",
     model: factory.ModelFactory.getModelByName("com.zd.school.plartform.baseset.model.BaseOrgTree", "checked").modelName,
     al: true,
     expandFirst:true,

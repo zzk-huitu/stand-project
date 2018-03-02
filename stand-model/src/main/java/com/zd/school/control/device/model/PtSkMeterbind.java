@@ -29,7 +29,7 @@ public class PtSkMeterbind extends BaseEntity implements Serializable{
     @Column(name = "TERMSN", length = 14, nullable = true)
     private String termSn;
    
-    @FieldInfo(name = "费率编号")
+    @FieldInfo(name = "水控流量计编号")
     @Column(name = "METER_ID", length = 36, nullable = true)
     private String meterId;
 

@@ -14,31 +14,11 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
     control: {
     	     "basepanel basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid]": {
               afterrender : function(grid) {
-                if(comm.get("isAdmin")!="1"){
-                    var menuCode="USERACCESS";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_selectPersonnel")==-1){
-                        var btnSelPer = grid.down("button[ref=selectPersonnel]");
-                          if(btnSelPer){
-                          btnSelPer.setHidden(true);
-                         }
-                     }
-                 }
+                  this.hideFuncBtn(grid);
                   return false;
             },
             beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnPersonnel = basegrid.down("button[ref=selectPersonnel]");
-                if (records.length == 0) {
-                  btnPersonnel.setDisabled(true);
-                } else if (records.length == 1) {
-                  btnPersonnel.setDisabled(false);
-                } else {
-                  btnPersonnel.setDisabled(false);
-
-                }
+                this.disabledFuncBtn(grid);              
                 return false;
             },
 
@@ -47,43 +27,11 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
 
           "basepanel basegrid[xtype=smartcontrol.useraccess.maingrid]": {
             afterrender : function(grid) {
-              if(comm.get("isAdmin")!="1"){
-                    var menuCode="USERACCESS";     // 此菜单的前缀
-                    var userBtn=comm.get("userBtn");
-                    if(userBtn.indexOf(menuCode+"_gridDeletePer")==-1){
-                      var btnDel = grid.down("button[ref=gridDeletePer]");
-                      if(btnDel){
-                        btnDel.setHidden(true);
-                      }
-
-                    }
-                    if(userBtn.indexOf(menuCode+"_gridDeleteAll")==-1){
-                        var btnDelALL = grid.down("button[ref=gridDeleteAll]");
-                        if(btnDelALL){
-                          btnDelALL.setHidden(true);
-                        }
-                      }
-
-                 }
+                this.hideMainFuncBtn(grid);              
                 return false;
               },
               beforeitemclick: function(grid) {
-                var basePanel = grid.up("basepanel");
-                var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.maingrid]");
-                var records = basegrid.getSelectionModel().getSelection();
-                var btnDeletePer = basegrid.down("button[ref=gridDeletePer]");
-                var btnDeleteAll = basegrid.down("button[ref=gridDeleteAll]");
-                if (records.length == 0) {
-                  btnDeletePer.setDisabled(true);
-                  btnDeleteAll.setDisabled(true);
-                } else if (records.length == 1) {
-                  btnDeletePer.setDisabled(false);
-                  btnDeleteAll.setDisabled(false);
-                } else {
-                  btnDeletePer.setDisabled(false);
-                  btnDeleteAll.setDisabled(true);
-
-                }
+                this.disabledMainFuncBtn(grid);
                 return false;
               },
 
@@ -92,12 +40,7 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
     	//房间列表刷新按钮
     	"basetreegrid[xtype=smartcontrol.useraccess.roominfotree] button[ref=gridRefresh]": {
           beforeclick: function(btn) {
-             btn.up('basetreegrid').getStore().load();
-             var baseGrid = btn.up("basetreegrid");
-             var mainLayout= baseGrid.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
-             var mjuserrightGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
-             var mjuserrightstore = mjuserrightGrid.getStore();
-             mjuserrightstore.removeAll();
+            this.refreshTermGridStore(btn);
              return false;
           }
         },
@@ -110,34 +53,7 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
                 4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
             */
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
-
-                Ext.apply(mainLayout.funData, {
-                    roomId: record.get("id"),
-                    leaf : record.get("leaf"),//true: 房间 false:区域
-                    arealevel: record.get("level"),
-                });
-                         
-
-                var storeGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取点击树节点的参数            
-                var roomId= record.get("id");
-                var roomLeaf=record.get("leaf");
-                if(roomLeaf==true)
-                    roomLeaf="1";
-                else
-                    roomLeaf="0";
-
-                //附带参赛
-                proxy.extraParams={
-                    roomId:roomId,
-                    roomLeaf:roomLeaf
-                }
-                store.loadPage(1); 
+                this.loadTermGridStore(tree,record);
                 return false;
            }
         },
@@ -252,7 +168,20 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
               funCode: detCode,
               insertObj: insertObj,        
               items: [{
-                xtype: "pubselect.selectuserlayout"
+                xtype: "pubselect.selectuserlayout",
+                items: [{
+                    xtype:'pubselect.selectusergrid',
+                    //width:600,
+                    flex:1,
+                    region: "center",
+                    margin:'5',
+                    extParams:null
+                }, {
+                    xtype: "pubselect.isselectusergrid",
+                    region: "east",
+                    width:260,
+                    margin:'5'
+                }]
               }]
             }).show();
 
@@ -394,6 +323,112 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
             self.msgbox("请选择数据");
         }
     },  
+
+    hideFuncBtn:function(grid){  
+      if(comm.get("isAdmin")!="1"){
+          var menuCode="USERACCESS";     // 此菜单的前缀
+          var userBtn=comm.get("userBtn");
+          if(userBtn.indexOf(menuCode+"_selectPersonnel")==-1){
+              var btnSelPer = grid.down("button[ref=selectPersonnel]");
+                if(btnSelPer){
+                btnSelPer.setHidden(true);
+               }
+           }
+       }
+    },
+
+    disabledFuncBtn:function(grid){
+      var basePanel = grid.up("basepanel");
+      var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.mjuserrightgrid]");
+      var records = basegrid.getSelectionModel().getSelection();
+      var btnPersonnel = basegrid.down("button[ref=selectPersonnel]");
+      if (records.length == 0) {
+        btnPersonnel.setDisabled(true);
+      } else if (records.length == 1) {
+        btnPersonnel.setDisabled(false);
+      } else {
+        btnPersonnel.setDisabled(false);
+      }
+    },
+
+    hideMainFuncBtn:function(grid){
+      if(comm.get("isAdmin")!="1"){
+        var menuCode="USERACCESS";     // 此菜单的前缀
+        var userBtn=comm.get("userBtn");
+        if(userBtn.indexOf(menuCode+"_gridDeletePer")==-1){
+          var btnDel = grid.down("button[ref=gridDeletePer]");
+          if(btnDel){
+            btnDel.setHidden(true);
+          }
+
+        }
+        if(userBtn.indexOf(menuCode+"_gridDeleteAll")==-1){
+            var btnDelALL = grid.down("button[ref=gridDeleteAll]");
+            if(btnDelALL){
+              btnDelALL.setHidden(true);
+            }
+        }
+      }
+    },
+
+    disabledMainFuncBtn:function(grid){  
+        var basePanel = grid.up("basepanel");
+        var basegrid = basePanel.down("basegrid[xtype=smartcontrol.useraccess.maingrid]");
+        var records = basegrid.getSelectionModel().getSelection();
+        var btnDeletePer = basegrid.down("button[ref=gridDeletePer]");
+        var btnDeleteAll = basegrid.down("button[ref=gridDeleteAll]");
+        if (records.length == 0) {
+          btnDeletePer.setDisabled(true);
+          btnDeleteAll.setDisabled(true);
+        } else if (records.length == 1) {
+          btnDeletePer.setDisabled(false);
+          btnDeleteAll.setDisabled(false);
+        } else {
+          btnDeletePer.setDisabled(false);
+          btnDeleteAll.setDisabled(true);
+
+        }
+    },
+
+    refreshTermGridStore:function(btn){
+       btn.up('basetreegrid').getStore().load();
+       var baseGrid = btn.up("basetreegrid");
+       var mainLayout= baseGrid.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
+       var mjuserrightGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
+       var mjuserrightstore = mjuserrightGrid.getStore();
+       mjuserrightstore.removeAll();
+    },
+
+    loadTermGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=smartcontrol.useraccess.mainlayout]");
+
+        Ext.apply(mainLayout.funData, {
+            roomId: record.get("id"),
+            leaf : record.get("leaf"),//true: 房间 false:区域
+            arealevel: record.get("level"),
+        });
+                 
+
+        var storeGrid = mainLayout.down("panel[xtype=smartcontrol.useraccess.mjuserrightgrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取点击树节点的参数            
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf
+        }
+        store.loadPage(1); 
+    }
       
       
 });

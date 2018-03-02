@@ -71,7 +71,7 @@ public class MjUserright extends BaseEntity implements Serializable {
 	@JsonSerialize(using = DateTimeSerializer.class)
 	private Date statuschangeTime;
 
-	@FieldInfo(name = "学生名称")
+	@FieldInfo(name = "人员姓名")
 	@Formula("(SELECT A.XM FROM dbo.SYS_T_USER A WHERE A.USER_ID=STU_ID)")
 	private String xm;
 
@@ -82,7 +82,11 @@ public class MjUserright extends BaseEntity implements Serializable {
 	@FieldInfo(name = "设备序列号")
 	@Formula("(SELECT A.TERMSN FROM dbo.PT_TERM A WHERE A.TERM_ID=TERM_ID)")
 	private String termSN;
-
+	
+	@FieldInfo(name = "房间名称")
+	@Formula("(select a.ROOM_NAME from BUILD_T_ROOMINFO a where a.ROOM_ID=(select b.ROOM_ID from PT_TERM b where b.TERM_ID=TERM_ID) )")
+	private String roomName;
+	
 	public String getStuId() {
 		return stuId;
 	}
@@ -178,6 +182,16 @@ public class MjUserright extends BaseEntity implements Serializable {
 	public void setTermSN(String termSN) {
 		this.termSN = termSN;
 	}
+
+	public String getRoomName() {
+		return roomName;
+	}
+
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
+	}
+	
+	
 
 	/**
 	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加

@@ -15,44 +15,13 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
     control: {
       "basetreegrid[xtype=smartcontrol.userauthority.depttree] button[ref=gridRefresh]": {
           beforeclick: function(btn) {
-             btn.up('basetreegrid').getStore().load();
-             var baseGrid = btn.up("basetreegrid");
-             var mainlayout = baseGrid.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
-             var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.userauthority.usergrid]");
-             var store = mianGrid.getStore();
-             var proxy = store.getProxy();
-             proxy.extraParams.deptId="";
+              this.refreshTreeStore(btn);
              return false;
          }
       },
       "basetreegrid[xtype=smartcontrol.userauthority.depttree]": {
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
-                var funData = mainLayout.funData;
-                funData = Ext.apply(funData, {
-                  deptId: record.get("id"),
-                /*isRight:record.get("isRight"),
-                deptType:record.get("deptType")*/
-              });
-
-                var storeGrid = mainLayout.down("panel[xtype=smartcontrol.userauthority.usergrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取右边筛选框中的条件数据
-                var filter=self.getFastSearchFilter(storeGrid);
-                filter.push({"type":"string","comparison":"=","value":"1","field":"category"})
-                if(filter.length==0)
-                    filter=null;
-                else
-                    filter = JSON.stringify(filter); 
-                 //附带参赛
-                proxy.extraParams = {
-                  deptId: record.get("id"),
-                  filter:filter
-                };
-                store.loadPage(1); 
+                this.loadUserGridStore(tree,record);
                 return false;
            }
         },
@@ -95,46 +64,85 @@ Ext.define("core.smartcontrol.userauthority.controller.MainController", {
 
         //获取快速搜索框的值
         var girdSearchTexts = baseGrid.query("field[funCode=girdFastSearchText]");
-        var querySql2="";
-        if(girdSearchTexts[0].getValue()){
-            querySql2+=" and XM like "+"'%"+girdSearchTexts[0].getValue()+"%'";
+        var value1 =girdSearchTexts[0].getValue();
+        var filter=new Array();
+        if(value1){
+            filter.push({"type": "string", "value": value1, "field": "termName", "comparison": ""})
+        }          
+        if(filter.length!=0)
+            filter = JSON.stringify(filter);
+        else
+            filter = "";
 
-        }
-        if(girdSearchTexts[1].getValue()){
-            querySql2+=" and ROOM_NAME like "+"'%"+girdSearchTexts[1].getValue()+"%'";
-
-        }
         
         var store = baseGrid.getStore();
         var proxy = store.getProxy();
-        proxy.extraParams.querySql2 =  querySql2 ;
+        proxy.extraParams.filter = filter;
         store.loadPage(1);
     },
 
     loadUserRightInfo:function(grid,record){
         var mainlayout = grid.up('panel[xtype=smartcontrol.userauthority.mainlayout]');
         var baseGrid = mainlayout.down('panel[xtype=smartcontrol.userauthority.maingrid]');
-
-        var querySql1="";
-        var querySql2="";
-    
-        querySql1 = " and USER_ID ="+"'"+record.get("uuid")+"'";
-                   
+                        
         //获取快速搜索框的值
         var girdSearchTexts = baseGrid.query("field[funCode=girdFastSearchText]");
+        var value1 =girdSearchTexts[0].getValue();
         var filter=new Array();
-        if(girdSearchTexts[0].getValue()){
-            querySql2+=" and XM like "+"'%"+girdSearchTexts[0].getValue()+"%'";           
-        }
-        if(girdSearchTexts[1].getValue()){
-            querySql2+=" and ROOM_NAME like "+"'%"+girdSearchTexts[1].getValue()+"%'";          
-        }
+        if(value1){
+            filter.push({"type": "string", "value": value1, "field": "termName", "comparison": ""})
+        }          
+        if(filter.length!=0)
+            filter = JSON.stringify(filter);
+        else
+            filter = "";
+    
         var stores = baseGrid.getStore();
         var proxy = stores.getProxy();
+
         proxy.extraParams={
-            querySql:querySql1,
-            querySql2:querySql2
+            userId:record.get("uuid"),
+            filter:filter
         };
         stores.loadPage(1); //刷新
+    },
+
+    refreshTreeStore:function(btn){  
+       btn.up('basetreegrid').getStore().load();
+       var baseGrid = btn.up("basetreegrid");
+       var mainlayout = baseGrid.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
+       var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.userauthority.usergrid]");
+       var store = mianGrid.getStore();
+       var proxy = store.getProxy();
+       proxy.extraParams.deptId="";
+    },
+
+    loadUserGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("basepanel[xtype=smartcontrol.userauthority.mainlayout]");
+        var funData = mainLayout.funData;
+        funData = Ext.apply(funData, {
+          deptId: record.get("id"),
+          /*isRight:record.get("isRight"),
+          deptType:record.get("deptType")*/
+        });
+
+        var storeGrid = mainLayout.down("panel[xtype=smartcontrol.userauthority.usergrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取右边筛选框中的条件数据
+        var filter=self.getFastSearchFilter(storeGrid);
+        //filter.push({"type":"string","comparison":"=","value":"1","field":"category"})
+        if(filter.length==0)
+            filter=null;
+        else
+            filter = JSON.stringify(filter); 
+         //附带参赛
+        proxy.extraParams = {
+          deptId: record.get("id"),
+          filter:filter
+        };
+        store.loadPage(1); 
     }
 });

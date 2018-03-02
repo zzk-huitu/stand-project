@@ -2,7 +2,7 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
     extend: "core.base.view.BaseGrid",
     alias: "widget.smartcontrol.roomuserauthority.maingrid",
     dataUrl: comm.get("baseUrl") + "/BaseMjUserright/roomUserRightList", //数据获取地址
-    model:"com.zd.school.teacher.teacherinfo.model.ViewUserRoom", //对应的数据模型
+    model:"com.zd.school.control.device.model.MjUserright", //对应的数据模型
     menuCode:"ROOM_ACCESS_CONTROL",
     al: false,
     //pageDisplayInfo:false,
@@ -22,14 +22,14 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
             html:'快速搜索：'
         },{
             xtype:'textfield',
-            name:'XM',
+            name:'xm',
             funCode: 'girdFastSearchText',
             emptyText: '请输入姓名'
         },{
             xtype:'textfield',
-            name:'ROOM_NAME',
+            name:'termName',
             funCode: 'girdFastSearchText',
-            emptyText: '请输入房间名称'
+            emptyText: '请输入设备名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
@@ -37,18 +37,19 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
             iconCls: 'x-fa fa-search',  
         }]
     },
-/*    defSort: [{
-        property: 'updateTime',
-        direction: 'DESC'
-    }],*/
+    defSort: [{
+        property: 'termId',
+        direction: 'ASC'
+    }],
     panelButtomBar:{},
     //扩展参数
     extParams: {
-        orderSql :"order by USER_ID"
+        //orderSql :"order by USER_ID"
     },
     columns: {        
         defaults:{
-            titleAlign:"center"
+            titleAlign:"center",
+            align:'center'
         },
         items: [{
         xtype: "rownumberer",
@@ -69,26 +70,18 @@ Ext.define("core.smartcontrol.roomuserauthority.view.MainGrid", {
         minWidth:100,
         flex:1,
     },{
-        text: "房间ID",
-        dataIndex: "room_ID",
-        hidden: true
-    },{
-        text: "房间代码",
-        dataIndex: "room_CODE",
-        minWidth:100,
-        flex:1,
-    },{
-        text: "区域ID",
-        dataIndex: "area_ID",
-        hidden: true
-    },{
         text: "房间名称",
-        dataIndex: "room_NAME",
+        dataIndex: "roomName",
         minWidth:100,
         flex:1,
     },{
-        text: "房间类型",
-        dataIndex: "room_TYPE",
+        text: "设备名称",
+        dataIndex: "termName",
+        minWidth:100,
+        flex:1,
+    },{
+        text: "设备序列号",
+        dataIndex: "termSN",
         minWidth:100,
         flex:1,
     }]

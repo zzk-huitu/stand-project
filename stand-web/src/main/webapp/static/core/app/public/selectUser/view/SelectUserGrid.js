@@ -21,7 +21,8 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
         //allowDeselect:true, //如果值true，并且mode值为单选（single）时，可以通过点击checkbox取消对其的选择
     },
     extParams: {
-        filter:'[{"type":"string","value":"1","field":"category","comparison":""}]'
+        //这里默认只加载老师，若要改变此值，需要在使用使重写属性，参见：useraccess的MainController的openRoomAccess_Win方法
+        filter:'[{"type":"string","value":"1","field":"category","comparison":""}]'     
     },
     panelTopBar:{
         xtype:'toolbar',
@@ -51,7 +52,8 @@ Ext.define("core.public.selectUser.view.SelectUserGrid", {
                 fieldInfo: "deptName~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
-                url:comm.get('baseUrl') + "/SysOrg/chkTreeList"
+                //url:comm.get('baseUrl') + "/SysOrg/chkTreeList"
+                url:comm.get('baseUrl') + "/SysOrg/getUserRightDeptTree"
             }
         }, {
             xtype: 'button',
