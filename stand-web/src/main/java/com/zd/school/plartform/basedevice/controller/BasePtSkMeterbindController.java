@@ -1,9 +1,9 @@
+
 package com.zd.school.plartform.basedevice.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -21,22 +20,23 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.control.device.model.PtPriceBind;
+import com.zd.school.control.device.model.PtSkMeterbind;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
-import com.zd.school.plartform.basedevice.service.PtPriceBindService;
+import com.zd.school.plartform.basedevice.service.PtSkMeterbindService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
- * 水控、电控费率绑定表
+ * 水控流量记表绑定
  * @author hucy
  *
  */
 @Controller
-@RequestMapping("/BasePtPriceBind")
-public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> implements Constant {
+@RequestMapping("/BasePtSkMeterbind")
+public class BasePtSkMeterbindController extends FrameWorkController<PtSkMeterbind> implements Constant {
 
 	@Resource
-	PtPriceBindService thisService; // service层接口
+	PtSkMeterbindService thisService; // service层接口
 	@Resource
 	BasePtTermService ptTermService; // service层接口
 	/**
@@ -46,30 +46,29 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void list(@ModelAttribute PtPriceBind entity, HttpServletRequest request, HttpServletResponse response)
+	public void list(@ModelAttribute PtSkMeterbind entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		QueryResult<PtPriceBind> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+		QueryResult<PtSkMeterbind> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), super.filter(request), true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	
-	@RequestMapping(value = { "/priceBingTermlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/meterBingTermlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void priceBingTermlist(HttpServletRequest request, HttpServletResponse response)
+	public void meterBingTermlist(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		QueryResult<PtPriceBind> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+		QueryResult<PtSkMeterbind> qr = thisService.queryPageResult(super.start(request), super.limit(request),
 				super.sort(request), super.filter(request), true);
 		if(qr.getTotalCount()==0){
 			writeJSON(response, strData);// 返回数据	
 			return;
 		}
 		StringBuffer termId = new StringBuffer();
-		for(PtPriceBind priceBind:qr.getResultList()){
-			termId.append(priceBind.getTermId()+",");
+		for(PtSkMeterbind ptSkMeterbind:qr.getResultList()){
+			termId.append(ptSkMeterbind.getTermId()+",");
 		}
 		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + termId.substring(0, termId.length() - 1)
 			+ "\",\"field\":\"uuid\"}]";
@@ -80,46 +79,40 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		writeJSON(response, strData);// 返回数据
 	}
 	/**
-	 * 给设备绑定具体的费率
-	 * @param termId
-	 * @param termSn
-	 * @param meterId
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
+	 * 
+	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param ContPerimisson
+	 *         实体类 @param @param request @param @param response @param @throws
+	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
-	@Auth("BASERATE_add")
 	@RequestMapping("/doAdd")
-	public void doAdd(String[] termId,String[] termSn, String meterId, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, IllegalAccessException, InvocationTargetException {
+	public void doAdd(String[] termId, String[] termSn, String meterId, HttpServletRequest request,
+			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-		
-		thisService.doPriceBind(termId,termSn,meterId,currentUser.getXm());
-		
+
+		thisService.doMeterBind(termId, termSn, meterId, currentUser.getXm());
+
 		writeJSON(response, jsonBuilder.returnSuccessJson("'成功'"));
-	}
+	 }
 
 	/**
 	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/doDelete")
+	@RequestMapping("/dodelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String ids = request.getParameter("ids");
-		if (StringUtils.isEmpty(ids)) {
+		String delIds = request.getParameter("ids");
+		if (StringUtils.isEmpty(delIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
 			return;
 		} else {
 			SysUser currentUser = getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {
-				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+				writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 			} else {
-				writeJSON(response, jsonBuilder.returnFailureJson("\"删除失败\""));
+				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
 			}
 		}
 	}
@@ -132,8 +125,8 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		} else {
 			String[] ids =termIds.split(",");
 			for(int i=0;i<ids.length;i++){
-				 String hql = " from PtPriceBind where termId = '"+ ids[i]+"'";
-				 PtPriceBind entity = thisService.getEntityByHql(hql);
+				 String hql = " from PtSkMeterbind where termId = '"+ ids[i]+"'";
+				 PtSkMeterbind entity = thisService.getEntityByHql(hql);
 				 thisService.delete(entity);
 			}
 		}
@@ -144,7 +137,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
-	@RequestMapping("/doRestore")
+	@RequestMapping("/dorestore")
 	public void doRestore(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
 		if (StringUtils.isEmpty(delIds)) {
@@ -166,8 +159,8 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 	 * ContPerimisson @param @param request @param @param
 	 * response @param @throws IOException 设定参数 @return void 返回类型 @throws
 	 */
-	@RequestMapping("/doUpdate")
-	public void doUpdates(PtPriceBind entity, HttpServletRequest request, HttpServletResponse response)
+	@RequestMapping("/doupdate")
+	public void doUpdates(PtSkMeterbind entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 入库前检查代码
@@ -180,7 +173,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 
 		// 先拿到已持久化的实体
 		// entity.getSchoolId()要自己修改成对应的获取主键的方法
-		PtPriceBind perEntity = thisService.get(entity.getUuid());
+		PtSkMeterbind perEntity = thisService.get(entity.getUuid());
 
 		// 将entity中不为空的字段动态加入到perEntity中去。
 		BeanUtils.copyPropertiesExceptNull(perEntity, entity);

@@ -250,7 +250,6 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                  var priceBingStore = priceBingGrid.getStore();
                  var priceBingProxy = priceBingStore.getProxy();
                  var filter=new Array();
-                 console.log( insertObj.uuid);
                  filter.push({"type": "string", "value": insertObj.uuid, "field": "priceId", "comparison": "="})
                  priceBingProxy.extraParams = {
                     filter: JSON.stringify(filter)

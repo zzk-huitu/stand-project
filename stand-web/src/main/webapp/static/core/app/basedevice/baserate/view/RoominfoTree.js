@@ -51,7 +51,6 @@ Ext.define("core.basedevice.baserate.view.RoominfoTree", {
         itemclick: function (tree, record, item, index, e, eOpts) {
             var baseformwin =tree.up("baseformwin");
             var categroy = baseformwin.categroy;
-            console.log(categroy);
             var filter=new Array();
             if(categroy==0){//水控
                 filter.push({"type": "string", "value":"8", "field": "termTypeID", "comparison": "="})

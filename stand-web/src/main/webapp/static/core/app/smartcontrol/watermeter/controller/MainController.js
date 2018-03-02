@@ -47,7 +47,15 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
                 return false;
             }
         },            
+        
+         "basegrid  actioncolumn": {
+            //计量设备 
+             meterBingClick: function (data) {
+               this.doOpenBindDetail(null, "bing", data.view, data.record);
+               return false;
+           },
 
+       }
 
     },
 
@@ -105,6 +113,15 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
         var operType = cmd; 
         insertObj = recordData;
 
+        switch (cmd) {
+          case "bing":
+          tabTitle = recordData.measure+"绑定的设备";
+          tabItemId=funCode+"_meterBing"; 
+          detCode =  "meter_bind";  
+          detLayout = "smartcontrol.watermeter.meterbinggrid";
+        break;   
+
+      }
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
         if(!tabItem){
@@ -137,7 +154,18 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
                     }]
                 }); 
                 tabItem.add(item);  
-                              
+                if (cmd=="bing") {
+                   var meterBingGrid = item.down("basegrid[xtype=smartcontrol.watermeter.meterbinggrid]");
+                   var meterBingStore = meterBingGrid.getStore();
+                   var meterBingProxy = meterBingStore.getProxy();
+                   var filter=new Array();
+                   filter.push({"type": "string", "value": insertObj.uuid, "field": "meterId", "comparison": "="})
+                   meterBingProxy.extraParams = {
+                    filter: JSON.stringify(filter)
+                };
+                meterBingStore.load();
+
+            }                
                 
             },30);
                            

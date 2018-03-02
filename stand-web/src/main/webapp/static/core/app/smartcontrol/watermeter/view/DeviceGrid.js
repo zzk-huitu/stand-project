@@ -14,7 +14,7 @@ Ext.define("core.smartcontrol.watermeter.view.DeviceGrid", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '未分配的设备（双击添加）',
+            html: '房间设备（向右拖动或双击选择）',
             style: {
                 fontSize: '16px',
                 color: '#C44444',

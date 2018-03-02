@@ -1,8 +1,8 @@
-Ext.define("core.basedevice.baserate.view.PriceBingGrid", {
+Ext.define("core.smartcontrol.watermeter.view.MeterBingGrid", {
     extend: "core.base.view.BaseGrid",
-    alias: "widget.basedevice.baserate.pricebinggrid",
+    alias: "widget.smartcontrol.watermeter.meterbinggrid",
     model: 'com.zd.school.control.device.model.PtTerm',
-    dataUrl: comm.get('baseUrl') + "/BasePtPriceBind/priceBingTermlist",
+    dataUrl: comm.get('baseUrl') + "/BasePtSkMeterbind/meterBingTermlist",
     //title:"绑定费率的设备",
     al:false,
     tbar: [{
