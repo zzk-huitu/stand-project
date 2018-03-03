@@ -83,7 +83,15 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 		String categroy = request.getParameter("categroy");
 		 // 获取当前操作用户
         SysUser currentUser = getCurrentSysUser();
-		if(categroy.equals("0")){
+        
+		if(categroy.equals("0")){		
+			String hql1 = " o.isDelete='0' ";
+			// 此处为放在入库前的一些检查的代码，如唯一校验等
+			if (skPriceDefineService.IsFieldExist("priceName", entity.getPriceName(), "-1", hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"水控费率名称不能重复！\""));
+				return;
+			}
+			
 			entity = skPriceDefineService.doAddEntity(entity, currentUser);// 执行增加方法
 			if (ModelUtil.isNotNull(entity))
 	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -91,6 +99,13 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 	            writeJSON(response, jsonBuilder.returnFailureJson("\"数据增加失败,详情见错误日志\""));    
 		}
 		if(categroy.equals("1")){
+			String hql1 = " o.isDelete='0' ";
+			// 此处为放在入库前的一些检查的代码，如唯一校验等
+			if (dkPriceDefineService.IsFieldExist("priceName", entitys.getPriceName(), "-1", hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"电控费率名称不能重复！\""));
+				return;
+			}
+			
 			entitys = dkPriceDefineService.doAddEntity(entitys, currentUser);// 执行增加方法
 			if (ModelUtil.isNotNull(entitys))
 	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -116,6 +131,13 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 		
 		SysUser currentUser = getCurrentSysUser();
 		if(categroy.equals("0")){
+			String hql1 = " o.isDelete='0' ";
+			// 此处为放在入库前的一些检查的代码，如唯一校验等
+			if (skPriceDefineService.IsFieldExist("priceName", entity.getPriceName(),entity.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"水控费率名称不能重复！\""));
+				return;
+			}
+			
 	        entity = skPriceDefineService.doUpdateEntity(entity, currentUser);// 执行修改方法
 	        if (ModelUtil.isNotNull(entity))
 	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -123,6 +145,13 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 	            writeJSON(response, jsonBuilder.returnFailureJson("\"数据修改失败,详情见错误日志\""));
 		}
 		if(categroy.equals("1")){
+			String hql1 = " o.isDelete='0' ";
+			// 此处为放在入库前的一些检查的代码，如唯一校验等
+			if (dkPriceDefineService.IsFieldExist("priceName", entitys.getPriceName(), entitys.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"电控费率名称不能重复！\""));
+				return;
+			}
+			
 	        entitys = dkPriceDefineService.doUpdateEntity(entitys, currentUser);// 执行修改方法
 	        if (ModelUtil.isNotNull(entitys))
 	            writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -145,12 +174,28 @@ public class BasePriceDefineController extends FrameWorkController<BaseEntity> i
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
 			return;
 		} else {
+			
+			// 判断这些费率是否正在被其他设备所绑定
+			String hql = "select count(a.uuid) from PtPriceBind as a where a.priceId in ('" + ids.replace(",", "','")
+					+ "') and a.isDelete=0";
+					
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag =false;
 			if(categroy.equals("水控")){
+				int count = skPriceDefineService.getQueryCountByHql(hql);
+				if (count > 0) {
+					writeJSON(response, jsonBuilder.returnFailureJson("\"这些费率参数当前绑定了设备，请解除绑定后再删除！\""));
+					return;
+				}			
 				flag = skPriceDefineService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 			}
-			if(categroy.equals("电控")){
+			
+			if(categroy.equals("电控")){			
+				int count = dkPriceDefineService.getQueryCountByHql(hql);
+				if (count > 0) {
+					writeJSON(response, jsonBuilder.returnFailureJson("\"这些费率参数当前绑定了设备，请解除绑定后再删除！\""));
+					return;
+				}		
 				flag = dkPriceDefineService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 			}
 			if (flag) {

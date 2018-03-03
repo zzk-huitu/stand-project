@@ -34,9 +34,12 @@ public class BasePtRoomBagRuleController extends FrameWorkController<PtRoomBagRu
 	PtRoomBagRuleService thisService; // service层接口
 
 	/**
-	 * list查询 @Title: list @Description: TODO @param @param entity
-	 * 实体类 @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 房间钱包规则列表
+	 * 
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -51,33 +54,44 @@ public class BasePtRoomBagRuleController extends FrameWorkController<PtRoomBagRu
 	}
 
 	/**
+	 * 添加
 	 * 
-	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param MjUserright
-	 *         实体类 @param @param request @param @param response @param @throws
-	 *         IOException 设定参数 @return void 返回类型 @throws
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("ROOM_BAG_RULE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(PtRoomBagRule entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-		
+
+		String hql1 = " o.isDelete='0' ";
+		// 此处为放在入库前的一些检查的代码，如唯一校验等
+		if (thisService.IsFieldExist("roomRuleName", entity.getRoomRuleName(), "-1", hql1)) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"钱包规则名称不能重复！\""));
+			return;
+		}
 		
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-
+		
 		entity = thisService.doAddEntity(entity, currentUser.getXm());
 
 		if (entity == null)
 			writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，请重试或联系管理员！\""));
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-		
+
 	}
 
 	/**
-	 * doDelete @Title: 逻辑删除指定的数据 @Description: TODO @param @param
-	 * request @param @param response @param @throws IOException 设定参数 @return
-	 * void 返回类型 @throws
+	 * 删除规则
+	 * @param request
+	 * @param response
+	 * @throws IOException
 	 */
 	@Auth("ROOM_BAG_RULE_delete")
 	@RequestMapping("/doDelete")
@@ -87,9 +101,20 @@ public class BasePtRoomBagRuleController extends FrameWorkController<PtRoomBagRu
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
-			SysUser sysuser=getCurrentSysUser();
 			
-			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE,sysuser.getXm());
+			// 判断这些钱包规则是否正在被其他房间所绑定
+			String hql = "select count(a.uuid) from PtRoomBagsRuleBind as a where a.roomRuleId in ('" + delIds.replace(",", "','")
+					+ "') and a.isDelete=0";
+			int count = thisService.getQueryCountByHql(hql);
+			if (count > 0) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"这些房间钱包规则当前绑定了房间，请解除绑定后再删除！\""));
+				return;
+			}
+
+						
+			SysUser sysuser = getCurrentSysUser();
+
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISDELETE, sysuser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
 			} else {
@@ -110,8 +135,8 @@ public class BasePtRoomBagRuleController extends FrameWorkController<PtRoomBagRu
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入还原主键\""));
 			return;
 		} else {
-			SysUser sysuser=getCurrentSysUser();
-			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE,sysuser.getXm());
+			SysUser sysuser = getCurrentSysUser();
+			boolean flag = thisService.doLogicDelOrRestore(delIds, StatuVeriable.ISNOTDELETE, sysuser.getXm());
 			if (flag) {
 				writeJSON(response, jsonBuilder.returnSuccessJson("\"还原成功\""));
 			} else {
@@ -121,27 +146,36 @@ public class BasePtRoomBagRuleController extends FrameWorkController<PtRoomBagRu
 	}
 
 	/**
-	 * doUpdate编辑记录 @Title: doUpdate @Description: TODO @param @param
-	 * MjUserright @param @param request @param @param response @param @throws
-	 * IOException 设定参数 @return void 返回类型 @throws
+	 * 更新钱包房间规则
+	 * @param entity
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
 	 */
 	@Auth("ROOM_BAG_RULE_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(PtRoomBagRule entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
-
-	
-
+		
+		String hql1 = " o.isDelete='0' ";
+		// 此处为放在入库前的一些检查的代码，如唯一校验等
+		if (thisService.IsFieldExist("roomRuleName", entity.getRoomRuleName(), entity.getUuid(), hql1)) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"钱包规则名称不能重复！\""));
+			return;
+		}
+		
 		// 获取当前的操作用户
 		SysUser currentUser = getCurrentSysUser();
 
-		entity = thisService.doUpdateEntity(entity, currentUser.getXm(),null);
+		entity = thisService.doUpdateEntity(entity, currentUser.getXm(), null);
 
 		if (entity == null)
 			writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-		
+
 	}
 
 }

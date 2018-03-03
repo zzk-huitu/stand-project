@@ -15,72 +15,18 @@ Ext.define("core.smartcontrol.climatecontrol.controller.MainController", {
     control: {
         "basepanel basegrid": {
             beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                var basePanel = grid.up("basepanel");
-                var funCode = basePanel.funCode;
-                var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
-                var records = baseGrid.getSelectionModel().getSelection();
-                var btnOpen = baseGrid.down("button[ref=gridOpen]");
-                var btnClose = baseGrid.down("button[ref=gridClose]");
-                var btnSet = baseGrid.down("button[ref=gridSet]");
-                if (records.length == 0) {
-                    btnOpen.setDisabled(true);     
-                    btnClose.setDisabled(true);                   
-                    btnSet.setDisabled(true);       
-                }else if (records.length == 1) {
-                   btnOpen.setDisabled(false);     
-                   btnClose.setDisabled(false);                   
-                   btnSet.setDisabled(false);  
-               }else {
-                  btnOpen.setDisabled(false);     
-                  btnClose.setDisabled(false);                   
-                  btnSet.setDisabled(false);                 
+                this.hideFuncBtn(grid);
             }
-        }
-    },
+        },
     	"panel[xtype=smartcontrol.climatecontrol.maintree] button[ref=gridRefresh]": {
     		click: function(btn) {
-    			var baseGrid = btn.up("basetreegrid");
-    			var store = baseGrid.getStore();
-                store.load(); //刷新父窗体的grid
-                var mainlayout = btn.up("basepanel[xtype=smartcontrol.climatecontrol.mainlayout]");
-                var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.climatecontrol.maingrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId="";
-                proxy.extraParams.roomLeaf="";
+                this.refreshMainGridStore(btn);
                 return false;
             }
         },
       "basetreegrid[xtype=smartcontrol.climatecontrol.maintree]": {
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("panel[xtype=smartcontrol.climatecontrol.mainlayout]");
-                var funData = mainLayout.funData;
-                mainLayout.funData = Ext.apply(funData, {
-                    roomId: record.get("id"),
-                    roomLevel: record.get("level")
-               });
-                var storeGrid = mainLayout.down("panel[xtype=smartcontrol.climatecontrol.maingrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取右边筛选框中的条件数据
-                var filter=self.getFastSearchFilter(storeGrid); 
-                filter.push({"type":"string","comparison":"","value":"空调","field":"deviceTypeName"});      
-                filter = JSON.stringify(filter);
-                //获取点击树节点的参数       
-                var roomId= record.get("id");
-                var roomLeaf=record.get("leaf");
-                if(roomLeaf==true)
-                    roomLeaf="1";
-                else
-                    roomLeaf="0";
-                proxy.extraParams = {
-                    roomId: roomId,
-                    roomLeaf:roomLeaf,
-                    filter :filter
-                };  
-                store.loadPage(1); 
+                this.loadMianGridStore(tree,record);
                 return false;
             }
         },
@@ -190,6 +136,72 @@ Ext.define("core.smartcontrol.climatecontrol.controller.MainController", {
         }
         return filter;
 
+    },
+
+    hideFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var funCode = basePanel.funCode;
+        var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+        var records = baseGrid.getSelectionModel().getSelection();
+        var btnOpen = baseGrid.down("button[ref=gridOpen]");
+        var btnClose = baseGrid.down("button[ref=gridClose]");
+        var btnSet = baseGrid.down("button[ref=gridSet]");
+        if (records.length == 0) {
+            btnOpen.setDisabled(true);     
+            btnClose.setDisabled(true);                   
+            btnSet.setDisabled(true);       
+        }else if (records.length == 1) {
+           btnOpen.setDisabled(false);     
+           btnClose.setDisabled(false);                   
+           btnSet.setDisabled(false);  
+       }else {
+          btnOpen.setDisabled(false);     
+          btnClose.setDisabled(false);                   
+          btnSet.setDisabled(false);                 
+        }
+    },
+
+    refreshMainGridStore:function(btn){    
+        var baseGrid = btn.up("basetreegrid");
+        var store = baseGrid.getStore();
+        store.load(); //刷新父窗体的grid
+        var mainlayout = btn.up("basepanel[xtype=smartcontrol.climatecontrol.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=smartcontrol.climatecontrol.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.roomId="";
+        proxy.extraParams.roomLeaf="";
+    },
+
+    loadMianGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=smartcontrol.climatecontrol.mainlayout]");
+        var funData = mainLayout.funData;
+        mainLayout.funData = Ext.apply(funData, {
+            roomId: record.get("id"),
+            roomLevel: record.get("level")
+       });
+        var storeGrid = mainLayout.down("panel[xtype=smartcontrol.climatecontrol.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取右边筛选框中的条件数据
+        var filter=self.getFastSearchFilter(storeGrid); 
+        filter.push({"type":"string","comparison":"","value":"空调","field":"deviceTypeName"});      
+        filter = JSON.stringify(filter);
+        //获取点击树节点的参数       
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+        proxy.extraParams = {
+            roomId: roomId,
+            roomLeaf:roomLeaf,
+            filter :filter
+        };  
+        store.loadPage(1); 
     }
     
 });

@@ -66,16 +66,17 @@ public class BasePtSkMeterbindController extends FrameWorkController<PtSkMeterbi
 			writeJSON(response, strData);// 返回数据	
 			return;
 		}
+		
 		StringBuffer termId = new StringBuffer();
 		for(PtSkMeterbind ptSkMeterbind:qr.getResultList()){
 			termId.append(ptSkMeterbind.getTermId()+",");
 		}
 		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + termId.substring(0, termId.length() - 1)
 			+ "\",\"field\":\"uuid\"}]";
+		//String sor="[{\"property\":\"orderIndex\",\"direction\":\"DESC\"}]";
+		QueryResult<PtTerm> termQr = ptTermService.queryPageResult(0,0,null, filter, true);
 		
-		QueryResult<PtTerm> termQr = ptTermService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
-		strData = jsonBuilder.buildObjListToJson(termQr.getTotalCount(), termQr.getResultList(), true);// 处理数据
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), termQr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 	/**

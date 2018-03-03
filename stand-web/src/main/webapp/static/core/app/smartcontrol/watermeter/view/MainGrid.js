@@ -16,7 +16,7 @@ Ext.define("core.smartcontrol.watermeter.view.MainGrid", {
             //disabled:true
         },{
             xtype: 'button',
-            text: '费率绑定',
+            text: '计量绑定',
             ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,

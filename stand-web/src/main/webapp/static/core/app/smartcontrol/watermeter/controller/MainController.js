@@ -18,24 +18,7 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
              * 表格单击事件
              */
             beforeitemclick: function(grid, record, item, index, e, eOpts) {
-                var basePanel = grid.up("basepanel");
-                var funCode = basePanel.funCode;
-                var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
-                var records = baseGrid.getSelectionModel().getSelection();
-                var btnBinding = baseGrid.down("button[ref=gridBinding]");
-                          
-                if (records.length == 0) {
-                    if (btnBinding)
-                        btnBinding.setDisabled(true);                 
-
-                } else if (records.length == 1) {
-                    if (btnBinding)
-                        btnBinding.setDisabled(false);                
-                    
-                } else {
-                    if (btnBinding)
-                        btnBinding.setDisabled(true);                
-                }
+                this.hideFuncBtn(grid);
                 //console.log(1231);
             }
         },
@@ -108,7 +91,7 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
         var pkName = funData.pkName;
         var pkValue= recordData[pkName];
         
-        var tabTitle = "绑定水控汇率";
+        var tabTitle = "计量绑定设备";
         var tabItemId = funCode+"_gridBindEdit"; 
         var operType = cmd; 
         insertObj = recordData;
@@ -175,5 +158,26 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
         }
         tabPanel.setActiveTab( tabItem);        
     
+    },
+
+    hideFuncBtn:function(grid){    
+        var basePanel = grid.up("basepanel");
+        var funCode = basePanel.funCode;
+        var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
+        var records = baseGrid.getSelectionModel().getSelection();
+        var btnBinding = baseGrid.down("button[ref=gridBinding]");
+                  
+        if (records.length == 0) {
+            if (btnBinding)
+                btnBinding.setDisabled(true);                 
+
+        } else if (records.length == 1) {
+            if (btnBinding)
+                btnBinding.setDisabled(false);                
+            
+        } else {
+            if (btnBinding)
+                btnBinding.setDisabled(true);                
+        }
     }
 });

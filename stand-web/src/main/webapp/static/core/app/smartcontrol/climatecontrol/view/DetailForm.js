@@ -7,7 +7,7 @@ Ext.define("core.smartcontrol.climatecontrol.view.DetailForm", {
         name: "uuid",
         xtype: "textfield",
         hidden: true
-    }, {
+    },/* {
         fieldLabel: "班级ID",
         name: "claiId",
         hidden: true
@@ -28,5 +28,5 @@ Ext.define("core.smartcontrol.climatecontrol.view.DetailForm", {
         allowBlank: false,
         maxLength: 18,
         maxLengthText: "最多18个字符",
-    }]
+    }*/]
 });

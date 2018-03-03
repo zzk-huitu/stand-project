@@ -40,7 +40,8 @@ Ext.define("core.smartcontrol.useraccess.view.MainGrid", {
     extParams: {},
     columns:  {        
         defaults:{
-            titleAlign:"center"
+            titleAlign:"center",
+            align:'center'
         },
         items: [{
             text: "主键",

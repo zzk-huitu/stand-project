@@ -22,7 +22,8 @@ Ext.define("core.smartcontrol.useraccess.view.UserAccessGrid", {
     extParams: {},
     columns:  {        
         defaults:{
-            titleAlign:"center"
+            titleAlign:"center",
+            align:'center'
         },
         items: [{
             text: "主键",
@@ -33,21 +34,29 @@ Ext.define("core.smartcontrol.useraccess.view.UserAccessGrid", {
             dataIndex: "termId",
             hidden: true,
         },{
-            text: "设备名称",
-            dataIndex: "termName",
-            width:250
-        },{
             text: "用户姓名",
             dataIndex: "xm",
-            width:250
+            minWidth:100,
+            flex:1
+        },{
+            text: "房间名称",
+            dataIndex: "roomName",
+            minWidth:100,
+            flex:1
         },{
             text: "人员主键",
             dataIndex: "stuId",
             hidden: true,
         },{
+            text: "设备名称",
+            dataIndex: "termName",
+            minWidth:100,
+            flex:1
+        },{
             text: "设备序列号",
             dataIndex: "termSN",
-            width:250
+            minWidth:100,
+            flex:1
         }]
     }    
 });

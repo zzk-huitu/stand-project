@@ -23,7 +23,7 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
             iconCls: 'x-fa fa-pencil-square'
         },{
             xtype: 'button',
-            text: '费率绑定',
+            text: '规则绑定',
             ref: 'gridBinding',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             disabled:true,

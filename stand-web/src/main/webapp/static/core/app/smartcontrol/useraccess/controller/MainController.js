@@ -241,7 +241,8 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
                 funData: popFunData,
                 funCode: detCode,
                 items: [{
-                    xtype: "smartcontrol.useraccess.detaillayout"
+                    xtype: "smartcontrol.useraccess.detaillayout",
+                    minWidth:width
                 }],
                 listeners: {
                     beforerender: function(win) {

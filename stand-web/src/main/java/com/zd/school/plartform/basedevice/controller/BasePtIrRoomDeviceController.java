@@ -307,7 +307,9 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 		}
 	}
 
-	/* 空调控制 */
+	/* 空调控制 
+	 * （未完成，待确定各个数据的方式！）
+	 */
 	@Auth("CLIMATE_CONTROL_IrSend")
 	@RequestMapping(value = { "/doIrSend" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })

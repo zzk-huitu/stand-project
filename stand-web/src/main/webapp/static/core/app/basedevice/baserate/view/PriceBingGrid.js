@@ -13,6 +13,7 @@ Ext.define("core.basedevice.baserate.view.PriceBingGrid", {
     }],
     panelTopBar:null,
     panelButtomBar:null,
+    remoteSort:false,
     //排序字段及模式定义
     defSort: [{
         property: 'orderIndex',

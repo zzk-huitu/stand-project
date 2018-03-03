@@ -88,6 +88,15 @@ public class BasePtSkMeterController extends FrameWorkController<PtSkMeter> impl
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"没有传入删除主键\""));
 			return;
 		} else {
+			// 判断这些流量计是否正在被其他设备所绑定
+			String hql = "select count(a.uuid) from PtSkMeterbind as a where a.meterId in ('" + ids.replace(",", "','")
+					+ "') and a.isDelete=0";
+			int count = thisService.getQueryCountByHql(hql);
+			if (count > 0) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"这些流量计当前绑定了设备，请解除绑定后再删除！\""));
+				return;
+			}
+			
 			SysUser currentUser = getCurrentSysUser();
 			boolean flag = thisService.doLogicDelOrRestore(ids, StatuVeriable.ISDELETE,currentUser.getXm());
 			if (flag) {

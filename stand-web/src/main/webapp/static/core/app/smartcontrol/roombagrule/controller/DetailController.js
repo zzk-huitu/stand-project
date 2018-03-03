@@ -15,8 +15,7 @@ Ext.define("core.smartcontrol.roombagrule.controller.DetailController", {
             click: function (btn) {
                 var baseGrid = btn.up("basetreegrid");
                 var store = baseGrid.getStore();
-                var proxy = store.getProxy();
-      
+                var proxy = store.getProxy();    
                 store.load(); //刷新父窗体的grid          
                 return false;
             }

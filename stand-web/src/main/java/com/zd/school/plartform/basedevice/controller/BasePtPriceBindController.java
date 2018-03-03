@@ -74,9 +74,9 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + termId.substring(0, termId.length() - 1)
 			+ "\",\"field\":\"uuid\"}]";
 		
-		QueryResult<PtTerm> termQr = ptTermService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), filter, true);
-		strData = jsonBuilder.buildObjListToJson(termQr.getTotalCount(), termQr.getResultList(), true);// 处理数据
+		QueryResult<PtTerm> termQr = ptTermService.queryPageResult(0, 0,null, filter, true);
+		
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), termQr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
 	/**

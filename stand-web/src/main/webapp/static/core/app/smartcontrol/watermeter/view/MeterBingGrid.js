@@ -13,6 +13,7 @@ Ext.define("core.smartcontrol.watermeter.view.MeterBingGrid", {
     }],
     panelTopBar:null,
     panelButtomBar:null,
+    remoteSort:false,
     //排序字段及模式定义
     defSort: [{
         property: 'orderIndex',
