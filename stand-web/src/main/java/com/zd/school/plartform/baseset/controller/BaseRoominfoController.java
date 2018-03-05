@@ -42,7 +42,7 @@ public class BaseRoominfoController extends FrameWorkController<BuildRoominfo> i
 	private BaseRoominfoService thisService; // service层接口
 	@Resource
 	private CommTreeService treeService; // 生成树
-
+	
 	/**
 	 * 根据传入的区域id，查询房间信息
 	 * @param entity

@@ -332,13 +332,12 @@ public class BaseStudentDormController extends FrameWorkController<DormStudentDo
 	@RequestMapping("/dormAutoAllot")
 	public void dormAutoAllot(String classId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		Boolean flag = false;
 		SysUser currentUser = getCurrentSysUser();
-		flag = thisService.doDormAutoAllot(classId, currentUser);
-		if (flag) {
-			writeJSON(response, jsonBuilder.returnSuccessJson("'自动分配宿舍成功。'"));
-		} else {
-			writeJSON(response, jsonBuilder.returnFailureJson("'自动分配宿舍失败。'"));
+		Integer resultCount = thisService.doDormAutoAllot(classId, currentUser);
+		if (resultCount>0) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("\"自动分配宿舍成功!\""));
+		} else  {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"没有可用的宿舍进行分配！\""));	//出错的返回方式，统一在异常处理中
 		}
 	}
 

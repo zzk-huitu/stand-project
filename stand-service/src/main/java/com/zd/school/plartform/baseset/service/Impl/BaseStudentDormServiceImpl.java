@@ -293,7 +293,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		DormStudentDorm studentDorm=null;
 		for (int i = 0; i < studentId.length; i++) {
 			studentDorm=new DormStudentDorm();
-			this.allotStudentDorm(studentDorm, jwClassDormAllot, studentId[i], inAllotCount, currentUser.getUuid());
+			this.allotStudentDorm(studentDorm, jwClassDormAllot, studentId[i], inAllotCount++, currentUser.getUuid());
 			
 			roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);				
 		}
@@ -436,8 +436,9 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	 * 自动分配宿舍
 	 */
 	@Override
-	public Boolean doDormAutoAllot(String classId, SysUser currentUser) {
-		Boolean flag = false;
+	public Integer doDormAutoAllot(String classId, SysUser currentUser) {
+		Integer resultCount=0;
+		
 		List<JwClassDormAllot> classDormList = null;// 获取该班级下所有有效宿舍
 		List<JwClassDormAllot> boydormList = new ArrayList<>(); // 男宿舍
 		List<JwClassDormAllot> girldormList = new ArrayList<>(); // 女宿舍
@@ -490,10 +491,10 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 					girlList.add(classstudent);
 				}
 		}
-		this.handAllot(boydormList, boyMixdormList, boyList, classId); // 自动分配男
-		this.handAllot(girldormList, girlMixdormList, girlList, classId); // 自动分配女
-		flag = true;
-		return flag;
+		resultCount+=this.handAllot(boydormList, boyMixdormList, boyList, classId); // 自动分配男
+		resultCount+=this.handAllot(girldormList, girlMixdormList, girlList, classId); // 自动分配女
+		
+		return resultCount;
 	}
 
 	/**
@@ -870,8 +871,10 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 	 *            （班级id）
 	 */
 
-	private void handAllot(List<JwClassDormAllot> dormList, List<JwClassDormAllot> hunDormList,
+	private Integer handAllot(List<JwClassDormAllot> dormList, List<JwClassDormAllot> hunDormList,
 			List<StandVClassStudent> stuList, String classId) {
+		int resultCount=0;
+		
 		DormStudentDorm dormStudentDorm = null;
 		DormStudentDorm dorm = null;
 		int bs = 0; // 标识用了几个宿舍
@@ -907,6 +910,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 					dorm = this.merge(dormStudentDorm);
 
 					roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
+					resultCount++;
 				} else {
 					break;
 				}
@@ -942,12 +946,15 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 						dorm = this.merge(dormStudentDorm);
 
 						roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
+						resultCount++;
 					} else {
 						break;
 					}
 				}
 			}
 		}
+		
+		return resultCount;
 	}
 
 	private void allotClassDorm(JwClassDormAllot classDormEntity, String dormId, String classId, String userCh,
@@ -1083,7 +1090,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 				//当此班级宿舍的学员都为同一个班级时，并且此班级和班级宿舍的班级一致时，则为非混合宿舍
 				List<String> classIds= this.queryEntityByHql(hql);
 				classIds = classIds.stream().distinct().collect(Collectors.toList());
-				if(classIds.size()==1&&classIds.get(0).equals(jwClassDormAllot.getClaiId())){
+				if(classIds.isEmpty()||(classIds.size()==1&&classIds.get(0).equals(jwClassDormAllot.getClaiId()))){
 
 					BuildDormDefine buildDormDefine = dormDefineService.get(jwClassDormAllot.getDormId());
 					

@@ -44,11 +44,9 @@ Ext.define("core.reportcenter.ptsktermstatus.controller.MainController", {
                 var proxy = store.getProxy();
 
                  //获取右边筛选框中的条件数据
-                var filter=self.getFastSearchFilter(storeGrid);       
-                if(filter.length==0)
-                    filter=null;
-                else
-                    filter = JSON.stringify(filter);
+                var filter=self.getFastSearchFilter(storeGrid);
+                filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});     //默认参数
+                filter = JSON.stringify(filter);
 
                 //获取点击树节点的参数
                 var roomId= record.get("id");

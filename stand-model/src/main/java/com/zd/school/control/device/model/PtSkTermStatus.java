@@ -125,7 +125,11 @@ public class PtSkTermStatus extends BaseEntity implements Serializable{
 	@Formula("(SELECT isnull(a.NODE_TEXT,'ROOT') FROM BUILD_T_ROOMAREA a ,BUILD_T_ROOMINFO r WHERE a.AREA_ID=r.AREA_ID and r.ROOM_ID=ROOM_ID)")
 	private String areaName;
 
-    
+	/*用于排除未定义的房间 0*/
+	@Formula("(SELECT A.ROOM_TYPE FROM dbo.BUILD_T_ROOMINFO A WHERE A.ROOM_ID=ROOM_ID)")
+	@FieldInfo(name = "房间类型")
+	private String roomType;
+	 
 	public String getTermSn() {
 		return termSn;
 	}
@@ -278,6 +282,16 @@ public class PtSkTermStatus extends BaseEntity implements Serializable{
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
 	}
+
+	public String getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(String roomType) {
+		this.roomType = roomType;
+	}
+	
+	
 
 	
 	

@@ -312,23 +312,24 @@ Ext.define("core.baseset.studentdorm.controller.OtherController", {
                        classId: claiId
                      },                 
                      success: function(response) {
-                      var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                      if(data.success){
-                          self.msgbox(data.obj); 
-                          
-                          dormNotAllotGrid.getStore().loadPage(1);                      
-                          var dormAllotFinishGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
-                          dormAllotFinishGrid.getStore().loadPage(1);
+                        var data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                        if(data.success){
+                            self.msgbox(data.obj); 
+                            
+                            dormNotAllotGrid.getStore().loadPage(1);                      
+                            var dormAllotFinishGrid = detailLayout.down("basegrid[xtype=baseset.studentdorm.dormallotfinishgrid]");
+                            dormAllotFinishGrid.getStore().loadPage(1);
 
-                          baseGrid.getStore().loadPage(1);
+                            baseGrid.getStore().loadPage(1);
 
-                     }else {
-                       self.Error(data.obj);
-                     }   
-                     loading.hide();        
-                   },
-                     failure: function(response) {                   
-                      Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        }else {
+                          self.Error(data.obj);
+                        }   
+                        loading.hide();        
+                    },
+                    failure: function(response) {                   
+                        Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                        loading.hide(); 
                     }
                 });                             
              }
