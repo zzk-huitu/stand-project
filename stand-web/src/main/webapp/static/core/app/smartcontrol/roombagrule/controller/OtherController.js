@@ -57,6 +57,13 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
 
             }
         },
+             //房间规则删除
+        "basegrid[xtype=smartcontrol.roombagrule.ruleroomgrid] button[ref=gridDelete]": {
+            beforeclick: function(btn) {
+                this.deleteRulrRoom(btn);
+                return false;
+             },
+         },
     },
 
     doSave_Tab:function(btn,cmd){
@@ -313,5 +320,43 @@ Ext.define("core.smartcontrol.roombagrule.controller.OtherController", {
         }
 
         
-    }
+    },
+    deleteRulrRoom:function(btn){
+        var self=this;
+
+        var baseGrid = btn.up("basegrid");
+        //选择的设备
+        var selectTerm= baseGrid.getSelectionModel().getSelection();
+        if (selectTerm.length == 0) {
+            self.msgbox("没有选择要删除的规则房间，请选择!");
+            return false;
+        }
+       
+        //拼装所选择的房间
+        var roomIds = new Array();
+        Ext.each(selectTerm, function(rec) {
+            var pkValue = rec.get("uuid");
+            roomIds.push(pkValue);
+        });
+        var title = "确定删除该规则绑定该房间吗？";
+        Ext.Msg.confirm('警告', title, function(btn, text) {
+            if (btn == 'yes') {
+                //发送ajax请求
+                var resObj = self.ajax({
+                    url: comm.get('baseUrl') + "/BasePtRoomBagsRuleBind/doRulrRoomDelete",
+                    params: {
+                        roomIds: roomIds.join(","),
+                     }
+                });
+                if (resObj.success) {
+                    var store = baseGrid.getStore();
+                    store.load();
+                    self.msgbox(resObj.obj);
+                } else {
+                    self.Error(resObj.obj);
+                }
+            }
+        });
+       
+    },
 });

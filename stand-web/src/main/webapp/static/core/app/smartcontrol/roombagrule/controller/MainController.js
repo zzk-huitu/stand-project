@@ -44,7 +44,14 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
                 this.doOpenBindDetail(btn,"edit");
                 return false;
             }
-        },    
+        },
+        "basegrid actioncolumn":{
+            ruleRoomClick:function(data){
+                this.doOpenBindDetail(null,"bing",data.view,data.record);
+                return false;
+           }
+
+        }
     },
     doHandleData:function(btn){
         var self=this;
@@ -122,7 +129,15 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
         var operType = cmd; 
         insertObj = recordData;
         var deDuctionMode = recordData.deDuctionMode; //扣费模式 ,渲染费率绑定时用到
+        switch (cmd) {
+          case "bing":
+          tabTitle = recordData.roomRuleName+"-规则房间";
+          tabItemId=funCode+"_ruleRoomBing"; 
+          detCode =  "rule_room";  
+          detLayout = "smartcontrol.roombagrule.ruleroomgrid";
+          break;   
 
+      }
         //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
         var tabItem=tabPanel.getComponent(tabItemId);
         if(!tabItem){
@@ -156,7 +171,18 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
                     }]
                 }); 
                 tabItem.add(item);  
-                              
+                if (cmd=="bing") {
+                 var rulerRoomGrid = item.down("basegrid[xtype=smartcontrol.roombagrule.ruleroomgrid]");
+                 var rulerRoomStore = rulerRoomGrid.getStore();
+                 var rulerRoomProxy = rulerRoomStore.getProxy();
+                 var filter=new Array();
+                 filter.push({"type": "string", "value": insertObj.uuid, "field": "roomRuleId", "comparison": "="})
+                 rulerRoomProxy.extraParams = {
+                    filter: JSON.stringify(filter)
+                };
+                rulerRoomStore.load();
+
+            }                
                 
             },30);
                            

@@ -55,7 +55,7 @@ public class BasePtPriceBindController extends FrameWorkController<PtPriceBind> 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-	
+	@Auth("BASERATE_priceBingTerm")
 	@RequestMapping(value = { "/priceBingTermlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void priceBingTermlist(HttpServletRequest request, HttpServletResponse response)
