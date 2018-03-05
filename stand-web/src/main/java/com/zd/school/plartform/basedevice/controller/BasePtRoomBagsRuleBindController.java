@@ -25,11 +25,15 @@ import com.zd.core.util.StringUtils;
 import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.build.allot.model.JwClassDormAllot;
 import com.zd.school.build.define.model.BuildDormDefine;
+import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.control.device.model.PtRoomBagRule;
 import com.zd.school.control.device.model.PtRoomBagsRuleBind;
+import com.zd.school.control.device.model.PtSkMeterbind;
+import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.plartform.basedevice.service.PtRoomBagsRuleBindService;
 import com.zd.school.plartform.baseset.service.BaseClassDormAllotService;
 import com.zd.school.plartform.baseset.service.BaseDormDefineService;
+import com.zd.school.plartform.baseset.service.BaseRoominfoService;
 import com.zd.school.plartform.baseset.service.BaseStudentDormService;
 import com.zd.school.plartform.system.model.SysUser;
 
@@ -54,7 +58,8 @@ public class BasePtRoomBagsRuleBindController extends FrameWorkController<PtRoom
 
 	@Resource
 	BaseStudentDormService dormStuService; // 学生宿舍
-
+	@Resource
+	BaseRoominfoService roomInfoService; // 房间信息
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
@@ -90,7 +95,31 @@ public class BasePtRoomBagsRuleBindController extends FrameWorkController<PtRoom
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+	@Auth("ROOM_BAG_RULE_ruleRoom")
+	@RequestMapping(value = { "/ruleRoomlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void ruleRoomlist(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String strData = ""; // 返回给js的数据
+		QueryResult<PtRoomBagsRuleBind> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+		if(qr.getTotalCount()==0){
+			writeJSON(response, strData);// 返回数据	
+			return;
+		}
+		
+		StringBuffer roomId = new StringBuffer();
+		for(PtRoomBagsRuleBind ptSkMeterbind:qr.getResultList()){
+			roomId.append(ptSkMeterbind.getRoomId()+",");
+		}
+		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomId.substring(0, roomId.length() - 1)
+			+ "\",\"field\":\"uuid\"}]";
+		//String sor="[{\"property\":\"orderIndex\",\"direction\":\"DESC\"}]";
+		QueryResult<BuildRoominfo> termQr = roomInfoService.queryPageResult(0,0,null, filter, true);
+		
+		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), termQr.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
 	/**
 	 * 查询出房间下所有人员（目前只有学生）
 	 * 
@@ -186,7 +215,22 @@ public class BasePtRoomBagsRuleBindController extends FrameWorkController<PtRoom
 			}
 		}
 	}
-
+	@RequestMapping("/doRulrRoomDelete")
+	public void doRulrRoomDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String roomIds = request.getParameter("roomIds");
+		if (StringUtils.isEmpty(roomIds)) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			return;
+		} else {
+			String[] ids =roomIds.split(",");
+			for(int i=0;i<ids.length;i++){
+				 String hql = " from PtRoomBagsRuleBind where roomId = '"+ ids[i]+"'";
+				 PtRoomBagsRuleBind entity = thisService.getEntityByHql(hql);
+				 thisService.delete(entity);
+			}
+		}
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"删除成功\""));
+	}
 	/**
 	 * doRestore还原删除的记录 @Title: doRestore @Description: TODO @param @param
 	 * request @param @param response @param @throws IOException 设定参数 @return

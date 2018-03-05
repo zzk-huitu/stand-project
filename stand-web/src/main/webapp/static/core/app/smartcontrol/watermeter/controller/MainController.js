@@ -98,7 +98,7 @@ Ext.define("core.smartcontrol.watermeter.controller.MainController", {
 
         switch (cmd) {
           case "bing":
-          tabTitle = recordData.measure+"绑定的设备";
+          tabTitle = recordData.measure+"-计量设备";
           tabItemId=funCode+"_meterBing"; 
           detCode =  "meter_bind";  
           detLayout = "smartcontrol.watermeter.meterbinggrid";

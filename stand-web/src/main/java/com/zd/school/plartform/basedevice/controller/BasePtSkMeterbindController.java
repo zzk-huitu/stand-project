@@ -13,13 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtPriceBind;
 import com.zd.school.control.device.model.PtSkMeterbind;
 import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.plartform.basedevice.service.BasePtTermService;
@@ -55,6 +55,7 @@ public class BasePtSkMeterbindController extends FrameWorkController<PtSkMeterbi
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
+	@Auth("WATER_METER_meterBingTerm")
 	@RequestMapping(value = { "/meterBingTermlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void meterBingTermlist(HttpServletRequest request, HttpServletResponse response)

@@ -153,6 +153,28 @@ Ext.define("core.smartcontrol.roombagrule.view.MainGrid", {
                         record: rec
                     });
                 }
+            },{
+                text:'规则房间',  
+                style:'font-size:12px;', 
+                tooltip: '规则房间',
+                ref: 'ruleRoom',
+                getClass :function(v,metadata,record,rowIndex,colIndex,store){                            
+                    if(comm.get("isAdmin")!="1"){
+                        var menuCode="ROOM_BAG_RULE";     // 此菜单的前缀
+                        var userBtn=comm.get("userBtn");                 
+                        if(userBtn.indexOf(menuCode+"_ruleRoom")==-1){
+                            return 'x-hidden-display';
+                        }
+                    }
+                    return null; 
+                },
+                handler: function(view, rowIndex, colIndex, item) {
+                    var rec = view.getStore().getAt(rowIndex);
+                    this.fireEvent('ruleRoomClick', {
+                        view: view.grid,
+                        record: rec
+                    });
+                }
             }]
         }]
     }

@@ -194,7 +194,7 @@ Ext.define("core.basedevice.baserate.controller.MainController", {
                 break;
                 case "bing":
                     insertObj=recordData;
-                    tabTitle = recordData.priceName+recordData.priceStatus+"绑定的设备";
+                    tabTitle = recordData.priceName+recordData.priceStatus+"-费率设备";
                     tabItemId=funCode+"_gridPriceBing"; 
                     var itemXtype=[{
                         xtype:"basedevice.baserate.pricebinggrid",                        
