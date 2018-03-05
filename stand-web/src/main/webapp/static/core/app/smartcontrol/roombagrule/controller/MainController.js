@@ -168,7 +168,7 @@ Ext.define("core.smartcontrol.roombagrule.controller.MainController", {
     
     },
 
-    hideFuncBtn:function(gird){    
+    hideFuncBtn:function(grid){    
         var basePanel = grid.up("basepanel");
         var funCode = basePanel.funCode;
         var baseGrid = basePanel.down("basegrid[funCode=" + funCode + "]");
