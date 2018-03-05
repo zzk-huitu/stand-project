@@ -45,30 +45,42 @@ Ext.define("core.smartcontrol.roombagrule.view.RuleRoomGrid", {
         }, {
             text: "房间类型",
             dataIndex: "roomType",
+            columnType: "basecombobox", //列类型
+            width:120,
+            ddCode: "FJLX" //字典代码
+        },{
+            text: "区域名称",
+            dataIndex: "areaName",
             flex:1,
         },{
             text: "房间电话",
             dataIndex: "roomPhone",
             flex:1,
-        },{
-            text: "区域名称",
-            dataIndex: "areaName",
-            flex:1,
         }, {
             text: "网络状态",
             dataIndex: "roomNet",
             flex:1,
-        },{
+            renderer: function(value) {
+                switch (value) {
+                  case '0':
+                  return '<font color=green>有网络</font>';
+                  break;
+                  case '1':
+                  return '<font color=red>无网络</font>';                    
+                  break;
+              }
+          }
+      },{
             text: "是否多媒体教室",
             dataIndex: "ismediaroom",
             flex:1,
             renderer: function(value) {
                 switch (value) {
-                  case 0:
-                    return '<font color=red>是</font>';
+                  case '0':
+                    return '<font color=green>是</font>';
                     break;
-                  case 1:
-                    return '<font color=green>否</font>';                    
+                  case '1':
+                    return '<font color=red>否</font>';                    
                     break;
                 }
             }
