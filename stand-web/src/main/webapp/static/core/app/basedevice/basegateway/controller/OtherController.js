@@ -52,6 +52,7 @@ Ext.define("core.basedevice.basegateway.controller.OtherController", {
         var detLayout = basetab.detLayout;  
 
         var objForm = basetab.down("baseform");
+        debugger;
         var formObj = objForm.getForm();
         var params = self.getFormValue(formObj); 
         var url="";  
@@ -81,7 +82,7 @@ Ext.define("core.basedevice.basegateway.controller.OtherController", {
                 for (var i = 1; i <= 4; i++) {
                     valInt += Ext.util.Format.date("0 "+params["time" + i + ""], 'H:i') + "|";
                 };
-                valInt = valInt.substring(1, valInt.length - 1);
+                valInt = valInt.substring(0, valInt.length - 1);
                 var highData={
                     'tlvs[2].valStr': valInt,
                     "tlvs[2].len": objForm.highFormData["tlvs[0].len"],//设备重启时间列表

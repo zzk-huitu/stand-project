@@ -49,8 +49,16 @@ Ext.define("core.smartcontrol.roombagrule.view.RuleRoomGrid", {
             width:120,
             ddCode: "FJLX" //字典代码
         },{
+            text: "房间编号",
+            dataIndex: "extField01",
+            flex:1,
+        },{
             text: "区域名称",
             dataIndex: "areaName",
+            flex:1,
+        },{
+            text: "上级名称",
+            dataIndex: "areaUpName",
             flex:1,
         },{
             text: "房间电话",
