@@ -56,14 +56,14 @@ Ext.define("core.baseset.teacherdorm.view.DetailForm", {
             fieldLabel: "姓名",
             name: "sendCheckName",
             allowBlank: false,
-            xtype: "basefuncfield",
-            formPanel:'baseset.teacherdorm.detailform',
+            xtype: "basefuncfield",//指定使用的组件
+            formPanel:'baseset.teacherdorm.detailform',//当前表单视图
             refController: "baseset.teacherdorm.othercontroller", //该功能主控制器
             funcPanel: "pubselect.selectuserlayout", //该功能显示的主视图
-            funcGrid:"pubselect.isselectusergrid",
+            funcGrid:"pubselect.isselectusergrid",//指定从哪个表格获取数据，与muiltSelect=true 共同使用
             funcTitle: "人员查询", //查询窗口的标题
             configInfo: {
-                fieldInfo: "tteacId~sendCheckName~userNumb,uuid~xm~userNumb",
+                fieldInfo: "tteacId~sendCheckName~userNumb,uuid~xm~userNumb",//指定字段的对应关系
                 muiltSelect: true, //是否多选
                 width:1100,
                 height:500,

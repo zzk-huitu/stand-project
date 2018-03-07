@@ -3,6 +3,7 @@ Ext.define("core.wisdomclass.classelegant.view.MainGrid", {
 	alias: "widget.wisdomclass.classelegant.maingrid",
 	dataUrl: comm.get("baseUrl") + "/ClassElegant/list", //数据获取地址
 	model: "com.zd.school.jw.ecc.model.EccClasselegant", //对应的数据模型
+    //new：此表格与权限相关的菜单编码
     menuCode:"CLASSELEGANT",
 	//工具栏操作按钮
     panelTopBar:{
@@ -52,11 +53,15 @@ Ext.define("core.wisdomclass.classelegant.view.MainGrid", {
 	extParams: {
 		
 	},
-	columns: [{
-		text: "主键",
-		dataIndex: "uuid",
-		hidden: true
-	},{
+    columns: { 
+        defaults:{
+            titleAlign:"center"
+        },
+        items:[{
+        text: "主键",
+        dataIndex: "uuid",
+        hidden: true
+    },{
         text: "班级名称",
         dataIndex: "className",
         width:200,
@@ -132,5 +137,6 @@ Ext.define("core.wisdomclass.classelegant.view.MainGrid", {
                     });
                 }
             }]
-        }],
+        }]
+    },
     });
