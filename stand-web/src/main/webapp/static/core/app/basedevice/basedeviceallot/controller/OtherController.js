@@ -35,10 +35,11 @@ Ext.define("core.basedevice.basedeviceallot.controller.OtherController", {
             }
         },
       //快速搜索文本框回车事件
-      "basegrid[xtype=basedevice.basedeviceallot.deviceallotgrid] button[ref=girdFastSearchText]": {
+      "basegrid[xtype=basedevice.basedeviceallot.deviceallotgrid] field[funCode=girdFastSearchText]": {
         specialkey: function (field, e) {
           if (e.getKey() == e.ENTER) {
-            this.queryFastSearchForm(field);                
+            this.queryFastSearchForm(field);   
+            return false;            
           }
         }
       },

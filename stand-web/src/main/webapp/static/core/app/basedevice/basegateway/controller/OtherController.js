@@ -52,7 +52,6 @@ Ext.define("core.basedevice.basegateway.controller.OtherController", {
         var detLayout = basetab.detLayout;  
 
         var objForm = basetab.down("baseform");
-        debugger;
         var formObj = objForm.getForm();
         var params = self.getFormValue(formObj); 
         var url="";  

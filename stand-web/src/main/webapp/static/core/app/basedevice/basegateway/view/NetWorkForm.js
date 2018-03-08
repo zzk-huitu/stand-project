@@ -138,7 +138,8 @@ Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
                 fieldLabel: '服务器IP',
                 xtype: 'textfield',
                 name: 'tlvs[3].valStr',
-                vtype:'ipCode'        
+                vtype:'ipCode',
+                readOnly: true        
             },{
                 columnWidth: 0.4,
                 xtype: "label",
@@ -157,6 +158,7 @@ Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
                 value: 1,
                 minValue: 1,
                 maxValue: 65335,
+                readOnly: true
             }]
         },{
             xtype: "container",
