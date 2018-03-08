@@ -16,13 +16,7 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
     control: {
         "basetreegrid[xtype=reportcenter.ptectermstatus.roominfotree] button[ref=gridRefresh]": {
             beforeclick: function(btn) {
-                btn.up('basetreegrid').getStore().load();
-                var mainlayout = btn.up("basepanel[xtype=reportcenter.ptectermstatus.mainlayout]");
-                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptectermstatus.maingrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId="";
-                proxy.extraParams.roomLeaf="";
+                this.refreshTreeStore(btn);
                 return false;
             }
         },
@@ -35,35 +29,7 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
                 4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
             */
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("panel[xtype=reportcenter.ptectermstatus.mainlayout]");
-               
-                var storeGrid = mainLayout.down("panel[xtype=reportcenter.ptectermstatus.maingrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取右边筛选框中的条件数据
-                var filter=self.getFastSearchFilter(storeGrid);       
-                if(filter.length==0)
-                    filter=null;
-                else
-                    filter = JSON.stringify(filter);
-
-                //获取点击树节点的参数
-                var roomId= record.get("id");
-                var roomLeaf=record.get("leaf");
-                if(roomLeaf==true)
-                    roomLeaf="1";
-                else
-                    roomLeaf="0";
-
-                //附带参赛
-                proxy.extraParams={
-                    roomId:roomId,
-                    roomLeaf:roomLeaf,
-                    filter:filter
-                }
-                store.loadPage(1); 
+                this.loadMainGridStore(tree,record);
                 return false;
 
             }
@@ -200,5 +166,45 @@ Ext.define("core.reportcenter.ptectermstatus.controller.MainController", {
             filter.push({"type": "date", "value": girdSearchTexts[1].getValue(), "field": "statusDate", "comparison": "<="})
         }
         return filter;
+    },
+
+    refreshTreeStore:function(btn){    
+        btn.up('basetreegrid').getStore().load();
+        var mainlayout = btn.up("basepanel[xtype=reportcenter.ptectermstatus.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.ptectermstatus.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.roomId="";
+        proxy.extraParams.roomLeaf="";
+    },
+
+    loadMainGridStore:function(tree,record){        
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=reportcenter.ptectermstatus.mainlayout]");
+       
+        var storeGrid = mainLayout.down("panel[xtype=reportcenter.ptectermstatus.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取右边筛选框中的条件数据
+        var filter=self.getFastSearchFilter(storeGrid);   
+        filter.push({"type":"string","comparison":"!=","value":"0","field":"roomType"});     //默认参数    
+        filter = JSON.stringify(filter);
+
+        //获取点击树节点的参数
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf,
+            filter:filter
+        }
+        store.loadPage(1); 
     }
 });

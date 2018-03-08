@@ -109,9 +109,9 @@ public class BaseGatewayServiceImpl extends BaseServiceImpl<PtGateway> implement
 	@Override
 	public void doUpdateBaseHighParam(TLVModel tlvs, String xm) {
 		// TODO Auto-generated method stub
+		
 		byte[] baseResult = null;
-		baseResult = TLVUtils.encode(tlvs.getTlvs());
-
+		baseResult = TLVUtils.encode(tlvs.getTlvs().subList(0, 2));
 		byte[] advResult = null;
 		advResult = TLVUtils.encode(tlvs.getTlvs().subList(2, 3));
 
@@ -135,7 +135,7 @@ public class BaseGatewayServiceImpl extends BaseServiceImpl<PtGateway> implement
 			gatewayIds=tlvs.getUuid()+","+gatewayIds;
 		}
 		
-		byte[] baseResult =TLVUtils.encode(tlvs.getTlvs());
+		byte[] baseResult =TLVUtils.encode(tlvs.getTlvs().subList(0, 2));
 		byte[] advResult =TLVUtils.encode(tlvs.getTlvs().subList(2, 3));
 		
 		String hql="update PtGateway a set a.baseParam = ?,a.advParam=?,a.updateTime=?,a.updateUser=? where a.uuid in ('"+gatewayIds.replace(",", "','")+"')";
@@ -171,7 +171,7 @@ public class BaseGatewayServiceImpl extends BaseServiceImpl<PtGateway> implement
 		PtGateway perEntity = this.get(tlvs.getUuid());
 		String frontServerId=perEntity.getFrontserverId();
 		
-		byte[] baseResult =TLVUtils.encode(tlvs.getTlvs());
+		byte[] baseResult =TLVUtils.encode(tlvs.getTlvs().subList(0, 2));
 		byte[] advResult =TLVUtils.encode(tlvs.getTlvs().subList(2, 3));
 		
 		String hql="update PtGateway a set a.baseParam = ?,a.advParam=?,a.updateTime=?,a.updateUser=? where a.isDelete=0 and a.frontserverId=?";

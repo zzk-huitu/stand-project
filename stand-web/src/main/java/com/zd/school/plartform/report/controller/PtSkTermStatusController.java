@@ -119,7 +119,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		Integer start = super.start(request);
 		Integer limit = super.limit(request);
 		String querySql = querySql(request);
-		String orderSql = orderSql(request);
+		//String orderSql = orderSql(request);
 		String roomId = request.getParameter("roomId");
 		String roomLeaf = request.getParameter("roomLeaf");
 
@@ -146,15 +146,19 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 
 		String select = " select SUM(a.USELITER) as useliter,MIN(a.TOTALUSEDLITER) as TOTALUSEDLITERmin,MAX(a.TOTALUSEDLITER) as TOTALUSEDLITERmax,"
 				+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,	e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	";
-		String sqlsub = " from dbo.PT_SK_TERMSTATUS a" + "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
-				+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
+		String sqlsub = " from dbo.PT_SK_TERMSTATUS a" + " JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
+				+ " JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 ";
-		orderSql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
-
-		QueryResult<Object> qResult = thisService.queryPageResultBySql(select + sqlsub + querySql + orderSql, start,
-				limit, null);
-
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0 and D.ROOM_TYPE!='0' ";
+	
+		String groupBySql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
+		String orderBySql = " ORDER BY c.TERMNO ASC";
+		
+		String sqlCount="select count(*) "+sqlsub+querySql+groupBySql;
+		
+		QueryResult<Object> qResult = thisService.queryPageResultBySql(select + sqlsub + querySql +groupBySql+orderBySql, start,
+				limit, null,sqlCount);
+		
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 
@@ -277,12 +281,14 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 
 		String sql = " select SUM(a.USELITER) as useliter,MIN(a.TOTALUSEDLITER) as TOTALUSEDLITERmin,MAX(a.TOTALUSEDLITER) as TOTALUSEDLITERmax,"
 				+ " c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT,	e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID	"
-				+ " from dbo.PT_SK_TERMSTATUS a" + "	LEFT JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
-				+ " LEFT JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
+				+ " from dbo.PT_SK_TERMSTATUS a" + " JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
+				+ " JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0 ";
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0  and D.ROOM_TYPE!='0' ";
+		
 		String groupSql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
-
+		String orderBySql = " ORDER BY c.TERMNO ASC";
+		
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Integer[] columnWidth = new Integer[] { 10, 20, 20, 15, 15, 15, 15, 15, 20, 20 };
 		List<Map<String, Object>> skTermStatusList = null;
@@ -311,7 +317,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		if (StringUtils.isNotEmpty(statusDateEnd)) {
 			sql += " and a.STATUSDATE<='" + statusDateEnd + "'";
 		}
-		skTermStatusList = thisService.queryMapBySql(sql + groupSql);
+		skTermStatusList = thisService.queryMapBySql(sql + groupSql+orderBySql);
 
 		List<Map<String, String>> skTermStatusExpList = new ArrayList<>();
 		Map<String, String> skTermStatusMap = null;

@@ -56,6 +56,7 @@ Ext.define("core.reportcenter.ptectermstatus.view.MainGrid", {
     }],
     //扩展参数
     extParams: {
+        filter: '[{"type":"string","comparison":"!=","value":"0","field":"roomType"}]'  //只显示已定义的房间
     },
     columns: {        
         defaults:{

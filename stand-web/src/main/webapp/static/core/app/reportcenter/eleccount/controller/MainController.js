@@ -16,14 +16,8 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
     control: {
         // 树刷新
         "basetreegrid[xtype=reportcenter.eleccount.roominfotree] button[ref=gridRefresh]": {
-                beforeclick: function(btn) {
-                btn.up('basetreegrid').getStore().load();
-                var mainlayout = btn.up("basepanel[xtype=reportcenter.eleccount.mainlayout]");
-                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.eleccount.maingrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId="";
-                proxy.extraParams.roomLeaf="";
+            beforeclick: function(btn) {
+                this.refreshTreeStore(btn);            
                 return false;
             }
         },
@@ -36,32 +30,7 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
                 4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
             */
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("panel[xtype=reportcenter.eleccount.mainlayout]");
-                mainLayout.funData.roomId=record.get("id");
-
-                var storeGrid = mainLayout.down("panel[xtype=reportcenter.eleccount.maingrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取右边筛选框中的条件数据
-                var querySql=self.getFastSearchFilter(storeGrid);            
-
-                //获取点击树节点的参数            
-                var roomId= record.get("id");
-                var roomLeaf=record.get("leaf");
-                if(roomLeaf==true)
-                    roomLeaf="1";
-                else
-                    roomLeaf="0";
-
-                //附带参赛
-                proxy.extraParams={
-                    roomId:roomId,
-                    roomLeaf:roomLeaf,
-                    querySql:querySql
-                }
-                store.loadPage(1); 
+                this.loadMainGridStore(tree,record);
                 return false;
            }
         },
@@ -195,5 +164,44 @@ Ext.define("core.reportcenter.eleccount.controller.MainController", {
             querySql+=" and b.statusDate<='"+value2+"'";
         }
         return querySql;
+    },
+
+    refreshTreeStore:function(btn){    
+        btn.up('basetreegrid').getStore().load();
+        var mainlayout = btn.up("basepanel[xtype=reportcenter.eleccount.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.eleccount.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.roomId="";
+        proxy.extraParams.roomLeaf="";
+    },
+
+    loadMainGridStore:function(tree,record){    
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=reportcenter.eleccount.mainlayout]");
+        mainLayout.funData.roomId=record.get("id");
+
+        var storeGrid = mainLayout.down("panel[xtype=reportcenter.eleccount.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取右边筛选框中的条件数据
+        var querySql=self.getFastSearchFilter(storeGrid);            
+
+        //获取点击树节点的参数            
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf,
+            querySql:querySql
+        }
+        store.loadPage(1); 
     }
 });

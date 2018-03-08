@@ -55,4 +55,9 @@ public interface JwCourseteacherService extends BaseService<JwCourseteacher> {
 	 * 批量更新周课时
 	 */
 	public String updateZjsByClassId(String classid,String courseid,int zjs);
+
+	public Boolean doReplaceCourseTeacher(int studyYear, String semester, String jsonData, String replaceCouTea,
+			SysUser sysuser);
+
+	public void updatePubliceClass(String claiId, String courseId, String publicClassid);
 }

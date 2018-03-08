@@ -357,7 +357,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	/**
 	 * 
 	 * TODO 增加新部门,当增加的部门是年级或班级时，需要将数据同步至年级信息表和班级信息表.
-	 * 
+	 * 关于添加学科：预先添加好课程信息，然后再添加学科时，才能把课程绑定到学科中。
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
 	 * 
@@ -376,7 +376,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 
 		// 插入部门数据
 		// BaseOrg saveEntity = null;
-		String courseId = "";
+		String courseId = null;
 		if (deptType.equals("06")) {
 			JwTBasecourse course = courseService.getByProerties("courseName", nodeText);
 			courseId = course.getUuid();
@@ -390,7 +390,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		saveEntity.setCreateUser(currentUser.getUuid()); // 创建人
 		saveEntity.setLeaf(true);
 		saveEntity.setIssystem(0);
-		//saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
+		saveEntity.setExtField01(courseId); // 对于部门是学科时，绑定已有学科对应的ID
 				
 		if (!parentNode.equals(TreeVeriable.ROOT)) {
 			BaseOrg parEntity = this.get(parentNode);

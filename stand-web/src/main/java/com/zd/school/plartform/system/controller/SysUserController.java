@@ -159,10 +159,18 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	@RequestMapping("/doAdd")
 	public void doAdd(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String userName = entity.getUserName();
+		String userNumb = entity.getUserNumb();
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		if (thisService.IsFieldExist("userName", userName, "-1")) {
 			writeJSON(response, jsonBuilder.returnFailureJson("'用户名不能重复！'"));
 			return;
+		}
+		
+		if(StringUtils.isNotEmpty(userNumb)){
+			if (thisService.IsFieldExist("userNumb", userNumb, "-1")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'工号/学号不能重复！'"));
+				return;
+			}
 		}
 
 		// 获取当前操作用户
@@ -210,11 +218,19 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void doUpdates(SysUser entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		String userName = entity.getUserName();
+		String userNumb = entity.getUserNumb();
 		String userId = entity.getUuid();
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		if (thisService.IsFieldExist("userName", userName, userId)) {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
 			return;
+		}
+		
+		if(StringUtils.isNotEmpty(userNumb)){
+			if (thisService.IsFieldExist("userNumb", userNumb, userId)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'工号/学号不能重复！'"));
+				return;
+			}
 		}
 		// 获取当前的操作用户
 		SysUser currentUser = getCurrentSysUser();

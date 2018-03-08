@@ -16,14 +16,8 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
     control: {
          // 树刷新
         "basetreegrid[xtype=reportcenter.watercount.roominfotree] button[ref=gridRefresh]": {
-                beforeclick: function(btn) {
-                btn.up('basetreegrid').getStore().load();
-                var mainlayout = btn.up("basepanel[xtype=reportcenter.watercount.mainlayout]");
-                var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.watercount.maingrid]");
-                var store = mianGrid.getStore();
-                var proxy = store.getProxy();
-                proxy.extraParams.roomId="";
-                proxy.extraParams.roomLeaf="";
+            beforeclick: function(btn) {
+                this.refreshTreeStore(btn);
                 return false;
             }
         },
@@ -36,33 +30,7 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
                 4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
             */
             itemclick: function(tree, record, item, index, e, eOpts) {
-                var self = this;
-                var mainLayout = tree.up("panel[xtype=reportcenter.watercount.mainlayout]");
-                mainLayout.funData.roomId=record.get("id");
-
-                var storeGrid = mainLayout.down("panel[xtype=reportcenter.watercount.maingrid]");
-                var store = storeGrid.getStore();
-                var proxy = store.getProxy();
-
-                //获取右边筛选框中的条件数据
-                var querySql=self.getFastSearchFilter(storeGrid);            
-
-                //获取点击树节点的参数            
-                var roomId= record.get("id");
-                var roomLeaf=record.get("leaf");
-                if(roomLeaf==true)
-                    roomLeaf="1";
-                else
-                    roomLeaf="0";
-
-                //附带参赛
-                proxy.extraParams={
-                    roomId:roomId,
-                    roomLeaf:roomLeaf,
-                    querySql:querySql
-                }
-
-                store.loadPage(1); 
+                this.loadMainGridStore(tree,record);
                 return false;
            }
        },
@@ -199,5 +167,46 @@ Ext.define("core.reportcenter.watercount.controller.MainController", {
             querySql+=" and a.statusDate<='"+value2+"'";
         }
         return querySql;
+    },
+
+
+    refreshTreeStore:function(btn){
+        btn.up('basetreegrid').getStore().load();
+        var mainlayout = btn.up("basepanel[xtype=reportcenter.watercount.mainlayout]");
+        var mianGrid = mainlayout.down("basegrid[xtype=reportcenter.watercount.maingrid]");
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams.roomId="";
+        proxy.extraParams.roomLeaf="";
+    },
+
+    loadMainGridStore:function(tree,record){
+        var self = this;
+        var mainLayout = tree.up("panel[xtype=reportcenter.watercount.mainlayout]");
+        mainLayout.funData.roomId=record.get("id");
+
+        var storeGrid = mainLayout.down("panel[xtype=reportcenter.watercount.maingrid]");
+        var store = storeGrid.getStore();
+        var proxy = store.getProxy();
+
+        //获取右边筛选框中的条件数据
+        var querySql=self.getFastSearchFilter(storeGrid);            
+
+        //获取点击树节点的参数            
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        //附带参赛
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf,
+            querySql:querySql
+        }
+
+        store.loadPage(1); 
     }
 });

@@ -7,7 +7,7 @@ Ext.define("core.system.dept.store.DeptTypeStore",{
     	{code: '03', deptType: '部门'},
         {code: '04', deptType: '年级'},
         {code: '05', deptType: '班级'},
-       /* {code: '06', deptType: '学科'},*/
+        {code: '06', deptType: '学科'},
     ],
     proxy: {
         type: 'memory',
