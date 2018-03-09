@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -65,7 +66,29 @@ public class AttUser extends BaseEntity implements Serializable{
     public String getUserId() {
         return userId;
     }
-        
+    
+    
+    @FieldInfo(name = "姓名")
+    @Formula("(SELECT ISNULL(a.XM,'') FROM SYS_T_USER a WHERE a.USER_ID=USER_ID)")
+    private String xm;
+
+    public void setXm(String xm) {
+        this.xm = xm;
+    }
+    public String getXm() {
+        return xm;
+    }
+    @FieldInfo(name = "学号")
+    @Formula("(SELECT ISNULL(a.USER_NUMB,'') FROM SYS_T_USER a WHERE a.USER_ID=USER_ID)")
+    private String xh;
+
+    public void setXh(String xh) {
+        this.xh = xh;
+    }
+    public String getXh() {
+        return xh;
+    }
+    /*
     @FieldInfo(name = "姓名")
     @Column(name = "XM", length = 36, nullable = false)
     private String xm;
@@ -85,7 +108,7 @@ public class AttUser extends BaseEntity implements Serializable{
     public String getXh() {
         return xh;
     }
-        
+    */    
 
     /** 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加 
     *@Transient

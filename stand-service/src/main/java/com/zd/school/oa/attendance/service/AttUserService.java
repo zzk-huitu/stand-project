@@ -70,4 +70,10 @@ public interface AttUserService extends BaseService<AttUser> {
 	 * @return
 	 */
 	public AttUser doAddEntity(AttUser entity, SysUser currentUser);
+	
+	/**
+	 * 绑定考勤人员
+
+	 */
+	public void doUserAttendBind(String[] userIds, String titleId,String xm);
 }

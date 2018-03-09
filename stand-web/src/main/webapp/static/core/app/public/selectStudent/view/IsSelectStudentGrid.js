@@ -17,7 +17,7 @@ Ext.define("core.public.selectStudent.view.IsSelectStudentGrid", {
         stripeRows: true
     },
     store: {
-        type: "public.selectUser.isselectedstustore"
+        type: "public.selectUser.isselecteduserstore" 
     },
     columns: [{
         xtype: "rownumberer",
