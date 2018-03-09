@@ -22,8 +22,8 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainLayout", {
             editTitle:'编辑考勤主题',
             detailTitle:'考勤主题详情'
         },    
-        width:700,
-        height:600
+        width:600,
+        height:200
     },
     minWidth:1000,
     scrollable:true,
