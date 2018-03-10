@@ -5,6 +5,7 @@ import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.BeanUtils;
+import com.zd.core.util.FileOperateUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseAttachment;
 import com.zd.school.plartform.baseset.service.BaseAttachmentService;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -223,4 +226,32 @@ public class BaseAttachmentController extends FrameWorkController<BaseAttachment
     	}
     	writeJSON(response,jsonBuilder.toJson(lists));
     }
+    
+    @RequestMapping(value = "/downLoadExcel")
+	public void download(HttpServletRequest request, HttpServletResponse response) {
+		init(request);
+		try {
+			String downloadfFileName = request.getParameter("filename");
+			String fileName = downloadfFileName.substring(downloadfFileName.indexOf("_") + 1);
+			String userAgent = request.getHeader("User-Agent");
+			byte[] bytes = userAgent.contains("MSIE") ? fileName.getBytes() : fileName.getBytes("UTF-8");
+			fileName = new String(bytes, "ISO-8859-1");
+			fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+			response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", fileName));
+			try {
+				response.addHeader("Content-Length","" + new File(FileOperateUtil.FILEDIR + "/" + downloadfFileName).length());
+			} catch (Exception e) {
+				response.addHeader("Content-Length", "" + new File(
+						FileOperateUtil.FILEDIR + "/" + new String(downloadfFileName.getBytes("iso-8859-1"), "utf-8")));
+			}
+			FileOperateUtil.download(downloadfFileName, response.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	} 
+    private void init(HttpServletRequest request) {
+		if (FileOperateUtil.FILEDIR == null) {
+			FileOperateUtil.FILEDIR = request.getSession().getServletContext().getRealPath("/");
+		}
+	}
 }

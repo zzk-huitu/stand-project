@@ -39,7 +39,7 @@ Ext.define("core.coursemanage.coursetable.view.MainLayout", {
     layout:'border',
 
 	items: [{
-		xtype: "coursemanage.coursetable.maintree",
+		xtype: "coursemanage.coursetable.classtree",
 		region: "west",
 		split:true,
 		width: 250

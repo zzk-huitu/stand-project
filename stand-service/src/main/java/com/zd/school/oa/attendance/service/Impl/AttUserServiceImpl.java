@@ -17,6 +17,7 @@ import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.oa.attendance.model.AttUser ;
+import com.zd.school.control.device.model.PtPriceBind;
 import com.zd.school.oa.attendance.dao.AttUserDao ;
 import com.zd.school.oa.attendance.service.AttUserService ;
 
@@ -126,6 +127,27 @@ public class AttUserServiceImpl extends BaseServiceImpl<AttUser> implements AttU
 		} catch (InvocationTargetException e) {
 			logger.error(e.getMessage());
 			return null;
+		}
+	}
+	@Override
+	public void doUserAttendBind(String[] userIds, String titleId,String xm) {
+		Date date=new Date();
+		AttUser perEntity = null;
+		for (int i = 0; i < userIds.length; i++) {
+			perEntity = this.getByProerties("userId",userIds[i]);
+			if (perEntity != null) {
+				perEntity.setTitleId(titleId);
+				perEntity.setUpdateTime(date);
+				perEntity.setUpdateUser(xm);
+				this.merge(perEntity);
+			} else {
+				perEntity = new AttUser();
+				perEntity.setTitleId(titleId);
+				perEntity.setUserId(userIds[i]);
+			    perEntity.setCreateUser(xm);
+				perEntity.setCreateTime(date);
+				this.merge(perEntity);
+			}
 		}
 	}
 }

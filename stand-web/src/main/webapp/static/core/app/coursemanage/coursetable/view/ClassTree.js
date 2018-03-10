@@ -1,6 +1,6 @@
-Ext.define("core.coursemanage.coursetable.view.MainTree", {
+Ext.define("core.coursemanage.coursetable.view.ClassTree", {
     extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.coursemanage.coursetable.maintree",
+    alias: "widget.coursemanage.coursetable.classtree",
     model:" com.zd.school.plartform.comm.model.CommTree",
     dataUrl:comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     expandFirst:true,
@@ -11,7 +11,7 @@ Ext.define("core.coursemanage.coursetable.view.MainTree", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '房间区域',
+            html: '班级',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -29,24 +29,26 @@ Ext.define("core.coursemanage.coursetable.view.MainTree", {
         whereSql: "",
         orderSql: " order by orderIndex asc "
     },
-    columns:{
-        defaults:{
-            titleAlign:"center"
-        },
-        items:[{
-            text: "区域名称",
-            dataIndex: "text",
-            xtype:'treecolumn',
-            flex: 1,
-            minWidth:150
-        }, /*{
-            text: "顺序号",
-            dataIndex: "orderIndex",
-            width:100
-        },*/{
-            text:"主键",
-            dataIndex:'id',
-            hidden:true
-        }]
-    },
+//    columns:{
+//        defaults:{
+//            titleAlign:"center"
+//        },
+//         
+//        items:[{
+//            text: "区域名称",
+//            dataIndex: "text",
+//            xtype:'treecolumn',
+//            flex: 1,
+//            minWidth:150
+//        }, /*{
+//            text: "顺序号",
+//            dataIndex: "orderIndex",
+//            width:100
+//        },*/{
+//            text:"主键",
+//            dataIndex:'id',
+//            hidden:true
+//        }]
+//    },
+   
 });

@@ -115,26 +115,27 @@ Ext.define("core.reportcenter.watercount.view.MainGrid", {
         },
          width:120 
     }, {
-        text: "最初用水量",
+        text: "最初用水量(升)",
         dataIndex: "TOTALUSEDLITERmin",
         field: {
             xtype: "textfield"
         },
-         width:120 
+        width:150,
     }, {
-        text: "最终用水量",
+        text: "最终用水量(升)",
         dataIndex: "TOTALUSEDLITERmax",
         field: {
             xtype: "textfield"
         },
-         width:120 
+        width:150,
+       
     }, {
-        text: "累积用水量",
+        text: "累积用水量(升)",
         dataIndex: "useliter",
         field: {
             xtype: "textfield"
         },
-         width:120 
+        width:150,
     }]
     }
 });

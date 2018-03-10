@@ -76,7 +76,7 @@ Ext.define("core.public.selectStudent.view.SelectStudentGrid", {
             },
             beforeitemdblclick: function(grid, record, item, index, e, eOpts) {
               
-                var basePanel = grid.up("panel[xtype=pubselect.selectuserlayout]");
+                var basePanel = grid.up("panel[xtype=pubselect.selectstulayout]");
                 var data = record.data;
                 var selectStore = grid.getStore();
                 var isSelectGrid;

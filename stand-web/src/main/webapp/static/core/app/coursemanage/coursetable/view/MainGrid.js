@@ -36,9 +36,9 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             text: '下载导入模版',
             ref: 'gridDownExcel',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
-            disabled:true,
+//            disabled:true,
             iconCls: 'x-fa fa-minus-circle'
-        },'->',{
+        },'->'/*,{
             xtype: 'tbtext', 
             html:'快速搜索：'
         },{
@@ -56,19 +56,13 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             ref: 'gridFastSearchBtn',  
             funCode:'girdSearchBtn',    //指定此类按钮为girdSearchBtn类型 
             iconCls: 'x-fa fa-search',  
-        }],
+        }*/],
   
     },   
     defSort: [{
-        property: 'studyYear',
-        direction: 'DESC'
-    },{
-        property: 'semester',
-        direction: 'DESC'
-    },{
-        property: 'className',
+        property: 'teachTime',
         direction: 'ASC'
-    }],
+    },],
     panelButtomBar:{},
 	//扩展参数
 	extParams: {
@@ -98,42 +92,37 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             hidden: true
         }, {
             text: "学年",
-            dataIndex: "studyYearName",
+            dataIndex: "schoolYear",
             flex:1,
         }, {
             text: "学期",
-            dataIndex: "semester",
+            dataIndex: "schoolTerm",
             columnType: "basecombobox", //列类型
             ddCode: "XQ", //字典代码      
             flex:1,   
-        }, {
-            text: "班级",
-            dataIndex: "className",
+        },{
+            text: "节次",
+            dataIndex: "teachTime",
             flex:1,
-        }, {
-            text: "工号",
-            dataIndex: "userNumb",
+        },{
+            text: "周一",
+            dataIndex: "courseName01",
             flex:1,
-        }, {
-            text: "教师/组名",
-            dataIndex: "xm",
+        },{
+            text: "周二",
+            dataIndex: "courseName02",
             flex:1,
-            renderer: function(v,metaData,record) {
-                if (v) {
-                    return v;
-                } else {
-                    return record.data.groupName;
-                }
-            }
-        }, {
-            text: "性别",
-            dataIndex: "xbm",
-            columnType: "basecombobox", //列类型
-            ddCode: "XBM", //字典代码
-            width:70   
-        }, {
-            text: "课程",
-            dataIndex: "courseName",
+        },{
+            text: "周三",
+            dataIndex: "courseName03",
+            flex:1,
+        },{
+            text: "周四",
+            dataIndex: "courseName04",
+            flex:1,
+        },{
+            text: "周五",
+            dataIndex: "courseName05",
             flex:1,
         }]
     }
