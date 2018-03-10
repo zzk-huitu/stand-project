@@ -81,6 +81,10 @@
                 comm.add("isAdmin","${SESSION_SYS_ISADMIN}");   //1为超级管理员
                 comm.add("userBtn","${SESSION_SYS_BTN}");   //模块界面的按钮
                 
+                comm.add("studyYear","${SESSION_SYS_USER.studyYear}");
+                comm.add("semester","${SESSION_SYS_USER.semester}");
+                comm.add("studyYeahname","${SESSION_SYS_USER.studyYearname}");   
+
                 //comm.add("fileUrl","${SESSION_SYS_VFU}");   //虚拟文件夹目录
 
                 //延迟关闭

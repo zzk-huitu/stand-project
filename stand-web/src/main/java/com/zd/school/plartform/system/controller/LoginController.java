@@ -140,21 +140,33 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			writeJSON(response, jsonBuilder.toJson(result));
 			return;
 		}
-
+		
 		Calendar a = Calendar.getInstance();
-		Integer studyYear = a.get(Calendar.YEAR);
-		Integer studyMonty = a.get(Calendar.MONTH) + 1;
+		Integer justYear = a.get(Calendar.YEAR); // 当前年份
+		Integer studyYear = a.get(Calendar.YEAR); // 当前年份
+		Integer studyMonth = a.get(Calendar.MONTH) + 1; // 当前月份
+		Integer i = justYear + 1;
+		String studyYearName = justYear.toString() + "-" + i.toString() + "学年";
 		String semester = "";
-		if (studyMonty >= 8) {
+		if (studyMonth >= 8) {
+			// 如果是8月份以后为当年-次年学年的上学期
 			semester = "2";
-		} else {
+		} else if (studyMonth >= 2) {
+			// 如果是2月份 及以上，为去年-当年的下学期
 			semester = "1";
+			studyYear = justYear - 1;
+			studyYearName = studyYear.toString() + "-" + justYear.toString() + "学年";
+		} else {
+			// 如果是1月份，为去年-当年的上学期
+			semester = "2";
+			studyYear = justYear - 1;
+			studyYearName = studyYear.toString() + "-" + justYear.toString() + "学年";
 		}
-		Integer i = studyYear + 1;
-		String studyYeahname = studyYear.toString() + "-" + i.toString() + "学年";
+
 		sysUser.setStudyYear(studyYear);
 		sysUser.setSemester(semester);
-		sysUser.setStudyYearname(studyYeahname);
+		sysUser.setStudyYearname(studyYearName);
+		
 
 		session.setAttribute(SESSION_SYS_USER, sysUser);
 
@@ -356,6 +368,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		 */
 		hashOper.delete("userRightDeptTree", sysUser.getUuid());
 		hashOper.delete("userRightDeptClassTree", sysUser.getUuid());
+		hashOper.delete("userRightDeptDisciplineTree", sysUser.getUuid());
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));
 	}

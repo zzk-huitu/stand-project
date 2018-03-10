@@ -121,6 +121,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 			hashOper.delete("userRightDeptTree", userIds);
 			hashOper.delete("userRightDeptClassTree", userIds);		
+			hashOper.delete("userRightDeptDisciplineTree", userIds);	
 		}
 	}
 

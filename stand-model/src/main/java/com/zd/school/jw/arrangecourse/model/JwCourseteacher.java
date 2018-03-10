@@ -53,16 +53,30 @@ public class JwCourseteacher extends BaseEntity implements Serializable {
     }
 
     @FieldInfo(name = "学年")
-    @Column(name = "STUDY_YEAH", length = 10, nullable = false)
-    private Integer studyYeah;
+    @Column(name = "STUDY_YEAR", length = 10, nullable = false)
+    private Integer studyYear;
 
-    public void setStudyYeah(Integer studyYeah) {
-        this.studyYeah = studyYeah;
+    public void setStudyYear(Integer studyYear) {
+        this.studyYear = studyYear;
     }
 
-    public Integer getStudyYeah() {
-        return studyYeah;
+    public Integer getStudyYear() {
+        return studyYear;
     }
+    
+    @FieldInfo(name = "学年名称")
+	@Column(name = "STUDY_YEARNAME", length = 64, nullable = true)
+	private String studyYearName;
+
+	public String getStudyYearName() {
+		return studyYearName;
+	}
+
+	public void setStudyYearName(String studyYearName) {
+		this.studyYearName = studyYearName;
+	}
+
+	
 
     @FieldInfo(name = "周节数: acs_zjs一周上多少节课")
     @Column(name = "acs_zjs", length = 10, nullable = true)
@@ -76,7 +90,7 @@ public class JwCourseteacher extends BaseEntity implements Serializable {
         return acszjs;
     }
 
-    @FieldInfo(name = "公用教室id")
+    @FieldInfo(name = "实验室ID")	//暂未用到
     @Column(name = "publicclassid", length = 36, nullable = true)
     private String publicclassid;
 
@@ -179,5 +193,16 @@ public class JwCourseteacher extends BaseEntity implements Serializable {
 
     public void setXbm(String xbm) {
         this.xbm = xbm;
+    }
+    
+    public JwCourseteacher(){}
+    	
+    public JwCourseteacher(String claiId,String tteacId,String courseId,Integer studyYear,String semester){
+    	super();
+    	this.claiId=claiId;
+    	this.tteacId=tteacId;
+    	this.courseId=courseId;
+    	this.studyYear=studyYear;
+    	this.semester=semester;
     }
 }

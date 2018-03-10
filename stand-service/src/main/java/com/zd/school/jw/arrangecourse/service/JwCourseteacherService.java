@@ -6,6 +6,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseService;
 import com.zd.school.jw.arrangecourse.model.JwCourseteacher;
 import com.zd.school.jw.eduresources.model.JwClassteacher;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 
@@ -27,26 +28,22 @@ public interface JwCourseteacherService extends BaseService<JwCourseteacher> {
      * doAddCourseTeacher:设置任课教师.
      * 
      * @author luoyibo
-     * @param studyYeah
-     *            任课学年
      * @param semester
      *            任课学期
-     * @param jsonData
-     *            需要设置的教师数据
-     * @param removeIds
-     *            要移除的教师数据
      * @param currentUser
      *            当前操作者
      * @return String
+     * @throws IllegalArgumentException 
      * @throws InvocationTargetException
      * @throws IllegalAccessException
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
      * @throws @since
      *             JDK 1.8
      */
-    public Boolean doAddCourseTeacher(Integer studyYeah, String semester, String jsonData, String removeIds,
-            SysUser currentUser) throws IllegalAccessException, InvocationTargetException;
+    public Boolean doAddCourseTeacher(String jsonData, SysUser currentUser) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
-    public Boolean doDelCourseTeacher(String delIds, SysUser currentUser);
+    public Boolean doDelCourseTeacher(String delIds, SysUser currentUser) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
     
     public QueryResult<JwCourseteacher> getClassCourseTeacherList(Integer start, Integer limit, String sort, String filter,
             Boolean isDelete, String claiId, Integer claiLevel);   
@@ -56,8 +53,15 @@ public interface JwCourseteacherService extends BaseService<JwCourseteacher> {
 	 */
 	public String updateZjsByClassId(String classid,String courseid,int zjs);
 
-	public Boolean doReplaceCourseTeacher(int studyYear, String semester, String jsonData, String replaceCouTea,
-			SysUser sysuser);
+	public Integer doReplaceCourseTeacher(String jctUuid, String teacherId, SysUser sysser) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 
 	public void updatePubliceClass(String claiId, String courseId, String publicClassid);
+	
+	/**
+	 * 获取用户有权限的学科树
+	 * @param node
+	 * @param currentUser
+	 * @return
+	 */
+	public CommTreeChk getUserRightDeptDisciplineTree(String rootId, SysUser currentUser);
 }

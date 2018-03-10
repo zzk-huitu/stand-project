@@ -66,9 +66,9 @@ Ext.define("core.basedevice.basegateway.controller.OtherController", {
                     netGatewayIp:formObj.findField("tlvs[1].valStr").getValue(),
                     gatewayMask:formObj.findField("tlvs[2].valStr").getValue(),
                     gatewayMac:formObj.findField("tlvs[6].valStr").getValue(),
-                    gatewayStatus:formObj.findField("tlvs[5].valInt").getValue(),
-                    frontServerIP:formObj.findField("tlvs[3].valStr").getValue(),
-                    frontServerPort:formObj.findField("tlvs[4].valInt").getValue(),
+                    //frontServerStatus:formObj.findField("tlvs[5].valInt").getValue(),
+                    //frontServerIP:formObj.findField("tlvs[3].valStr").getValue(),
+                    //frontServerPort:formObj.findField("tlvs[4].valInt").getValue(),
                 });
 	            url=comm.get('baseUrl') + "/BaseGateway/doGatewayParam";
                 break;

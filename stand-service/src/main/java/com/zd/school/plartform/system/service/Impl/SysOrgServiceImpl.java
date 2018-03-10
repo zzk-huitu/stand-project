@@ -1133,7 +1133,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 		Object userRightDeptTree = hashOper.get("userRightDeptTree", userId);	
 		if (userRightDeptTree != null) { // 若存在,则直接返回redis数据
-			return (List<BaseOrgChkTree>)userRightDeptTree;	//存在问题，id数据丢失
+			return (List<BaseOrgChkTree>)userRightDeptTree;	
 		}
 		
 		//若当前用户是超级管理员或学校管理员，那就直接查询所有部门
@@ -1214,7 +1214,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
 		Object userRightDeptClassTree = hashOper.get("userRightDeptClassTree", userId);	
 		if (userRightDeptClassTree != null) { // 若存在,则直接返回redis数据
-			return (List<CommTreeChk>)userRightDeptClassTree;	//存在问题，id数据丢失
+			return (List<CommTreeChk>)userRightDeptClassTree;
 		}
 		
 		//若当前用户是超级管理员或学校管理员，那就直接查询所有部门
@@ -1258,6 +1258,62 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	}
 	
 	/**
+	 * 获取用户有权限的部门学科树
+	 */
+	@Transactional(readOnly=true)
+	@Override
+	public List<CommTreeChk> getUserRightDeptDisciplineTreeList(SysUser currentUser) {
+		String userId = currentUser.getUuid();
+		Integer rightType = currentUser.getRightType();
+		
+		//先从redis中取数据
+		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
+		Object userRightDeptDisciplineTree = hashOper.get("userRightDeptDisciplineTree", userId);	
+		if (userRightDeptDisciplineTree != null) { // 若存在,则直接返回redis数据
+			return (List<CommTreeChk>)userRightDeptDisciplineTree;
+		}
+		
+		//若当前用户是超级管理员或学校管理员，那就直接查询所有部门
+		Integer isAdmin=(Integer)request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+		Integer isSchoolAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN);
+		if(isAdmin==1||isSchoolAdmin==1)
+			rightType=0;
+		
+		String sql = MessageFormat.format("EXECUTE SYS_P_GETUSERRIGHTGRADCLASSTREE ''{0}'',{1},''{2}''", userId,
+				rightType, "06");	//06是学科
+		
+		
+		List<CommTreeChk> chilrens = new ArrayList<CommTreeChk>();
+		CommTreeChk node = null;
+		List<Object[]> alist = this.queryObjectBySql(sql);
+
+		for (int i = 0; i < alist.size(); i++) {
+			Object[] obj = (Object[]) alist.get(i);
+			node = new CommTreeChk();
+			node.setId((String) obj[0]);
+			node.setText((String) obj[1]);
+			node.setIconCls((String) obj[2]);
+
+			if ((Boolean) obj[3]) {
+				node.setLeaf(true);
+			} else {
+				node.setLeaf(false);
+			}
+			node.setLevel((Integer) obj[4]);
+			node.setTreeid((String) obj[5]);
+			node.setParent((String) obj[6]);
+			node.setOrderIndex((Integer) obj[7]);
+			node.setNodeType((String) obj[8]);
+			node.setChecked(false);
+			chilrens.add(node);
+		}
+		
+		//若不存在，则存入到redis中
+		hashOper.put("userRightDeptDisciplineTree", userId, chilrens);
+		return chilrens;
+	}
+	
+	/**
 	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
 	 * 
 	 */
@@ -1265,5 +1321,8 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		// TODO Auto-generated method stub
 		redisTemplate.delete("userRightDeptTree");
 		redisTemplate.delete("userRightDeptClassTree");	
+		redisTemplate.delete("userRightDeptDisciplineTree");	
 	}
+
+	
 }

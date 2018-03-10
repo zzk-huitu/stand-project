@@ -114,12 +114,12 @@ Ext.define("core.system.dept.view.DetailForm", {
                         //gradeContainer.doLayout();
                         //baseform.doLayout();
                     } else {
-                        /*
+                        
                         proxy.extraParams = {
                            filter: filter
                         };
                         store.load(); 
-                        */
+                        
                         combo.up("panel").down("combobox[ref=comboxCourse]").setEditable(true);
                     }
 

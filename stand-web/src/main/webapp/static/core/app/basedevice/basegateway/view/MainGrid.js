@@ -198,7 +198,8 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                         record: rec
                     });
                 }
-            }, {
+            }/*, {
+                注：2018-3-8 何工暂时不采用这里的方式进行网络参数设定，暂时隐藏此功能
                 text:'网络参数',  
                 style:'font-size:12px;', 
                 tooltip: '网络参数',
@@ -220,7 +221,7 @@ Ext.define("core.basedevice.basegateway.view.MainGrid", {
                         record: rec
                     });
                 }
-            }]
+            }*/]
         }]
    },
 

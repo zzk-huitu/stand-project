@@ -1,6 +1,6 @@
-Ext.define("core.coursemanage.teachercourse.view.MainTree", {
+Ext.define("core.coursemanage.teachercourse.view.DeptClassTree", {
     extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.coursemanage.teachercourse.maintree",
+    alias: "widget.coursemanage.teachercourse.deptclasstree",
     model:" com.zd.school.plartform.comm.model.CommTree",
     dataUrl:comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     expandFirst:true,
@@ -35,11 +35,15 @@ Ext.define("core.coursemanage.teachercourse.view.MainTree", {
             titleAlign:"center"
         },
         items:[{
-            text: "班级名称",
+            text: "区域名称",
             dataIndex: "text",
             xtype:'treecolumn',
             flex: 1,
             minWidth:150
+        },{
+            text: "顺序号",
+            dataIndex: "orderIndex",
+            width:100
         },{
             text:"主键",
             dataIndex:'id',

@@ -95,9 +95,11 @@ public class BaseGatewayServiceImpl extends BaseServiceImpl<PtGateway> implement
 		perEntity.setNetgatewayIp(request.getParameter("netGatewayIp"));
 		perEntity.setGatewayMask(request.getParameter("gatewayMask"));
 		perEntity.setGatewayMac(request.getParameter("gatewayMac"));
-		perEntity.setFrontServerIP(request.getParameter("frontServerIP"));
-		perEntity.setFrontServerPort(Integer.parseInt(request.getParameter("frontServerPort")));
-		perEntity.setGatewayStatus(Integer.parseInt(request.getParameter("gatewayStatus")));
+		
+		//不能更改服务器参数
+		//perEntity.setFrontServerIP(request.getParameter("frontServerIP"));
+		//perEntity.setFrontServerPort(Integer.parseInt(request.getParameter("frontServerPort")));
+		//perEntity.setFrontServerStatus(Integer.parseInt(request.getParameter("frontServerStatus")));
 
 		perEntity.setUpdateUser(userCh);
 		perEntity.setUpdateTime(new Date());

@@ -13,7 +13,7 @@ Ext.define("core.coursemanage.teachercourse.view.MainGrid", {
         items: [{
             xtype: 'button',
             text: '添加',
-            ref: 'gridAdd_Tab',
+            ref: 'gridAdd',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
             iconCls: 'x-fa fa-plus-circle',
             disabled:false,
@@ -26,8 +26,8 @@ Ext.define("core.coursemanage.teachercourse.view.MainGrid", {
             iconCls: 'x-fa fa-minus-circle'
         },{
             xtype: 'button',
-            text: '替换老师/组',
-            ref: 'gridReplaceGroup',
+            text: '替换老师',
+            ref: 'gridReplaceTea',
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分 
             iconCls: 'x-fa fa-pencil-square'
         },'->',{
@@ -107,7 +107,7 @@ Ext.define("core.coursemanage.teachercourse.view.MainGrid", {
             dataIndex: "userNumb",
             flex:1,
         }, {
-            text: "教师/组名",
+            text: "教师",
             dataIndex: "xm",
             flex:1,
             renderer: function(v,metaData,record) {

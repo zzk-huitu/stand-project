@@ -126,7 +126,8 @@ Ext.define("core.basedevice.basegateway.view.NetWorkForm", {
                 emptyText: '请选择...',
                 blankText: '请选择',
                 editable: false,
-                mode: 'local'
+                mode: 'local',
+                readOnly: true
             }]
         },{
             xtype: "container",

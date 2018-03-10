@@ -139,18 +139,18 @@ Ext.define("core.basedevice.basegateway.controller.MainController", {
                 var formObj = objForm.getForm();                
                 if(cmd=="netWork"){       //网络参数设置                           
                     var frontServerIP  = recordData.frontServerIP;
-                    var gatewayIP = recordData.gatewayIP;
-                    var netGatewayIp = recordData.netgatewayIp;
                     var frontServerPort = recordData.frontServerPort;
+                    var frontServerStatus = recordData.frontServerStatus;                
+                    var gatewayIP = recordData.gatewayIP;
+                    var netGatewayIp = recordData.netgatewayIp;                
                     var gatewayMask =recordData.gatewayMask;
                     var gatewayMac = recordData.gatewayMac;
-                    var gatewayStatus = recordData.gatewayStatus;
                     formObj.findField("tlvs[0].valStr").setValue(gatewayIP);
                     formObj.findField("tlvs[1].valStr").setValue(netGatewayIp);
                     formObj.findField("tlvs[2].valStr").setValue(gatewayMask);
                     formObj.findField("tlvs[3].valStr").setValue(frontServerIP);
                     formObj.findField("tlvs[4].valInt").setValue(frontServerPort);
-                    formObj.findField("tlvs[5].valInt").setValue(gatewayStatus);
+                    formObj.findField("tlvs[5].valInt").setValue(frontServerStatus);
                     formObj.findField("tlvs[6].valStr").setValue(gatewayMac);
                     // var params =  objForm.formData;
                     // params.uuid=uuid;  

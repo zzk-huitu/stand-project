@@ -1,8 +1,8 @@
-Ext.define("core.coursemanage.teachercourse.view.MainTree", {
+Ext.define("core.coursemanage.teachercourse.view.DeptCourseTree", {
     extend: "core.base.view.BaseTreeGrid",
-    alias: "widget.coursemanage.teachercourse.maintree",
+    alias: "widget.coursemanage.teachercourse.deptcoursetree",
     model:" com.zd.school.plartform.comm.model.CommTree",
-    dataUrl:comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
+    dataUrl:comm.get('baseUrl') + "/CourseTeacher/disciplineTreeList",
     expandFirst:true,
     selModel: {},
     sortableColumns:false,
@@ -11,7 +11,7 @@ Ext.define("core.coursemanage.teachercourse.view.MainTree", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '班级信息',
+            html: '学科信息',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -35,15 +35,16 @@ Ext.define("core.coursemanage.teachercourse.view.MainTree", {
             titleAlign:"center"
         },
         items:[{
-            text: "班级名称",
+            //text: "区域名称",
             dataIndex: "text",
             xtype:'treecolumn',
             flex: 1,
             minWidth:150
-        },{
+        }, {
             text:"主键",
             dataIndex:'id',
             hidden:true
         }]
-    },*/
+    },
+    */
 });

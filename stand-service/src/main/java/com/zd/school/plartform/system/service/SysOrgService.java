@@ -189,9 +189,24 @@ public interface SysOrgService extends BaseService<BaseOrg> {
 	public List<BaseOrg> getUserRightDeptList(SysUser currentUser);
 
 	public BaseOrgChkTree getUserRightDeptTree(SysUser currentUser, String node);
-
+	
+	/**
+	 * 用户有权限的部门列表
+	 * @param currentUser
+	 * @return
+	 */
 	public List<BaseOrgChkTree> getUserRightDeptTreeList(SysUser currentUser);
-
+	/**
+	 * 用户有权限的班级列表
+	 * @param currentUser
+	 * @return
+	 */
 	public List<CommTreeChk> getUserRightDeptClassTreeList(SysUser currentUser);
+	/**
+	 * 用户有权限的学科列表
+	 * @param currentUser
+	 * @return
+	 */
+	public List<CommTreeChk> getUserRightDeptDisciplineTreeList(SysUser currentUser);
 	
 }
