@@ -100,29 +100,30 @@ Ext.define("core.coursemanage.coursetable.controller.MainController", {
         var areaType = record.get("nodeType");
         var areaId = record.get("id");
 
-        if(areaType=="05"){
-            Ext.apply(mainLayout.funData, {
-                areaId: areaId,
-                areaType: areaType,
-                areaName: record.get("text"),
-            });
-        
-            var roomGrid = mainLayout.down("panel[xtype=coursemanage.coursetable.maingrid]");
+        Ext.apply(mainLayout.funData, {
+            areaId: areaId,
+            areaType: areaType,
+            areaName: record.get("text"),
+        });
+    
+        var roomGrid = mainLayout.down("panel[xtype=coursemanage.coursetable.maingrid]");
 
-            //获取右边筛选框中的条件数据
-    //       var filter=self.getFastSearchFilter(roomGrid);
-            var filter = new Array();
-            //额外必须的参数
-            filter.push({"type":"string","comparison":"=","value":areaId,"field":"claiId"});                
-
-            var store = roomGrid.getStore();
-            var proxy = store.getProxy();
-            //附带参赛
-            proxy.extraParams={
-                filter:JSON.stringify(filter)
-            }
-            store.loadPage(1); // 给form赋值
+        //获取右边筛选框中的条件数据
+//       var filter=self.getFastSearchFilter(roomGrid);
+        //var filter = new Array();
+        //额外必须的参数
+        //filter.push({"type":"string","comparison":"=","value":areaId,"field":"claiId"});                
+    
+        var store = roomGrid.getStore();
+        var proxy = store.getProxy();
+        //附带参赛
+        proxy.extraParams={
+            deptId:areaId,
+            deptType:areaType,
+            //filter:JSON.stringify(filter)
         }
+        store.loadPage(1); // 给form赋值
+        
         
     },
 

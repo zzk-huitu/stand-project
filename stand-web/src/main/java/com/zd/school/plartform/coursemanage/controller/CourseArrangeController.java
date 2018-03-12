@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
@@ -33,18 +34,11 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.EntityExportExcel;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.arrangecourse.model.JwCourseArrange;
-import com.zd.school.jw.arrangecourse.model.JwCourseteacher;
 import com.zd.school.jw.arrangecourse.service.JwCourseArrangeService;
-import com.zd.school.jw.arrangecourse.service.JwCourseteacherService;
-import com.zd.school.jw.eduresources.model.JwTBasecourse;
-import com.zd.school.jw.eduresources.model.JwTGradeclass;
-import com.zd.school.jw.eduresources.service.JwTBasecourseService;
-import com.zd.school.jw.eduresources.service.JwTGradeclassService;
-import com.zd.school.jw.push.service.PushInfoService;
 import com.zd.school.plartform.baseset.model.BaseJob;
+import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
-import com.zd.school.plartform.system.service.SysUserService;
-import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
+import com.zd.school.plartform.system.service.SysOrgService;
 
 
 /**
@@ -62,28 +56,10 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 
 	@Resource
 	JwCourseArrangeService thisService; // service层接口。。。
-
-	@Resource
-	JwTGradeclassService classService;
-
-	@Resource
-	PushInfoService pushService;
-
-	@Resource
-	private JwTGradeclassService jwClassService;
-
-	@Resource
-	private JwTBasecourseService jtbService;
-
-	@Resource
-	private JwCourseteacherService courseTeacherService;
-
-	@Resource
-	private TeaTeacherbaseService teacherService;
-
-	@Resource
-	private SysUserService userService;
 	
+	@Resource
+	private SysOrgService sysOrgService;
+
 	/**
 	 * 标准的查询列表功能
 	 * @param entity
@@ -96,8 +72,60 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 	public void list(BaseJob entity, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		
+		String filter = request.getParameter("filter");
+		String deptId = request.getParameter("deptId");
+		String deptType = request.getParameter("deptType");
+
+		if (StringUtils.isEmpty(deptId)) {
+			deptId = AdminType.ADMIN_ORG_ID;
+		}
+
+		Integer isAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISADMIN);
+		Integer isSchoolAdmin = (Integer) request.getSession().getAttribute(Constant.SESSION_SYS_ISSCHOOLADMIN);
+
+		// 若当前用户是超级管理员/学校管理员，并且为学校部门，则查询出所有的用户
+		// if ((isAdmin == 1 || isSchoolAdmin==1) &&
+		// deptId.equals(AdminType.ADMIN_ORG_ID)) {...}
+		// 当部门不为根部门时 或者 不为管理员时，就要去查询内部的数据
+		if (!deptId.equals(AdminType.ADMIN_ORG_ID) || !(isAdmin == 1 || isSchoolAdmin == 1)) {
+			if ("05".equals(deptType)) { // 当选择的区域为班级时
+
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + deptId
+							+ "\",\"field\":\"claiId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + deptId
+							+ "\",\"field\":\"claiId\"}]";
+				}
+
+			} else { // 当选择的区域不为班级时
+
+				SysUser currentUser = getCurrentSysUser();
+				String classIds = getClassIds(deptId, currentUser);
+
+				if (StringUtils.isNotEmpty(classIds)) {
+
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + classIds
+								+ "\",\"field\":\"claiId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + classIds
+								+ "\",\"field\":\"claiId\"}]";
+					}
+
+				} else { // 若区域之下没有班级，则直接返回空数据
+
+					strData = jsonBuilder.buildObjListToJson(0L, new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}
+			}
+		}
+		
 		QueryResult<JwCourseArrange> qr = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), super.filter(request), true);
+				super.sort(request), filter, true);
 
 		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
@@ -253,7 +281,24 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		}
 	}
 	
-	
+	/**
+	 * 获取某个区域下的所有班级id
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private String getClassIds(String deptId, SysUser currentUser) {
+
+		List<CommTreeChk> baseOrgList = sysOrgService.getUserRightDeptClassTreeList(currentUser);
+		String classIds = baseOrgList.stream().filter((x) -> {
+			if (x.getNodeType().equals("05") && x.getTreeid().indexOf(deptId) != -1)
+				return true;
+			return false;
+		}).map((x) -> x.getId()).collect(Collectors.joining(","));
+
+		return classIds;
+	}
 	
 
 }
