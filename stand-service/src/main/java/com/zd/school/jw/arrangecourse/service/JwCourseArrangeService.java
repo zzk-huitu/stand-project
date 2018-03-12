@@ -1,7 +1,12 @@
 package com.zd.school.jw.arrangecourse.service;
 
+import java.util.List;
+import java.util.Map;
+
+import com.zd.core.model.ImportNotInfo;
 import com.zd.core.service.BaseService;
 import com.zd.school.jw.arrangecourse.model.JwCourseArrange ;
+import com.zd.school.plartform.system.model.SysUser;
 
 
 /**
@@ -18,5 +23,10 @@ import com.zd.school.jw.arrangecourse.model.JwCourseArrange ;
  */
  
 public interface JwCourseArrangeService extends BaseService<JwCourseArrange> {
+
+	public List<ImportNotInfo> doImportCourse(Map<String, List<String>> gccMap, SysUser currentUser);
+
+
+	public void doCouseUse(String[] idArr, String[] classIdArr, String[] teachTimeArr, String xm);
 
 }

@@ -34,7 +34,7 @@ import com.zd.core.util.DateTimeSerializer;
  * Reason: TODO ADD REASON(可选). 
  * Description: 排课课程表实体类.
  * date: 2016-08-23
- *
+ * 注：备用字段5作为 课表是否启用的标识
  * @author  luoyibo 创建文件
  * @version 0.1
  * @since JDK 1.8
@@ -66,7 +66,7 @@ public class JwCourseArrange extends BaseEntity implements Serializable{
         return schoolName;
     }
         
-    @FieldInfo(name = "学年")
+    @FieldInfo(name = "学年")	//暂时不需要
     @Column(name = "SCHOOL_YEAR", length = 32, nullable = true)
     private String schoolYear;
     public void setSchoolYear(String schoolYear) {
@@ -76,7 +76,7 @@ public class JwCourseArrange extends BaseEntity implements Serializable{
         return schoolYear;
     }
         
-    @FieldInfo(name = "学期")
+    @FieldInfo(name = "学期")	//暂时不需要
     @Column(name = "SCHOOL_TERM", length = 32, nullable = true)
     private String schoolTerm;
     public void setSchoolTerm(String schoolTerm) {

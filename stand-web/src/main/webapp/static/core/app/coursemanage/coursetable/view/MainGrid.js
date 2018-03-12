@@ -38,6 +38,24 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
 //            disabled:true,
             iconCls: 'x-fa fa-minus-circle'
+        },{
+            xtype: 'button',
+            text: '启用',
+            ref: 'gridSetUse',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-plus-circle'   
+        }, {
+            xtype: 'button',
+            text: '禁用',
+            ref: 'gridSetUnUse',
+            funCode:'girdFuntionBtn',   //指定此类按钮为girdFuntionBtn类型，用于于右边的按钮进行功能区分
+            iconCls: 'x-fa fa-plus-circle'   
+        },,{
+            xtype: 'tbtext', 
+            html:'（班级中每节次的课程只能启用一条）',
+            style:{
+                color:'red'
+            }
         },'->'/*,{
             xtype: 'tbtext', 
             html:'快速搜索：'
@@ -60,9 +78,12 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
   
     },   
     defSort: [{
+        property: 'extField05',
+        direction: 'DESC'
+    },{
         property: 'teachTime',
         direction: 'ASC'
-    },],
+    }],
     panelButtomBar:{},
 	//扩展参数
 	extParams: {
@@ -83,14 +104,11 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
     		dataIndex: "uuid",
     		hidden: true
     	},{
-            text: "老师主键",
-            dataIndex: "tteacId",
-            hidden: true
-        }, {
-            text: "年级ID",
-            dataIndex: "graiId",
-            hidden: true
-        }, {
+            text: "班级",
+            dataIndex: "className",
+            flex:2,
+            minWidth:100,
+        },  /*{
             text: "学年",
             dataIndex: "schoolYear",
             flex:1,
@@ -100,30 +118,46 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             columnType: "basecombobox", //列类型
             ddCode: "XQ", //字典代码      
             flex:1,   
-        },{
+        },*/{
             text: "节次",
             dataIndex: "teachTime",
-            flex:1,
+            width:70,
         },{
             text: "周一",
             dataIndex: "courseName01",
             flex:1,
+            minWidth:70,
         },{
             text: "周二",
             dataIndex: "courseName02",
             flex:1,
+            minWidth:70,
         },{
             text: "周三",
             dataIndex: "courseName03",
             flex:1,
+            minWidth:70,
         },{
             text: "周四",
             dataIndex: "courseName04",
             flex:1,
+            minWidth:70,
         },{
             text: "周五",
             dataIndex: "courseName05",
             flex:1,
+            minWidth:70,
+        },{
+            text: "更新时间",
+            dataIndex: "updateTime",
+            width:150,
+        },{
+            text:"是否启用",
+            dataIndex:'extField05',
+            width:100,
+            renderer: function(value) {
+                return (value == '1') ? '<font color=green>已启用</font>' : '<font color=red>未启用</font>';
+            }
         }]
     }
 });
