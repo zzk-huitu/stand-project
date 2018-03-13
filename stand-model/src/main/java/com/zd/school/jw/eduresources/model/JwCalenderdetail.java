@@ -109,6 +109,16 @@ public class JwCalenderdetail extends BaseEntity implements Serializable{
     public Date getEndTime() {
         return endTime;
     }
+    
+    @FieldInfo(name = "需要考勤 0否 1是")
+    @Column(name = "NEED_SIGNIN", length = 10, nullable = true)
+    private Integer needSignIn;
+	public Integer getNeedSignIn() {
+		return needSignIn;
+	}
+	public void setNeedSignIn(Integer needSignIn) {
+		this.needSignIn = needSignIn;
+	}
         
 
     /** 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加 

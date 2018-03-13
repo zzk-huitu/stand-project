@@ -65,7 +65,7 @@ public class BuildRoominfo extends BaseEntity implements Serializable {
 		return roomName;
 	}
 
-	@FieldInfo(name = "房间类型")//参考数据字典表
+	@FieldInfo(name = "房间类型")//参考数据字典表｛宿舍-1，办公室-2，教室-3，功能室-5｝
 	@Column(name = "ROOM_TYPE", length = 16, nullable = true)
 	private String roomType = "0";
 
