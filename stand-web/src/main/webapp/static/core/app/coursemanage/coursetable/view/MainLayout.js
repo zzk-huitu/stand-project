@@ -25,7 +25,7 @@ Ext.define("core.coursemanage.coursetable.view.MainLayout", {
        // whereSql:" where isDelete=0",
 	    tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
             titleField:'className',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-            addTitle:'',
+            addTitle:'添加课程',
             editTitle:'',
             detailTitle:'',
             addXtype:null,										//2018/1/3新加入，用于在公共方法中打开指定的界面
