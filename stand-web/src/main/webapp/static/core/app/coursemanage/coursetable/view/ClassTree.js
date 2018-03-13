@@ -1,7 +1,7 @@
 Ext.define("core.coursemanage.coursetable.view.ClassTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.coursemanage.coursetable.classtree",
-    model:" com.zd.school.plartform.comm.model.CommTree",
+    model:"com.zd.school.plartform.comm.model.CommTree",
     dataUrl:comm.get('baseUrl') + "/BaseStudentDorm/classtreelist",
     expandFirst:true,
     selModel: {},
@@ -11,7 +11,7 @@ Ext.define("core.coursemanage.coursetable.view.ClassTree", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '班级',
+            html: '班级信息',
             style: {
                 fontSize: '16px',
                 color: '#C44444',

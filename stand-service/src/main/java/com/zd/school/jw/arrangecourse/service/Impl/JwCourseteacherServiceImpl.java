@@ -165,7 +165,7 @@ public class JwCourseteacherServiceImpl extends BaseServiceImpl<JwCourseteacher>
 			
 			//更新课表的教师信息
 			StringBuffer sql = new StringBuffer("SELECT ISNULL(MAX(UUID),'null') FROM JW_T_COURSE_ARRANGE");
-			sql.append(" WHERE EXT_FIELD05=1");
+			sql.append(" WHERE ISDELETE=0 AND EXT_FIELD05=1");
 			sql.append(" AND CLAI_ID='" + addTeacher.getClaiId() + "'");
 			for (int i = 1; i <= 7; i++) {
 				StringBuffer sBuffer = new StringBuffer(
@@ -269,7 +269,7 @@ public class JwCourseteacherServiceImpl extends BaseServiceImpl<JwCourseteacher>
 					
 			//删除课表（修改课表中的教师信息）
 			StringBuffer sql = new StringBuffer("SELECT ISNULL(MAX(UUID),'null') FROM JW_T_COURSE_ARRANGE");
-			sql.append(" WHERE EXT_FIELD05=1");
+			sql.append(" WHERE  ISDELETE=0 AND EXT_FIELD05=1");
 			sql.append(" AND CLAI_ID='" + jwCourseteacher.getClaiId() + "'");
 			for (int i = 1; i <= 7; i++) {
 				StringBuffer sBuffer = new StringBuffer(
@@ -467,7 +467,7 @@ public class JwCourseteacherServiceImpl extends BaseServiceImpl<JwCourseteacher>
 		
 		//4.更新课表上的教师信息，采用relace的方式
 		StringBuffer sql = new StringBuffer("SELECT ISNULL(MAX(UUID),'null') FROM JW_T_COURSE_ARRANGE");
-		sql.append(" WHERE EXT_FIELD05=1");
+		sql.append(" WHERE  ISDELETE=0 AND  EXT_FIELD05=1");
 		sql.append(" AND CLAI_ID='" + jct.getClaiId() + "'");
 		for (int i = 1; i <= 7; i++) {
 			StringBuffer sBuffer = new StringBuffer(
