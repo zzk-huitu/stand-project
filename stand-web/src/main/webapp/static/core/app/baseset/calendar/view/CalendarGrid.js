@@ -42,6 +42,7 @@ Ext.define("core.baseset.calendar.view.CalendarGrid", {
             xtype: 'button',
             text: '启用',
             disabled:true,
+            funCode:'girdFuntionBtn', 
             iconCls: 'x-fa fa-star',
             ref: 'gridUse'
         }],

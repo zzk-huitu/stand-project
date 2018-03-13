@@ -19,6 +19,7 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
+import com.zd.school.oa.attendance.model.AttTerm;
 import com.zd.school.oa.attendance.model.AttTime;
 import com.zd.school.oa.attendance.service.AttTimeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -55,11 +56,8 @@ public class AttendTimeController extends FrameWorkController<AttTime> implement
 	public void list(@ModelAttribute AttTime entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-		QueryResult<AttTime> qResult = thisService.list(start, limit, sort, filter, true);
+		QueryResult<AttTime> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -126,6 +124,26 @@ public class AttendTimeController extends FrameWorkController<AttTime> implement
 				}
 			} catch (Exception e) {
 				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败,详情见错误日志'"));
+			}
+		}
+	}
+	@RequestMapping("/doTimeAttendDelete")
+	public void doTimeAttendDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String termIds = request.getParameter("isSelectAttendIds");
+		if (StringUtils.isEmpty(termIds)) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			return;
+		} else {
+
+			try {
+				boolean flag = thisService.deleteByPK(termIds);
+				if (flag) {
+					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				} else {
+					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				}
+			} catch (Exception e) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
 			}
 		}
 	}

@@ -45,35 +45,46 @@ Ext.define("core.coursemanage.specialcourseattend.controller.MainController", {
         var popFunData = Ext.apply(funData, {
             grid: baseGrid
         });
-        var tabTitle ='';
-        var tabItemId='';  
+        var tabTitle =recordData['titleName']+"_考勤人员";
+        var tabItemId = funCode+"UserAttend";  
         var pkValue= recordData[pkName];;
         var operType ="detail";
         insertObj = recordData;
         var itemXtype=[{
             xtype:detLayout,                        
-            funCode: detCode             
+            funCode: detCode,
+            items: [{
+                xtype: "coursemanage.specialcourseattend.userattendgrid",
+                funCode: detCode                  
+            }]
         }];
-
+        var gridXtype = "coursemanage.specialcourseattend.userattendgrid";
         switch(cmd){
-            case "setUsers":
-             iconCls= 'x-fa fa-pencil-square';
-             tabTitle = "考勤人员";
-             tabItemId = funCode+"UserAttend";
+            case "setTerms":
+             tabTitle = recordData['titleName']+"_考勤设备";
+             tabItemId = funCode+"TermAttend";
+             gridXtype = "coursemanage.specialcourseattend.settermsgird";
              itemXtype=[{
                     xtype:detLayout,                        
                     funCode: detCode,
                     items: [{
-                        xtype: "coursemanage.specialcourseattend.userattendgrid",
+                        xtype: "coursemanage.specialcourseattend.settermsgird",
                         funCode: detCode                  
                     }]
                 }]
             break;
-            case "setTerms":
-             iconCls= 'x-fa fa-pencil-square';
-            break;
             case "setTimes":
-             iconCls= 'x-fa fa-pencil-square';
+             tabTitle = recordData['titleName']+"_考勤时间";
+             tabItemId = funCode+"TimeAttend";
+             gridXtype = "coursemanage.specialcourseattend.settimesgird";
+             itemXtype=[{
+                xtype:detLayout,                        
+                funCode: detCode,
+                items: [{
+                    xtype: "coursemanage.specialcourseattend.settimesgird",
+                    funCode: detCode                  
+                }]
+            }]
             break;
 
         }
@@ -107,21 +118,18 @@ Ext.define("core.coursemanage.specialcourseattend.controller.MainController", {
                 }); 
                 tabItem.add(item);  
                
-                //将数据显示到表单中（或者通过请求ajax后台数据之后，再对应的处理相应的数据，显示到界面中） 
-                if (cmd=="setUsers") {
-                 var userAttendGrid = item.down("basegrid[xtype=coursemanage.specialcourseattend.userattendgrid]");
-                 var userAttendStore = userAttendGrid.getStore();
-                 var userAttendProxy = userAttendStore.getProxy();
-                 var filter=new Array();
-                 filter.push({"type": "string", "value": insertObj.uuid, "field": "titleId", "comparison": "="})
-                 userAttendProxy.extraParams = {
-                    filter: JSON.stringify(filter)
-                };
-                userAttendStore.load();
+            //将数据显示到表单中（或者通过请求ajax后台数据之后，再对应的处理相应的数据，显示到界面中） 
+            var attendGrid = item.down("basegrid[xtype=" + gridXtype + "]");
+            var attendStore = attendGrid.getStore();
+            var attendProxy = attendStore.getProxy();
+            var filter=new Array();
+            filter.push({"type": "string", "value": insertObj.uuid, "field": "titleId", "comparison": "="})
+            attendProxy.extraParams = {
+                filter: JSON.stringify(filter)
+            };
+            attendStore.load();
 
-            }
-                
-            },30);
+        },30);
                            
         }else if(tabItem.itemPKV&&tabItem.itemPKV!=pkValue){     //判断是否点击的是同一条数据
             self.Warning("您当前已经打开了一个编辑窗口了！");

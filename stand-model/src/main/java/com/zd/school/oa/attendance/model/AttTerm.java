@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -55,8 +56,36 @@ public class AttTerm extends BaseEntity implements Serializable{
     public String getTitleId() {
         return titleId;
     }
-        
     @FieldInfo(name = "终端号")
+    @Formula("(SELECT ISNULL(a.TERM_CODE,'') FROM OA_T_INFOTERM a WHERE a.TERM_ID=TERM_ID)")
+    private String termCode;
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+    public String getTermCode() {
+        return termCode;
+    }
+        
+    @FieldInfo(name = "房间ID")
+    @Formula("(SELECT ISNULL(a.ROOM_ID,'') FROM OA_T_INFOTERM a WHERE a.TERM_ID=TERM_ID)")
+    private String roomId;
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+    public String getRoomId() {
+        return roomId;
+    }
+        
+    @FieldInfo(name = "房间名称")
+    @Formula("(SELECT ISNULL(a.ROOM_NAME,'') FROM OA_T_INFOTERM a WHERE a.TERM_ID=TERM_ID)")
+    private String roomName;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+    public String getRoomName() {
+        return roomName;
+    }    
+   /* @FieldInfo(name = "终端号")
     @Column(name = "TERM_CODE", length = 6, nullable = true)
     private String termCode;
     public void setTermCode(String termCode) {
@@ -84,7 +113,7 @@ public class AttTerm extends BaseEntity implements Serializable{
     }
     public String getRoomName() {
         return roomName;
-    }
+    }*/
         
 
     /** 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加 
