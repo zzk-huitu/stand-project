@@ -54,8 +54,8 @@ Ext.define("core.coursemanage.specialcourseattend.view.SetTermsGird", {
             text: "终端类型",
             dataIndex: "termType",
             flex:1,
-           /* xtype:"basecombobox",
-            ddCode:"INFOTERTYPE"*/
+            columnType: "basecombobox", //列类型
+            ddCode: "INFOTERTYPE", //字典代码
         },{
             text: "规格",
             dataIndex: "termSpec",
