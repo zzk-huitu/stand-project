@@ -17,6 +17,7 @@ import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.oa.attendance.model.AttTerm ;
+import com.zd.school.oa.attendance.model.AttUser;
 import com.zd.school.oa.attendance.dao.AttTermDao ;
 import com.zd.school.oa.attendance.service.AttTermService ;
 
@@ -126,6 +127,28 @@ public class AttTermServiceImpl extends BaseServiceImpl<AttTerm> implements AttT
 		} catch (InvocationTargetException e) {
 			logger.error(e.getMessage());
 			return null;
+		}
+	}
+	@Override
+	public void doTermAttendAdd(String[] termIds, String titleId,String xm) {
+		Date date=new Date();
+		AttTerm perEntity = null;
+		for (int i = 0; i < termIds.length; i++) {
+			perEntity =this.get(termIds[i]);
+			//perEntity = this.getByProerties("uuid",termIds[i]);
+			if (perEntity != null) {
+				perEntity.setTitleId(titleId);
+				perEntity.setUpdateTime(date);
+				perEntity.setUpdateUser(xm);
+				this.merge(perEntity);
+			} else {
+				perEntity = new AttTerm();
+				perEntity.setTitleId(titleId);
+				perEntity.setUuid(termIds[i]);
+			    perEntity.setCreateUser(xm);
+				perEntity.setCreateTime(date);
+				this.merge(perEntity);
+			}
 		}
 	}
 }

@@ -17,7 +17,7 @@ control: {
   "panel[xtype=wisdomclass.roomterm.roomtree] button[ref=gridRefresh]": {
      click: function(btn) {
         var baseGrid = btn.up("basetreegrid");
-        var store = baseGrid.getStore();
+        var store = baseGrid.getStore().load();
         return false;
     }
 },

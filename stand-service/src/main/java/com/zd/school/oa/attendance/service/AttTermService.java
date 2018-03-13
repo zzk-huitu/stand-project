@@ -70,4 +70,9 @@ public interface AttTermService extends BaseService<AttTerm> {
 	 * @return
 	 */
 	public AttTerm doAddEntity(AttTerm entity, SysUser currentUser);
+	/**
+	 * 绑定考勤设备
+
+	 */
+	public void doTermAttendAdd(String[] termIds, String titleId,String xm);
 }

@@ -19,7 +19,10 @@ import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.oa.attendance.model.AttTerm;
+import com.zd.school.oa.attendance.model.AttUser;
 import com.zd.school.oa.attendance.service.AttTermService;
+import com.zd.school.oa.terminal.model.OaInfoterm;
+import com.zd.school.plartform.baseset.service.BaseInfotermService;
 import com.zd.school.plartform.system.model.SysUser;
 
 /**
@@ -40,7 +43,8 @@ public class AttendTermController extends FrameWorkController<AttTerm> implement
 
     @Resource
     AttTermService thisService; // service层接口
-
+    @Resource
+	BaseInfotermService InfoTermService; // service层接口
     /**
       * @Title: list
       * @Description: 查询数据列表
@@ -55,15 +59,36 @@ public class AttendTermController extends FrameWorkController<AttTerm> implement
     public void list(@ModelAttribute AttTerm entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String strData = ""; // 返回给js的数据
-		Integer start = super.start(request);
-		Integer limit = super.limit(request);
-		String sort = super.sort(request);
-		String filter = super.filter(request);
-        QueryResult<AttTerm> qResult = thisService.list(start, limit, sort, filter,true);
-        strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
-        writeJSON(response, strData);// 返回数据
-    }
 
+		QueryResult<AttTerm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
+				super.sort(request), super.filter(request), true);
+		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
+		writeJSON(response, strData);// 返回数据
+	}
+    
+   	@RequestMapping(value = { "/termAttendlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+   			org.springframework.web.bind.annotation.RequestMethod.POST })
+   	public void termAttendlist(HttpServletRequest request, HttpServletResponse response)
+   			throws IOException {
+   		String strData = ""; // 返回给js的数据
+   		QueryResult<AttTerm> qr = thisService.queryPageResult(super.start(request), super.limit(request),
+   				super.sort(request), super.filter(request), true);
+   		if(qr.getTotalCount()==0){
+   			writeJSON(response, strData);// 返回数据	
+   			return;
+   		}
+   		StringBuffer termId = new StringBuffer();
+   		for(AttTerm attTerm:qr.getResultList()){
+   			termId.append(attTerm.getUuid()+",");
+   		}
+   		String filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + termId.substring(0, termId.length() - 1)
+   			+ "\",\"field\":\"uuid\"}]";
+   		
+   		QueryResult<OaInfoterm> termQr = InfoTermService.queryPageResult(0, 0,null, filter, true);
+   		
+   		strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), termQr.getResultList(), true);// 处理数据
+   		writeJSON(response, strData);// 返回数据
+   	}
     /**
      * 
       * @Title: doadd
@@ -92,7 +117,19 @@ public class AttendTermController extends FrameWorkController<AttTerm> implement
 			writeJSON(response, jsonBuilder.returnFailureJson("'数据增加失败,详情见错误日志'"));
 		}
     }
+	@RequestMapping("/doTermAttendAdd")
+	public void doTermAttendAdd(String[] userIds, String titleId, HttpServletRequest request,
+			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException {
 
+		// 此处为放在入库前的一些检查的代码，如唯一校验等
+
+		// 获取当前操作用户
+		SysUser currentUser = getCurrentSysUser();
+		thisService.doTermAttendAdd(userIds, titleId, currentUser.getXm());// 执行增加方法
+
+		writeJSON(response, jsonBuilder.returnSuccessJson("'成功'"));
+
+	}
     /**
       * 
       * @Title: doDelete
@@ -122,6 +159,33 @@ public class AttendTermController extends FrameWorkController<AttTerm> implement
 			}
         }
     }
+
+	@RequestMapping("/doTermAttendDelete")
+	public void doTermAttendDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String termIds = request.getParameter("isSelectAttendIds");
+		if (StringUtils.isEmpty(termIds)) {
+			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
+			return;
+		} else {
+			/*String[] ids = termIds.split(",");
+			for (int i = 0; i < ids.length; i++) {
+				String hql = " from AttTerm where uuid = '" + ids[i] + "'";
+				AttTerm entity = thisService.getEntityByHql(hql);
+				thisService.delete(entity);
+			} */
+			try {
+				boolean flag = thisService.deleteByPK(termIds);
+				if (flag) {
+					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
+				} else {
+					writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+				}
+			} catch (Exception e) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'删除失败'"));
+			}
+		}
+		
+	}
     /**
      * @Title: doUpdate
      * @Description: 编辑指定记录

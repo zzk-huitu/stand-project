@@ -29,7 +29,8 @@ Ext.define("core.baseset.calendar.view.CalendarForm", {
 		name: "campusName",
 		xtype: 'basefuncfield',
 		allowBlank: false,
-		funcController: "core.baseset.campus.controller.MainController", //该功能主控制器
+		refController: "baseset.calendar.othercontroller", //该功能主控制器
+		formPanel:"baseset.calendar.calendarform",
 		funcPanel: "baseset.campus.mainlayout", //该功能显示的主视图
 		funcTitle: "所属校区", //查询窗口的标题
 		configInfo: {
