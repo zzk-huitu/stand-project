@@ -130,13 +130,14 @@ public class AttendTimeController extends FrameWorkController<AttTime> implement
 	@RequestMapping("/doTimeAttendDelete")
 	public void doTimeAttendDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String termIds = request.getParameter("isSelectAttendIds");
+		String[] ids = termIds.split(",");
 		if (StringUtils.isEmpty(termIds)) {
 			writeJSON(response, jsonBuilder.returnSuccessJson("'没有传入删除主键'"));
 			return;
 		} else {
 
 			try {
-				boolean flag = thisService.deleteByPK(termIds);
+				boolean flag = thisService.deleteByPK(ids);
 				if (flag) {
 					writeJSON(response, jsonBuilder.returnSuccessJson("'删除成功'"));
 				} else {

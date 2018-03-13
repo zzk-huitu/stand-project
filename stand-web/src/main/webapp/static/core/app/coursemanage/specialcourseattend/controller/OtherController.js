@@ -243,7 +243,6 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
           if(cmd=="timeEditAttend"){
            var objDetForm = win.down("baseform[xtype=coursemanage.specialcourseattend.settimesform]");
            var formDeptObj = objDetForm.getForm();
-           console.log(new Date(insertObj.endDate));
            insertObj['beginTime'] = Ext.Date.format(new Date(insertObj.beginTime), 'H:i');
            insertObj['endTime'] = Ext.Date.format(new Date(insertObj.endTime), 'H:i');
            insertObj['beginDate'] = Ext.Date.format(new Date(insertObj.beginDate), 'Y/m/d');
@@ -385,7 +384,12 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
         return;
       }
       objForm.findField("beginTime").setValue(Ext.Date.format(new Date(records[0].get('beginTime')), 'H:i'));
-      objForm.findField("endTime").setValue(Ext.Date.format(new Date(records[0].get('endTime')), 'H:i'));
+      if(records[0].get('endTime')){
+        objForm.findField("endTime").setValue(Ext.Date.format(new Date(records[0].get('endTime')), 'H:i'));
+        
+      }else{
+        objForm.findField("endTime").setValue("");
+      }
       objForm.findField("teachTime").setValue(records[0].get('jcCode'));
       win.close();
     },

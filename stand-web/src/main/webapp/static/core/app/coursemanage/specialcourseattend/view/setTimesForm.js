@@ -33,13 +33,18 @@ Ext.define("core.coursemanage.specialcourseattend.setTimesForm", {
     },  {
         fieldLabel: "选课开始日期",
         name: "beginDate",
-        xtype: "datefield",
-        format: 'Y年m月d日',
+        xtype: "datetimefield",
+        dateType:'date',
+        vtype:"beginDate",
+        compareField:"endDate"
+       
     },  {
         fieldLabel: "选课结束日期",
         name: "endDate",
-        xtype: "datefield",
-        format: 'Y年m月d日',
+        xtype: "datetimefield",
+        dateType:'date',
+        vtype:"endDate",
+        compareField:"beginDate"
     },  {
         beforeLabelTextTpl: comm.get("required"),
         allowBlank: false,
