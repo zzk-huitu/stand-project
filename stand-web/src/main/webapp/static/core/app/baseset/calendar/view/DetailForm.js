@@ -6,6 +6,13 @@ var isafgernoons = Ext.create('Ext.data.Store', {
         {"isafgernoon":2, "name":"晚上"}
     ]
 })
+var needSignIn = Ext.create('Ext.data.Store', {
+            fields: ['needSignIn', 'name'],
+            data : [
+                {"needSignIn":0, "name":"否"},
+                {"needSignIn":1, "name":"是"}
+            ]
+        })
 
 Ext.define("core.baseset.calendar.view.DetailForm", {
     extend: "core.base.view.BaseForm",
@@ -145,5 +152,23 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
                 }
             }*/
         }]
+    }, {
+        xtype:"container",
+        layout:"column",
+        items:[{
+            columnWidth:.5,
+            beforeLabelTextTpl: comm.get('required'),
+            xtype: "combobox",
+            itemId:'needSignInCombo',
+            store: needSignIn,
+            fieldLabel: "需要考勤",
+            name: "needSignIn",
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'needSignIn',
+            value:0,
+            editable:false
+        }]
+
     }]
 });
