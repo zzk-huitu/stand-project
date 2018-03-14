@@ -7,6 +7,11 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
     menuCode:"COURSETABLE",
 
     al:false,
+    columnLines: true, //展示竖线
+    viewConfig: {   //用于ext.view的任何配置选项。
+        stripeRows: true,             
+    },
+    
 	//工具栏操作按钮
     panelTopBar:{
         xtype:'toolbar',
@@ -122,6 +127,9 @@ Ext.define("core.coursemanage.coursetable.view.MainGrid", {
             text: "节次",
             dataIndex: "teachTime",
             width:70,
+            renderer: function(value) {
+                return "第"+value+"节";
+            }
         },{
             text: "周一",
             dataIndex: "courseName01",

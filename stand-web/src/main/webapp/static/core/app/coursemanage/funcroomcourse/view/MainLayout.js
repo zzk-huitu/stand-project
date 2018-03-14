@@ -17,7 +17,7 @@ Ext.define("core.coursemanage.funcroomcourse.view.MainLayout", {
     otherController:'coursemanage.funcroomcourse.othercontroller',
  
 	funData: {
-		action: comm.get('baseUrl') + "/CourseArrange", //请求Action
+		action: comm.get('baseUrl') + "/FuncRoomCourse", //请求Action
 		pkName: "uuid",
 		defaultObj: {
            
@@ -39,7 +39,7 @@ Ext.define("core.coursemanage.funcroomcourse.view.MainLayout", {
     layout:'border',
 
 	items: [{
-		xtype: "coursemanage.funcroomcourse.classtree",
+		xtype: "coursemanage.funcroomcourse.maintree",
 		region: "west",
 		split:true,
 		width: 250
