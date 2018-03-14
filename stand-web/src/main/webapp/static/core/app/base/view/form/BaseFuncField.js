@@ -158,7 +158,6 @@ Ext.define("core.base.view.form.BaseFuncField", {
                             if (funcGrid) {
                                 var returnGrid = basePanel.down("grid[xtype=" + funcGrid + "]");
                                 returnGrid.setVisible(false);
-
                             }
                         }
                         var old_wheresql = baseGrid.extParams.whereSql;	//从配置文件中获取

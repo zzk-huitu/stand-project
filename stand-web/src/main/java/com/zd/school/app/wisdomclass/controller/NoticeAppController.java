@@ -1,11 +1,10 @@
-package com.zd.school.app.oa.notice;
+package com.zd.school.app.wisdomclass.controller;
+
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,12 +23,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
 import com.zd.school.oa.notice.model.OaNotice;
 import com.zd.school.oa.notice.service.OaNoticeService;
-import com.zd.school.oa.terminal.model.OaInfoterm;
-import com.zd.school.oa.terminal.service.OaInfotermService;
 import com.zd.school.plartform.baseset.model.BaseAttachment;
 import com.zd.school.plartform.baseset.service.BaseAttachmentService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -104,8 +100,8 @@ public class NoticeAppController extends FrameWorkController<OaNotice> implement
 			writeJSON(response, "[]");
 			return;
 		}
-		List<HashMap<String, Object>> list = baseTAttachmentService.queryByRecordId(setRecordId);
-		writeJSON(response, jsonBuilder.toJson(list));
+		//List<HashMap<String, Object>> list = baseTAttachmentService.queryByRecordId(setRecordId);
+		//writeJSON(response, jsonBuilder.toJson(list));
 	}
 	
 	/**

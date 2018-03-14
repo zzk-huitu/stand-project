@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.zd.core.annotation.Auth;
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -61,11 +64,48 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void list(@ModelAttribute OaInfoterm entity, HttpServletRequest request, HttpServletResponse response)
+	public void list(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		String strData = ""; // 返回给js的数据
+		String filter = request.getParameter("filter");
+		String roomId = request.getParameter("roomId");
+		String roomLeaf = request.getParameter("roomLeaf");
+		
+		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
+			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
+				if (StringUtils.isNotEmpty(filter)) {
+					filter = filter.substring(0, filter.length() - 1);
+					filter += ",{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}" + "]";
+				} else {
+					filter = "[{\"type\":\"string\",\"comparison\":\"=\",\"value\":\"" + roomId
+							+ "\",\"field\":\"roomId\"}]";
+				}
+			} else {					// 当选择的区域不为房间时
+				List<String> roomList = getRoomIds(roomId);
+					
+				if(!roomList.isEmpty()){
+					String roomIds=roomList.stream().collect(Collectors.joining(","));		
+					if (StringUtils.isNotEmpty(filter)) {
+						filter = filter.substring(0, filter.length() - 1);
+						filter += ",{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}" + "]";
+					} else {
+						filter = "[{\"type\":\"string\",\"comparison\":\"in\",\"value\":\"" + roomIds
+								+ "\",\"field\":\"roomId\"}]";
+					}
+					
+				}else{	// 若区域之下没有房间，则直接返回空数据
+					
+					strData = jsonBuilder.buildObjListToJson(0L,new ArrayList<>(), true);// 处理数据
+					writeJSON(response, strData);// 返回数据
+					return;
+				}				
+			}
+		}
+		
 		QueryResult<OaInfoterm> qResult = thisService.queryPageResult(super.start(request), super.limit(request),
-				super.sort(request), super.filter(request), true);
+				super.sort(request),filter, true);
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
@@ -296,5 +336,28 @@ public class BaseInfotermController extends FrameWorkController<OaInfoterm> impl
 		} else {
 			writeJSON(response, jsonBuilder.returnFailureJson("\"文件导出未完成！\""));
 		}
+	}
+	
+	/**
+	 * 获取某个区域下的所有房间数据（只查询出已定义的房间）
+	 * 
+	 * @param roomId
+	 * @param roomLeaf
+	 * @return
+	 */
+	private List<String> getRoomIds(String areaId) {
+		List<String> result = new ArrayList<>();
+
+		// 当选择的区域不为房间时
+		String hql = "select a.uuid from BuildRoomarea a where a.isDelete=0  and a.areaType='04' and a.treeIds like '%"
+				+ areaId + "%'";
+		List<String> lists = thisService.queryEntityByHql(hql);
+		if (lists.size() > 0) {
+			String areaIds = lists.stream().collect(Collectors.joining("','", "'", "'"));
+			hql = "select a.uuid from BuildRoominfo a where a.isDelete=0 and a.roomType!='0' and a.areaId in (" + areaIds + ")";
+			result = thisService.queryEntityByHql(hql);
+		}
+
+		return result;
 	}
 }

@@ -10,20 +10,21 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
     },
     
     init: function() {
+
     },
     control: {
         "basetreegrid[xtype=basedevice.smartdevice.roominfotree] ": {
-                /*
-                    当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
-                    1. 附带树节点的相关参数
-                    2. 当存在basegrid的默认参数，则附带上去
-                    3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
-                    4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
-                */
-                itemclick: function(tree, record, item, index, e, eOpts) {                   
-                    this.loadMainGridStore(tree,record);   
-                    return false;
-               }
+            /*
+                当点击了这个树的子项后，在查询列表的条件中，要做如下工作：
+                1. 附带树节点的相关参数
+                2. 当存在basegrid的默认参数，则附带上去
+                3. 附带快速搜索中的参数（为了防止文本框的数据与实际查询的数据不一致，所以在下面代码中主动获取了文本框的数据）
+                4. reset清除高级搜索中的条件数据 以及 proxy.extraParams中的相关数据
+            */
+            itemclick: function(tree, record, item, index, e, eOpts) {                   
+                this.loadMainGridStore(tree,record);   
+                return false;
+            }
         },
 
 

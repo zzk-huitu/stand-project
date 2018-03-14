@@ -36,7 +36,7 @@ import com.zd.school.plartform.system.service.SysUserService;
 
 @Controller
 @RequestMapping("/GradeClass")
-public class WisTGradeClassController extends FrameWorkController<JwTGradeclass> implements Constant {
+public class WisGradeClassController extends FrameWorkController<JwTGradeclass> implements Constant {
 	@Resource
 	private JwTGradeclassService thisService;
 	@Resource
