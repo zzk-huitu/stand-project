@@ -1,4 +1,4 @@
-package com.zd.school.app.oa.notice;
+package com.zd.school.app.wisdomclass.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +97,7 @@ public class NoticeAppController extends FrameWorkController<OaNotice> implement
 		return thisService.getUserOaNotice(user);
 	}
 
-	@RequestMapping("/getFileList") // Filename sendId
+	/*@RequestMapping("/getFileList") // Filename sendId
 	public void getFileList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String setRecordId = request.getParameter("recordId");
 		if (setRecordId == null) {
@@ -106,7 +106,7 @@ public class NoticeAppController extends FrameWorkController<OaNotice> implement
 		}
 		List<HashMap<String, Object>> list = baseTAttachmentService.queryByRecordId(setRecordId);
 		writeJSON(response, jsonBuilder.toJson(list));
-	}
+	}*/
 	
 	/**
 	 * 
