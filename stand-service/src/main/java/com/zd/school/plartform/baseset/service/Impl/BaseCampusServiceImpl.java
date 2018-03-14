@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -18,6 +17,7 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.build.define.model.BuildRoomarea;
+import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.plartform.baseset.dao.BaseCampusDao;
 import com.zd.school.plartform.baseset.model.BaseCampus;
 import com.zd.school.plartform.baseset.model.BaseOrg;
@@ -230,6 +230,24 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		// TODO Auto-generated method stub
 		redisTemplate.delete("userRightDeptTree");
 		redisTemplate.delete("userRightDeptClassTree");	
+	}
+
+	//根据房间获取这个房间初中或者高中的ID（校区ID）
+	@Override
+	public String getCampusIdByRoom(BuildRoominfo roominfo) {
+		List<BaseCampus> campus = this.queryByHql("from BaseCampus where isDelete=0");
+		List<String> campusids = new ArrayList<String>();
+		for (BaseCampus baseCampus : campus) {
+			campusids.add(baseCampus.getUuid());
+		}
+		String parentId = roominfo.getAreaId();
+		while (true) {
+			BuildRoomarea roomarea = areaService.get(parentId);
+			if (campusids.contains(roomarea.getUuid())) {
+				return roomarea.getUuid();
+			}
+			parentId = roomarea.getParentNode();
+		}
 	}
 
 }

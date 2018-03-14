@@ -2,8 +2,10 @@ package com.zd.core.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -108,4 +110,65 @@ public class DateUtil {
 	    int [] weekNum = {-1,7,1,2,3,4,5,6};
 	    return weekNum[number];
     }
+    
+    public static boolean isInZone(long tStart, long tEnd, long t) {
+		return tStart <= t && t <= tEnd;
+	}
+
+	public static long getLong(String timeStr) throws ParseException {
+		String formatStr = "HH:mm";
+		SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+		return sdf.parse(timeStr).getTime();
+	}
+
+	public static long getCurrentTime() throws ParseException {
+		String formatStr = "HH:mm";
+		SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+		return getLong(sdf.format(new Date()));
+	}
+
+	/**
+	 * 计算两个日期的时间差
+	 *
+	 * @param p_start
+	 * @param p_end
+	 * @return 例:7-1~7-5 返回 2,3,4
+	 */
+	public static List<Date> calcDiffs(Calendar p_start, Calendar p_end) {
+		List<Date> result = new ArrayList<Date>();
+		Calendar temp = Calendar.getInstance();
+		temp.setTime(p_start.getTime());
+		temp.add(Calendar.DAY_OF_YEAR, 1);
+		while (temp.before(p_end)) {
+			result.add(temp.getTime());
+			temp.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		return result;
+	}
+
+	/**
+	 * 计算日期之内包含多少个指定的周几 包含开始和结束
+	 * @param p_start
+	 * @param p_end
+	 * @param inWeek 周几 1234560 周7为0
+	 * @return
+	 */
+	public static List<Date> calcDiffs(Calendar p_start, Calendar p_end, List<Integer> inWeek) {
+		List<Date> result = new ArrayList<Date>();
+		Calendar temp = Calendar.getInstance();
+		temp.setTime(p_start.getTime());
+		int week_index;
+		while (temp.before(p_end)) {
+			week_index = temp.get(Calendar.DAY_OF_WEEK) - 1;
+			if (inWeek.contains(week_index)) {
+				result.add(temp.getTime());
+			}
+			temp.add(Calendar.DAY_OF_YEAR, 1);
+		}
+	/*	week_index = temp.get(Calendar.DAY_OF_WEEK) - 1;
+		if (inWeek.contains(week_index)) {
+			result.add(temp.getTime());
+		}*/
+		return result;
+	}
 }
