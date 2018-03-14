@@ -1,79 +1,53 @@
 Ext.define("core.wisdomclass.roomterm.controller.MainController", {
- extend: "Ext.app.ViewController",
- alias: 'controller.wisdomclass.roomterm.maincontroller',
- mixins: {
-   suppleUtil: "core.util.SuppleUtil",
-   messageUtil: "core.util.MessageUtil",
-   formUtil: "core.util.FormUtil",
-   gridActionUtil: "core.util.GridActionUtil",
-   dateUtil: 'core.util.DateUtil',
-   treeUtil: "core.util.TreeUtil"
-},
-init: function() {
- 
-},
-/** 该视图内的组件事件注册 */
-control: {
-  "panel[xtype=wisdomclass.roomterm.roomtree] button[ref=gridRefresh]": {
-     click: function(btn) {
-        var baseGrid = btn.up("basetreegrid");
-        var store = baseGrid.getStore().load();
-        return false;
-    }
-},
+     extend: "Ext.app.ViewController",
+     alias: 'controller.wisdomclass.roomterm.maincontroller',
+     mixins: {
+       suppleUtil: "core.util.SuppleUtil",
+       messageUtil: "core.util.MessageUtil",
+       formUtil: "core.util.FormUtil",
+       gridActionUtil: "core.util.GridActionUtil",
+       dateUtil: 'core.util.DateUtil',
+       treeUtil: "core.util.TreeUtil"
+    },
+    init: function() {
+     
+    },
+    /** 该视图内的组件事件注册 */
+    control: {
+        "panel[xtype=wisdomclass.roomterm.roomtree] button[ref=gridRefresh]": {
+             click: function(btn) {
+                var baseGrid = btn.up("basetreegrid");
+                var store = baseGrid.getStore().load();
+                return false;
+            }
+        },
 
-"basetreegrid[xtype=wisdomclass.roomterm.roomtree]": {
-    itemclick: function (tree, record, item, index, e) {
-        var self = this;
-        var mainLayout = tree.up("panel[xtype=wisdomclass.roomterm.mainlayout]");
-        var treePanel = mainLayout.down("panel[xtype=wisdomclass.roomterm.roomtree]");
-                    //var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'roomId'}]";
-                    var funData = mainLayout.funData;
-                    var map = self.eachChildNode(record);
-                    var ids = new Array();
-                    map.eachKey(function (key) {
-                        ids.push (key);
-                    });
-                    var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
-                    mainLayout.funData = Ext.apply(funData, {
-                        roomId: record.get("id"),
-                        roomLevel: record.get("level"),
-                        roomName: record.get("text"),
-                        roomInfo: record,
-                        filter: filter
-                    });
-                    // 加载房间配置的终端
-                    var storeyGrid = mainLayout.down("panel[xtype=wisdomclass.roomterm.maingrid]");
-                    var store = storeyGrid.getStore();
-                    var proxy = store.getProxy();
-                    proxy.extraParams = {
-                        filter: filter,
-                    };
-                    store.loadPage(1); // 给form赋值
+        "basetreegrid[xtype=wisdomclass.roomterm.roomtree]": {
+            itemclick: function (tree, record, item, index, e) {
+                this.loadMainGridStore(tree,record);
+                return false;
+            }
+        },
+        "basegrid[xtype=wisdomclass.roomterm.maingrid] button[ref=gridAdd_Tab]": {
+            beforeclick: function(btn) {                
+                this.doDetail_tab(btn,"add");
+                return false;
+            }
+        },
+        "basegrid[xtype=wisdomclass.roomterm.maingrid] button[ref=gridEdit_Tab]": {
+            beforeclick: function(btn) {
+                this.doDetail_tab(btn, "edit");
+                return false;
+            }
+        },
 
-                    return false;
-                }
-            },
-            "basegrid[xtype=wisdomclass.roomterm.maingrid] button[ref=gridAdd_Tab]": {
-                beforeclick: function(btn) {                
-                    this.doDetail_tab(btn,"add");
-                    return false;
-                }
-            },
-            "basegrid[xtype=wisdomclass.roomterm.maingrid] button[ref=gridEdit_Tab]": {
-                beforeclick: function(btn) {
-                    this.doDetail_tab(btn, "edit");
-                    return false;
-                }
-            },
+        "basegrid[xtype=wisdomclass.roomterm.maingrid] actioncolumn": {
+        	editClick_Tab: function (data) {
+        		this.doDetail_tab(null,"edit",data.view,data.record);
+        		return false;
 
-            "basegrid[xtype=wisdomclass.roomterm.maingrid] actioncolumn": {
-            	editClick_Tab: function (data) {
-            		this.doDetail_tab(null,"edit",data.view,data.record);
-            		return false;
-
-            	},
-               detailClick_Tab: function (data) {
+        	},
+           detailClick_Tab: function (data) {
                 this.doDetail_tab(null,"detail",data.view,data.record);
                 return false;
 
@@ -263,66 +237,112 @@ control: {
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode + "]");
         var funData = basePanel.funData;
         var pkName = funData.pkName;
-            //得到选中数据
-            var records = baseGrid.getSelectionModel().getSelection();
-            var title = "将导出系统中所有的终端信息";
-            var ids = new Array();
-            if (records.length > 0) {
-                title = "将导出选择的终端分配的信息";
-                Ext.each(records, function (rec) {
-                    var pkValue = rec.get(pkName);
-                    ids.push(pkValue);
+        //得到选中数据
+        var records = baseGrid.getSelectionModel().getSelection();
+        var title = "将导出系统中所有的终端信息";
+        var ids = new Array();
+        if (records.length > 0) {
+            title = "将导出选择的终端分配的信息";
+            Ext.each(records, function (rec) {
+                var pkValue = rec.get(pkName);
+                ids.push(pkValue);
+            });
+
+        }
+        Ext.Msg.confirm('提示', title, function (btn, text) {
+            if (btn == "yes") {
+                Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
+                var component = Ext.create('Ext.Component', {
+                    title: 'HelloWorld',
+                    width: 0,
+                    height: 0,
+                    hidden: true,
+                    html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/doRoomTermExportExcel?ids='+ids+'"></iframe>',
+                    renderTo: Ext.getBody()
                 });
 
-            }
-            Ext.Msg.confirm('提示', title, function (btn, text) {
-                if (btn == "yes") {
-                    Ext.Msg.wait('正在导出中,请稍后...', '温馨提示');
-                    var component = Ext.create('Ext.Component', {
-                        title: 'HelloWorld',
-                        width: 0,
-                        height: 0,
-                        hidden: true,
-                        html: '<iframe src="' + comm.get('baseUrl') + '/BaseInfoterm/doRoomTermExportExcel?ids='+ids+'"></iframe>',
-                        renderTo: Ext.getBody()
-                    });
-
-                    var time = function () {
-                        self.syncAjax({
-                            url: comm.get('baseUrl') + '/BaseInfoterm/checkExportEnd',
-                            timeout: 1000 * 60 * 30,        //半个小时
-                            //回调代码必须写在里面
-                            success: function (response) {
-                                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
-                                if (data.success) {
+                var time = function () {
+                    self.syncAjax({
+                        url: comm.get('baseUrl') + '/BaseInfoterm/checkExportEnd',
+                        timeout: 1000 * 60 * 30,        //半个小时
+                        //回调代码必须写在里面
+                        success: function (response) {
+                            data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                            if (data.success) {
+                                Ext.Msg.hide();
+                                self.msgbox(data.obj);
+                                component.destroy();
+                            } else {
+                                if (data.obj == 0) {    //当为此值，则表明导出失败
                                     Ext.Msg.hide();
-                                    self.msgbox(data.obj);
+                                    self.Error("导出失败，请重试或联系管理员！");
                                     component.destroy();
                                 } else {
-                                    if (data.obj == 0) {    //当为此值，则表明导出失败
-                                        Ext.Msg.hide();
-                                        self.Error("导出失败，请重试或联系管理员！");
-                                        component.destroy();
-                                    } else {
-                                        setTimeout(function () {
-                                            time()
-                                        }, 1000);
-                                    }
+                                    setTimeout(function () {
+                                        time()
+                                    }, 1000);
                                 }
-                            },
-                            failure: function (response) {
-                                Ext.Msg.hide();
-                                Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
-                                component.destroy();
                             }
-                        });
-                    };
-                    setTimeout(function () {
-                        time()
-                        }, 1000);  
-                }
-            });
-            return false;
-        },
+                        },
+                        failure: function (response) {
+                            Ext.Msg.hide();
+                            Ext.Msg.alert('请求失败', '错误信息：\n' + response.responseText);
+                            component.destroy();
+                        }
+                    });
+                };
+                setTimeout(function () {
+                    time()
+                    }, 1000);  
+            }
+        });
+        return false;
+    },
+
+    loadMainGridStore:function(tree,record){
+              
+        var mainLayout = tree.up("panel[xtype=wisdomclass.roomterm.mainlayout]");
+        var funData = mainLayout.funData;
+        mainLayout.funData = Ext.apply(funData, {
+            roomId: record.get("id"),
+            leaf : record.get("leaf"),//true: 房间 false:区域
+            arealevel: record.get("level"),
+        });
+        // 加载房间的人员信息
+        var mianGrid = mainLayout.down("panel[xtype=wisdomclass.roomterm.maingrid]");
+        /*
+        var girdSearchTexts = mianGrid.query("field[funCode=girdFastSearchText]");
+        var filter=new Array();
+        if(girdSearchTexts[0].getValue()){
+            filter.push({"type": "string", "value": girdSearchTexts[0].getValue(), "field": "termName", "comparison": ""})
+        }
+        if(filter.length==0)
+            filter=null;
+        else
+            filter = JSON.stringify(filter);
+        */
+
+        //默认参数
+        var filter=new Array();
+        filter.push({"type": "numeric", "value": 1, "field": "isUse", "comparison": "="});
+
+        //获取点击树节点的参数
+        var roomId= record.get("id");
+        var roomLeaf=record.get("leaf");
+        if(roomLeaf==true)
+            roomLeaf="1";
+        else
+            roomLeaf="0";
+
+        var store = mianGrid.getStore();
+        var proxy = store.getProxy();
+        proxy.extraParams={
+            roomId:roomId,
+            roomLeaf:roomLeaf,
+            filter: JSON.stringify(filter)
+        };
+       // proxy.extraParams.roomId=roomId;
+        store.loadPage(1);
+    },
 
 });

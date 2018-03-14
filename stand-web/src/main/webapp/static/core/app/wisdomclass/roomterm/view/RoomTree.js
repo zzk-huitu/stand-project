@@ -1,8 +1,8 @@
 Ext.define("core.wisdomclass.roomterm.view.RoomTree", {
     extend: "core.base.view.BaseTreeGrid",
     alias: "widget.wisdomclass.roomterm.roomtree",
-    dataUrl: comm.get('baseUrl') + "/BaseRoominfo/allRoomTree",
-    model: factory.ModelFactory.getModelByName("com.zd.school.plartform.comm.model.CommTree", "checked").modelName,
+    dataUrl: comm.get('baseUrl') + "/BasePtIrRoomDevice/treelist",
+    model: "com.zd.school.build.define.model.BuildRoomAreaTree", 
     extParams: {
         whereSql: "",
         excludes: "checked"

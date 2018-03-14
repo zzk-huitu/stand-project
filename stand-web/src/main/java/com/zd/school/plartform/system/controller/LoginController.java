@@ -365,6 +365,8 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		 * 3.设置上级部门主管岗位的时候(SysDeptjobServiceImpl)
 		 * 4.部门岗位信息，当存在用户的时候，就不能被删除，故删除部门岗位时不执行
 		 * 5.在进行增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会(SysOrgServiceImpl)
+		 * 6.在进行添加、删除教师任课时，也会删除用户的缓存（JwCourseteacherServiceImpl）
+		 * 7.在进行添加、删除班主任时，也会删除用户的缓存（JwClassteacherServiceImpl）
 		 */
 		hashOper.delete("userRightDeptTree", sysUser.getUuid());
 		hashOper.delete("userRightDeptClassTree", sysUser.getUuid());

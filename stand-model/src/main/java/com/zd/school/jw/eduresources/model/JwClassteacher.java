@@ -1,16 +1,21 @@
 package com.zd.school.jw.eduresources.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Formula;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
+import com.zd.core.util.DateTimeSerializer;
 
 /**
  * 
@@ -26,131 +31,183 @@ import com.zd.core.model.BaseEntity;
 @Table(name = "JW_T_CLASSTEACHER")
 @AttributeOverride(name = "uuid", column = @Column(name = "UUID", length = 36, nullable = false))
 public class JwClassteacher extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @FieldInfo(name = "班级ID")
-    @Column(name = "CLAI_ID", length = 36, nullable = false)
-    private String claiId;
+	@FieldInfo(name = "班级ID")
+	@Column(name = "CLAI_ID", length = 36, nullable = false)
+	private String claiId;
 
-    public void setClaiId(String claiId) {
-        this.claiId = claiId;
-    }
+	public void setClaiId(String claiId) {
+		this.claiId = claiId;
+	}
 
-    public String getClaiId() {
-        return claiId;
-    }
+	public String getClaiId() {
+		return claiId;
+	}
 
-    @FieldInfo(name = "教职工ID")
-    @Column(name = "TTEAC_ID", length = 50, nullable = false)
-    private String tteacId;
+	@FieldInfo(name = "教职工ID")
+	@Column(name = "TTEAC_ID", length = 50, nullable = false)
+	private String tteacId;
 
-    public void setTteacId(String tteacId) {
-        this.tteacId = tteacId;
-    }
+	public void setTteacId(String tteacId) {
+		this.tteacId = tteacId;
+	}
 
-    public String getTteacId() {
-        return tteacId;
-    }
+	public String getTteacId() {
+		return tteacId;
+	}
 
-    @FieldInfo(name = "学年")
-    @Column(name = "STUDY_YEAH", length = 10, nullable = false)
-    private Integer studyYeah;
+	@FieldInfo(name = "学年")
+	@Column(name = "STUDY_YEAR", length = 10, nullable = true)
+	private Integer studyYear;
 
-    public void setStudyYeah(Integer studyYeah) {
-        this.studyYeah = studyYeah;
-    }
+	public Integer getStudyYear() {
+		return studyYear;
+	}
 
-    public Integer getStudyYeah() {
-        return studyYeah;
-    }
+	public void setStudyYear(Integer studyYear) {
+		this.studyYear = studyYear;
+	}
 
-    @FieldInfo(name = "学期")
-    @Column(name = "SEMESTER", length = 8, nullable = false)
-    private String semester;
+	@FieldInfo(name = "学期")
+	@Column(name = "SEMESTER", length = 8, nullable = true)
+	private String semester;
 
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
 
-    public String getSemester() {
-        return semester;
-    }
+	public String getSemester() {
+		return semester;
+	}
 
-    @FieldInfo(name = "身份")
-    @Column(name = "CATEGORY", length = 10, nullable = false)
-    private Integer category;
+	@FieldInfo(name = "身份")
+	@Column(name = "CATEGORY", length = 10, nullable = false)
+	private Integer category;
 
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
+	public void setCategory(Integer category) {
+		this.category = category;
+	}
 
-    public Integer getCategory() {
-        return category;
-    }
+	public Integer getCategory() {
+		return category;
+	}
 
-    @FieldInfo(name = "studyYeahname")
-    @Column(name = "STUDY_YEAHNAME", length = 64, nullable = false)
-    private String studyYeahname;
+	@FieldInfo(name = "学年名称")
+	@Column(name = "STUDY_YEARNAME", length = 64, nullable = true)
+	private String studyYearName;
 
-    public void setStudyYeahname(String studyYeahname) {
-        this.studyYeahname = studyYeahname;
-    }
+	public String getStudyYearName() {
+		return studyYearName;
+	}
 
-    public String getStudyYeahname() {
-        return studyYeahname;
-    }
+	public void setStudyYearName(String studyYearName) {
+		this.studyYearName = studyYearName;
+	}
 
-    /**
-     * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
-     * 
-     * @Transient
-     * @FieldInfo(name = "") private String field1;
-     */
-    @FieldInfo(name = "班级名称")
-    @Formula("(SELECT a.CLASS_NAME FROM JW_T_GRADECLASS a WHERE a.CLAI_ID=CLAI_ID )")
-    private String className;
+	@FieldInfo(name = "开始时间")
+	@Column(name = "BEGIN_TIME", columnDefinition = "datetime", nullable = true)
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonSerialize(using = DateTimeSerializer.class)
+	private Date beginTime;
 
-    public String getClassName() {
-        return className;
-    }
+	public void setBeginTime(Date beginTime) {
+		this.beginTime = beginTime;
+	}
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
+	public Date getBeginTime() {
+		return beginTime;
+	}
 
-    @FieldInfo(name = "老师工号")
-    @Formula("(SELECT a.USER_NUMB FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
-    private String gh;
+	@FieldInfo(name = "结束时间")
+	@Column(name = "END_TIME", columnDefinition = "datetime", nullable = true)
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonSerialize(using = DateTimeSerializer.class)
+	private Date endTime;
 
-    public String getGh() {
-        return gh;
-    }
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
 
-    public void setGh(String gh) {
-        this.gh = gh;
-    }
+	public Date getEndTime() {
+		return endTime;
+	}
 
-    @FieldInfo(name = "老师姓名")
-    @Formula("(SELECT a.xm FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
-    private String xm;
+	/**
+	 * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
+	 * 
+	 * @Transient
+	 * @FieldInfo(name = "") private String field1;
+	 */
+	@FieldInfo(name = "班级名称")
+	@Formula("(SELECT a.CLASS_NAME FROM JW_T_GRADECLASS a WHERE a.CLAI_ID=CLAI_ID )")
+	private String className;
 
-    public String getXm() {
-        return xm;
-    }
+	public String getClassName() {
+		return className;
+	}
 
-    public void setXm(String xm) {
-        this.xm = xm;
-    }
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
-    @FieldInfo(name = "老师性别")
-    @Formula("(SELECT a.xbm FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
-    private String xbm;
+	@FieldInfo(name = "年级ID")
+	@Formula("(SELECT a.GRAI_ID FROM JW_T_GRADECLASS a WHERE a.CLAI_ID=CLAI_ID )")
+	private String graiId;
 
-    public String getXbm() {
-        return xbm;
-    }
+	public String getGraiId() {
+		return graiId;
+	}
 
-    public void setXbm(String xbm) {
-        this.xbm = xbm;
-    }
+	public void setGraiId(String graiId) {
+		this.graiId = graiId;
+	}
+
+	@FieldInfo(name = "年级ID")
+	@Formula("(SELECT a.NJ FROM JW_T_GRADECLASS a WHERE a.CLAI_ID=CLAI_ID )")
+	private String nj;
+
+	public String getNj() {
+		return nj;
+	}
+
+	public void setNj(String nj) {
+		this.nj = nj;
+	}
+
+	@FieldInfo(name = "老师工号")
+	@Formula("(SELECT a.USER_NUMB FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
+	private String gh;
+
+	public String getGh() {
+		return gh;
+	}
+
+	public void setGh(String gh) {
+		this.gh = gh;
+	}
+
+	@FieldInfo(name = "老师姓名")
+	@Formula("(SELECT a.xm FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
+	private String xm;
+
+	public String getXm() {
+		return xm;
+	}
+
+	public void setXm(String xm) {
+		this.xm = xm;
+	}
+
+	@FieldInfo(name = "老师性别")
+	@Formula("(SELECT a.xbm FROM SYS_T_USER a WHERE a.USER_ID=TTEAC_ID )")
+	private String xbm;
+
+	public String getXbm() {
+		return xbm;
+	}
+
+	public void setXbm(String xbm) {
+		this.xbm = xbm;
+	}
 }

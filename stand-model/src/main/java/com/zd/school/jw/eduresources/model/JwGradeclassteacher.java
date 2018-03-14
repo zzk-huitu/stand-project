@@ -52,31 +52,32 @@ public class JwGradeclassteacher extends BaseEntity implements Serializable {
     }
 
     @FieldInfo(name = "学年")
-    @Column(name = "STUDY_YEAH", length = 10, nullable = false)
-    private Integer studyYeah;
+    @Column(name = "STUDY_YEAR", length = 10, nullable = true)
+    private Integer studyYear;
+    
+	public Integer getStudyYear() {
+		return studyYear;
+	}
 
-    public void setStudyYeah(Integer studyYeah) {
-        this.studyYeah = studyYeah;
+	public void setStudyYear(Integer studyYear) {
+		this.studyYear = studyYear;
+	}
+
+
+    @FieldInfo(name = "studyYearName")
+    @Column(name = "STUDY_YEAHNAME", length = 64, nullable = true)
+    private String studyYearName;
+
+    public void setstudyYearName(String studyYearName) {
+        this.studyYearName = studyYearName;
     }
 
-    public Integer getStudyYeah() {
-        return studyYeah;
-    }
-
-    @FieldInfo(name = "studyYeahname")
-    @Column(name = "STUDY_YEAHNAME", length = 64, nullable = false)
-    private String studyYeahname;
-
-    public void setStudyYeahname(String studyYeahname) {
-        this.studyYeahname = studyYeahname;
-    }
-
-    public String getStudyYeahname() {
-        return studyYeahname;
+    public String getstudyYearName() {
+        return studyYearName;
     }
 
     @FieldInfo(name = "学期")
-    @Column(name = "SEMESTER", length = 8, nullable = false)
+    @Column(name = "SEMESTER", length = 8, nullable = true)
     private String semester;
 
     public void setSemester(String semester) {
@@ -190,5 +191,6 @@ public class JwGradeclassteacher extends BaseEntity implements Serializable {
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
+
 
 }
