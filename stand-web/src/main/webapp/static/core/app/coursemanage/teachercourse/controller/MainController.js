@@ -45,13 +45,18 @@ Ext.define("core.coursemanage.teachercourse.controller.MainController", {
             }
         },
 
-         //添加任课教师
+         //替换添加任课教师
         "basegrid[xtype=coursemanage.teachercourse.maingrid] button[ref=gridReplaceTea]": {
             beforeclick: function(btn) {
                 this.doAdd_Win(btn,"replace");
                 return false;
             }
-        }
+        },
+          "basepanel basegrid[xtype=oursemanage.teachercourse.maingrid]": {
+            afterrender : function(grid) {
+            this.hideFuncBtn(grid);
+          },
+         },
 
     },
 
@@ -190,7 +195,17 @@ Ext.define("core.coursemanage.teachercourse.controller.MainController", {
         }
         return filter;
     },
-
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="TEACHERCOURSE";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridReplaceTea")==-1){
+                var btnUse = grid.down("button[ref=gridReplaceTea]");
+                btnUse.setHidden(true);
+                
+            }
+        }
+    },
 
     
 });

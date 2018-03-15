@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
@@ -33,7 +34,6 @@ import com.zd.school.build.define.model.BuildRoomarea;
 import com.zd.school.build.define.model.BuildRoominfo;
 import com.zd.school.jw.eduresources.model.JwClassteacher;
 import com.zd.school.jw.eduresources.model.JwGradeteacher;
-import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwClassteacherService;
 import com.zd.school.jw.eduresources.service.JwGradeteacherService;
 import com.zd.school.oa.notice.model.OaNotice;
@@ -138,6 +138,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("OANOTICE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(OaNotice entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -176,6 +177,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("OANOTICE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -205,6 +207,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 	 * @throws IOException
 	 * @return void 返回类型
 	 */
+	@Auth("OANOTICE_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(OaNotice entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {

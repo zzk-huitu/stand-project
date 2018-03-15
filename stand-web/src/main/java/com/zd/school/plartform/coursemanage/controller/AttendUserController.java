@@ -12,13 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.control.device.model.PtPriceBind;
-import com.zd.school.control.device.model.PtTerm;
 import com.zd.school.oa.attendance.model.AttUser;
 import com.zd.school.oa.attendance.service.AttUserService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -64,7 +63,7 @@ public class AttendUserController extends FrameWorkController<AttUser> implement
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-
+    @Auth("SPECIAL_COURSEATTEND_attendUse")
 	@RequestMapping(value = { "/userAttendlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void userAttendlist(HttpServletRequest request, HttpServletResponse response) throws IOException {

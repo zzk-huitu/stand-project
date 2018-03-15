@@ -4,7 +4,6 @@ package com.zd.school.plartform.coursemanage.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,26 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.StatuVeriable;
 import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
-import com.zd.core.util.TLVUtils;
-import com.zd.school.build.allot.model.DormStudentDorm;
 import com.zd.school.jw.arrangecourse.model.JwCourseteacher;
 import com.zd.school.jw.arrangecourse.service.JwCourseteacherService;
 import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysOrgService;
-import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
 
 /**
@@ -162,6 +156,7 @@ public class CourseTeacherController extends FrameWorkController<JwCourseteacher
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
+	@Auth("TEACHERCOURSE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
@@ -218,6 +213,7 @@ public class CourseTeacherController extends FrameWorkController<JwCourseteacher
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
 	 */
+	@Auth("TEACHERCOURSE_add")
 	@RequestMapping("/doAddCourseTeacher")
 	public void doAddCourseTeacher(HttpServletRequest request, HttpServletResponse response) throws IOException,
 			IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -232,7 +228,7 @@ public class CourseTeacherController extends FrameWorkController<JwCourseteacher
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"设置任课教师失败\""));
 	}
-
+	@Auth("TEACHERCOURSE_replace")
 	@RequestMapping("/doReplaceCourseTeacher")
 	public void doReplaceTeacher(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException, IllegalArgumentException {

@@ -16,21 +16,21 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
         /**
          * 考勤用户事件
          */
-     
-      /*考勤人员添加事件*/
-      "basegrid[xtype=coursemanage.specialcourseattend.userattendgrid] button[ref=gridAdd]":{
-        beforeclick: function(btn){
-          this.openCourseAttend_Win(btn,"userAttend");
-          return false;
-        }
-      },
-      /*考勤人员删除事件*/
-      "basegrid[xtype=coursemanage.specialcourseattend.userattendgrid] button[ref=gridDelete]": {
-        beforeclick: function(btn) {
-          this.deleteAttend(btn,"userAttend");
-          return false;
+
+         /*考勤人员添加事件*/
+         "basegrid[xtype=coursemanage.specialcourseattend.userattendgrid] button[ref=gridAdd]":{
+          beforeclick: function(btn){
+            this.openCourseAttend_Win(btn,"userAttend");
+            return false;
+          }
         },
-      },
+        /*考勤人员删除事件*/
+        "basegrid[xtype=coursemanage.specialcourseattend.userattendgrid] button[ref=gridDelete]": {
+          beforeclick: function(btn) {
+            this.deleteAttend(btn,"userAttend");
+            return false;
+          },
+        },
        /**
          * 考勤用户选择保存按钮事件
          */
@@ -94,7 +94,7 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
           },
         },
          /**
-         * 考勤时间增加 选择保存按钮事件 
+         * 考勤时间 添加 选择保存按钮事件 
 
          */
          "mtfuncwindow[formPanel=coursemanage.specialcourseattend.settimesform] button[ref=ssOkBtn]": {
@@ -107,7 +107,7 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
          * 考勤时间表单保存按钮事件 
 
          */
-        "baseformwin[funCode=specialcourseattend_detail] button[ref=formSave]": {
+        "baseformwin[detCode=specialcourseattend_detail] button[ref=formSave]": {
           beforeclick: function (btn) {
             this.saveAttendTimeForm(btn);            
             return false;
@@ -137,37 +137,37 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
       },
 
       "basetreegrid[xtype=roomterminal.roomtree]": {
-        itemclick: function (tree, record, item, index, e) {
-          var self = this;
-          var mainLayout = tree.up("basepanel[xtype=coursemanage.specialcourseattend.selectterm.mainlayout]");
-          var treePanel = mainLayout.down("panel[xtype=roomterminal.roomtree]");
-         //var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'roomId'}]";
-         var funData = mainLayout.funData;
-         var map = self.eachChildNode(record);
-         var ids = new Array();
-         map.eachKey(function (key) {
-          ids.push (key);
-        });
-         var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
-         mainLayout.funData = Ext.apply(funData, {
-          roomId: record.get("id"),
-          roomLevel: record.get("level"),
-          roomName: record.get("text"),
-          roomInfo: record,
-          filter: filter
-        });
-          // 加载房间配置的终端
-          var storeyGrid = mainLayout.down("panel[xtype=roomterminal.selecttermgrid]");
-          var store = storeyGrid.getStore();
-          var proxy = store.getProxy();
-          proxy.extraParams = {
-            filter: filter,
-          };
-           store.loadPage(1); // 给form赋值
+          itemclick: function (tree, record, item, index, e) {
+            var self = this;
+            var mainLayout = tree.up("basepanel[xtype=coursemanage.specialcourseattend.selectterm.mainlayout]");
+            var treePanel = mainLayout.down("panel[xtype=roomterminal.roomtree]");
+           //var filter = "[{'type':'string','comparison':'=','value':'" + record.get("id") + "','field':'roomId'}]";
+           var funData = mainLayout.funData;
+           var map = self.eachChildNode(record);
+           var ids = new Array();
+           map.eachKey(function (key) {
+            ids.push (key);
+          });
+           var filter = "[{'type':'string','comparison':'in','value':'" + ids.join(",") + "','field':'roomId'}]";
+           mainLayout.funData = Ext.apply(funData, {
+            roomId: record.get("id"),
+            roomLevel: record.get("level"),
+            roomName: record.get("text"),
+            roomInfo: record,
+            filter: filter
+          });
+            // 加载房间配置的终端
+            var storeyGrid = mainLayout.down("panel[xtype=roomterminal.selecttermgrid]");
+            var store = storeyGrid.getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams = {
+              filter: filter,
+            };
+             store.loadPage(1); // 给form赋值
 
-           return false;
-         }
-       },
+             return false;
+           }
+         },
      },
 
      openCourseAttend_Win: function(btn,cmd){
@@ -233,6 +233,7 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
               controller: otherController, //指定视图控制器，从而能够使指定的控制器的事件生效
               funData: popFunData,
               funCode: detCode,
+              detCode:detCode,
               insertObj: insertObj,
               titleId:titleId,
               items: [{
@@ -260,13 +261,30 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
 
 
      deleteAttend: function(btn,cmd){
-        var self = this;
-        var baseGrid = btn.up("basegrid");
+      var self = this;
+      var baseGrid = btn.up("basegrid");
+
+      var title = "确定删除绑定该课程的考勤用户吗？";
+      var deleteUrl = "/AttUser/doUserAttendDelete";
+      var deleteMsg = "没有选择要删除的考勤人员数据，请选择!";
+      switch(cmd){
+          case "termAttend":
+          title = "确定删除绑定该课程的考勤设备吗？";
+          deleteUrl = "/AttendTerm/doTermAttendDelete";
+          deleteMsg = "没有选择要删除的考勤设备数据，请选择!";
+        break;
+          case "timeAttend":
+          title = "确定删除绑定该课程的考勤时间吗？";
+          deleteUrl = "/AttendTime/doTimeAttendDelete";
+          deleteMsg = "没有选择要删除的考勤时间数据，请选择!";
+        break;
+
+      }
         //选择的考勤数据
         var isSelectStore= baseGrid.getSelectionModel().getSelection();
         if (isSelectStore.length == 0) {
-          self.msgbox("没有选择要删除的考勤数据，请选择!");
-          return false;
+          self.msgbox(deleteMsg);
+          return;
         }
 
         //拼装所选择的考勤数据
@@ -275,19 +293,7 @@ Ext.define("core.coursemanage.specialcourseattend.controller.OtherController", {
           var pkValue = rec.get("uuid");
           isSelectedIds.push(pkValue);
         });
-        var title = "确定删除绑定该课程的考勤用户吗？";
-        var deleteUrl = "/AttUser/doUserAttendDelete";
-        switch(cmd){
-          case "termAttend":
-          title = "确定删除绑定该课程的考勤设备吗？";
-          deleteUrl = "/AttendTerm/doTermAttendDelete";
-          break;
-          case "timeAttend":
-          title = "确定删除绑定该课程的考勤时间吗？";
-          deleteUrl = "/AttendTime/doTimeAttendDelete";
-          break;
-
-        }
+       
         Ext.Msg.confirm('警告', title, function(btn, text) {
           if (btn == 'yes') {
              //发送ajax请求

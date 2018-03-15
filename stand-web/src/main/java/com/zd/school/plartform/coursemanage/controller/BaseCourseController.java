@@ -2,7 +2,6 @@ package com.zd.school.plartform.coursemanage.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.eduresources.model.JwTBasecourse;
 import com.zd.school.jw.eduresources.service.JwTBasecourseService;
@@ -69,6 +68,7 @@ public class BaseCourseController extends FrameWorkController<JwTBasecourse> imp
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
+    @Auth("COURSEINFO_add")
     @RequestMapping("/doAdd")
     public void doAdd(JwTBasecourse entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
@@ -95,6 +95,7 @@ public class BaseCourseController extends FrameWorkController<JwTBasecourse> imp
      * request @param @param response @param @throws IOException 设定参数 @return
      * void 返回类型 @throws
      */
+    @Auth("COURSEINFO_delete")
     @RequestMapping("/doDelete")
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String delIds = request.getParameter("ids");
@@ -125,6 +126,7 @@ public class BaseCourseController extends FrameWorkController<JwTBasecourse> imp
      * BizTJob @param @param request @param @param response @param @throws
      * IOException 设定参数 @return void 返回类型 @throws
      */
+    @Auth("COURSEINFO_update")
     @RequestMapping("/doUpdate")
     public void doUpdates(JwTBasecourse entity, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {

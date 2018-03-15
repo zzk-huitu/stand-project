@@ -54,8 +54,21 @@ Ext.define("core.wisdomclass.classteacher.controller.MainController", {
             beforeclick: function(btn) {  
                 this.doSetOut(btn); 
             }
-        }
-       
+        },
+        "basepanel basegrid[xtype=wisdomclass.classteacher.maingrid]": {
+            afterrender : function(grid) {
+             if(comm.get("isAdmin")!="1"){
+            var menuCode="CLASSTEACHER";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridOut")==-1){
+                var btnUse = grid.down("button[ref=gridOut]");
+                btnUse.setHidden(true);
+                
+                    }
+                }
+            },
+        },
+
 
     },
 

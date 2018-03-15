@@ -2,7 +2,6 @@ package com.zd.school.plartform.coursemanage.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,14 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
-import com.zd.school.oa.attendance.model.AttTerm;
 import com.zd.school.oa.attendance.model.AttTitle;
-import com.zd.school.oa.attendance.model.AttUser;
 import com.zd.school.oa.attendance.service.AttTermService;
 import com.zd.school.oa.attendance.service.AttTimeService;
 import com.zd.school.oa.attendance.service.AttTitleService;
@@ -85,6 +83,7 @@ public class AttendTitleController extends FrameWorkController<AttTitle> impleme
 	 * @throws IOException
 	 *             抛出异常
 	 */
+	@Auth("SPECIAL_COURSEATTEND_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(AttTitle entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -114,6 +113,7 @@ public class AttendTitleController extends FrameWorkController<AttTitle> impleme
 	 * @throws IOException
 	 *             抛出异常
 	 */
+	@Auth("SPECIAL_COURSEATTEND_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -145,6 +145,7 @@ public class AttendTitleController extends FrameWorkController<AttTitle> impleme
 	 * @throws IOException
 	 *             抛出异常
 	 */
+	@Auth("SPECIAL_COURSEATTEND_update")
 	@RequestMapping("/doUpdate")
 	public void doUpdates(AttTitle entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
