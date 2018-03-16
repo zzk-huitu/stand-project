@@ -29,6 +29,7 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 	private TeaTeacherbaseService thisService; // service层接口
 	@Resource
 	private SysOrgService sysOrgService;
+	
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
 	 * 实体类 @param @param request @param @param response @param @throws
