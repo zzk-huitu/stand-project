@@ -91,17 +91,6 @@ public class StuBaseinfo extends SysUser implements Serializable {
     //        return xbm;
     //    }
 
-    @FieldInfo(name = "出生日期")
-    @Column(name = "CSRQ", length = 24, nullable = true)
-    private String csrq;   
-    
-    public String getCsrq() {
-		return csrq;
-	}
-
-	public void setCsrq(String csrq) {
-		this.csrq = csrq;
-	}
 
 	@FieldInfo(name = "出生地码")
     @Column(name = "CSDM", length = 10, nullable = true)
