@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Formula;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
@@ -86,7 +88,12 @@ public class PtMjOpenDoor extends BaseEntity implements Serializable{
     @FieldInfo(name = "记录编号")
     @Column(name = "RECORD_ID", length = 36, nullable = true)
     private String recordId;
-
+    
+    /* 用于排除未定义的房间 0 */
+	@Formula("(SELECT A.ROOM_TYPE FROM dbo.BUILD_T_ROOMINFO A WHERE A.ROOM_ID=ROOM_ID)")
+	@FieldInfo(name = "房间类型")
+	private String roomType;
+	
 	public String getTermSn() {
 		return termSn;
 	}
@@ -190,6 +197,15 @@ public class PtMjOpenDoor extends BaseEntity implements Serializable{
 	public void setRecordId(String recordId) {
 		this.recordId = recordId;
 	}
+
+	public String getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(String roomType) {
+		this.roomType = roomType;
+	}
+	
     
     /** 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加 
     *@Transient

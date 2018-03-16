@@ -581,7 +581,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	/**
 	 * 调整指定用户的主部门岗位
-	 * 
+	 * 2018-3-15更新：当用户是学生，并且操作的是学生岗位，那么则判断是否处理JwClassstudent表
 	 * @param request
 	 * @param response
 	 * @throws IOException

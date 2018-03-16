@@ -1,14 +1,21 @@
 package com.zd.school.teacher.teacherinfo.model;
 
-import com.zd.core.annotation.FieldInfo;
-import com.zd.school.plartform.system.model.SysUser;
-import org.hibernate.annotations.Formula;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import java.io.Serializable;
+
+import org.hibernate.annotations.Formula;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zd.core.annotation.FieldInfo;
+import com.zd.core.util.DateTimeSerializer;
+import com.zd.school.plartform.system.model.SysUser;
 
 /**
  * 
@@ -194,7 +201,7 @@ public class TeaTeacherbase extends SysUser implements Serializable {
         return sfzjlxm;
     }
 
-/*    @FieldInfo(name = "身份证件号")
+    @FieldInfo(name = "身份证件号")
     @Column(name = "SFZJH", length = 20, nullable = true)
     private String sfzjh;
 
@@ -204,7 +211,7 @@ public class TeaTeacherbase extends SysUser implements Serializable {
 
     public String getSfzjh() {
         return sfzjh;
-    }*/
+    }
 
     @FieldInfo(name = "婚姻状况码")
     @Column(name = "HYZKM", length = 10, nullable = true)
@@ -230,7 +237,7 @@ public class TeaTeacherbase extends SysUser implements Serializable {
         return gatqwm;
     }
 
-/*    @FieldInfo(name = "政治面貌码GB/T 4762")
+    @FieldInfo(name = "政治面貌码GB/T 4762")
     @Column(name = "ZZMMM", length = 10, nullable = true)
     private String zzmmm;
 
@@ -240,7 +247,7 @@ public class TeaTeacherbase extends SysUser implements Serializable {
 
     public String getZzmmm() {
         return zzmmm;
-    }*/
+    }
 
     @FieldInfo(name = "健康状况码")
     @Column(name = "JKZKM", length = 10, nullable = true)
@@ -517,8 +524,18 @@ public class TeaTeacherbase extends SysUser implements Serializable {
     public String getMainCourse() {
         return mainCourse;
     }
+    
+    @Formula("(SELECT a.COURSE_NAME FROM  JW_T_BASECOURSE a WHERE a.BASECOURSE_ID=MAIN_COURSE )")
+    private String mainCourseName;
 
-/*    @FieldInfo(name = "出生日期")
+    public void setMainCourseName(String mainCourse) {
+        this.mainCourseName = mainCourse;
+    }
+
+    public String getMainCourseName() {
+        return mainCourseName;
+    }
+    @FieldInfo(name = "出生日期")
     @Column(name = "CSRQ", length = 23, nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(using = DateTimeSerializer.class)
@@ -530,7 +547,7 @@ public class TeaTeacherbase extends SysUser implements Serializable {
 
     public Date getCsrq() {
         return csrq;
-    }*/
+    }
 
 	/**
      * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
