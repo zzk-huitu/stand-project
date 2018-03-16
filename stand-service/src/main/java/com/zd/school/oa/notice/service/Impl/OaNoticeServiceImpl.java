@@ -776,7 +776,7 @@ public class OaNoticeServiceImpl extends BaseServiceImpl<OaNotice> implements Oa
 				String justDateStr = DateUtil.formatDate(new Date());
 				StringBuffer hql = new StringBuffer(" from OaNotice o ");
 				hql.append(" inner join  fetch o.noticeTerms g ");
-				hql.append(MessageFormat.format(" where g.uuid=''{0}''", termId));
+				hql.append(MessageFormat.format(" where o.isDelete=0 and g.uuid=''{0}''", termId));
 				hql.append(MessageFormat.format(" and o.beginDate<=''{0}'' and o.endDate>=''{1}'' ", justDateStr,
 						justDateStr));
 				hql.append("order by o.createTime desc");

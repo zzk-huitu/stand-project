@@ -46,7 +46,7 @@ public class BaseCalenderdetailServiceImpl extends BaseServiceImpl<JwCalenderdet
     		return null;
     	if(jtc.getUuid() == null || jtc.getUuid().trim().equals(""))
     		return null;
-    	StringBuffer hql = new StringBuffer(" from JwCalenderdetail where canderId='");
+    	StringBuffer hql = new StringBuffer(" from JwCalenderdetail where isDelete=0 and canderId='");
     	hql.append(jtc.getUuid()).append("'");
     	return this.dao.queryByHql(hql.toString());
 	}

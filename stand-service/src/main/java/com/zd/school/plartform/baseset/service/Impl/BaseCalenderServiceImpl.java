@@ -39,6 +39,7 @@ public class BaseCalenderServiceImpl extends BaseServiceImpl<JwCalender> impleme
         this.dao = dao;
     }
     private static Logger logger = Logger.getLogger(BaseCalenderServiceImpl.class);
+    
 	@Override
 	public JwCalender  findJwTcanderByClaiId(JwTGrade  jtg) {
 		if(jtg == null)
