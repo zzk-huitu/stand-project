@@ -20,12 +20,16 @@ import com.zd.core.service.BaseServiceImpl;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDeptjob;
+import com.zd.school.plartform.baseset.model.BaseOrg;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.system.dao.SysUserdeptjobDao;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysDeptjobService;
+import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.student.studentclass.model.JwClassstudent;
+import com.zd.school.student.studentclass.service.JwClassstudentService;
 
 /**
  * 
@@ -54,7 +58,13 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 
 	@Resource
 	private SysDeptjobService baseDeptjobService;
-
+	
+	@Resource
+	private SysOrgService orgService;
+	
+	@Resource
+	private JwClassstudentService classstudentService;
+	
 	private static Logger logger = Logger.getLogger(SysUserdeptjobServiceImpl.class);
 
 	@Override
@@ -139,12 +149,13 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 			Map<String, BaseUserdeptjob> userHasJobMap = this.getUserDeptJobMaps(user);
 			BaseUserdeptjob isMasterDeptJob = this.getUserMasterDeptJob(user);
 			for (int i = 0; i < deptjobs.size(); i++) {
-				String uuid = deptjobs.get(i).getUuid(); // 选择的部门岗位Id
+				BaseDeptjob deptjob=deptjobs.get(i);
+				String uuid = deptjob.getUuid(); // 选择的部门岗位Id
 				if (userHasJobMap.get(uuid) == null) {
 					// 如果当前岗位还没有设置成此教师的部门岗位
 					BaseUserdeptjob userDeptJob = new BaseUserdeptjob();
-					userDeptJob.setDeptId(deptjobs.get(i).getDeptId());
-					userDeptJob.setJobId(deptjobs.get(i).getJobId());
+					userDeptJob.setDeptId(deptjob.getDeptId());
+					userDeptJob.setJobId(deptjob.getJobId());
 					userDeptJob.setDeptjobId(uuid);
 					userDeptJob.setUserId(user.getUuid());
 					userDeptJob.setCreateTime(new Date());
@@ -152,6 +163,37 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 					// 当前人没有主工作部门时将一个岗位设置为主部门
 					if (!ModelUtil.isNotNull(isMasterDeptJob) && i == 0) {
 						userDeptJob.setMasterDept(1);
+											
+						//--------判断是否要更新班级学生表(2018-3-15加入)-----------						
+						//是否为学生
+						if(user.getCategory().equals("2")){							
+							BaseOrg dept=orgService.get(deptjob.getDeptId());	
+							//是否为班级部门、学生岗位
+							if(dept.getDeptType().equals("05")&&deptjob.getJobName().equals("学生")){
+								
+								JwClassstudent classStudent=classstudentService.getByProerties(
+										new String[]{"studentId","isDelete"}, 		//新版本暂不根据学年学期来查
+										new Object[]{user.getUuid(),0});
+								if(classStudent==null){
+									classStudent=new JwClassstudent();
+									classStudent.setClaiId(deptjob.getDeptId());
+									classStudent.setStudentId(user.getUuid());
+									classStudent.setCreateUser(currentUser.getXm());
+									classStudent.setSemester(currentUser.getSemester());
+									classStudent.setStudyYeah(String.valueOf(currentUser.getStudyYear()));
+								}else{
+									classStudent.setSemester(currentUser.getSemester());
+									classStudent.setStudyYeah(String.valueOf(currentUser.getStudyYear()));
+									classStudent.setClaiId(deptjob.getDeptId());
+									classStudent.setUpdateUser(currentUser.getXm());
+									classStudent.setUpdateTime(new Date());
+								}
+								classstudentService.merge(classStudent);			
+							}
+						}
+						//-----------------结束--------------------
+						
+						
 					} else
 						userDeptJob.setMasterDept(0);
 
@@ -174,16 +216,39 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 
 	@Override
 	public boolean doRemoveUserFromDeptJob(String delIds, SysUser currentUser) {
+		String[] uuids = delIds.split(",");
 		
 		// 所有要设置的用户	
-		List<BaseUserdeptjob> baseUserdeptjobs = this.queryByProerties("uuid", delIds);	
+		List<BaseUserdeptjob> baseUserdeptjobs = this.queryByProerties("uuid", uuids);	
 		List<String> userIds = baseUserdeptjobs.stream().map((x)->x.getUserId()).distinct().collect(Collectors.toList());		
 		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
 		if(userIds.size()>0)
 			this.delDeptTreeByUsers(userIds.toArray());
+		
+		
+		/*---------判断是否要更新班级学生表(2018-3-15加入)-----------*/
+		for(int i=0;i<baseUserdeptjobs.size();i++){
+			BaseUserdeptjob userdeptjob=baseUserdeptjobs.get(i);
+			//若为主部门、班级部门、学生岗位，就执行更新操作
+			if(userdeptjob.getMasterDept()==1&&userdeptjob.getDeptType().equals("05")
+					&&userdeptjob.getJobName().equals("学生")){
 				
+				SysUser user=userService.get(userdeptjob.getUserId());
+				//是否为学生
+				if(user!=null&&user.getCategory().equals("2")){
+					//将JwClassstudent设置为isDelete
+					String hql="update JwClassstudent set isDelete=1 where isDelete=0 "
+							+ "	and studentId='"+user.getUuid()+"' and claiId='"+userdeptjob.getDeptId()+"'";
+					classstudentService.doExecuteCountByHql(hql);
+				}
+			}
+		}
+		/*-------------------结束--------------------*/
+		
+		
 		return this.doLogicDeleteByIds(delIds, currentUser);
 	}
+
 
 	@Override
 	public boolean doSetMasterDeptJob(String delIds, String userId, SysUser currentUser) {
@@ -197,11 +262,49 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 			oldMaster.setUpdateUser(currentUser.getUuid());
 			this.merge(oldMaster);
 		}
-
+		
 		// 将新的部门岗位设置为主部门岗位
 		String[] propertyName = { "masterDept", "updateTime", "updateUser" };
 		Object[] propertyValue = { 1, new Date(), currentUser.getUuid() };
 		this.updateByProperties("uuid", delIds, propertyName, propertyValue);
+		
+		
+		//--------判断是否要更新班级学生表(2018-3-15加入)-----------
+		//是否为学生
+		if(user.getCategory().equals("2")){
+			//是否为学生的班级学生岗位
+			if(oldMaster.getDeptType().equals("05")&&oldMaster.getJobName().equals("学生")){
+				//将JwClassstudent设置为isDelete
+				String hql="update JwClassstudent set isDelete=1 where isDelete=0 "
+						+ "	and studentId='"+userId+"' and claiId='"+oldMaster.getDeptId()+"'";
+				classstudentService.doExecuteCountByHql(hql);
+			}
+			
+			//判断新的部门岗位是否为班级学生岗位
+			BaseUserdeptjob	newMaster=this.get(delIds);
+			if(newMaster.getDeptType().equals("05")&&newMaster.getJobName().equals("学生")){
+				JwClassstudent classStudent=classstudentService.getByProerties(
+						new String[]{"studentId","isDelete"}, 		//新版本暂不根据学年学期来查
+						new Object[]{userId,0});
+				if(classStudent==null){
+					classStudent=new JwClassstudent();
+					classStudent.setClaiId(newMaster.getDeptId());
+					classStudent.setStudentId(userId);
+					classStudent.setCreateUser(currentUser.getXm());
+					classStudent.setSemester(currentUser.getSemester());
+					classStudent.setStudyYeah(String.valueOf(currentUser.getStudyYear()));
+				}else{
+					classStudent.setSemester(currentUser.getSemester());
+					classStudent.setStudyYeah(String.valueOf(currentUser.getStudyYear()));
+					classStudent.setClaiId(newMaster.getDeptId());
+					classStudent.setUpdateUser(currentUser.getXm());
+					classStudent.setUpdateTime(new Date());
+				}
+				classstudentService.merge(classStudent);			
+			}
+		}
+		//-----------------结束--------------------
+		
 		return true;
 	}
 

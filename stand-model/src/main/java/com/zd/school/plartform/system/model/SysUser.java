@@ -261,7 +261,7 @@ public class SysUser extends BaseEntity implements Serializable {
         return csrq;
     }
 
-    @FieldInfo(name = "身份证件号")
+    @FieldInfo(name = "身份证件号")		
     @Column(name = "SFZJH", length = 20, nullable = true)
     private String sfzjh;
 
@@ -321,17 +321,6 @@ public class SysUser extends BaseEntity implements Serializable {
         this.zxxbzlb = zxxbzlb;
     }
 
-    @FieldInfo(name = "专业技术职称")
-    @Column(name = "TECHNICAL", length = 64, nullable = true)
-    private String technical;
-
-    public void setTechnical(String technical) {
-        this.technical = technical;
-    }
-
-    public String getTechnical() {
-        return technical;
-    }
 /*	@FieldInfo(name = "主岗位ID")
     @Column(name = "JOB_ID", length = 36, nullable = true)
 	private String jobId;

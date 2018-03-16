@@ -112,7 +112,7 @@ Ext.define("core.system.dept.view.DeptJobGrid", {
 					this.fireEvent("detailClick", view, "setSuperJob", rowIndex);
 				}
 			},{
-				text: '添加岗位用户',
+				text: '部门岗位用户',
 				style: 'font-size:12px;',
 				tooltip: '设置此部门岗位的用户',
 				//ref: 'gridEdit',

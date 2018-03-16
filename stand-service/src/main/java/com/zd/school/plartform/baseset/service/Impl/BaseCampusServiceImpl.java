@@ -247,6 +247,8 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 				return roomarea.getUuid();
 			}
 			parentId = roomarea.getParentNode();
+			if(parentId.equals("ROOT"))
+				return null;	//找不到校区
 		}
 	}
 

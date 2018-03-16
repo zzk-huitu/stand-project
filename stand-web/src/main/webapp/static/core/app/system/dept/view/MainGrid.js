@@ -46,7 +46,7 @@ Ext.define("core.system.dept.view.MainGrid", {
         disabled:true
     },{
         xtype: 'button',
-        text: '设置部门岗位',
+        text: '部门岗位管理',
         ref: 'gridSetJob',
         funCode: 'girdFuntionBtn',
         iconCls: 'x-fa fa-pencil-square',

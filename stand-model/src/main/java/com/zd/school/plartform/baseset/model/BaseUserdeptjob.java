@@ -105,6 +105,18 @@ public class BaseUserdeptjob extends BaseEntity implements Serializable {
 	public void setDeptName(String deptName) {
 		this.deptName = deptName;
 	}
+	@FieldInfo(name = "部门类型")
+	@Formula("(SELECT a.DEPT_TYPE FROM dbo.BASE_T_ORG a WHERE a.DEPT_ID=DEPT_ID )")
+	private String deptType;
+
+	public String getDeptType() {
+		return deptType;
+	}
+
+	public void setDeptType(String deptType) {
+		this.deptType = deptType;
+	}
+	
 
 	@FieldInfo(name = "岗位名称")
 	@Formula("(SELECT a.JOB_NAME FROM dbo.BASE_T_JOB a WHERE a.JOB_ID=JOB_ID )")

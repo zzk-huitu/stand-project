@@ -1,13 +1,15 @@
 package com.zd.school.student.studentinfo.model;
 
-import com.zd.core.annotation.FieldInfo;
-import com.zd.school.plartform.system.model.SysUser;
-import org.hibernate.annotations.Formula;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import org.hibernate.annotations.Formula;
+
+import com.zd.core.annotation.FieldInfo;
+import com.zd.school.plartform.system.model.SysUser;
 
 /**
  * 
@@ -89,19 +91,19 @@ public class StuBaseinfo extends SysUser implements Serializable {
     //        return xbm;
     //    }
 
-/*    @FieldInfo(name = "出生日期")
+    @FieldInfo(name = "出生日期")
     @Column(name = "CSRQ", length = 24, nullable = true)
-    private String csrq;
-
-    public void setCsrq(String csrq) {
-        this.csrq = csrq;
-    }
-
+    private String csrq;   
+    
     public String getCsrq() {
-        return csrq;
-    }*/
+		return csrq;
+	}
 
-    @FieldInfo(name = "出生地码")
+	public void setCsrq(String csrq) {
+		this.csrq = csrq;
+	}
+
+	@FieldInfo(name = "出生地码")
     @Column(name = "CSDM", length = 10, nullable = true)
     private String csdm;
 
@@ -340,6 +342,9 @@ public class StuBaseinfo extends SysUser implements Serializable {
     public String getXjh() {
         return xjh;
     }
+    @FieldInfo(name = "目前居住地")
+    @Column(name = "CURRENTADDRESS", length = 120, nullable = true)
+    public String  currentAddress;
 
     //    @FieldInfo(name = "学校主键")
     //    @Column(name = "SCHOOL_ID", length = 36, nullable = false)
@@ -482,8 +487,50 @@ public class StuBaseinfo extends SysUser implements Serializable {
     public void setJdtypeId(String jdtypeId) {
         this.jdtypeId = jdtypeId;
     }
+    @FieldInfo(name = "是否住校")
+    @Column(name = "SFZX", length = 36, nullable = true)
+    public String sfzx;
 
-    /**
+	public String getSfzx() {
+		return sfzx;
+	}
+
+	public void setSfzx(String sfzx) {
+		this.sfzx = sfzx;
+	}
+	@FieldInfo(name = "毕业学校")
+    @Column(name = "BYXX", length = 120, nullable = true)
+	public String byxx;
+
+	public String getCurrentAddress() {
+		return currentAddress;
+	}
+
+	public void setCurrentAddress(String currentAddress) {
+		this.currentAddress = currentAddress;
+	}
+
+	public String getByxx() {
+		return byxx;
+	}
+
+	public void setByxx(String byxx) {
+		this.byxx = byxx;
+	}
+	
+	@FieldInfo(name = "片区生")
+    @Column(name = "PQS", length = 36, nullable = true)
+	private String pqs;
+	
+	public String getPqs() {
+		return pqs;
+	}
+
+	public void setPqs(String pqs) {
+		this.pqs = pqs;
+	}
+
+	/**
      * 以下为不需要持久化到数据库中的字段,根据项目的需要手工增加
      * 
      * @Transient
@@ -556,4 +603,5 @@ public class StuBaseinfo extends SysUser implements Serializable {
 	public StuBaseinfo(String uuid) {
 		super(uuid);
 	}
+
 }
