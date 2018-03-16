@@ -149,7 +149,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 		String sqlsub = " from dbo.PT_SK_TERMSTATUS a" + " JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
 				+ " JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0 and D.ROOM_TYPE!='0' ";
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and D.ROOM_TYPE!='0' ";
 	
 		String groupBySql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
 		String orderBySql = " ORDER BY c.TERMNO ASC";
@@ -284,7 +284,7 @@ public class PtSkTermStatusController extends FrameWorkController<PtSkTermStatus
 				+ " from dbo.PT_SK_TERMSTATUS a" + " JOIN dbo.PT_TERM C ON c.TERMSN=a.TERMSN	"
 				+ " JOIN dbo.BUILD_T_ROOMINFO D ON a.ROOM_ID=D.ROOM_ID	"
 				+ " LEFT JOIN dbo.BUILD_T_ROOMAREA F ON d.AREA_ID=f.AREA_ID	"
-				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and a.isDelete=0  and D.ROOM_TYPE!='0' ";
+				+ " LEFT JOIN dbo.PT_GATEWAY E ON c.GATEWAY_ID=e.GATEWAY_ID  " + "where 1=1 and D.ROOM_TYPE!='0' ";
 		
 		String groupSql = " GROUP BY 	c.TERMNAME,D.ROOM_NAME,a.TERMSN,f.NODE_TEXT, e.GATEWAYNAME,c.TERMNO,c.TERMTYPEID ";
 		String orderBySql = " ORDER BY c.TERMNO ASC";
