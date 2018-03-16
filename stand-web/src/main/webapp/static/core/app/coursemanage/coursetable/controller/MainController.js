@@ -62,7 +62,11 @@ Ext.define("core.coursemanage.coursetable.controller.MainController", {
                 return false; 
              }
         },
-
+        "basepanel basegrid[xtype=coursemanage.coursetable.maingrid]": {
+            afterrender : function(grid) {
+            this.hideFuncBtn(grid);
+          },
+         },
        
 
     },
@@ -234,6 +238,31 @@ Ext.define("core.coursemanage.coursetable.controller.MainController", {
                 });              
             }
         });
-    },
-    
+    }, 
+    hideFuncBtn:function(grid){
+        if(comm.get("isAdmin")!="1"){
+            var menuCode="COURSETABLE";     // 此菜单的前缀
+            var userBtn=comm.get("userBtn");
+            if(userBtn.indexOf(menuCode+"_gridImport")==-1){
+                var btnUse = grid.down("button[ref=gridImport]");
+                btnUse.setHidden(true);
+                
+            }
+            if(userBtn.indexOf(menuCode+"_gridDownExcel")==-1){
+                var btnUse = grid.down("button[ref=gridDownExcel]");
+                btnUse.setHidden(true);
+                
+            }
+            if(userBtn.indexOf(menuCode+"_gridSetUse")==-1){
+                var btnUse = grid.down("button[ref=gridSetUse]");
+                btnUse.setHidden(true);
+                
+            }
+            if(userBtn.indexOf(menuCode+"_gridSetUnUse")==-1){
+                var btnUse = grid.down("button[ref=gridSetUnUse]");
+                btnUse.setHidden(true);
+                
+            }
+        }
+    }
 });

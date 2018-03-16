@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
@@ -149,6 +150,7 @@ public class FuncRoomCourseController extends FrameWorkController<JwFuncroomcour
 	 * @throws IOException
 	 *             抛出异常
 	 */
+	@Auth("FUNCROOMCOURSE_add")
 	@RequestMapping("/doAddFuncRoomCourse")
 	public void doAddFuncRoomCourse(String entitys, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -181,6 +183,7 @@ public class FuncRoomCourseController extends FrameWorkController<JwFuncroomcour
 	 * @throws IOException
 	 *             抛出异常
 	 */
+	@Auth("FUNCROOMCOURSE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");

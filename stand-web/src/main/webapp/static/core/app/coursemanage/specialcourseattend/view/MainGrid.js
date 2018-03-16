@@ -35,7 +35,7 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainGrid", {
             xtype:'textfield',
             name:'titleName',
             funCode: 'girdFastSearchText',
-            emptyText: '请输入考勤主题'
+            emptyText: '请输入主题名称'
         },{
             xtype: 'button',            
             ref: 'gridFastSearchBtn',  
@@ -66,7 +66,7 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainGrid", {
             dataIndex: "uuid",
             hidden: true
         }, {
-            text: "规则名称",
+            text: "主题名称",
             dataIndex: "titleName",
             flex:1,
         },   {
@@ -91,7 +91,7 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainGrid", {
                     if(comm.get("isAdmin")!="1"){
                         var menuCode="SPECIAL_COURSEATTEND";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_setUsing")==-1){
+                        if(userBtn.indexOf(menuCode+"_setUsers")==-1){
                             return 'x-hidden-display';
                         }
                     }
@@ -113,7 +113,7 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainGrid", {
                     if(comm.get("isAdmin")!="1"){
                         var menuCode="SPECIAL_COURSEATTEND";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_setUsing")==-1){
+                        if(userBtn.indexOf(menuCode+"_setTerms")==-1){
                             return 'x-hidden-display';
                         }
                     }
@@ -136,7 +136,7 @@ Ext.define("core.coursemanage.specialcourseattend.view.MainGrid", {
                     if(comm.get("isAdmin")!="1"){
                         var menuCode="SPECIAL_COURSEATTEND";     // 此菜单的前缀
                         var userBtn=comm.get("userBtn");                 
-                        if(userBtn.indexOf(menuCode+"_setUsing")==-1){
+                        if(userBtn.indexOf(menuCode+"_setTimes")==-1){
                             return 'x-hidden-display';
                         }
                     }

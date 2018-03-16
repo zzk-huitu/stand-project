@@ -21,14 +21,6 @@ Ext.define("core.coursemanage.teachercourse.controller.DetailController", {
                 return false;
             }
         },
-        "panel[xtype=coursemanage.teachercourse.deptclasstree] button[ref=gridRefresh]": {
-            click: function(btn) {
-                var baseGrid = btn.up("basetreegrid");
-                var store = baseGrid.getStore();
-                store.load();
-                return false;
-            }
-        },
 
         "basetreegrid[xtype=coursemanage.teachercourse.deptcoursetree]": {        
             itemclick: function(tree, record, item, index, e, eOpts) {

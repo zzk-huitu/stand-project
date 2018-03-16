@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
@@ -132,7 +133,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 	}
 	
 	
-
+    @Auth("COURSETABLE_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(JwCourseArrange entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -147,7 +148,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
-
+    @Auth("COURSETABLE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -165,7 +166,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		}
 	}
 	
-	
+    @Auth("COURSETABLE_use")
 	@RequestMapping("/doCouseUse")
 	public void doCouseUse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -182,7 +183,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"启用课表成功\""));		
 	}
-
+    @Auth("COURSETABLE_unUse")
 	@RequestMapping("/doCouseUnUse")
 	public void doCouseUnUse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -197,7 +198,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"禁用课表成功\""));		
 	}
-		
+    @Auth("COURSETABLE_import")	
 	@RequestMapping(value = { "/importExcel" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void importExcel(@RequestParam("file") MultipartFile file, HttpServletRequest request,

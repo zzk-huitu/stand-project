@@ -2,8 +2,6 @@ package com.zd.school.teacher.teacherinfo.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,15 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.ModelUtil;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseOrg;
-import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
-import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;

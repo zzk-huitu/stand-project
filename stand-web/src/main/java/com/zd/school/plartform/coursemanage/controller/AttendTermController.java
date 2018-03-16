@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -65,7 +66,7 @@ public class AttendTermController extends FrameWorkController<AttTerm> implement
 		strData = jsonBuilder.buildObjListToJson(qResult.getTotalCount(), qResult.getResultList(), true);// 处理数据
 		writeJSON(response, strData);// 返回数据
 	}
-    
+    @Auth("SPECIAL_COURSEATTEND_attendTerm")
    	@RequestMapping(value = { "/termAttendlist" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
    			org.springframework.web.bind.annotation.RequestMethod.POST })
    	public void termAttendlist(HttpServletRequest request, HttpServletResponse response)

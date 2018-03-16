@@ -15,17 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zd.core.annotation.Auth;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
-import com.zd.school.jw.arrangecourse.model.JwCourseteacher;
 import com.zd.school.jw.eduresources.model.JwClassteacher;
 import com.zd.school.jw.eduresources.service.JwClassteacherService;
-import com.zd.school.plartform.comm.model.CommTree;
 import com.zd.school.plartform.comm.model.CommTreeChk;
 import com.zd.school.plartform.comm.service.CommTreeService;
 import com.zd.school.plartform.system.model.SysUser;
@@ -125,6 +122,7 @@ public class WisClassTeacherController extends FrameWorkController<JwClassteache
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
 	 */
+	@Auth("CLASSTEACHER_add")
 	@RequestMapping("/doAdd")
 	public void doAdd(JwClassteacher entity, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, IllegalAccessException, InvocationTargetException {
@@ -164,6 +162,7 @@ public class WisClassTeacherController extends FrameWorkController<JwClassteache
 	 * request @param @param response @param @throws IOException 设定参数 @return
 	 * void 返回类型 @throws
 	 */
+	@Auth("CLASSTEACHER_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String delIds = request.getParameter("ids");
@@ -182,6 +181,7 @@ public class WisClassTeacherController extends FrameWorkController<JwClassteache
 	}
 	
 	// 解除设置班主任（逻辑删除）
+	@Auth("CLASSTEACHER_out")
 	@RequestMapping("/doOut")
 	public void out(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String outIds = request.getParameter("ids");
