@@ -16,7 +16,7 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
         xtype:'toolbar',
         items: [{
             xtype: 'tbtext',
-            html: '宿舍分配',
+            html: '班级列表',
             style: {
                 fontSize: '16px',
                 color: '#C44444',
@@ -30,7 +30,7 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             titleAlign:'right',
     }]
   },
-   columns:{
+ /*  columns:{
     defaults:{
             titleAlign:"center"
         },
@@ -44,12 +44,12 @@ Ext.define("core.baseset.studentdorm.view.StudentDormTree", {
             text: "顺序号",
             dataIndex: "orderIndex",
             width:100
-        }*/,{
+        },{
             text:"主键",
             dataIndex:'id',
             hidden:true
         }]
-  },/*
+  },*//*
      listeners: {
         itemclick: function(view, record, item, index, e) {
             var mainLayout = view.up("basepanel[xtype=baseset.studentdorm.mainlayout]");
