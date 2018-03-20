@@ -122,6 +122,8 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 	/**
 	 * 
 	 * @throws BadHanyuPinyinOutputFormatCombination
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 * @Title: 增加新实体信息至数据库 @Description: TODO @param @param TeaTeacherbase
 	 *         实体类 @param @param request @param @param response @param @throws
 	 *         IOException 设定参数 @return void 返回类型 @throws
@@ -129,8 +131,7 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 	@RequestMapping(value = { "/doAdd" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
 	public void doAdd(TeaTeacherbase entity, @RequestParam("file") MultipartFile file,  HttpServletRequest request,
-			HttpServletResponse response) throws IOException, IllegalAccessException, InvocationTargetException,
-			BadHanyuPinyinOutputFormatCombination {
+			HttpServletResponse response) throws IOException, BadHanyuPinyinOutputFormatCombination, IllegalAccessException, InvocationTargetException {
 		if (!file.isEmpty()) {
 			//图片服务器路径  
 			String file_path =realFileUrl;//String file_path = "D:\\Q1_Files\\uploadFiles\\";
@@ -220,7 +221,7 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    @RequestMapping(value = { "/doAdd" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
+	@RequestMapping(value = { "/doUpdate" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
     public void doUpdates(TeaTeacherbase entity, @RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response)
             throws IOException, IllegalAccessException, InvocationTargetException {
