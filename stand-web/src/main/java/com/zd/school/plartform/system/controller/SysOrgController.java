@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -120,6 +121,25 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		writeJSON(response, strData);// 返回数据
 	}
 	
+	/**
+	 * 获取用户有权限的部门id
+	 */
+	@RequestMapping(value = { "/getUserRightDeptIds" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.GET,
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public void getUserRightDeptIds( HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		
+		SysUser currentUser=getCurrentSysUser();
+		
+		List<BaseOrgChkTree> baseOrgList = thisService.getUserRightDeptTreeList(currentUser);
+		String deptIds = baseOrgList.stream().filter((x) -> x.getIsRight().equals("1"))
+				.map((x) -> x.getId()).collect(Collectors.joining("','"));					
+		
+		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(deptIds)));	// 返回数据
+	}
+	
+	
     /**
      * 添加部门
      * @param entity
@@ -158,6 +178,7 @@ public class SysOrgController extends FrameWorkController<BaseOrg> implements Co
 		} else
 			defaultOrderIndex = 0;
 		entity.setOrderIndex(defaultOrderIndex);
+		
 		SysUser sysuser = getCurrentSysUser();
 		
 		entity = thisService.addOrg(entity, sysuser);

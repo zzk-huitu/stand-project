@@ -11,8 +11,11 @@ Ext.define("core.system.user.controller.MainController", {
     alias: 'controller.system.user.maincontroller',
 
     init: function() {
-        var self = this
-            //事件注册
+        var self = this;
+
+        this.getRightDeptIds();
+
+        //事件注册
         this.control({
             "basepanel basegrid[xtype=system.user.usergrid]": {
                 afterrender : function(grid) {
@@ -30,7 +33,27 @@ Ext.define("core.system.user.controller.MainController", {
                 }
             },
 
-             "basegrid[xtype=system.user.usergrid] actioncolumn": {
+            "basegrid[xtype=system.user.usergrid] button[ref=gridEdit_Tab]": {
+                beforeclick: function (btn) {
+                    var baseGrid=btn.up("basegrid[xtype=system.user.usergrid]");
+                    var rescords = baseGrid.getSelectionModel().getSelection();
+                    if (rescords.length != 1) {
+                        self.msgbox("请选择一条数据！");
+                        return false;
+                    }
+                    var recordData = rescords[0].getData();
+
+                    //得到组件
+                    if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+                        self.Warning("您没有操作此部门用户的权限，不能操作！");
+                        return false;
+                    }
+                }
+            },
+
+
+
+            "basegrid[xtype=system.user.usergrid] actioncolumn": {
                 detailClick_Tab: function (data) {
                     this.doDetail_Tab(null,"detail",data.view,data.record);
                     return false;
@@ -345,17 +368,17 @@ Ext.define("core.system.user.controller.MainController", {
         switch (cmd) {
             case "lock":
                 info = "请选择要锁定的账户";
-                title = "确定要锁定选择的账户吗？";
+                title = "确定要锁定选择的账户吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doLock";
                 break;
             case "unlock":
                 info = "请选择要解锁的账户";
-                title = "确定要解锁选择的账户吗？";
+                title = "确定要解锁选择的账户吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doUnlock";
                 break;
             case "setpwd":
                 info = "请选择要重置密码的账户";
-                title = "确定要重置所选账户的密码吗？";
+                title = "确定要重置所选账户的密码吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doSetPwd";
                 break;
         }
@@ -373,11 +396,15 @@ Ext.define("core.system.user.controller.MainController", {
                 //显示loadMask
                 var myMask = self.LoadMask(userGrid);
 
-                //拼装所选择的用户
+                //拼装所选择的用户(只能操作有部门权限的用户)
                 var ids = new Array();
+                var selectedUsers=new  Array();
                 Ext.each(selectUser, function(rec) {
-                    var pkValue = rec.get("uuid");
-                    ids.push(pkValue);
+                    if(comm.get("userRidhtDeptIds").indexOf(rec.get("deptId"))!=-1){
+                        var pkValue = rec.get("uuid");
+                        ids.push(pkValue);
+                        selectedUsers.push(rec);
+                    }             
                 });
 
                 //提交入库
@@ -396,14 +423,14 @@ Ext.define("core.system.user.controller.MainController", {
                             switch (cmd) {
                                 case "lock":
                                     //静态的更新数据
-                                    Ext.each(selectUser, function(rec) {
+                                    Ext.each(selectedUsers, function(rec) {
                                         rec.set("state","1");    //改变数据
                                         rec.commit();   //提交一下 
                                     }, this);
                                     break;
                                 case "unlock":
                                     //静态的更新数据
-                                    Ext.each(selectUser, function(rec) {
+                                    Ext.each(selectedUsers, function(rec) {
                                         rec.set("state","0");    //改变数据
                                         rec.commit();   //提交一下 
                                     }, this);
@@ -434,16 +461,34 @@ Ext.define("core.system.user.controller.MainController", {
 
         if (btn) {
             baseGrid = btn.up("basegrid");
+
+            var rescords = baseGrid.getSelectionModel().getSelection();
+            if (rescords.length != 1) {
+                self.msgbox("请选择一条数据！");
+                return;
+            }
+            recordData = rescords[0].getData();
+
         } else {
             baseGrid = grid;
             recordData = record.getData();
         }
 
 
+        if(cmd!='detail'){  
+            if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+                self.Warning("您没有操作此部门用户的权限，不能操作！");
+                return;
+            }
+        }
+
+
+
         //得到组件
         var funCode = baseGrid.funCode;
-        var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");
+        var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");        
         var tabPanel=baseGrid.up("tabpanel[xtype=app-main]");
+
 
         //得到配置信息
         var funData = basePanel.funData;
@@ -457,24 +502,13 @@ Ext.define("core.system.user.controller.MainController", {
             otherController = '';
 
         //处理特殊默认值
-        var insertObj = self.getDefaultValue(defaultObj);
+        //var insertObj = self.getDefaultValue(defaultObj);
+        var insertObj = recordData;
         var popFunData = Ext.apply(funData, {
             grid: baseGrid
         });
 
-        
-        if (btn) {
-            var rescords = baseGrid.getSelectionModel().getSelection();
-            if (rescords.length != 1) {
-                self.msgbox("请选择一条数据！");
-                return;
-            }
-            recordData = rescords[0].getData();
-        }
-
-        insertObj = recordData;
-
-         //本方法只提供班级详情页使用
+        //本方法只提供班级详情页使用
         var tabTitle =insertObj.xm+"-角色管理";
         //设置tab页的itemId
         var pkValue= null;
@@ -978,6 +1012,27 @@ Ext.define("core.system.user.controller.MainController", {
         } else {
             self.msgbox("没有选择用户");
         }
+    },
+
+    //获取当前用户的有权限的部门
+    getRightDeptIds:function(){
+        var self=this;
+        self.asyncAjax({
+            url: comm.get('baseUrl') + "/SysOrg/getUserRightDeptIds",
+            params: {},
+            //回调代码必须写在里面
+            success: function(response) {
+                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                if (data.success) {         
+                    comm.add("userRidhtDeptIds",data.obj);
+                }else{
+                   self.Error(data.obj);
+                }
+            },
+            failure: function(response) {           
+                Ext.Msg.alert('请求用户权限部门失败', '错误信息：\n' + response.responseText);     
+            }
+        }); 
     }
 
 });

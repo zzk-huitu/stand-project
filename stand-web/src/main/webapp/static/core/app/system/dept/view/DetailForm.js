@@ -107,6 +107,10 @@ Ext.define("core.system.dept.view.DetailForm", {
                         baseform.down("combobox[name=sectionCode]").allowBlank=false;                    
                         baseform.down("combobox[name=nj]").allowBlank=false;
                         
+                        proxy.extraParams = {
+                           filter: filter
+                        };
+                        store.load();                         
                         combo.up("panel").down("combobox[ref=comboxCourse]").setEditable(true);
 
                         //baseform.up("window").setHeight(435);

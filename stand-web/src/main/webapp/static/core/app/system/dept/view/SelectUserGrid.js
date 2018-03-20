@@ -118,11 +118,13 @@ Ext.define("core.system.dept.view.SelectUserGrid", {
             text: '序号',
             align: 'center'
         }, {
-            width:120,
+            minWidth:90,
+            flex:1,
             text: "用户名",
             dataIndex: "userName"
         },{
-            width:80,
+            minWidth:90,
+            flex:1,
             text: "姓名",
             dataIndex: "xm"
         }, {
@@ -131,16 +133,29 @@ Ext.define("core.system.dept.view.SelectUserGrid", {
             dataIndex: "xbm",
             columnType: "basecombobox",
             ddCode: "XBM"
-        }, {
-            minWidth:120,
+        },{
+            width:80,
+            text: "身份",
+            dataIndex: "category",
+            columnType: "basecombobox",
+            ddCode: "CATEGORY"
+        },  {
+            minWidth:90,
             flex:1,
             text: "部门",
             dataIndex: "deptName"
         }, {
-            width:100,
+            minWidth:90,
+            flex:1,
             text: "岗位",
             dataIndex: "jobName"
-        }/*, {
+        }/*{
+            width:60,
+            text: "身份",
+            dataIndex: "category",
+            columnType: "basecombobox",
+            ddCode: "CATEGORY"
+        }*//*, {
             text: "编制",
             dataIndex: "zxxbzlb",
             ddCode: "ZXXBZLB",

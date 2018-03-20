@@ -386,7 +386,7 @@ public class ClassFileAppController {
 		if(!eleganeList.isEmpty()){
 			String recordIds=eleganeList.stream().map(x->x.getUuid()).collect(Collectors.joining("','","'","'"));
 			
-			hql = "from BaseAttachment where isDelete=0 and recordId=in (" + recordIds + ") and attachType in(" + types
+			hql = "from BaseAttachment where isDelete=0 and recordId in (" + recordIds + ") and attachType in(" + types
 					+ ") order by createTime desc";
 			List<BaseAttachment> attList = baseTAttachmentService.queryByHql(hql);
 			for (BaseAttachment baseAttachment : attList) {

@@ -6,7 +6,7 @@ Ext.define("core.system.dept.store.CourseStore", {
 	proxy: {
 		type: "ajax",
 		url: comm.get('baseUrl') + "/BaseCourse/list", //对应后台controller路径or方法
-		extParams: {
+		extraParams : {
 			filter: "[{'type':'string','comparison':'=','value':'aaaa','field':'uuid'}]"
 		},
 		reader: {

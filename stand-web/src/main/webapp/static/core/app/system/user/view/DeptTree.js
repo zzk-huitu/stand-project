@@ -55,15 +55,30 @@ Ext.define("core.system.user.view.DeptTree", {
     // }],
     listeners: {
         itemclick: function(grid, record, item, index, e) {
-            var mainLayout = grid.up("panel[xtype=system.user.mainlayout]");
-            var funData = mainLayout.funData;
-            funData = Ext.apply(funData, {
+            var mainLayout = grid.up("panel[xtype=system.user.mainlayout]");        
+            var userGrid = mainLayout.down("panel[xtype=system.user.usergrid]");
+            var store = userGrid.getStore();
+            var proxy = store.getProxy();
+
+            var deptId = record.get("id");
+            var isRight = record.get("isRight"); 
+            var deptType =record.get("deptType");
+
+            if(deptId!='2851655E-3390-4B80-B00C-52C7CA62CB39'&&record.get("isRight")==0){
+                proxy.extraParams = {
+                    deptId: "0",
+                };
+                store.loadPage(1);
+                return false;
+            }
+
+
+            Ext.apply(mainLayout.funData, {
                 deptId: record.get("id"),
                 isRight:record.get("isRight"),
                 deptType:record.get("deptType")
             });
-            //加载人员信息
-            var userGrid = mainLayout.down("panel[xtype=system.user.usergrid]");
+         
               //获取快速搜索框的参数
             var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
             var filter=new Array();
@@ -76,9 +91,8 @@ Ext.define("core.system.user.view.DeptTree", {
             if(filter.length==0)
                 filter=null;
             else 
-             filter = JSON.stringify(filter);
-            var store = userGrid.getStore();
-            var proxy = store.getProxy();
+                filter = JSON.stringify(filter);
+            
             proxy.extraParams = {
                 deptId: record.get("id"),
                 filter:filter

@@ -115,6 +115,7 @@
 				/SysAppinfo/** = anon
 				/static/** = anon			
 				/login.jsp = anon
+				/api.jsp = anon
 				/handcourse.jsp = anon
 				/login/login = anon
 				/verifycode/image = anon

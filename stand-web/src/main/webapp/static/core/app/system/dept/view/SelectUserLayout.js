@@ -19,7 +19,7 @@ Ext.define("core.system.dept.view.SelectUserLayout", {
     layout: 'border',
     items: [{
         xtype:'system.dept.selectusergrid',
-        width:600,
+        width:650,
         region: "west",
         margin:'5'
     }, {

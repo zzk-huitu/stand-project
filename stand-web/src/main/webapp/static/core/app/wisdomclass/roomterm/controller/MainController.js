@@ -302,9 +302,9 @@ Ext.define("core.wisdomclass.roomterm.controller.MainController", {
     loadMainGridStore:function(tree,record){
               
         var mainLayout = tree.up("panel[xtype=wisdomclass.roomterm.mainlayout]");
-        var funData = mainLayout.funData;
-        mainLayout.funData = Ext.apply(funData, {
+        Ext.apply( mainLayout.funData, {
             roomId: record.get("id"),
+            roomName:record.get("text"),
             leaf : record.get("leaf"),//true: 房间 false:区域
             arealevel: record.get("level"),
         });

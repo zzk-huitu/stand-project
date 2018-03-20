@@ -151,13 +151,13 @@ Ext.define("core.system.user.view.UserGrid", {
 		}, {
 			text: "姓名",
 			dataIndex: "xm",
-			width:120,
+			width:100,
 		}, {
 			text: "性别",
 			dataIndex: "xbm",
 			columnType: "basecombobox",
 			ddCode: "XBM",
-			width:80,
+			width:60,
 		},{
             text: "身份",
             dataIndex: "category",
@@ -169,7 +169,7 @@ Ext.define("core.system.user.view.UserGrid", {
 			dataIndex: "zxxbzlb",
 			ddCode: "ZXXBZLB",
 			columnType: "basecombobox",
-			minWidth:100,
+			minWidth:80,
             flex:1,
 		}/*, {
 			text: "岗位",
@@ -177,16 +177,16 @@ Ext.define("core.system.user.view.UserGrid", {
 		}*/, {
 			text: "账户状态",
 			dataIndex: "state",
-			width:100,
+			width:80,
 			renderer: function(value) {
 				return (value == '0') ? '<font color=green>正常</font>' : '<font color=red>锁定</font>';
 			}
 		},{
-            width:100,
+            width:80,
             text: "卡片编号",
             dataIndex: "upCardId",
         },{
-            width:100,
+            width:80,
             text: "发卡状态",
             dataIndex: "useState",
             renderer: function(value, metaData) {          
@@ -198,9 +198,20 @@ Ext.define("core.system.user.view.UserGrid", {
                     return "<span style='color:#FFAC00'>卡片失效</span>";            
             }        
         },{
+            minWidth:80,
+            flex:1,
+            text: "主部门岗位",
+            dataIndex: "deptName",
+            renderer: function(value, metaData,record) {      
+                var jobName=record.get("jobName");
+                if(record.get("jobName")){
+                    return value+"-"+jobName;
+                } 
+            }        
+        },{
             xtype:'actiontextcolumn',
             text: "操作",
-            width:250,
+            width:220,
             fixed:true,
             items: [{
                 text:'部门岗位',
@@ -214,7 +225,7 @@ Ext.define("core.system.user.view.UserGrid", {
                         if(userBtn.indexOf(menuCode+"_gridDeptJob")==-1){
                             return 'x-hidden-display';
                         }
-                    }
+                    }                
                     return null; 
                 }, 
                 handler: function(view, rowIndex, colIndex, item) {
@@ -269,31 +280,6 @@ Ext.define("core.system.user.view.UserGrid", {
                         view:view.grid,
                         record: rec,
                         cmd:"deptRight"
-                    });
-                }
-            },{
-                text:'编辑',  
-                style:'font-size:12px;',         
-                tooltip: '编辑',
-                ref: 'gridEdit',
-                getClass :function(v,metadata,record,rowIndex,colIndex,store){
-                     if(record.get("issystem")==0){//内置用户
-                         return 'x-hidden-display';
-                     }else if(comm.get("isAdmin")!="1"){
-                           var menuCode="SYSUSER";     // 此菜单的前缀
-                           var userBtn=comm.get("userBtn");                 
-                          if(userBtn.indexOf(menuCode+"_gridEdit_Tab")==-1){
-                            return 'x-hidden-display';
-                          }
-                      }
-                      return null; 
-                },
-                handler: function(view, rowIndex, colIndex, item) {                 
-                    var rec = view.getStore().getAt(rowIndex);
-                    this.fireEvent('editClick_Tab', {
-                        view:view.grid,
-                        record: rec,
-                        cmd:"edit"
                     });
                 }
             },{

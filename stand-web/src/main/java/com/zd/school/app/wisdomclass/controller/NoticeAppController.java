@@ -20,7 +20,7 @@ import com.zd.school.oa.notice.model.OaNotice;
 import com.zd.school.oa.notice.service.OaNoticeService;
 
 @Controller
-@RequestMapping("/app/notice")
+@RequestMapping("/app/Notice")
 public class NoticeAppController extends FrameWorkController<OaNotice> implements Constant {
 	@Resource
 	private OaNoticeService thisService; // service层接口
@@ -50,8 +50,7 @@ public class NoticeAppController extends FrameWorkController<OaNotice> implement
 			
 			writeJSON(response, jsonBuilder.returnSuccessAppJson("\"请求成功\"", strData));// 返回数据
 		} else {
-			strData = "\"没有找到此终端的数据\"";
-			writeJSON(response, jsonBuilder.returnFailureAppJson("\"请求失败\"", strData));// 返回数据
+			writeJSON(response, jsonBuilder.returnFailureAppJson("\"没有找到此终端的数据\"", null));// 返回数据
 		}
 	}
 

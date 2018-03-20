@@ -544,8 +544,7 @@ public class OaNoticeServiceImpl extends BaseServiceImpl<OaNotice> implements Oa
 				auditor.setOaNotice(saveEntity);
 				auditorService.merge(auditor);
 				String regStatus = "您好," + approveUser.getXm() + "老师,有通知公告需要您尽快处理!";
-				pushService.pushInfo(approveUser.getXm(), approveUser.getUserNumb(), "通知公告审批", regStatus,currentUser);
-				
+				pushService.pushInfo(approveUser.getXm(), approveUser.getUserNumb(), "通知公告审批", regStatus,currentUser);			
 			}
 			
 			entity = this.merge(saveEntity);// 执行修改方法

@@ -98,8 +98,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	 * 实体类 @param @param request @param @param response @param @throws
 	 * IOException 设定参数 @return void 返回类型 @throws
 	 *  若当前用户是超级管理员/学校管理员，并且点击为学校部门，则查询出所有的用户
-	 *  否则其他用户点击顶层学校部门，只会显示出他权限之下的部门的用户
-	 *  点击其他的各个子部门，只会显示这个部门下的用户(为主部门的用户)
+	 *  否则其他用户点击顶层学校部门，会显示出他所有权限部门之下的用户(主和副部门的用户)
+	 *  点击其他的各个子部门，只会显示这个部门下的用户(主和副部门的用户)
 	 */
 	@RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
@@ -127,22 +127,24 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			if (deptId.equals(AdminType.ADMIN_ORG_ID)) {
 				List<BaseOrgChkTree> baseOrgList = sysOrgService.getUserRightDeptTreeList(currentUser);
 				deptId = baseOrgList.stream().filter((x) -> x.getIsRight().equals("1"))
-						.map((x) -> x.getId()).collect(Collectors.joining("','"));			
+						.map((x) -> x.getId()).collect(Collectors.joining("','"));				
 			}
 			
+			//根据deptId，查询出所有用户信息（主部门和副部门的）
 			if(StringUtils.isNotEmpty(deptId)){
 				String hql="from SysUser g where g.isDelete=0 and g.uuid in ("
-						+ "	select distinct userId  from BaseUserdeptjob where isDelete=0 and masterDept=1 and deptId in ('"+deptId+"')"
-						+ ")";
+						+ "	select distinct userId  from BaseUserdeptjob where isDelete=0 and deptId in ('"+deptId+"')"
+						+ ")";	//and masterDept=1 目前显示部门的全部用户
 						
 				QueryResult<SysUser> qr=thisService.queryCountToHql(super.start(request), super.limit(request),
 							super.sort(request), super.filter(request), hql,null,null);
 				
 				strData = jsonBuilder.buildObjListToJson(qr.getTotalCount(), qr.getResultList(), true);// 处理数据
-			
+				
 			}else{
 				strData = jsonBuilder.buildObjListToJson((long) 0, new ArrayList<>(), true);// 处理数据
-			}			
+			}
+			
 		}
 
 		writeJSON(response, strData);// 返回数据

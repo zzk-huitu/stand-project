@@ -2,7 +2,9 @@ package com.zd.school.app.wisdomclass.controller;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -30,6 +32,7 @@ import com.zd.school.jw.eduresources.service.JwClassteacherService;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
 import com.zd.school.jw.model.app.ClassInfoForApp;
 import com.zd.school.jw.model.app.ClassStudentApp;
+import com.zd.school.jw.model.app.CommonApp;
 import com.zd.school.oa.terminal.model.OaInfoterm;
 import com.zd.school.plartform.baseset.service.BaseAttachmentService;
 import com.zd.school.plartform.baseset.service.BaseCalenderService;
@@ -94,6 +97,27 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 	@Resource
 	private BaseCalenderdetailService calendarDetailService; // 校历详情
 
+
+	/**
+	 * 获取班级列表信息
+	 * @param classId
+	 * @return
+	 */
+	@RequestMapping(value = { "/getGradeClassList" }, method = RequestMethod.GET)
+	public @ResponseBody CommonApp<Map<String, Object>> getGradeClassList() {
+		CommonApp<Map<String, Object>> info=new CommonApp<>();
+		String sql="select a.CLAI_ID,a.CLASS_NAME,b.GRADE_NAME from JW_T_GRADECLASS a join JW_T_GRADE b "
+				+ " on a.GRAI_ID=b.GRAI_ID where a.ISDELETE=0 and b.ISDELETE=0"
+				+ " order by b.SECTION_CODE asc,b.GRADE_CODE asc,a.ORDER_INDEX asc";
+		List<Map<String, Object>> classMap = thisService.queryMapBySql(sql);
+		
+		info.setMessage(true);
+		info.setMessageInfo("调用成功！");
+		info.setList(classMap);
+		
+		
+		return info;
+	}
 	
 	/**
 	 * 获取班级信息
@@ -111,10 +135,12 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 			info.setMessageInfo("没有找到对应的班级！");
 			return info;
 		}
-
+		
+		Map<String,String> sort = new HashMap<>();
+		sort.put("category", "asc");
 		JwClassteacher calssTeacher = classTeacherService.getByProerties(
 				new String[]{"claiId","isDelete"},
-				new Object[]{classId,0});
+				new Object[]{classId,0},sort);		//率先读取正班主任
 		if (calssTeacher == null) {
 			info.setMessage(false);
 			info.setMessageInfo("找不到班主任信息！");
@@ -165,7 +191,13 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 		return info;
 	}
 	
-	
+	/**
+	 * 获取班级学生列表
+	 * @param termCode	设备终端号
+	 * @param classId	班级ID（若设备绑定的房间为功能室，则不需要传入班级ID）
+	 * @return
+	 * @throws ParseException
+	 */
 	@RequestMapping(value = { "/getClassStudent" }, method = RequestMethod.GET)
 	public @ResponseBody ClassStudentApp getClassstudent(@RequestParam("termCode") String termCode, 
 			@RequestParam(value="classId",required=false) String classId) throws ParseException {
@@ -213,7 +245,8 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 						if (calenderdetail.getEndTime() != null) {
 							String tE = DateUtil.formatDate(calenderdetail.getEndTime(), "HH:mm:ss");
 							if (DateUtil.isInZone(DateUtil.getLong(tS), DateUtil.getLong(tE), DateUtil.getCurrentTime())) {
-								teachTime = calenderdetail.getJcCode(); 	
+								teachTime = calenderdetail.getJcCode(); 
+								break;
 							}
 						}
 					}
@@ -248,9 +281,9 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 			//查询班级下的学生信息
 			String hql = "from JwClassstudent where claiId='" + classId + "' and isDelete=0";
 			List<JwClassstudent> list = classStudentService.queryByHql(hql);
-			
+		
 			//直接遍历修改各个数据的照片路径（加入虚拟目录名）
-			list.stream().forEach(x->x.setZp(virtualFileUrl+"/"+x.getZp()));;
+			list.stream().forEach(x->x.setZp(virtualFileUrl+"/"+x.getZp()));
 			
 //			for (JwClassstudent jwClassstudent : list) {
 //				jwClassstudent.setZp(request.getScheme() + "://" + request.getServerName() + ":"
