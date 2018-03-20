@@ -130,7 +130,7 @@ Ext.define("core.baseset.teachermanager.controller.OtherController", {
         var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
         if (formObj.isValid()) {
             formObj.submit({
-                url: funData.action + "/" + act,
+                url:  comm.get('baseUrl') + "/TeacherBase" + "/" + act,
                 //params: params,       //表单的参数会自动上传
                 submitEmptyText: false,     //不提交表单为空值的数据
                 waitMsg: '正在提交，请等待...',

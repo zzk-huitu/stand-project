@@ -71,19 +71,24 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         xtype: "container",
         layout: "column",
         labelAlign: "right",
-        items: [{         
+        items: [{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: '用户名',
+            name: "userName",
+            xtype: 'textfield',
+            allowBlank: false,
+            emptyText: '请输入用户名(最大16个字符)',
+            blankText: "用户名不能为空",
+            maxLength:16,
+            vtype:'userName'  
+        },{         
             fieldLabel: "出生日期",
             columnWidth: 0.5,
             name: "csrq",
             xtype: "datetimefield",
+            dateType:'date',
             emptyText: "出生日期"
-        },{         
-            fieldLabel: "出生地",
-            columnWidth: 0.5,
-            name: "csdm",
-            xtype: "basecombobox",
-            ddCode: "XZQHM",
-            emptyText: "请选择出生地",
         }]
     },{
         xtype: "container",

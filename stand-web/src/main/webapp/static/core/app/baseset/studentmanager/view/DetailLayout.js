@@ -3,7 +3,7 @@ Ext.define("core.baseset.studentmanager.view.DetailLayout", {
 	alias: 'widget.baseset.studentmanager.detaillayout',
 	funCode: "studentmanager_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/StuBaseinfo", //请求Action
+		action: comm.get('baseUrl') + "/SysUser", //请求Action
 		pkName: "uuid",
 		//默认的初始值设置
 		defaultObj: {

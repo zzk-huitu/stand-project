@@ -60,11 +60,11 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             emptyText: "请输入工号",
         }, {
             columnWidth: .5,
-//            beforeLabelTextTpl: comm.get("required"),
+            beforeLabelTextTpl: comm.get("required"),
             fieldLabel: '身份证号',
             name: "sfzjh",
             xtype: 'textfield',
-//            allowBlank: false,
+            allowBlank: false,
             emptyText: '请输入身份证号',
             blankText: "身份证号不能为空",
             vtype:'idCode'
@@ -83,15 +83,17 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             xtype: "textfield",
             emptyText: "请输入移动电话",
             vtype:'phoneCode'
-        }, {
-            fieldLabel: "电子邮件",
-            columnWidth: 0.5,
-            name: "dzxx",
-            xtype: "textfield",
-            emptyText: "请输入电子邮件",
-            maxLength: 32,
-            maxLengthText: "最多32个字符,汉字占2个字符",
-            vtype:'email'
+        },{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: '用户名',
+            name: "userName",
+            xtype: 'textfield',
+            allowBlank: false,
+            emptyText: '请输入用户名(最大16个字符)',
+            blankText: "用户名不能为空",
+            maxLength:16,
+            vtype:'userName'  
         }]
     }, {
         xtype: "container",
@@ -233,13 +235,15 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             fieldLabel: "来校年月",
             columnWidth: 0.5,
             name: "lxny",
-            xtype: "textfield",
+            xtype: "datetimefield",
+            dateType:'date',
             emptyText: "来校年月"
         },{
             fieldLabel: "从教年月",
             columnWidth: 0.5,
             name: "cjny",
-            xtype: "textfield",
+            xtype: "datetimefield",
+            dateType:'date',
             emptyText: "从教年月",
         }]
     },{
@@ -285,14 +289,18 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
                 grow: true,
                 name: "csrq",
                 xtype: "datetimefield",
+                dateType:'date',
                 emptyText: "出生日期",
-            },{
-                fieldLabel: "电子信箱",
+            }, {
+                fieldLabel: "电子邮件",
                 width:'100%',
                 grow: true,
                 name: "dzxx",
                 xtype: "textfield",
-                emptyText: "电子信箱",
+                emptyText: "请输入电子邮件",
+                maxLength: 32,
+                maxLengthText: "最多32个字符,汉字占2个字符",
+                vtype:'email'
             },{
                 fieldLabel: "特长",
                 width:'100%',

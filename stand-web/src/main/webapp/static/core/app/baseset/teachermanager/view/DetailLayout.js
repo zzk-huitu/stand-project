@@ -3,7 +3,7 @@ Ext.define("core.baseset.teachermanager.view.DetailLayout", {
 	alias: 'widget.baseset.teachermanager.detaillayout',
 	funCode: "teachermanage_detail",
 	funData: {
-		action: comm.get('baseUrl') + "/TeacherBase", //请求Action
+		action: comm.get('baseUrl') + "/SysUser", //请求Action
 		pkName: "uuid",
 		//默认的初始值设置
 		defaultObj: {

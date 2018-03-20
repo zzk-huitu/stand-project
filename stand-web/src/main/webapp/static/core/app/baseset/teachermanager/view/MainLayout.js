@@ -19,7 +19,7 @@ Ext.define("core.baseset.teachermanager.view.MainLayout", {
     
 	//funData用来定义一些常规的参数
 	funData: {
-		action: comm.get('baseUrl') + "/TeacherBase", //请求controller
+		action: comm.get('baseUrl') + "/SysUser", //请求controller
 		pkName: "uuid", //主键
 		//默认的初始值设置
 		defaultObj: {

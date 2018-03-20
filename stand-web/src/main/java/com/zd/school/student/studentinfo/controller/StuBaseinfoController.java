@@ -86,18 +86,23 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 		}
 		
 		String xm = entity.getXm();
-		String userName = PinyinUtil.toPinYin(xm);
-		entity.setUserName(userName);
 		entity.setUserPwd(new Sha256Hash("123456").toHex());
 		entity.setCategory("2");
 		
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String sfzjh = entity.getSfzjh();
+		String userName = entity.getUserName();
 		String xh = entity.getUserNumb();
 		String xjh = entity.getXjh();
 
 		// 判断身份证件号是否重复
 		if (StringUtils.isNotEmpty(sfzjh)&&thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
+			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
+			return;
+		}
+		
+		// 判断身份证件号是否重复
+		if (StringUtils.isNotEmpty(userName) && thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
 			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
 			return;
 		}
@@ -114,6 +119,10 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 			return;
 		}
 
+		entity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
+		entity.setIsHidden("0");
+		entity.setIssystem(1);
+		entity.setRightType(2);
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
 
@@ -142,12 +151,17 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 		try {
 			String hql1 = " o.isDelete='0'";
 			if (StringUtils.isNotEmpty(entity.getSfzjh())&&thisService.IsFieldExist("sfzjh", entity.getSfzjh(), entity.getUuid(), hql1)) {
-				writeJSON(response, jsonBuilder.returnFailureJson("\"教师的身份证件号不能重复！\""));
+				writeJSON(response, jsonBuilder.returnFailureJson("\"身份证件号不能重复！\""));
 				return;
 			}
-			String xm = entity.getXm();
-			String userName = PinyinUtil.toPinYin(xm);
-			entity.setUserName(userName);
+			if (StringUtils.isNotEmpty(entity.getUserName())&&thisService.IsFieldExist("userName", entity.getUserName(), entity.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
+				return;
+			}
+			if (StringUtils.isNotEmpty(entity.getUserNumb())&&thisService.IsFieldExist("userNumb", entity.getUserNumb(), entity.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"学号不能重复！\""));
+				return;
+			}
 			if (!file.isEmpty() && file.getSize() > 0) {
 				// 图片服务器路径
 				String file_path = realFileUrl;// String file_path =

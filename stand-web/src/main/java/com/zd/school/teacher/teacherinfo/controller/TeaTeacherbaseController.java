@@ -162,8 +162,26 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 		}
 
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
-		String xm = entity.getXm();
-		String userName = PinyinUtil.toPinYin(xm);
+		String userName = entity.getUserName();
+		String  sfzjh = entity.getSfzjh();
+		String  userNumb = entity.getUserNumb();
+		// 判断身份证件号是否重复
+		if (StringUtils.isNotEmpty(sfzjh) && thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
+			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
+			return;
+		}
+
+		// 判断学号是否重复
+		if (thisService.IsFieldExist("userNumb", userNumb, "-1")) {
+			writeJSON(response, jsonBuilder.returnFailureJson("'工号不能重复！'"));
+			return;
+		}
+		
+		// 判断学号是否重复
+		if (thisService.IsFieldExist("userName", userName, "-1")) {
+			writeJSON(response, jsonBuilder.returnFailureJson("'用户名不能重复！'"));
+			return;
+		}
 		// 获取当前操作用户
 		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
@@ -173,10 +191,6 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 		TeaTeacherbase perEntity = new TeaTeacherbase();
 		BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 
-		// 默认的角色为教师
-		Set<SysRole> theUserRole = entity.getSysRoles();
-		SysRole defaultRole = roleService.get("5D667F9F-C20B-486B-A456-73F62D9885ED");
-		theUserRole.add(defaultRole);
 
 		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
 		entity.setOrderIndex(orderIndex);// 排序
@@ -187,13 +201,11 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 		entity.setIsDelete(0);
 		entity.setIsHidden("0");
 		entity.setIssystem(1);
+		entity.setRightType(2);
 		entity.setUserPwd(new Sha256Hash("123456").toHex());
-		entity.setDeptId("058b21fe-b37f-41c9-ad71-091f97201ff");
-		entity.setDeptName("临时部门");
 		entity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
 		entity.setSchoolName("演示学校");
 		entity.setUserName(userName);
-		entity.setSysRoles(theUserRole);
 		// 增加时要设置创建人
 		entity.setCreateUser(userCh); // 创建人
 
@@ -222,6 +234,14 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 			String hql1 = " o.isDelete='0'";
 			if (thisService.IsFieldExist("sfzjh", entity.getSfzjh(), entity.getUuid(), hql1)) {
 				writeJSON(response, jsonBuilder.returnFailureJson("\"教师的身份证件号不能重复！\""));
+				return;
+			}
+			if (StringUtils.isNotEmpty(entity.getUserName())&&thisService.IsFieldExist("userName", entity.getUserName(), entity.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
+				return;
+			}
+			if (StringUtils.isNotEmpty(entity.getUserNumb())&&thisService.IsFieldExist("userNumb", entity.getUserNumb(), entity.getUuid(), hql1)) {
+				writeJSON(response, jsonBuilder.returnFailureJson("\"工号不能重复！\""));
 				return;
 			}
 
