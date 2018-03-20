@@ -10,7 +10,7 @@ Ext.define("core.baseset.teachermanager.view.DetailHtml", {
         ref: 'teacherBaseInfo',
         tpl: new Ext.XTemplate(
             '<div class="trainClass_classInfo">',
-            '<div class="trainClass_title">学生用户基本信息：</div>',
+            '<div class="trainClass_title">教师用户基本信息：</div>',
             '<ul>' ,
             '<li style="width:50%" title="{userName}">用户名：{userName}</li>',
             '<li style="width:50%" title="{xm}">教师姓名：{xm}</li>',
@@ -41,7 +41,7 @@ Ext.define("core.baseset.teachermanager.view.DetailHtml", {
         ref: "teacherDetailInfo",
         tpl: new Ext.XTemplate(
             '<div class="trainClass_classTraineeInfo">',
-            '<div class="trainClass_title">学生用户角色管理：</div>',
+            '<div class="trainClass_title">教师用户角色管理：</div>',
             '<ul class="trainClass_gridUl" style="max-height: 400px;">',
             '<li>',
             '<span style="width:20%" data-align="center">角色编码</span><span style="width:20%" data-align="center">角色名称</span>' ,

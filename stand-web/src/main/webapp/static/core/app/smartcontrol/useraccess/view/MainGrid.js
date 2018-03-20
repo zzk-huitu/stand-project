@@ -51,11 +51,15 @@ Ext.define("core.smartcontrol.useraccess.view.MainGrid", {
         	text: "角色名",
         	dataIndex: "xm",
         	flex:1,
-            minWidth:120,
+            minWidth:100,
         },{
         	text: "设备名称",
         	dataIndex: "termName",
         	width:150
-    }]
+        },{
+            text: "设备序列号",
+            dataIndex: "termSN",
+            width:150
+        }]
     }    
 });

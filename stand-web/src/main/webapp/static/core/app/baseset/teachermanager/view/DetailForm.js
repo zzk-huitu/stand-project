@@ -13,197 +13,328 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
         labelAlign: "right"
     },
     items: [{
-        xtype: "textfield",
         fieldLabel: "主键",
         name: "uuid",
-        hidden: true
-    }, {
         xtype: "textfield",
-        fieldLabel: "默认密码",
-        name: "userPwd",
         hidden: true
     }, {
-        xtype: "textfield",
-        fieldLabel: "排序号",
-        name: "orderIndex",
-        hidden: true
-    }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
+        xtype: "container",
+        layout: "column",
+        //labelAlign: "right",
         items: [{
-            columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
-            fieldLabel: '用户名',
-            name: "userName",
-            xtype: 'textfield',
             allowBlank: false,
-            emptyText: '请输入用户名(最大16个字符)',
-            blankText: "用户名不能为空",
-            maxLength:16,
-            vtype:'userName' 
-        }, {
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            fieldLabel: '真实姓名',
+            blankText: "姓名不能为空",
+            fieldLabel: "姓名",
+            columnWidth: 0.5,
             name: "xm",
-            xtype: 'textfield',
-            allowBlank: false,
-            emptyText: '请输入真实姓名(最大36个字符)',
-            blankText: "真实姓名不能为空",
-            maxLength:36,
-            vtype:'xm' 
-        }]
-    }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth: .5,
+            xtype: "textfield",
+            emptyText: "请输入姓名",
+            maxLength: 64,
+            maxLengthText: "最多64个字符,汉字占2个字符",
+        }, {
             beforeLabelTextTpl: comm.get("required"),
-            xtype: "basecombobox",
-            fieldLabel: "性别",
-            name: "xbm",
-            ddCode: "XBM",
             allowBlank: false,
             blankText: "性别不能为空",
-            value:0
-        },{
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: "性别",
+            columnWidth: 0.5,
+            name: "xbm",
             xtype: "basecombobox",
-            fieldLabel: "身份",
-            name: "category",
-            ddCode: "CATEGORY",
-            allowBlank: false,
-            blankText: "身份不能为空",
-            value:"3",
-            readOnly:true
+            ddCode: "XBM",
+            emptyText: "请选择性别",
+            maxLength: 1,
+            maxLengthText: "最多1个字符,汉字占2个字符",
         }]
     }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [ {
-            columnWidth: .5,
-            beforeLabelTextTpl: "",
-            fieldLabel: '工号',
-            name: "userNumb",
-            xtype: 'textfield',
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            beforeLabelTextTpl: comm.get("required"),
             allowBlank: false,
             blankText: "工号不能为空",
-            maxLength:16,
-            vtype:'userNumb' 
-        },{
+            fieldLabel: "工号",
+            columnWidth: 0.5,
+            name: "userNumb",
+            xtype: "textfield",
+            emptyText: "请输入工号",
+        }, {
             columnWidth: .5,
-            beforeLabelTextTpl: "",
-            fieldLabel: '身份证件号',
+            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: '身份证号',
             name: "sfzjh",
             xtype: 'textfield',
-            allowBlank: true,         
+            allowBlank: false,
+            emptyText: '请输入身份证号',
+            blankText: "身份证号不能为空",
             vtype:'idCode'
         }]
-    },{
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [  {
-            columnWidth: .5,            
-            xtype: "basecombobox",
-            fieldLabel: "政治面貌",
-            name: "zzmmm",
-            ddCode: "ZZMMM"
-        },{
-            columnWidth: .5,            
-            xtype: "basecombobox",
-            fieldLabel: "编制",
-            name: "zxxbzlb",
-            ddCode: "ZXXBZLB"
-        }]
-    }, /*{
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
         items: [{
-            xtype: "textfield",
-            fieldLabel: "部门ID",
-            name: "deptId",
-            hidden: true
-        }, {
-            xtype: "textfield",
-            fieldLabel: "岗位ID",
-            name: "jobId",
-            hidden: true
-        }, *//*{
-            columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
-            //xtype: "textfield",
-            fieldLabel: "所属部门",
-            name: "deptName",
             allowBlank: false,
-            blankText: "所属部门不能为空",
-            //readOnly: true,
-            xtype: "basetreefield",
-            ddCode: "DEPTTREE",
-            rootId: "ROOT",
-            configInfo: {
-                multiSelect: false,
-                fieldInfo: "deptName~deptId,text~id",
-                whereSql: " and isDelete='0' ",
-                orderSql: " order by parentNode,orderIndex asc"
-            } //
-        },*/ /*{
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            xtype: "basefuncfield",
-            funcController: "core.systemset.jobinfo.controller.jobinfoController", //该功能主控制器
-            funcPanel: "jobinfo.mainlayout", //该功能显示的主视图
-            funcTitle: "岗位选择", //查询窗口的标题
-            configInfo: {
-                fieldInfo: "jobId~jobName,uuid~jobName",
-                whereSql: " and isDelete='0' ",
-                orderSql: " order by jobCode ",
-                muiltSelect: true //是否多选
-            },
-            fieldLabel: '所属岗位',
-            name: "jobName",
-            allowBlank: true,
-            blankText: "所属岗位不能为空"
-        }]
-    },*/ {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [ {
-            columnWidth: .5,
-            xtype: "datetimefield",
-            dateType:'date',
-            fieldLabel: "出生日期",
-            name: "csrq",
-            maxValue:new Date()
-        }, {
-            columnWidth: .5,
-            beforeLabelTextTpl: "",
-            fieldLabel: '移动电话',
-            name: "mobile",
-            xtype: 'textfield',
-            allowBlank: true,
+            blankText: "移动电话不能为空",
+            fieldLabel: "移动电话",
+            columnWidth: 0.5,
+            name: "lxdh",
+            xtype: "textfield",
+            emptyText: "请输入移动电话",
             vtype:'phoneCode'
+        }, {
+            fieldLabel: "电子邮件",
+            columnWidth: 0.5,
+            name: "dzxx",
+            xtype: "textfield",
+            emptyText: "请输入电子邮件",
+            maxLength: 32,
+            maxLengthText: "最多32个字符,汉字占2个字符",
+            vtype:'email'
         }]
     }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth: .5,
-            beforeLabelTextTpl: "",
-            fieldLabel: '电子邮箱',
-            name: "dzxx",
-            xtype: 'textfield',
-            allowBlank: true,           
-            vtype:'email'
-        },{
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{         
+            fieldLabel: "出生地",
+            columnWidth: 0.5,
+            name: "csdm",
             xtype: "basecombobox",
-            fieldLabel: "账号状态",
-            name: "state",
-            ddCode: "ACCOUNTSTATE",
+            ddCode: "XZQHM",
+            emptyText: "请选择出生地",
+        }, {            
+            fieldLabel: "籍贯",
+            columnWidth: 0.5,
+            name: "jg",
+            xtype:"textfield",
+            emptyText: "请输入籍贯",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "国籍",
+            columnWidth: 0.5,
+            name: "gjdqm",
+            xtype: "basecombobox",
+            ddCode: "GJDQM",
+            emptyText: "国籍",
+        },{
+        	beforeLabelTextTpl: comm.get("required"),
+        	fieldLabel: "民族",
+            columnWidth: 0.5,
+            name: "mzm",
+            xtype: "basecombobox",
+            ddCode: "MZM",
+            emptyText: "民族"
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "婚姻状况",
+            columnWidth: 0.5,
+            name: "hyzkm",
+            xtype: "basecombobox",
+            ddCode: "HYZKM",
+            emptyText: "婚姻状况"
+        },{
+            fieldLabel: "港澳台侨外",
+            columnWidth: 0.5,
+            name: "gatqwm",
+            xtype: "basecombobox",
+            ddCode: "GATQWM",
+            emptyText: "港澳台侨外",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "政治面貌",
+            columnWidth: 0.5,
+            name: "zzmmm",
+            xtype: "basecombobox",
+            ddCode: "ZZMMM",
+            emptyText: "政治面貌"
+        },{
+            fieldLabel: "健康状况",
+            columnWidth: 0.5,
+            name: "jkzkm",
+            xtype: "basecombobox",
+            ddCode: "JKZKM",
+            emptyText: "健康状况",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "信仰宗教",
+            columnWidth: 0.5,
+            name: "xyzjm",
+            xtype: "basecombobox",
+            ddCode: "XYZJM",
+            emptyText: "信仰宗教"
+        },{
+            fieldLabel: "血型",
+            columnWidth: 0.5,
+            name: "xxm",
+            xtype: "basecombobox",
+            ddCode: "XXM",
+            emptyText: "血型",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "户口所在地",
+            columnWidth: 0.5,
+            name: "hkszd",
+            xtype: "basecombobox",
+            ddCode: "XZQHM",
+            emptyText: "户口所在地"
+        },{
+            fieldLabel: "户口性质",
+            columnWidth: 0.5,
+            name: "hkxzm",
+            xtype: "basecombobox",
+            ddCode: "HKLBM",
+            emptyText: "户口性质",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "学历",
+            columnWidth: 0.5,
+            name: "xlm",
+            xtype: "basecombobox",
+            ddCode: "XLM",
+            emptyText: "学历"
+        },{
+            fieldLabel: "编制类别",
+            columnWidth: 0.5,
+            name: "bzlbm",
+            xtype: "basecombobox",
+            ddCode: "ZXXBZLB",
+            emptyText: "编制类别",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "来校年月",
+            columnWidth: 0.5,
+            name: "lxny",
+            xtype: "textfield",
+            emptyText: "来校年月"
+        },{
+            fieldLabel: "从教年月",
+            columnWidth: 0.5,
+            name: "cjny",
+            xtype: "textfield",
+            emptyText: "从教年月",
+        }]
+    },{
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: "现住址",
             allowBlank: false,
-            blankText: ""
+            columnWidth: 1,
+            name: "xzz",
+            xtype: "textfield",
+            emptyText: "请输入现住址",
+            maxLength: 128,
+            maxLengthText: "最多128个字符,汉字占2个字符",
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            //width:450,
+            columnWidth:1, 
+            xtype: "container",
+            layout: "vbox",
+            labelAlign: "right",
+            items: [{
+                fieldLabel: "档案编号",
+                width:'100%',
+                grow: true,
+                name: "dabh",
+                xtype: "textfield",
+                emptyText: "档案编号"
+            },{
+                fieldLabel: "档案文本",
+                width:'100%',
+                grow: true,
+                name: "dawb",
+                xtype: "textfield",
+                emptyText: "档案文本",
+            },{
+            	fieldLabel: "出生日期",
+                width:'100%',
+                grow: true,
+                name: "csrq",
+                xtype: "datetimefield",
+                emptyText: "出生日期",
+            },{
+                fieldLabel: "电子信箱",
+                width:'100%',
+                grow: true,
+                name: "dzxx",
+                xtype: "textfield",
+                emptyText: "电子信箱",
+            },{
+                fieldLabel: "特长",
+                width:'100%',
+                grow: true,
+                name: "tc",
+                xtype: "textfield",
+                emptyText: "特长",
+            },{
+                fieldLabel: "照片地址", //用于表单提交时，提交此数据
+                name: "zp",
+                xtype: "textfield",
+                hidden: true
+            },{                    
+                width:'100%',
+                xtype: 'filefield',
+                fieldLabel: '照片',
+                fileUpload: true,
+                name: 'file',
+                buttonText:"选择照片",
+                emptyText :'支持文件格式：PNG | JPG | JPEG',
+                maxLength: 128,
+                //maxLengthText: "最多128个字符,汉字占2个字符",
+            }]
+        },{
+            xtype: "container",
+            width:180,                  //这里设置的具体的宽度，那么上边的容器设置的columnWidth就会自动减少可用距离
+            margin:'0 0 0 10', 
+            labelAlign: "right",
+            items: [{
+                width:'100%',
+                height:240,
+                xtype:'image',
+                ref:'newsImage',
+                style: {
+                    background: '#f5f5f5',
+                    border: '1px solid #e1e1e1'
+                },
+                src: '',
+            }]
         }]
     }]
 

@@ -93,10 +93,78 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
             }
         },
 
- 
+        "baseformtab button[ref=formSave]": {
+            beforeclick: function (btn) {
+                this.doSave(btn, "addSave");
+                return false;
+            }
+        },
 
     },
 
+    /**
+     * 保存事件的处理
+     * @param btn
+     * @param cmd
+     */
+    doSave: function (btn, cmd) {
+        var self = this;
+        //得到组件
+        var basetab = btn.up('baseformtab');
+        var tabPanel = btn.up("tabpanel[xtype=app-main]");
+        var tabItemId = basetab.tabItemId;
+        var tabItem = tabPanel.getComponent(tabItemId);   //当前tab页
+
+        //得到配置信息
+        var funCode = basetab.funCode;      //mainLayout的funcode
+        var detCode = basetab.detCode;      //detailLayout的funcode
+
+        var basePanel = basetab.down("basepanel[funCode=" + detCode + "]");
+        var objForm = basePanel.down("baseform[funCode=" + detCode + "]");
+        var formObj = objForm.getForm();
+        var funData = basePanel.funData;
+        var pkName = funData.pkName;
+        var pkField = formObj.findField(pkName);
+
+        //判断当前是保存还是修改操作
+        var act = Ext.isEmpty(pkField.getValue()) ? "doadd" : "doupdate";
+        if (formObj.isValid()) {
+            formObj.submit({
+                url: funData.action + "/" + act,
+                //params: params,       //表单的参数会自动上传
+                submitEmptyText: false,     //不提交表单为空值的数据
+                waitMsg: '正在提交，请等待...',
+                success: function (fp, action) {
+                    formObj.reset();
+                    self.Info("保存成功!");
+
+                    // var grid = basetab.funData.grid; //此tab是否保存有grid参数
+                    // if (!Ext.isEmpty(grid)) {
+                    //     var store = grid.getStore();
+                    //     store.loadPage(1); //刷新父窗体的grid
+                    //     tabPanel.remove(tabItem);
+                    // }
+                    tabPanel.remove(tabItem);
+
+                },
+                failure: function (form, action) {
+                    if (!Ext.isEmpty(action.result.obj))
+                        self.Info(action.result.obj);
+                }
+            });
+
+        } else {
+
+            var errors = ["前台验证失败，错误信息："];
+            formObj.getFields().each(function (f) {
+                if (!f.isValid()) {
+                    errors.push("<font color=red>" + f.fieldLabel + "</font>:" + f.getErrors().join(","));
+                }
+            });
+            self.msgbox(errors.join("<br/>"));
+        }
+    },  
+    
   doAddStudentRole: function(btn){
         var self=this;
         var studentRoleGrid = btn.up("basegrid");
