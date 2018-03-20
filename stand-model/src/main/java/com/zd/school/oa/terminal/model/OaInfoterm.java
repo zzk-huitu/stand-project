@@ -93,6 +93,7 @@ public class OaInfoterm extends BaseEntity implements Serializable {
 	@ExportExcelAnnotation(columnName="使用房间名称",columnWidth=25,order =3)
 	@MapperCell(cellName = "使用房间名称", order = 2)
 	@FieldInfo(name = "使用房间名称")
+	//@Formula("(SELECT a.ROOM_NAME FROM BuildRoominfo a WHERE a.ROOM_ID=ROOM_ID)")
 	@Column(name = "ROOM_NAME", length = 64, nullable = true)
 	private String roomName;
 

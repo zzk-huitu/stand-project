@@ -429,13 +429,14 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 			gradeService.merge(grade);
 			break;
 		case "05": // 班级
+			JwTGrade gradea=gradeService.get(parentNode);
 			JwTGradeclass gradeclass = new JwTGradeclass(orgId);
 			gradeclass.setClassName(entity.getNodeText());
 			gradeclass.setOrderIndex(entity.getOrderIndex());
 			gradeclass.setIsDelete(0);
 			gradeclass.setGraiId(parentNode);
 			gradeclass.setCreateUser(currentUser.getUuid());
-
+			gradeclass.setNj(gradea.getGradeCode());
 			classService.merge(gradeclass);
 			break;
 		default:

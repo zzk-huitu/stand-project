@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -411,7 +412,7 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 			List<Map<String, Object>> rootChildren=new ArrayList<>();
 			rootAreaMap.put("children",rootChildren);
 			
-			//2.创建第二层（初中、高中）
+			//2.创建第二层（初中、高中校区）
 			String hql2="from BuildRoomarea t where t.isDelete=0 and t.parentNode=?";
 			List<BuildRoomarea> rootAreasSecond=buildRoomareaService.queryEntityByHql(hql2,rootAreas.get(i).getUuid());
 			for(int j=0;j<rootAreasSecond.size();j++){
@@ -434,9 +435,12 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 				if(childAreasSB.length()>0){
 					childAreasStr=childAreasSB.substring(0, childAreasSB.length()-1);
 				}
-
-				//3.创建第三层（实验室、功能室、办公室、教室、宿舍）
-				String fjlxHql="select a from BaseDicitem a,BaseDic b where a.dicId=b.uuid and b.dicCode=? and a.isDelete=0 and b.isDelete=0 order by a.itemCode asc";
+				
+				//3.创建第三层（功能室、办公室、教室、宿舍）
+				String fjlxHql="select a from BaseDicitem a,BaseDic b where "
+						+ " a.dicId=b.uuid and b.dicCode=? and a.isDelete=0 and b.isDelete=0 "
+						+ " and a.itemName in ('功能室','办公室','教室','宿舍') "
+						+ " order by a.itemCode asc";
 				List<BaseDicitem> fjlxList=baseDicitemService.queryEntityByHql(fjlxHql, "FJLX");
 				for(BaseDicitem baseDicitem : fjlxList){
 					Map<String,Object> labMap=new LinkedHashMap<>();	//房间类型室
@@ -450,17 +454,19 @@ public class OaNoticeController extends FrameWorkController<OaNotice> implements
 					labMap.put("children",labMapChildren);
 					
 					//4.创建第四层（房间号）
-					String fjHql="from BuildRoominfo a where a.isDelete=0 and a.roomType=? and a.areaId in ("+childAreasStr+")  order by a.areaId asc,a.roomCode asc";
-					List<BuildRoominfo> roomInfoList=buildRoominfoService.queryEntityByHql(fjHql, baseDicitem.getItemCode());
-					for(BuildRoominfo roomInfo:roomInfoList){
-						Map<String,Object> roomInfoMap=new HashMap<>();	//房间类型室
-						roomInfoMap.put("text",roomInfo.getRoomName());
-						roomInfoMap.put("leaf",true);
-						roomInfoMap.put("checked",false);
-						roomInfoMap.put("treeid", roomInfo.getUuid());
-						roomInfoMap.put("type","04");	
-						
-						labMapChildren.add(roomInfoMap);
+					if(StringUtils.isNotEmpty(childAreasStr)){
+						String fjHql="from BuildRoominfo a where a.isDelete=0 and a.roomType=? and a.areaId in ("+childAreasStr+")  order by a.areaId asc,a.roomCode asc";
+						List<BuildRoominfo> roomInfoList=buildRoominfoService.queryEntityByHql(fjHql, baseDicitem.getItemCode());
+						for(BuildRoominfo roomInfo:roomInfoList){
+							Map<String,Object> roomInfoMap=new HashMap<>();	//房间类型室
+							roomInfoMap.put("text",roomInfo.getRoomName());
+							roomInfoMap.put("leaf",true);
+							roomInfoMap.put("checked",false);
+							roomInfoMap.put("treeid", roomInfo.getUuid());
+							roomInfoMap.put("type","04");	
+							
+							labMapChildren.add(roomInfoMap);
+						}
 					}
 					
 					tempMapChildren.add(labMap);

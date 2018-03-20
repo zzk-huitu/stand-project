@@ -49,7 +49,7 @@ Ext.define("ccore.system.dept.view.IsSelectUserGrid", {
                 return "";
         }
     }, {
-        minWidth: 120,
+        minWidth: 100,
         flex:1,
         text: "部门",
         dataIndex: "deptName"

@@ -81,7 +81,7 @@ public class JwClassteacher extends BaseEntity implements Serializable {
 		return semester;
 	}
 
-	@FieldInfo(name = "身份")
+	@FieldInfo(name = "身份")	//0-正班主任  1-副班主任
 	@Column(name = "CATEGORY", length = 10, nullable = false)
 	private Integer category;
 

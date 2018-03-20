@@ -77,7 +77,8 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
         text: '序号',
         align: 'center'
     }, {
-       width: 120,
+       flex: 1,
+        minWidth: 100,
        text: "时辰",
        dataIndex: "isafgernoon",
        field: {
@@ -106,9 +107,10 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
 			xtype: "textfield"
 		},
 		flex: 1,
-        minWidth: 120
+        minWidth: 100
 	}, { 
-		width: 120,
+		flex: 1,
+        minWidth: 100,
 		text: "开始时间",
 		dataIndex: "beginTime",
 		//renderer: Ext.util.Format.dateRenderer('H:i')
@@ -121,7 +123,8 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
         },
         
 	}, {
-		width: 120,
+		flex: 1,
+        minWidth: 100,
 		text: "结束时间",
 		dataIndex: "endTime",
 		//renderer: Ext.util.Format.dateRenderer('H:i')
@@ -132,7 +135,20 @@ Ext.define("core.baseset.calendar.view.MainGrid", {
 	        }else
 	        	return "";
         	}
-	}/*, {
+	},{
+        flex: 1,
+        minWidth: 100,
+        text: "是否考勤",
+        dataIndex: "needSignIn",
+        renderer: function(v) {
+            if (v == 1) {
+                return "<span style='color:green'>需要</span>";
+            } else {
+                return "<span style='color:red'>不需要</span>";
+            }
+
+        }
+    }/*, {
             xtype: 'actiontextcolumn',
             text: "操作",
             align: 'center',
