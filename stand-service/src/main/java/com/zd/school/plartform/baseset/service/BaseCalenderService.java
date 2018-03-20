@@ -23,7 +23,7 @@ public interface BaseCalenderService extends BaseService<JwCalender> {
 	
 	/**
      * 
-     * 根据JwCalender得到该班级所对应的校历
+     * 根据JwCalender得到该班级所对应的校历（某个学段）
      * @param jtg
      * @return
      * @author huangzc

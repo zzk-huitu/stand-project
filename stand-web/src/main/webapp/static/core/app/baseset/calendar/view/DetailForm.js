@@ -20,7 +20,7 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
     fieldDefaults: { // 统一设置表单字段默认属性
         xtype : 'textfield',
         labelSeparator: '：', // 分隔符
-        labelWidth:80,
+        labelWidth:100,
         labelAlign : 'right',
         msgTarget: 'qtip',
     },
@@ -45,11 +45,11 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
             name: "canderName",
             readOnly: true
         }, {
-                columnWidth:0.5,
-                xtype: "textfield",
-                fieldLabel: "校区名称",
-                name: "campusName",
-                readOnly: true
+            columnWidth:0.5,
+            xtype: "textfield",
+            fieldLabel: "校区名称",
+            name: "campusName",
+            readOnly: true
         }]
     }, {
         xtype: "container",
@@ -68,7 +68,20 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
             value:0,
             editable:false
 
-        }, {
+        },{
+            columnWidth: 0.5,
+            xtype: "numberfield",
+            fieldLabel: "第几节课",
+            name: "jcCode",
+            maxValue:99,
+            minValue:1,
+            value:'',
+            allowDecimals:false,
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        items: [{
             columnWidth: 0.5,
             beforeLabelTextTpl: comm.get('required'),
             xtype: "textfield",
@@ -78,8 +91,21 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
             emptyText: '节次名称',
             blankText: "节次名称不能为空",
             maxLength: 36,
+        },{
+            columnWidth:.5,
+            beforeLabelTextTpl: comm.get('required'),
+            xtype: "combobox",
+            itemId:'needSignInCombo',
+            store: needSignIn,
+            fieldLabel: "需要考勤",
+            name: "needSignIn",
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'needSignIn',
+            value:0,
+            editable:false
         }]
-    }, {
+    },{
         xtype: "container",
         layout: "column",
         items: [{
@@ -152,23 +178,5 @@ Ext.define("core.baseset.calendar.view.DetailForm", {
                 }
             }*/
         }]
-    }, {
-        xtype:"container",
-        layout:"column",
-        items:[{
-            columnWidth:.5,
-            beforeLabelTextTpl: comm.get('required'),
-            xtype: "combobox",
-            itemId:'needSignInCombo',
-            store: needSignIn,
-            fieldLabel: "需要考勤",
-            name: "needSignIn",
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'needSignIn',
-            value:0,
-            editable:false
-        }]
-
     }]
 });

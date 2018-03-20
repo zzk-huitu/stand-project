@@ -161,8 +161,8 @@ public class ClassFileAppController {
 
 			}else {	//否则查询功能室课程
 							
-				propName = new String[] { "roomId" };
-				propValue = new Object[] { roomTerm.getRoomId() };
+				propName = new String[] { "roomId","isDelete"};
+				propValue = new Object[] { roomTerm.getRoomId(),0 };
 				
 				Map<String, String> map = new HashMap<String, String>();
 				map.clear();
@@ -308,8 +308,8 @@ public class ClassFileAppController {
 
 			}else {	//否则查询功能室课程
 							
-				propName = new String[] { "roomId" };
-				propValue = new Object[] { roomTerm.getRoomId() };
+				propName = new String[] { "roomId","isDelete" };
+				propValue = new Object[] { roomTerm.getRoomId(),0 };
 				
 				Map<String, String> map = new HashMap<String, String>();
 				map.clear();
@@ -379,14 +379,14 @@ public class ClassFileAppController {
 			types.append("'." + type + "',");
 		}
 		types = types.deleteCharAt(types.length() - 1);
-		String hql = "from EccClasselegant where claiId='" + claiId + "' order by createTime desc";
+		String hql = "from EccClasselegant where isDelete=0 and claiId='" + claiId + "' order by createTime desc";
 		List<EccClasselegant> eleganeList = elegantService.queryByHql(hql);
 		int size = 0;
 		
 		if(!eleganeList.isEmpty()){
 			String recordIds=eleganeList.stream().map(x->x.getUuid()).collect(Collectors.joining("','","'","'"));
 			
-			hql = "from BaseAttachment where recordId=in (" + recordIds + ") and attachType in(" + types
+			hql = "from BaseAttachment where isDelete=0 and recordId=in (" + recordIds + ") and attachType in(" + types
 					+ ") order by createTime desc";
 			List<BaseAttachment> attList = baseTAttachmentService.queryByHql(hql);
 			for (BaseAttachment baseAttachment : attList) {
