@@ -60,11 +60,11 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             emptyText: "请输入工号",
         }, {
             columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
+//            beforeLabelTextTpl: comm.get("required"),
             fieldLabel: '身份证号',
             name: "sfzjh",
             xtype: 'textfield',
-            allowBlank: false,
+//            allowBlank: false,
             emptyText: '请输入身份证号',
             blankText: "身份证号不能为空",
             vtype:'idCode'
@@ -123,7 +123,6 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             ddCode: "GJDQM",
             emptyText: "国籍",
         },{
-        	beforeLabelTextTpl: comm.get("required"),
         	fieldLabel: "民族",
             columnWidth: 0.5,
             name: "mzm",
@@ -248,9 +247,7 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
         layout: "column",
         labelAlign: "right",
         items: [{
-            beforeLabelTextTpl: comm.get("required"),
             fieldLabel: "现住址",
-            allowBlank: false,
             columnWidth: 1,
             name: "xzz",
             xtype: "textfield",

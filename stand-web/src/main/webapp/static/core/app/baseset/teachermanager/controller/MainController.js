@@ -81,9 +81,9 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 },
             },
             
-            "basegrid[xtype=teacher.maingrid] button[ref=gridEdit]": {
+            "basegrid[xtype=baseset.teachermanager.teachergrid] button[ref=gridEdit]": {
                 beforeclick: function (btn) {
-                	this.doTeacherDetail_Tab(btn, "edit", data.view, data.record);
+                	this.doTeacherDetail_Tab(btn, "edit", null, null);
                     return false;
                 }
             },

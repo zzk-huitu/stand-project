@@ -127,7 +127,7 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
         var pkField = formObj.findField(pkName);
 
         //判断当前是保存还是修改操作
-        var act = Ext.isEmpty(pkField.getValue()) ? "doadd" : "doupdate";
+        var act = Ext.isEmpty(pkField.getValue()) ? "doAdd" : "doUpdate";
         if (formObj.isValid()) {
             formObj.submit({
                 url: funData.action + "/" + act,
@@ -138,12 +138,12 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
                     formObj.reset();
                     self.Info("保存成功!");
 
-                    // var grid = basetab.funData.grid; //此tab是否保存有grid参数
-                    // if (!Ext.isEmpty(grid)) {
-                    //     var store = grid.getStore();
-                    //     store.loadPage(1); //刷新父窗体的grid
-                    //     tabPanel.remove(tabItem);
-                    // }
+                     var grid = basetab.funData.grid; //此tab是否保存有grid参数
+                     if (!Ext.isEmpty(grid)) {
+                         var store = grid.getStore();
+                         store.loadPage(1); //刷新父窗体的grid
+                         tabPanel.remove(tabItem);
+                     }
                     tabPanel.remove(tabItem);
 
                 },
