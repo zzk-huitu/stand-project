@@ -113,58 +113,50 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
             text: '序号',
             align: 'center'
         }, {
-			text: "用户名",
-			dataIndex: "userName",
-			width:150,
-            align:'left'
-		}, {
-			text: "学生姓名",
-			dataIndex: "xm",
-			width:100,
-            align:'left'
-		}, {
-			text: "性别",
-			dataIndex: "xbm",
-			columnType: "basecombobox",
-			ddCode: "XBM",
-			width:80,
-            align:'left'
-		},{
+            text: "用户名",
+            dataIndex: "userName",
+            width:120,
+        }, {
+            text: "姓名",
+            dataIndex: "xm",
+            width:100,
+        }, {
+            text: "性别",
+            dataIndex: "xbm",
+            columnType: "basecombobox",
+            ddCode: "XBM",
+            width:60,
+        },{
             text: "身份",
             dataIndex: "category",
             columnType: "basecombobox",
             ddCode: "CATEGORY",
             width:80,
-            align:'left'
         }, {
-			text: "编制",
-			dataIndex: "zxxbzlb",
-			ddCode: "ZXXBZLB",
-			columnType: "basecombobox",
-			minWidth:100,
+            text: "编制",
+            dataIndex: "zxxbzlb",
+            ddCode: "ZXXBZLB",
+            columnType: "basecombobox",
+            minWidth:80,
             flex:1,
-            align:'left'
-		}/*, {
-			text: "岗位",
-			dataIndex: "jobName"
-		}*/, {
-			text: "账户状态",
-			dataIndex: "state",
-			width:100,
-            align:'left',
-			renderer: function(value) {
-				return (value == '0') ? '<font color=green>正常</font>' : '<font color=red>锁定</font>';
-			}
-		},{
-            width:100,
+        }/*, {
+            text: "岗位",
+            dataIndex: "jobName"
+        }*/, {
+            text: "账户状态",
+            dataIndex: "state",
+            width:80,
+            renderer: function(value) {
+                return (value == '0') ? '<font color=green>正常</font>' : '<font color=red>锁定</font>';
+            }
+        },{
+            width:80,
             text: "卡片编号",
             dataIndex: "upCardId",
-            align:'left'       
         },{
-            width:100,
+            width:80,
             text: "发卡状态",
             dataIndex: "useState",
-            align:'left',
             renderer: function(value, metaData) {          
                 if(value==0)
                     return "<span style='color:red'>未发卡</span>";
@@ -172,6 +164,17 @@ Ext.define("core.baseset.studentmanager.view.StudentGrid", {
                     return "<span style='color:green'>已发卡</span>";            
                 else 
                     return "<span style='color:#FFAC00'>卡片失效</span>";            
+            }        
+        },{
+            minWidth:80,
+            flex:1,
+            text: "主部门岗位",
+            dataIndex: "deptName",
+            renderer: function(value, metaData,record) {      
+                var jobName=record.get("jobName");
+                if(record.get("jobName")){
+                    return value+"-"+jobName;
+                } 
             }        
         },{
             xtype:'actiontextcolumn',

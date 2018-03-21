@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
@@ -183,31 +184,25 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 			return;
 		}
 		// 获取当前操作用户
-		String userCh = "超级管理员";
 		SysUser currentUser = getCurrentSysUser();
-		if (currentUser != null)
-			userCh = currentUser.getXm();
 
 		TeaTeacherbase perEntity = new TeaTeacherbase();
 		BeanUtils.copyPropertiesExceptNull(entity, perEntity);
 
-
+		//给老师加入 教师角色
 		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
 		entity.setOrderIndex(orderIndex);// 排序
 		entity.setCategory("1");
-		entity.setJobId("662f266f-6c5b-420d-ac1b-0f4e5ce44cd6");
-		entity.setJobName("教师");
 		entity.setState("1");
 		entity.setIsDelete(0);
 		entity.setIsHidden("0");
 		entity.setIssystem(1);
 		entity.setRightType(2);
 		entity.setUserPwd(new Sha256Hash("123456").toHex());
-		entity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
-		entity.setSchoolName("演示学校");
+		entity.setSchoolId(AdminType.ADMIN_ORG_ID);
 		entity.setUserName(userName);
 		// 增加时要设置创建人
-		entity.setCreateUser(userCh); // 创建人
+		entity.setCreateUser(currentUser.getXm()); // 创建人
 
 		// 持久化到数据库
 		entity = thisService.merge(entity);

@@ -43,14 +43,30 @@ Ext.define("core.baseset.studentmanager.view.DeptTree", {
     listeners: {
         itemclick: function(grid, record, item, index, e) {
             var mainLayout = grid.up("panel[xtype=baseset.studentmanager.mainlayout]");
-            var funData = mainLayout.funData;
-            funData = Ext.apply(funData, {
+            var userGrid = mainLayout.down("panel[xtype=baseset.studentmanager.studentgrid]");
+
+            var store = userGrid.getStore();
+            var proxy = store.getProxy();
+
+            var deptId = record.get("id");
+            var isRight = record.get("isRight"); 
+            var deptType =record.get("deptType");
+
+            if(deptId!='2851655E-3390-4B80-B00C-52C7CA62CB39'&&record.get("isRight")==0){
+                proxy.extraParams = {
+                    deptId: "0",
+                };
+                store.loadPage(1);
+                return false;
+            }
+            
+            Ext.apply(mainLayout.funData, {
                 deptId: record.get("id"),
                 isRight:record.get("isRight"),
                 deptType:record.get("deptType")
             });
-            //加载人员信息
-            var userGrid = mainLayout.down("panel[xtype=baseset.studentmanager.studentgrid]");
+
+            
             //获取快速搜索框的参数
             var girdSearchTexts = userGrid.query("field[funCode=girdFastSearchText]");
             var filter=new Array();

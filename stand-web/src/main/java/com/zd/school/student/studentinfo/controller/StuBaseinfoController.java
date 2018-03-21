@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.BeanUtils;
@@ -85,7 +86,7 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 			}
 		}
 		
-		String xm = entity.getXm();
+		//String xm = entity.getXm();
 		entity.setUserPwd(new Sha256Hash("123456").toHex());
 		entity.setCategory("2");
 		
@@ -97,32 +98,33 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 
 		// 判断身份证件号是否重复
 		if (StringUtils.isNotEmpty(sfzjh)&&thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"身份证件号不能重复！\""));
 			return;
 		}
 		
-		// 判断身份证件号是否重复
-		if (StringUtils.isNotEmpty(userName) && thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
+		// 判断用户名是否重复
+		if (StringUtils.isNotEmpty(userName) && thisService.IsFieldExist("userName", userName, "-1")) {
+			writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
 			return;
 		}
 
 		// 判断学号是否重复
 		if (thisService.IsFieldExist("userNumb", xh, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'学号不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"学号不能重复！\""));
 			return;
 		}
 
 		// 判断学籍号是否重复
 		if (StringUtils.isNotEmpty(xjh)&&thisService.IsFieldExist("xjh", xjh, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'学籍号不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"学籍号不能重复！\""));
 			return;
 		}
 
-		entity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
+		entity.setSchoolId(AdminType.ADMIN_ORG_ID);
 		entity.setIsHidden("0");
 		entity.setIssystem(1);
 		entity.setRightType(2);
+		entity.setState("1");
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
 

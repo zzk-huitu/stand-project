@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.model.ImportNotInfo;
 import com.zd.core.model.extjs.QueryResult;
@@ -125,7 +126,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		 * 
 		 * entity.setSysRoles(isUserRoles); }
 		 */
-		saveEntity.setSchoolId("2851655E-3390-4B80-B00C-52C7CA62CB39");
+		saveEntity.setSchoolId(AdminType.ADMIN_ORG_ID);
 		saveEntity.setUserPwd(userPwd);
 		saveEntity.setIssystem(1);
 		saveEntity.setIsHidden("0");

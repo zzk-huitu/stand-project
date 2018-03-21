@@ -483,7 +483,6 @@ Ext.define("core.system.user.controller.MainController", {
         }
 
 
-
         //得到组件
         var funCode = baseGrid.funCode;
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");        

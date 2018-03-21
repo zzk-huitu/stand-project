@@ -40,7 +40,7 @@ Ext.define("core.baseset.teachermanager.view.MainLayout", {
 	layout: 'border',
 
 	/*设置最小宽度，并且自动滚动*/
-    minWidth: 1000,
+    minWidth: 1200,
     scrollable: 'x',
 
 	items: [{

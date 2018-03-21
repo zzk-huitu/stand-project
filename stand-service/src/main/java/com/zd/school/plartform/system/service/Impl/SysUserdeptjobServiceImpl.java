@@ -152,7 +152,7 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 				BaseDeptjob deptjob=deptjobs.get(i);
 				String uuid = deptjob.getUuid(); // 选择的部门岗位Id
 				if (userHasJobMap.get(uuid) == null) {
-					// 如果当前岗位还没有设置成此教师的部门岗位
+					// 如果当用户还没有设置的此部门岗位
 					BaseUserdeptjob userDeptJob = new BaseUserdeptjob();
 					userDeptJob.setDeptId(deptjob.getDeptId());
 					userDeptJob.setJobId(deptjob.getJobId());

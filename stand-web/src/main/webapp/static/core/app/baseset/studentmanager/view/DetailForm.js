@@ -57,7 +57,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             columnWidth: 0.5,
             name: "userNumb",
             xtype: "textfield",
-            emptyText: "请输入工号",
+            emptyText: "请输入学号",
         }, {
             columnWidth: .5,
             fieldLabel: '身份证号',

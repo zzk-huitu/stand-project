@@ -177,7 +177,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-
+		
+		//给学生或教师加入角色
 		entity = thisService.doAddUser(entity, currentUser);
 
 		// 返回实体到前端界面

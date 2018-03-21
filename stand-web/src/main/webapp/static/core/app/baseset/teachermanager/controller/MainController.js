@@ -10,7 +10,8 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
     },
     
    init: function () {
-    },
+        this.getRightDeptIds();
+   },
    control: {
             "basepanel basegrid[xtype=baseset.teachermanager.teachergrid]": {
                afterrender : function(grid) {
@@ -81,7 +82,7 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 },
             },
             
-            "basegrid[xtype=baseset.teachermanager.teachergrid] button[ref=gridEdit]": {
+            "basegrid[xtype=baseset.teachermanager.teachergrid] button[ref=gridEdit_Tab]": {
                 beforeclick: function (btn) {
                 	this.doTeacherDetail_Tab(btn, "edit", null, null);
                     return false;
@@ -101,17 +102,17 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
         switch (cmd) {
             case "lock":
                 info = "请选择要锁定的账户";
-                title = "确定要锁定选择的账户吗？";
+                title = "确定要锁定选择的账户吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doLock";
                 break;
             case "unlock":
                 info = "请选择要解锁的账户";
-                title = "确定要解锁选择的账户吗？";
+                title = "确定要解锁选择的账户吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doUnlock";
                 break;
             case "setpwd":
                 info = "请选择要重置密码的账户";
-                title = "确定要重置所选账户的密码吗？";
+                title = "确定要重置所选账户的密码吗？<br/>（只能操作有部门权限的用户）";
                 url = funData.action + "/doSetPwd";
                 break;
         }
@@ -131,11 +132,15 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
 
                 //拼装所选择的用户
                 var ids = new Array();
+                var selectedUsers=new  Array();
                 Ext.each(selecStudent, function(rec) {
-                    var pkValue = rec.get("uuid");
-                    ids.push(pkValue);
+                    if(comm.get("userRidhtDeptIds").indexOf(rec.get("deptId"))!=-1){
+                        var pkValue = rec.get("uuid");
+                        ids.push(pkValue);
+                        selectedUsers.push(rec);
+                    }             
                 });
-
+                
                 //提交入库
                 self.asyncAjax({
                     url: url,
@@ -152,14 +157,14 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                             switch (cmd) {
                                 case "lock":
                                     //静态的更新数据
-                                    Ext.each(selecStudent, function(rec) {
+                                    Ext.each(selectedUsers, function(rec) {
                                         rec.set("state","1");    //改变数据
                                         rec.commit();   //提交一下 
                                     }, this);
                                     break;
                                 case "unlock":
                                     //静态的更新数据
-                                    Ext.each(selecStudent, function(rec) {
+                                    Ext.each(selectedUsers, function(rec) {
                                         rec.set("state","0");    //改变数据
                                         rec.commit();   //提交一下 
                                     }, this);
@@ -248,6 +253,7 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
         });
        return false;
     },
+
     doDetail_Tab:function(btn, cmd, grid, record) {
         var self = this;
         var baseGrid;
@@ -259,11 +265,22 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 self.msgbox("请选择一条数据！");
                 return;
             }
-            recordData = rescords[0].data;
+            recordData = rescords[0].getData();
         } else {
             baseGrid = grid;
-            recordData = record.data;
+            recordData = record.getData();
+        }       
+
+
+        if(cmd!='detail'){  
+            if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+                self.Warning("您没有操作此部门用户的权限，不能操作！");
+                return;
+            }
         }
+
+
+
         //得到组件
         var funCode = baseGrid.funCode;
         var basePanel = baseGrid.up("basepanel[funCode=" + funCode +"]");
@@ -528,7 +545,7 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
             baseGrid = btn.up("basegrid");
         } else {
             baseGrid = grid;
-            recordData = record.data;
+            recordData = record.getData();
         }
 
         //得到组件
@@ -572,7 +589,12 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                         self.msgbox("请选择1条数据！");
                         return;
                     }
-                    recordData = rescords[0].data;
+                    recordData = rescords[0].getData();
+                }
+
+                if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+                    self.Warning("您没有操作此部门用户的权限，不能操作！");
+                    return;            
                 }
 
                 insertObj = recordData;
@@ -632,4 +654,26 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
 
         tabPanel.setActiveTab(tabItem);
     },
+
+    //获取当前用户的有权限的部门
+    getRightDeptIds:function(){
+        var self=this;
+        self.asyncAjax({
+            url: comm.get('baseUrl') + "/SysOrg/getUserRightDeptIds",
+            params: {},
+            //回调代码必须写在里面
+            success: function(response) {
+                data = Ext.decode(Ext.valueFrom(response.responseText, '{}'));
+                if (data.success) {         
+                    comm.add("userRidhtDeptIds",data.obj);
+                }else{
+                   self.Error(data.obj);
+                }
+            },
+            failure: function(response) {           
+                Ext.Msg.alert('请求用户权限部门失败', '错误信息：\n' + response.responseText);     
+            }
+        }); 
+    }
+
 });

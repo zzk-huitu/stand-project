@@ -164,14 +164,14 @@ Ext.define("core.system.user.view.UserGrid", {
             columnType: "basecombobox",
             ddCode: "CATEGORY",
             width:80,
-        }, {
+        }/* ,{
 			text: "编制",
 			dataIndex: "zxxbzlb",
 			ddCode: "ZXXBZLB",
 			columnType: "basecombobox",
 			minWidth:80,
             flex:1,
-		}/*, {
+		}*//*, {
 			text: "岗位",
 			dataIndex: "jobName"
 		}*/, {
