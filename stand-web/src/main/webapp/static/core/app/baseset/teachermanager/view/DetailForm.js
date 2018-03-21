@@ -20,70 +20,18 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
     }, {
         xtype: "container",
         layout: "column",
-        //labelAlign: "right",
         items: [{
             beforeLabelTextTpl: comm.get("required"),
             allowBlank: false,
-            blankText: "姓名不能为空",
-            fieldLabel: "姓名",
+            blankText: "真实姓名不能为空",
+            fieldLabel: "真实姓名",
             columnWidth: 0.5,
             name: "xm",
             xtype: "textfield",
-            emptyText: "请输入姓名",
-            maxLength: 64,
-            maxLengthText: "最多64个字符,汉字占2个字符",
+            emptyText: "请输入姓名(最多36个字符,汉字占2个字符)",
+            maxLength: 36,
+            maxLengthText: "最多36个字符,汉字占2个字符",
         }, {
-            beforeLabelTextTpl: comm.get("required"),
-            allowBlank: false,
-            blankText: "性别不能为空",
-            fieldLabel: "性别",
-            columnWidth: 0.5,
-            name: "xbm",
-            xtype: "basecombobox",
-            ddCode: "XBM",
-            emptyText: "请选择性别",
-            maxLength: 1,
-            maxLengthText: "最多1个字符,汉字占2个字符",
-        }]
-    }, {
-        xtype: "container",
-        layout: "column",
-        labelAlign: "right",
-        items: [{
-            beforeLabelTextTpl: comm.get("required"),
-            allowBlank: false,
-            blankText: "工号不能为空",
-            fieldLabel: "工号",
-            columnWidth: 0.5,
-            name: "userNumb",
-            xtype: "textfield",
-            emptyText: "请输入工号",
-        }, {
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            fieldLabel: '身份证号',
-            name: "sfzjh",
-            xtype: 'textfield',
-            allowBlank: false,
-            emptyText: '请输入身份证号',
-            blankText: "身份证号不能为空",
-            vtype:'idCode'
-        }]
-    }, {
-        xtype: "container",
-        layout: "column",
-        labelAlign: "right",
-        items: [{
-            beforeLabelTextTpl: comm.get("required"),
-            allowBlank: false,
-            blankText: "移动电话不能为空",
-            fieldLabel: "移动电话",
-            columnWidth: 0.5,
-            name: "lxdh",
-            xtype: "textfield",
-            emptyText: "请输入移动电话",
-            vtype:'phoneCode'
-        },{
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),
             fieldLabel: '用户名',
@@ -93,44 +41,122 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             emptyText: '请输入用户名(最大16个字符)',
             blankText: "用户名不能为空",
             maxLength:16,
+            maxLengthText: "最多16个字符",
             vtype:'userName'  
         }]
     }, {
         xtype: "container",
         layout: "column",
         labelAlign: "right",
-        items: [{         
-            fieldLabel: "出生地",
+        items: [{
+            beforeLabelTextTpl: comm.get("required"),
+            allowBlank: false,
+            blankText: "性别不能为空",
+            fieldLabel: "性别",
             columnWidth: 0.5,
-            name: "csdm",
+            name: "xbm",
             xtype: "basecombobox",
-            ddCode: "XZQHM",
-            emptyText: "请选择出生地",
-        }, {            
-            fieldLabel: "籍贯",
+            ddCode: "XBM",
+            emptyText: "请选择性别",
+        }, {
+            beforeLabelTextTpl: comm.get("required"),
+            allowBlank: false,
+            blankText: "工号不能为空",
+            fieldLabel: "工号",
             columnWidth: 0.5,
-            name: "jg",
-            xtype:"textfield",
-            emptyText: "请输入籍贯",
+            name: "userNumb",
+            xtype: "textfield",
+            emptyText: "请输入工号(最多16个字符)",
+            maxLength:16,
+            maxLengthText: "最多16个字符",
         }]
-    },{
+    }, {
         xtype: "container",
         layout: "column",
         labelAlign: "right",
         items: [{
-            fieldLabel: "国籍",
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            fieldLabel: '身份证号',
+            name: "sfzjh",
+            xtype: 'textfield',
+            allowBlank: false,
+            emptyText: '请输入身份证号',
+            blankText: "身份证号不能为空",
+            vtype:'idCode'
+        }, {
+            fieldLabel: "移动电话",
             columnWidth: 0.5,
-            name: "gjdqm",
-            xtype: "basecombobox",
-            ddCode: "GJDQM",
-            emptyText: "国籍",
-        },{
-        	fieldLabel: "民族",
+            name: "lxdh",
+            xtype: "textfield",
+            vtype:'phoneCode'
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "编制类别",
             columnWidth: 0.5,
-            name: "mzm",
+            name: "bzlbm",
             xtype: "basecombobox",
-            ddCode: "MZM",
-            emptyText: "民族"
+            ddCode: "ZXXBZLB"
+        }, {
+            columnWidth: .5,
+            fieldLabel: "主部门岗位",
+            name: "deptJob",
+            xtype: "basetreefield",
+            ddCode: "DEPTJOBTREE",
+            rootId: "ROOT",
+            configInfo: {
+                multiSelect: false,
+                fieldInfo: "deptJob~deptJobId,text~id",
+                whereSql: " and isDelete='0' ",
+                orderSql: " order by parentNode,orderIndex asc",
+                url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
+           } 
+        }, {
+            fieldLabel: "部门岗位ID",
+            columnWidth: 0.5,
+            name: "deptJobId",
+            xtype: "textfield",
+            hidden:true
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "学历",
+            columnWidth: 0.5,
+            name: "xlm",
+            xtype: "basecombobox",
+            ddCode: "XLM"
+        }, {
+            fieldLabel: "政治面貌",
+            columnWidth: 0.5,
+            name: "zzmmm",
+            xtype: "basecombobox",
+            ddCode: "ZZMMM"
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "来校年月",
+            columnWidth: 0.5,
+            name: "lxny",
+            xtype: "datetimefield",
+            maxValue:new Date(),
+            dateType:'date'
+        }, {
+            fieldLabel: "从教年月",
+            columnWidth: 0.5,
+            name: "cjny",
+            xtype: "datetimefield",
+            maxValue:new Date(),
+            dateType:'date'
         }]
     }, {
         xtype: "container",
@@ -141,36 +167,50 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             columnWidth: 0.5,
             name: "hyzkm",
             xtype: "basecombobox",
-            ddCode: "HYZKM",
-            emptyText: "婚姻状况"
-        },{
-            fieldLabel: "港澳台侨外",
+            ddCode: "HYZKM"
+        }, {
+            fieldLabel: "健康状况",
             columnWidth: 0.5,
-            name: "gatqwm",
+            name: "jkzkm",
             xtype: "basecombobox",
-            ddCode: "GATQWM",
-            emptyText: "港澳台侨外",
+            ddCode: "JKZKM"
+        }]
+    }, {
+        xtype: "container",
+        layout: "column",
+        labelAlign: "right",
+        items: [{
+            fieldLabel: "出生日期",
+            columnWidth: 0.5,
+            name: "csrq",
+            xtype: "datetimefield",
+            dateType:'date',
+            maxValue:new Date()
+        }, {         
+            fieldLabel: "出生地",
+            columnWidth: 0.5,
+            name: "csdm",
+            xtype: "basecombobox",
+            ddCode: "XZQHM"
         }]
     },{
         xtype: "container",
         layout: "column",
         labelAlign: "right",
         items: [{
-            fieldLabel: "政治面貌",
+            fieldLabel: "国籍",
             columnWidth: 0.5,
-            name: "zzmmm",
+            name: "gjdqm",
             xtype: "basecombobox",
-            ddCode: "ZZMMM",
-            emptyText: "政治面貌"
+            ddCode: "GJDQM"
         },{
-            fieldLabel: "健康状况",
+            fieldLabel: "港澳台侨外",
             columnWidth: 0.5,
-            name: "jkzkm",
+            name: "gatqwm",
             xtype: "basecombobox",
-            ddCode: "JKZKM",
-            emptyText: "健康状况",
+            ddCode: "GATQWM"
         }]
-    },{
+    }, {
         xtype: "container",
         layout: "column",
         labelAlign: "right",
@@ -179,15 +219,13 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             columnWidth: 0.5,
             name: "xyzjm",
             xtype: "basecombobox",
-            ddCode: "XYZJM",
-            emptyText: "信仰宗教"
-        },{
+            ddCode: "XYZJM"
+        }, {
             fieldLabel: "血型",
             columnWidth: 0.5,
             name: "xxm",
             xtype: "basecombobox",
-            ddCode: "XXM",
-            emptyText: "血型",
+            ddCode: "XXM"
         }]
     },{
         xtype: "container",
@@ -198,55 +236,15 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             columnWidth: 0.5,
             name: "hkszd",
             xtype: "basecombobox",
-            ddCode: "XZQHM",
-            emptyText: "户口所在地"
-        },{
+            ddCode: "XZQHM"
+        }, {
             fieldLabel: "户口性质",
             columnWidth: 0.5,
             name: "hkxzm",
             xtype: "basecombobox",
-            ddCode: "HKLBM",
-            emptyText: "户口性质",
+            ddCode: "HKLBM"
         }]
-    },{
-        xtype: "container",
-        layout: "column",
-        labelAlign: "right",
-        items: [{
-            fieldLabel: "学历",
-            columnWidth: 0.5,
-            name: "xlm",
-            xtype: "basecombobox",
-            ddCode: "XLM",
-            emptyText: "学历"
-        },{
-            fieldLabel: "编制类别",
-            columnWidth: 0.5,
-            name: "bzlbm",
-            xtype: "basecombobox",
-            ddCode: "ZXXBZLB",
-            emptyText: "编制类别",
-        }]
-    },{
-        xtype: "container",
-        layout: "column",
-        labelAlign: "right",
-        items: [{
-            fieldLabel: "来校年月",
-            columnWidth: 0.5,
-            name: "lxny",
-            xtype: "datetimefield",
-            dateType:'date',
-            emptyText: "来校年月"
-        },{
-            fieldLabel: "从教年月",
-            columnWidth: 0.5,
-            name: "cjny",
-            xtype: "datetimefield",
-            dateType:'date',
-            emptyText: "从教年月",
-        }]
-    },{
+    }, {
         xtype: "container",
         layout: "column",
         labelAlign: "right",
@@ -255,7 +253,6 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
             columnWidth: 1,
             name: "xzz",
             xtype: "textfield",
-            emptyText: "请输入现住址",
             maxLength: 128,
             maxLengthText: "最多128个字符,汉字占2个字符",
         }]
@@ -275,45 +272,46 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
                 grow: true,
                 name: "dabh",
                 xtype: "textfield",
-                emptyText: "档案编号"
-            },{
+                maxLength: 10,
+                maxLengthText: "最多10个字符,汉字占2个字符"
+            }, {
                 fieldLabel: "档案文本",
                 width:'100%',
                 grow: true,
                 name: "dawb",
                 xtype: "textfield",
-                emptyText: "档案文本",
-            },{
-            	fieldLabel: "出生日期",
-                width:'100%',
-                grow: true,
-                name: "csrq",
-                xtype: "datetimefield",
-                dateType:'date',
-                emptyText: "出生日期",
-            }, {
+                maxLength: 128,
+                maxLengthText: "最多128个字符,汉字占2个字符"
+            },  {               
                 fieldLabel: "电子邮件",
                 width:'100%',
                 grow: true,
                 name: "dzxx",
                 xtype: "textfield",
-                emptyText: "请输入电子邮件",
                 maxLength: 32,
                 maxLengthText: "最多32个字符,汉字占2个字符",
                 vtype:'email'
-            },{
+            }, {
+                fieldLabel: "民族",
+                width:'100%',
+                grow: true,
+                name: "mzm",
+                xtype: "basecombobox",
+                ddCode: "MZM"
+            }, {
                 fieldLabel: "特长",
                 width:'100%',
                 grow: true,
                 name: "tc",
                 xtype: "textfield",
-                emptyText: "特长",
-            },{
+                maxLength: 128,
+                maxLengthText: "最多128个字符,汉字占2个字符"
+            }, {
                 fieldLabel: "照片地址", //用于表单提交时，提交此数据
                 name: "zp",
                 xtype: "textfield",
                 hidden: true
-            },{                    
+            }, {                    
                 width:'100%',
                 xtype: 'filefield',
                 fieldLabel: '照片',
@@ -324,7 +322,7 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
                 maxLength: 128,
                 //maxLengthText: "最多128个字符,汉字占2个字符",
             }]
-        },{
+        }, {
             xtype: "container",
             width:180,                  //这里设置的具体的宽度，那么上边的容器设置的columnWidth就会自动减少可用距离
             margin:'0 0 0 10', 
