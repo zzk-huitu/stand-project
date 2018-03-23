@@ -1,23 +1,33 @@
 package com.zd.school.student.studentinfo.service.Impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zd.core.constant.AdminType;
 import com.zd.core.model.extjs.ExtDataFilter;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.service.BaseServiceImpl;
+import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.jw.eduresources.model.JwTGradeclass;
 import com.zd.school.jw.eduresources.service.JwTGradeclassService;
+import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
+import com.zd.school.plartform.system.service.SysRoleService;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 import com.zd.school.student.studentinfo.dao.StuBaseinfoDao;
 import com.zd.school.student.studentinfo.model.StuBaseinfo;
 import com.zd.school.student.studentinfo.service.StuBaseinfoService;
+import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 
 /**
  * 
@@ -39,6 +49,12 @@ public class StuBaseinfoServiceImpl extends BaseServiceImpl<StuBaseinfo> impleme
 
     @Resource
     private JwTGradeclassService classService;
+    
+    @Resource
+	private SysRoleService roleService; // service层接口
+	
+	@Resource
+	private SysUserdeptjobService userDeptJobService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -77,4 +93,47 @@ public class StuBaseinfoServiceImpl extends BaseServiceImpl<StuBaseinfo> impleme
         QueryResult<StuBaseinfo> qrReturn = this.queryPageResult(start, limit, sort, queryFilter, true);
         return qrReturn;
     }
+
+	@Override
+	public StuBaseinfo doAddStudent(StuBaseinfo entity, SysUser currentUser/*, String deptJobId*/) {
+		StuBaseinfo saveEntity = new StuBaseinfo();
+		List<String> excludedProp = new ArrayList<>();
+		excludedProp.add("uuid");
+		try {
+			BeanUtils.copyProperties(saveEntity, entity, excludedProp);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		Integer orderIndex = this.getDefaultOrderIndex(entity);
+		saveEntity.setOrderIndex(orderIndex);
+		saveEntity.setCategory("2");
+		saveEntity.setIsHidden("0");
+		saveEntity.setIssystem(1);
+		saveEntity.setRightType(2);
+		saveEntity.setState("1");
+		saveEntity.setUserPwd(new Sha256Hash("123456").toHex());
+		saveEntity.setSchoolId(AdminType.ADMIN_ORG_ID);
+		
+		//增加角色
+		Set<SysRole>  theUserRoler = saveEntity.getSysRoles();
+		SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"}, new Object[]{"STUDENT",0});
+		
+		if(role!=null){
+			theUserRoler.add(role);
+			saveEntity.setSysRoles(theUserRoler);
+		}
+		
+		// 增加时要设置创建人
+		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
+		
+		// 持久化到数据库
+		entity = this.merge(saveEntity);
+		
+		String userIds = entity.getUuid();
+		String deptJobId = entity.getDeptId();
+		userDeptJobService.doAddUserToDeptJob( deptJobId, userIds, currentUser);
+		return entity;
+	}
 }

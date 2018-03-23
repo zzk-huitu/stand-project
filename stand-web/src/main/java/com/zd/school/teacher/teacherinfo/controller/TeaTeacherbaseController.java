@@ -144,7 +144,7 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 
 			if (myFileName.trim() != "") {// 如果名称不为“”,说明该文件存在，否则说明该文件不存在
 				// 重命名上传后的文件名
-				String type = myFileName.substring(myFileName.lastIndexOf("."));
+//				String type = myFileName.substring(myFileName.lastIndexOf("."));
 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				String url = "TeacherBase/" + sdf.format(System.currentTimeMillis()) + "/";
@@ -168,44 +168,26 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 		String  userNumb = entity.getUserNumb();
 		// 判断身份证件号是否重复
 		if (StringUtils.isNotEmpty(sfzjh) && thisService.IsFieldExist("sfzjh", sfzjh, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'身份证件号不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"身份证件号不能重复！\""));
 			return;
 		}
 
 		// 判断学号是否重复
 		if (thisService.IsFieldExist("userNumb", userNumb, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'工号不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"工号不能重复！\""));
 			return;
 		}
 		
 		// 判断学号是否重复
 		if (thisService.IsFieldExist("userName", userName, "-1")) {
-			writeJSON(response, jsonBuilder.returnFailureJson("'用户名不能重复！'"));
+			writeJSON(response, jsonBuilder.returnFailureJson("\"用户名不能重复！\""));
 			return;
 		}
-		// 获取当前操作用户
-		SysUser currentUser = getCurrentSysUser();
-
-		TeaTeacherbase perEntity = new TeaTeacherbase();
-		BeanUtils.copyPropertiesExceptNull(entity, perEntity);
-
-		//给老师加入 教师角色
-		Integer orderIndex = thisService.getDefaultOrderIndex(entity);
-		entity.setOrderIndex(orderIndex);// 排序
-		entity.setCategory("1");
-		entity.setState("1");
-		entity.setIsDelete(0);
-		entity.setIsHidden("0");
-		entity.setIssystem(1);
-		entity.setRightType(2);
-		entity.setUserPwd(new Sha256Hash("123456").toHex());
-		entity.setSchoolId(AdminType.ADMIN_ORG_ID);
-		entity.setUserName(userName);
-		// 增加时要设置创建人
-		entity.setCreateUser(currentUser.getXm()); // 创建人
-
-		// 持久化到数据库
-		entity = thisService.merge(entity);
+		
+//		String deptJobId = request.getParameter("deptJobId");
+		// 获取当前操作用户    
+        SysUser currentUser = getCurrentSysUser();
+        entity=thisService.doAddTeacher(entity,currentUser/*,deptJobId*/);  
 
 		// 返回实体到前端界面
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
@@ -248,7 +230,6 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 				if (myFileName.trim() != "") {// 如果名称不为“”,说明该文件存在，否则说明该文件不存在
 					// 重命名上传后的文件名
 					String type = myFileName.substring(myFileName.lastIndexOf("."));
-					String fileName = String.valueOf(System.currentTimeMillis()) + type;
 
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 					String url = "TeacherBase/" + sdf.format(System.currentTimeMillis()) + "/";
@@ -262,7 +243,7 @@ public class TeaTeacherbaseController extends FrameWorkController<TeaTeacherbase
 					}
 
 					file.transferTo(localFile);
-					entity.setZp(virtualFileUrl + url + fileName);
+					entity.setZp(url + myFileName);
 				}
 			}
 			// 获取当前的操作用户

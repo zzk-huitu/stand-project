@@ -32,22 +32,29 @@ Ext.define("core.system.user.controller.MainController", {
                     return false;
                 }
             },
-
+//
+//            "basegrid[xtype=system.user.usergrid] button[ref=gridEdit_Tab]": {
+//                beforeclick: function (btn) {
+//                    var baseGrid=btn.up("basegrid[xtype=system.user.usergrid]");
+//                    var rescords = baseGrid.getSelectionModel().getSelection();
+//                    if (rescords.length != 1) {
+//                        self.msgbox("请选择一条数据！");
+//                        return false;
+//                    }
+//                    var recordData = rescords[0].getData();
+//
+//                    //得到组件
+//                    if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+//                        self.Warning("您没有操作此部门用户的权限，不能操作！");
+//                        return false;
+//                    }
+//                }
+//            },
+            
             "basegrid[xtype=system.user.usergrid] button[ref=gridEdit_Tab]": {
                 beforeclick: function (btn) {
-                    var baseGrid=btn.up("basegrid[xtype=system.user.usergrid]");
-                    var rescords = baseGrid.getSelectionModel().getSelection();
-                    if (rescords.length != 1) {
-                        self.msgbox("请选择一条数据！");
-                        return false;
-                    }
-                    var recordData = rescords[0].getData();
-
-                    //得到组件
-                    if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
-                        self.Warning("您没有操作此部门用户的权限，不能操作！");
-                        return false;
-                    }
+                	this.doEditClick_Tab(btn, "edit", null, null);
+                    return false;
                 }
             },
 
@@ -350,6 +357,8 @@ Ext.define("core.system.user.controller.MainController", {
         var detailPanel = win.down("basepanel[funCode=" + detCode + "]");
         var objDetForm = detailPanel.down("baseform[funCode=" + detCode + "]");
         var formDeptObj = objDetForm.getForm();
+        var deptjobField = formDeptObj.findField("deptJob");
+        deptjobField.hidden(); 
         //表单赋值
         self.setFormValue(formDeptObj, insertObj);
     },
@@ -1032,6 +1041,134 @@ Ext.define("core.system.user.controller.MainController", {
                 Ext.Msg.alert('请求用户权限部门失败', '错误信息：\n' + response.responseText);     
             }
         }); 
-    }
+    },
+
+    /**
+     * 修改用户详细处理
+     * @param btn
+     * @param cmd
+     * @param grid
+     * @param record
+     */
+    doEditClick_Tab: function (btn, cmd, grid, record) {
+        var self = this;
+        var baseGrid;
+        var recordData;
+
+        if (btn) {
+            baseGrid = btn.up("basegrid");
+        } else {
+            baseGrid = grid;
+            recordData = record.getData();
+        }
+
+        //得到组件
+        var funCode = baseGrid.funCode;
+        var tabPanel = baseGrid.up("tabpanel[xtype=app-main]"); //标签页
+        var basePanel = baseGrid.up("panel[funCode=" + funCode + "]");
+
+        //得到配置信息
+        var funData = basePanel.funData;
+        var detCode = basePanel.detCode;
+        var detLayout = basePanel.detLayout;
+        var defaultObj = funData.defaultObj;
+
+        var operType = cmd;
+        var pkValue = null;
+
+        //关键：window的视图控制器
+        var otherController = basePanel.otherController;
+        if (!otherController)
+            otherController = '';
+
+        //处理特殊默认值
+        var insertObj = self.getDefaultValue(defaultObj);
+
+        //一些要传递的参数
+        var popFunData = Ext.apply(funData, {
+            grid: baseGrid,
+            whereSql: " and isDelete='0' ",
+        });
+
+        //默认的tab参数
+        var tabTitle = funData.tabConfig.addTitle; //标签页的标题
+        var tabItemId = funCode + "_gridAdd";     //命名规则：funCode+'_ref名称',确保不重复
+
+        //根据操作命令组装不同的数据
+        switch (cmd) {
+            case "edit":
+                if (btn) {
+                    var rescords = baseGrid.getSelectionModel().getSelection();
+                    if (rescords.length != 1) {
+                        self.msgbox("请选择1条数据！");
+                        return;
+                    }
+                    recordData = rescords[0].getData();
+                }
+
+                if( comm.get("userRidhtDeptIds").indexOf(recordData.deptId)==-1){
+                    self.Warning("您没有操作此部门用户的权限，不能操作！");
+                    return;            
+                }
+
+                insertObj = recordData;
+                tabTitle = funData.tabConfig.editTitle;
+                tabItemId = funCode + "_gridEdit";
+                //获取主键值
+                var pkName = funData.pkName;
+                pkValue = recordData[pkName];
+                break;
+        }
+
+        //获取tabItem；若不存在，则表示要新建tab页，否则直接打开
+        var tabItem = tabPanel.getComponent(tabItemId);
+
+        //判断是否已经存在tab了
+        if (!tabItem) {
+            tabItem = Ext.create({
+                xtype: 'container',
+                title: tabTitle,
+                scrollable: true,
+                itemId: tabItemId,
+                itemPKV: pkValue,    //保存主键值
+                layout: 'fit',
+            });
+            tabPanel.add(tabItem);
+
+            //延迟放入到tab中
+            setTimeout(function () {
+                //创建组件
+                var item = Ext.widget("baseformtab", {
+                    operType: operType,
+                    controller: otherController,         //指定重写事件的控制器
+                    funCode: funCode,                    //指定mainLayout的funcode
+                    detCode: detCode,                    //指定detailLayout的funcode
+                    tabItemId: tabItemId,                //指定tab页的itemId
+                    insertObj: insertObj,                //保存一些需要默认值，提供给提交事件中使用
+                    funData: popFunData,                //保存funData数据，提供给提交事件中使用
+                    items: [{
+                        xtype: detLayout
+                    }]
+                });
+                tabItem.add(item);
+
+                var objDetForm = item.down("baseform[funCode=" + detCode + "]");
+                var formDeptObj = objDetForm.getForm();
+                var courseDesc = objDetForm.down("htmleditor");
+                var deptJobField = formDeptObj.findField("deptJob");
+                deptJobField.hide(); 
+
+                self.setFormValue(formDeptObj, insertObj);
+                //显示照片
+                objDetForm.down('image[ref=newsImage]').setSrc(insertObj.zp);
+            }, 30);
+
+        } else if (tabItem.itemPKV && tabItem.itemPKV != pkValue) {     //判断是否点击的是同一条数据，不同则替换数据
+            self.Warning("您当前已经打开了一个编辑窗口了！");
+            return;
+        }
+
+        tabPanel.setActiveTab(tabItem);
+    },
 
 });

@@ -19,4 +19,6 @@ public interface StuBaseinfoService extends BaseService<StuBaseinfo> {
 
     public QueryResult<StuBaseinfo> getStudentList(Integer start, Integer limit, String sort, String filter,
             Boolean isDelete, String claiId, SysUser currentUser);
+    
+    public StuBaseinfo doAddStudent(StuBaseinfo stuBaseInfo, SysUser currentUser/*, String deptJobId*/);
 }

@@ -47,6 +47,7 @@ import com.zd.school.plartform.system.service.SysMenuPermissionService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.plartform.system.service.SysUserdeptjobService;
 import com.zd.school.student.studentinfo.model.StuBaseinfo;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
@@ -88,10 +89,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 	@Resource
 	private BaseDicitemService dicitemService;
+	
+	@Resource
+	private SysUserdeptjobService userDeptJobService;
 
 	
 	@Override
-	public SysUser doAddUser(SysUser entity, SysUser currentUser) throws Exception, InvocationTargetException {
+	public SysUser doAddUser(SysUser entity, SysUser currentUser/*, String deptJobId*/) throws Exception, InvocationTargetException {
 
 		String userPwd = entity.getUserPwd();
 		userPwd = new Sha256Hash(userPwd).toHex();
@@ -102,6 +106,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		if (category.equals("1")) { // 老师
 			TeaTeacherbase t = new TeaTeacherbase();
 			saveEntity = t;
+			//增加角色
+			Set<SysRole>  theUserRoler = saveEntity.getSysRoles();
+			SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"}, new Object[]{"TEACHER",0});
+			
+			if(role!=null){
+				theUserRoler.add(role);
+				saveEntity.setSysRoles(theUserRoler);
+			}
 
 		} else if (category.equals("2")) { // 学生
 			StuBaseinfo t = new StuBaseinfo();
@@ -109,6 +121,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 			// t.setClassId(entity.getDeptId());
 
 			saveEntity = t;
+			//增加角色
+			Set<SysRole>  theUserRoler = saveEntity.getSysRoles();
+			SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"}, new Object[]{"STUDENT",0});
+			
+			if(role!=null){
+				theUserRoler.add(role);
+				saveEntity.setSysRoles(theUserRoler);
+			}
 
 		} else {
 			saveEntity = new SysUser();
@@ -133,6 +153,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		saveEntity.setCreateUser(currentUser.getXm()); // 创建人
 		saveEntity.setRightType(2);
 		entity = this.merge(saveEntity);
+		
+		String userIds = entity.getUuid();
+		String deptJobId = entity.getDeptId();
+		userDeptJobService.doAddUserToDeptJob( deptJobId, userIds, currentUser);
 
 		return entity;
 	}

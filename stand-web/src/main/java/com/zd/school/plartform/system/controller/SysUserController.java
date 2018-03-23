@@ -177,9 +177,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 		// 获取当前操作用户
 		SysUser currentUser = getCurrentSysUser();
-		
+		String deptJobId = request.getParameter("deptJobId");
 		//给学生或教师加入角色
-		entity = thisService.doAddUser(entity, currentUser);
+		entity = thisService.doAddUser(entity, currentUser/*, deptJobId*/);
 
 		// 返回实体到前端界面
 		writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));

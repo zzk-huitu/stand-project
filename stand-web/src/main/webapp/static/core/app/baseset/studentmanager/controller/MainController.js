@@ -78,14 +78,14 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                 },
                 //编辑按钮
                 editClick_Tab: function (data) {
-                    this.editClick_Tab(null,data.cmd,data.view,data.record);
+                    this.doEditClick_Tab(null,data.cmd,data.view,data.record);
                     return false;
                 },
             },
             
             "basegrid[xtype=baseset.studentmanager.studentgrid] button[ref=gridEdit_Tab]": {
                 beforeclick: function (btn) {
-                	this.editClick_Tab(btn, "edit", null, null);
+                	this.doEditClick_Tab(btn, "edit", null, null);
                     return false;
                 }
             },
@@ -538,7 +538,7 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
      * @param grid
      * @param record
      */
-    editClick_Tab: function (btn, cmd, grid, record) {
+    doEditClick_Tab: function (btn, cmd, grid, record) {
         var self = this;
         var baseGrid;
         var recordData;
@@ -643,6 +643,8 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                 var objDetForm = item.down("baseform[funCode=" + detCode + "]");
                 var formDeptObj = objDetForm.getForm();
                 var courseDesc = objDetForm.down("htmleditor");
+                var deptJobField = formDeptObj.findField("deptJob");
+                deptJobField.hide(); 
 
                 self.setFormValue(formDeptObj, insertObj);
                 //显示照片

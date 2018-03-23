@@ -42,7 +42,7 @@ public interface SysUserService extends BaseService<SysUser> {
      * @throws @since
      *             JDK 1.8
      */
-    public SysUser doAddUser(SysUser entity, SysUser currentUser) throws Exception, InvocationTargetException;
+    public SysUser doAddUser(SysUser entity, SysUser currentUser/*, String deptJobId*/) throws Exception, InvocationTargetException;
 
     /**
      * 
