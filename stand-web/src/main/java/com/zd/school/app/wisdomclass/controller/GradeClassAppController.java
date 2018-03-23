@@ -170,7 +170,7 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 		
 		//查询班级红旗信息(显示最新的红旗)
 		hql = "from EccClassredflag where isDelete=0 and claiId='" + classInfo.getUuid() + "' and beginDate<='" + today
-				+ "' and endDate>='" + today + "'";
+				+ "' and endDate>='" + today + "' order by redflagType";
 		List<EccClassredflag> classflagList = flagService.queryByHql(hql);
 		if (classflagList != null && classflagList.size() > 0) {
 			if (classflagList.size() > 1) {
@@ -179,6 +179,7 @@ public class GradeClassAppController extends BaseController<JwTGradeclass> {
 					EccClassredflag now = classflagList.get(i);
 					if (before.getRedflagType().equals(now.getRedflagType())) {
 						classflagList.remove(before);
+					    i--;
 					}
 				}
 			}
