@@ -105,5 +105,7 @@ public interface TeaTeacherbaseService extends BaseService<TeaTeacherbase> {
 	
 	public QueryResult<TeaTeacherbase> getCourseTeacherlist(Integer start, Integer limit, String sort, String filter,
 			String whereSql, String orderSql, String querySql, Boolean isDelete);
+	
+	public TeaTeacherbase doAddTeacher(TeaTeacherbase teacher, SysUser currentUser/*, String deptJobId*/);
 
 }

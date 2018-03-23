@@ -71,7 +71,7 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 
 			if (myFileName.trim() != "") {// 如果名称不为“”,说明该文件存在，否则说明该文件不存在
 				// 重命名上传后的文件名
-				String type = myFileName.substring(myFileName.lastIndexOf("."));
+//				String type = myFileName.substring(myFileName.lastIndexOf("."));
 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				String url = "StuBaseinfo/" + sdf.format(System.currentTimeMillis()) + "/";
@@ -83,12 +83,9 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 					localFile.mkdirs(); // 不存在则创建
 				}
 				file.transferTo(localFile);
+				entity.setZp(url + myFileName);
 			}
 		}
-		
-		//String xm = entity.getXm();
-		entity.setUserPwd(new Sha256Hash("123456").toHex());
-		entity.setCategory("2");
 		
 		// 此处为放在入库前的一些检查的代码，如唯一校验等
 		String sfzjh = entity.getSfzjh();
@@ -120,15 +117,12 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 			return;
 		}
 
-		entity.setSchoolId(AdminType.ADMIN_ORG_ID);
-		entity.setIsHidden("0");
-		entity.setIssystem(1);
-		entity.setRightType(2);
-		entity.setState("1");
-		// 获取当前操作用户
-		SysUser currentUser = getCurrentSysUser();
+		
+//		String deptJobId = request.getParameter("deptJobId");
+		// 获取当前操作用户    
+        SysUser currentUser = getCurrentSysUser();
 
-		entity = thisService.doAddEntity(entity, currentUser.getXm());
+		entity = thisService.doAddStudent(entity, currentUser/*, deptJobId */);
 
 		if (entity == null)
 			writeJSON(response, jsonBuilder.returnFailureJson("\"添加失败，请重试或联系管理员！\""));

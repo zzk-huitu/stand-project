@@ -111,7 +111,6 @@ Ext.define("core.system.user.view.UserForm", {
             ddCode: "CATEGORY",
             allowBlank: false,
             blankText: "身份不能为空",
-
             listeners:{
                 change:function( filed, newValue, oldValue, eOpts ){
                     var form=filed.up("form");                      
@@ -194,15 +193,17 @@ Ext.define("core.system.user.view.UserForm", {
             rootId: "ROOT",
             configInfo: {
                 multiSelect: false,
-                fieldInfo: "deptJob~deptJobId,text~id",
+                fieldInfo: "deptJob~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
                 url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
-           } 
+           },
+           
+           
         }, {
             fieldLabel: "部门岗位ID",
             columnWidth: 0.5,
-            name: "deptJobId",
+            name: "deptIddeptId",
             xtype: "textfield",
             hidden:true
         }, {

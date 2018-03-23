@@ -104,7 +104,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
             rootId: "ROOT",
             configInfo: {
                 multiSelect: false,
-                fieldInfo: "deptJob~deptJobId,text~id",
+                fieldInfo: "deptJob~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
                 url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
@@ -112,7 +112,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         }, {
             fieldLabel: "部门岗位ID",
             columnWidth: 0.5,
-            name: "deptJobId",
+            name: "deptId",
             xtype: "textfield",
             hidden:true
         }, {

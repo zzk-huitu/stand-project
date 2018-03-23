@@ -641,6 +641,8 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 var objDetForm = item.down("baseform[funCode=" + detCode + "]");
                 var formDeptObj = objDetForm.getForm();
                 var courseDesc = objDetForm.down("htmleditor");
+                var deptJobField = formDeptObj.findField("deptJob");
+                deptJobField.hide();  
 
                 self.setFormValue(formDeptObj, insertObj);
                 //显示照片
