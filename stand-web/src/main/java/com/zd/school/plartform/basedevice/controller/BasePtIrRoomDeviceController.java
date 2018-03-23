@@ -73,7 +73,7 @@ public class BasePtIrRoomDeviceController extends FrameWorkController<PtIrRoomDe
 	BasePtTermService ptTermService;
 
 	@Value("${irsendurl}")  
-    private String irsendurl; //文件目录物理路径
+    private String irsendurl; 
 	
 	//@Autowired
 	//private Environment environment;

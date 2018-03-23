@@ -45,6 +45,7 @@ import com.zd.school.plartform.system.model.SysUserToUP;
 import com.zd.school.plartform.system.service.SysDatapermissionService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.redis.service.DeptRedisService;
 
 /**
  * 
@@ -68,7 +69,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 	private  HttpServletRequest request;
 	
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 	
 	@Resource
 	private JwTGradeService gradeService; // 年级的service
@@ -349,7 +350,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//删除所有redis部门缓存数据，以免产生误会
-		this.delDeptTreeAll();
+		deptRedisService.deleteDeptTreeAll();
 				
 		return "1";
 	}
@@ -444,7 +445,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//删除所有redis部门缓存数据，以免产生误会
-		this.delDeptTreeAll();
+		deptRedisService.deleteDeptTreeAll();
 		return entity;
 	}
 
@@ -836,7 +837,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//删除所有redis部门缓存数据，以免产生误会
-		this.delDeptTreeAll();
+		deptRedisService.deleteDeptTreeAll();
 				
 		return entity;
 	}
@@ -1130,9 +1131,9 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		String userId = currentUser.getUuid();
 		Integer rightType = currentUser.getRightType();
 		
-		//先从redis中取数据
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object userRightDeptTree = hashOper.get("userRightDeptTree", userId);	
+		
+		//先从redis中取数据	
+		Object userRightDeptTree = deptRedisService.getRightDeptTreeByUser(userId);
 		if (userRightDeptTree != null) { // 若存在,则直接返回redis数据
 			return (List<BaseOrgChkTree>)userRightDeptTree;	
 		}
@@ -1179,7 +1180,8 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//若不存在，则存入到redis中
-		hashOper.put("userRightDeptTree", userId, chilrens);
+		deptRedisService.setRightDeptTreeByUser(userId, chilrens);
+		
 		return chilrens;
 	}
 	
@@ -1212,8 +1214,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		Integer rightType = currentUser.getRightType();
 		
 		//先从redis中取数据
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object userRightDeptClassTree = hashOper.get("userRightDeptClassTree", userId);	
+		Object userRightDeptClassTree = deptRedisService.getRightDeptClassTreeByUser(userId);
 		if (userRightDeptClassTree != null) { // 若存在,则直接返回redis数据
 			return (List<CommTreeChk>)userRightDeptClassTree;
 		}
@@ -1254,7 +1255,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//若不存在，则存入到redis中
-		hashOper.put("userRightDeptClassTree", userId, chilrens);
+		deptRedisService.setRightDeptClassTreeByUser(userId, chilrens);
 		return chilrens;
 	}
 	
@@ -1268,8 +1269,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		Integer rightType = currentUser.getRightType();
 		
 		//先从redis中取数据
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object userRightDeptDisciplineTree = hashOper.get("userRightDeptDisciplineTree", userId);	
+		Object userRightDeptDisciplineTree = deptRedisService.getRightDeptDisciplineTreeByUser(userId); 	
 		if (userRightDeptDisciplineTree != null) { // 若存在,则直接返回redis数据
 			return (List<CommTreeChk>)userRightDeptDisciplineTree;
 		}
@@ -1310,20 +1310,10 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		}
 		
 		//若不存在，则存入到redis中
-		hashOper.put("userRightDeptDisciplineTree", userId, chilrens);
+		deptRedisService.setRightDeptDisciplineTreeByUser(userId, chilrens);
 		return chilrens;
 	}
 	
-	/**
-	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
-	 * 
-	 */
-	public void delDeptTreeAll() {
-		// TODO Auto-generated method stub
-		redisTemplate.delete("userRightDeptTree");
-		redisTemplate.delete("userRightDeptClassTree");	
-		redisTemplate.delete("userRightDeptDisciplineTree");	
-	}
 
 	
 }

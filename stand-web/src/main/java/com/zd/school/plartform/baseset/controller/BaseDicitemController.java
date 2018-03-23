@@ -1,31 +1,30 @@
 
 package com.zd.school.plartform.baseset.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDic;
 import com.zd.school.plartform.baseset.model.BaseDicitem;
 import com.zd.school.plartform.baseset.service.BaseDicService;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.model.SysUser;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
+import com.zd.school.redis.service.DicItemRedisService;
 
 /**
  * 数据字典子项
@@ -43,7 +42,7 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 	private BaseDicService dictionaryService;
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+    private DicItemRedisService dicItemRedisService;
 
 	/**
 	 * 获取子项列表
@@ -201,9 +200,9 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 		String strData = "";
 		String dicCode = request.getParameter("dicCode");
 
-		//获取hash类型的操作对象
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object baseDicItem = hashOper.get("baseDicItem", dicCode);
+		//获取缓存数据
+		Object baseDicItem=dicItemRedisService.getByDicCode(dicCode);
+
 
 		if (baseDicItem == null) { // 若存在，则不需要设置
 		
@@ -213,7 +212,9 @@ public class BaseDicitemController extends FrameWorkController<BaseDicitem> impl
 			List<BaseDicitem> lists = thisService.queryByHql(hql);
 			strData = jsonBuilder.buildObjListToJson(new Long(lists.size()), lists, false);
 			
-			hashOper.put("baseDicItem", dicCode, strData);		
+			//加入到redis中
+			dicItemRedisService.setByDicCode(dicCode, strData);
+
 
 		} else {
 			strData = (String) baseDicItem;

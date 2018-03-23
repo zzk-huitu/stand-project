@@ -17,6 +17,7 @@ import com.zd.school.plartform.system.model.SysDeptRight;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysDeptRightService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.redis.service.DeptRedisService;
 
 /**
  * 
@@ -39,7 +40,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 	}
 	
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 	
 	@Resource
 	private SysUserService userService;
@@ -71,7 +72,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 		}
 		
 		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
-		this.delDeptTreeByUsers(userIds);
+		deptRedisService.deleteDeptTreeByUsers(userIds);
 				
 		// 更新指定的用户信息
 		userService.updateByProperties("uuid", userIds, propertyName, propertyValue);
@@ -90,7 +91,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
 		if(userIds.size()>0){
 			userIds.stream().distinct().collect(Collectors.toList());
-			this.delDeptTreeByUsers(userIds.toArray());
+			deptRedisService.deleteDeptTreeByUsers(userIds.toArray());
 		}
 			
 		hql="Delete from SysDeptRight where uuid in ("+doIds+")";
@@ -101,7 +102,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 	@Override
 	public void doUpdateRightType(String uuid, String rightType,String userId) {
 		// TODO Auto-generated method stub
-		this.delDeptTreeByUsers(uuid);
+		deptRedisService.deleteDeptTreeByUsers(uuid);
 		
 		String[] propertyName = { "updateUser", "updateTime", "rightType" };
 		Object[] propertyValue = { userId, new Date(), Integer.valueOf(rightType) };	
@@ -109,22 +110,7 @@ public class SysDeptRightServiceImpl extends BaseServiceImpl<SysDeptRight> imple
 		userService.updateByProperties("uuid", uuid, propertyName, propertyValue);
 	}
 	
-	/**
-	 * 删除这个部门下所有用户的部门权限的缓存数据
-	 * 
-	 * @param userIds
-	 */
-	public void delDeptTreeByUsers(Object... userIds) {
-		// TODO Auto-generated method stub
-		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-		if (userIds.length > 0) {
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userRightDeptTree", userIds);
-			hashOper.delete("userRightDeptClassTree", userIds);		
-			hashOper.delete("userRightDeptDisciplineTree", userIds);	
-		}
-	}
-
+	
 
 
 }

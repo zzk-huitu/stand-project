@@ -30,6 +30,8 @@ import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.redis.service.DeptRedisService;
+import com.zd.school.redis.service.UserRedisService;
 
 /**
  * 
@@ -68,7 +70,7 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 	private SysUserdeptjobService userDeptJobService;
 	
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 	
     /**
 	 * 
@@ -144,7 +146,7 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 		SysUser user = userService.get(teacherId);
 		// 设置增加默认的班主任角色
 		Set<SysRole> theUserRole = user.getSysRoles();
-		SysRole role = roleService.getByProerties("roleCode", "CLASSLEADER");
+		SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"},new Object[]{ "CLASSLEADER",0});
 		if (role!=null) {
 			theUserRole.add(role);
 			user.setSysRoles(theUserRole);
@@ -184,8 +186,8 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 		userService.merge(user);
 		
 		//清除这个用户的部门树缓存，以至于下次读取时更新缓存
-     	this.delDeptTreeByUsers(user.getUuid());
-     	
+		deptRedisService.deleteDeptTreeByUsers(user.getUuid());
+		
 		return entity;
 	}
 
@@ -228,7 +230,7 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 				// 移除班主任角色
 				SysUser user = userService.get(teacherId);
 				Set<SysRole> theUserRole = user.getSysRoles();
-				SysRole role = roleService.getByProerties("roleCode", "CLASSLEADER");
+				SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"},new Object[]{ "CLASSLEADER",0});
 				if (role!=null) {
 					theUserRole.remove(role);
 					user.setSysRoles(theUserRole);
@@ -240,7 +242,8 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 			}		
 			
 			//清除这个用户的部门树缓存，以至于下次读取时更新缓存
-	     	this.delDeptTreeByUsers(gt.getTteacId());
+			deptRedisService.deleteDeptTreeByUsers(gt.getTteacId());
+			
 		}
 		
 		
@@ -278,7 +281,7 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 				// 移除班主任角色
 				SysUser user = userService.get(teacherId);
 				Set<SysRole> theUserRole = user.getSysRoles();
-				SysRole role = roleService.getByProerties("roleCode", "CLASSLEADER");
+				SysRole role = roleService.getByProerties(new String[]{"roleCode","isDelete"},new Object[]{ "CLASSLEADER",0});
 				if (role!=null) {
 					theUserRole.remove(role);
 					user.setSysRoles(theUserRole);
@@ -288,27 +291,12 @@ public class JwClassteacherServiceImpl extends BaseServiceImpl<JwClassteacher> i
 			}
 
 			//清除这个用户的部门树缓存，以至于下次读取时更新缓存
-	     	this.delDeptTreeByUsers(gt.getTteacId());
+			deptRedisService.deleteDeptTreeByUsers(gt.getTteacId());
+			
 		}
 		result = true;
 		return result;
-	}
-	
-	/**
-	 * 删除这个部门下所有用户的部门权限的缓存数据
-	 * 
-	 * @param userIds
-	 */
-	public void delDeptTreeByUsers(Object... userIds) {
-		// TODO Auto-generated method stub
-		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-		if (userIds.length > 0) {
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userRightDeptTree", userIds);
-			hashOper.delete("userRightDeptClassTree", userIds);		
-			hashOper.delete("userRightDeptDisciplineTree", userIds);	
-		}
-	}
+	}	
 
 
 }

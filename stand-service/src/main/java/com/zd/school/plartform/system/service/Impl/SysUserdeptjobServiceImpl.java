@@ -28,6 +28,7 @@ import com.zd.school.plartform.system.service.SysDeptjobService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.redis.service.DeptRedisService;
 import com.zd.school.student.studentclass.model.JwClassstudent;
 import com.zd.school.student.studentclass.service.JwClassstudentService;
 
@@ -51,7 +52,7 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 	}
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 
 	@Resource
 	private SysUserService userService;
@@ -208,8 +209,8 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		}
 
 		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
-		this.delDeptTreeByUsers(userIds);
-
+		deptRedisService.deleteDeptTreeByUsers(userIds);
+		
 		return true;
 
 	}
@@ -223,7 +224,7 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		List<String> userIds = baseUserdeptjobs.stream().map((x)->x.getUserId()).distinct().collect(Collectors.toList());		
 		// 清除这个用户的部门树缓存，以至于下次读取时更新缓存
 		if(userIds.size()>0)
-			this.delDeptTreeByUsers(userIds.toArray());
+			deptRedisService.deleteDeptTreeByUsers(userIds);
 		
 		
 		/*---------判断是否要更新班级学生表(2018-3-15加入)-----------*/
@@ -349,20 +350,6 @@ public class SysUserdeptjobServiceImpl extends BaseServiceImpl<BaseUserdeptjob> 
 		return true;
 	}
 
-	/**
-	 * 删除这个部门下所有用户的部门权限的缓存数据
-	 * 
-	 * @param userIds
-	 */
-	public void delDeptTreeByUsers(Object... userIds) {
-		// TODO Auto-generated method stub
-		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-		if (userIds.length > 0) {
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userRightDeptTree", userIds);
-			hashOper.delete("userRightDeptClassTree", userIds);		
-			hashOper.delete("userRightDeptDisciplineTree", userIds);	
-		}
-	}
+	
 
 }
