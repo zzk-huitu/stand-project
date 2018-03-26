@@ -11,7 +11,7 @@ Ext.define("core.baseset.studentmanager.view.DetailHtml", {
         tpl: new Ext.XTemplate(
              '<div class="trainClass_classInfo">',
             '<div class="trainClass_title">学生基本信息：</div>',
-            '<div class="trainTeacher_teacherInfo">',
+            '<div class="trainTeacher_teacherInfo" style="padding:0px;">',
                 '<div class="trainTeacher_left">',
                     '<span class="zp" style="background-image: url({zp})"></span>',
                     '<span class="xm">{xm}</span>',
@@ -21,7 +21,7 @@ Ext.define("core.baseset.studentmanager.view.DetailHtml", {
                     '<span>学号：{userNumb}</span>', 
                 '</div>',
                 '<div class="trainTeacher_right">',
-                    '<ul>',
+                    '<ul  style="padding: 10px">',
                         '<li style="font-size:14px;">曾用名：{cym}</li>',
                         '<li style="font-size:14px;">姓名拼音：{xmpy}</li>',
                         '<li style="font-size:14px;">英文姓名：{ywxm}</li>',

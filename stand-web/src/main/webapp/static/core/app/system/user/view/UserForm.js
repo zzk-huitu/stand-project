@@ -184,30 +184,12 @@ Ext.define("core.system.user.view.UserForm", {
     },*/{
         xtype: 'container',
         layout: "column", // 从左往右的布局
-        items: [ {
-            columnWidth: .5,
-            fieldLabel: "主部门岗位",
-            name: "deptJob",
-            xtype: "basetreefield",
-            funcPanel:"deptJobfuncpanel",
-            ddCode: "DEPTJOBTREE",
-            rootId: "ROOT",
-            configInfo: {
-                multiSelect: false,
-                controller : "system.user.othercontroller",
-                fieldInfo: "deptJob~deptId,text~id",
-                whereSql: " and isDelete='0' ",
-                orderSql: " order by parentNode,orderIndex asc",
-                url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
-           },
-           
-           
-        }, {
-            fieldLabel: "部门岗位ID",
-            columnWidth: 0.5,
-            name: "deptId",
-            xtype: "textfield",
-            hidden:true
+        items: [{
+            columnWidth: .5,            
+            xtype: "basecombobox",
+            fieldLabel: "政治面貌",
+            name: "zzmmm",
+            ddCode: "ZZMMM"
         }, {
             fieldLabel: "学历",
             columnWidth: 0.5,
@@ -237,12 +219,28 @@ Ext.define("core.system.user.view.UserForm", {
     }, {
         xtype: 'container',
         layout: "column", // 从左往右的布局
-        items: [{
-            columnWidth: .5,            
-            xtype: "basecombobox",
-            fieldLabel: "政治面貌",
-            name: "zzmmm",
-            ddCode: "ZZMMM"
+        items: [ {
+            columnWidth: .5,
+            fieldLabel: "主部门岗位",
+            name: "deptJob",
+            xtype: "basetreefield",
+            funcPanel:"deptJobfuncpanel",
+            ddCode: "DEPTJOBTREE",
+            rootId: "ROOT",
+            configInfo: {
+                multiSelect: false,
+                controller : "system.user.othercontroller",
+                fieldInfo: "deptJob~deptId,text~id",
+                whereSql: " and isDelete='0' ",
+                orderSql: " order by parentNode,orderIndex asc",
+                url: comm.get('baseUrl') + "/SysDeptjob/getDeptJobTree",
+           },
+        }, {
+            fieldLabel: "部门岗位ID",
+            columnWidth: 0.5,
+            name: "deptId",
+            xtype: "textfield",
+            hidden:true
         },{
             columnWidth: .5,
             beforeLabelTextTpl: comm.get("required"),

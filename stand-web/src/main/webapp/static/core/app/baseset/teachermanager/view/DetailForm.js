@@ -327,17 +327,18 @@ Ext.define("core.baseset.teachermanager.view.DetailForm", {
         }, {
             xtype: "container",
             width:180,                  //这里设置的具体的宽度，那么上边的容器设置的columnWidth就会自动减少可用距离
+            height:240,
             margin:'0 0 0 10', 
             labelAlign: "right",
+            style: {
+                background: '#f5f5f5',
+                border: '1px solid #e1e1e1'
+            },
             items: [{
-                width:'100%',
-                height:240,
+                width:'100%',   
+                height:238,            
                 xtype:'image',
-                ref:'newsImage',
-                style: {
-                    background: '#f5f5f5',
-                    border: '1px solid #e1e1e1'
-                },
+                ref:'photoImage',            
                 src: '',
             }]
         }]

@@ -583,34 +583,32 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
 		//树形查询处理
 		if(win.queryType=="mttreeview"){
 			var tree=win.down("mttreeview");
-			var selRecords=new Array();
-			records=tree.getSelectionModel().getSelection();
-			//处理记录是否禁用
-			Ext.each(records,function(rec){
-				if(!rec.raw.disabled){
-					if (records.length == 1) {                       
-		                if (records[0].get("level") < 99) {
-		                    self.msgbox("请选择岗位");
-		                    return false;
-		                }
-		            }
-		            Ext.each(records, function(rec) {
-		                if (rec.get("level") == 99)
-		                	selRecords.push(rec);
-		            });
-		            if (selRecords.length == 0) {
-		                self.msgbox("请选择岗位");
-		                return false;
-		            }
-					selRecords.push(rec);
-				}
-			});
-			if(selRecords.length>0 || win.isEmpty){
-				win.callback(win,selRecords);
-				win.close();
-			}else{
-				alert("你选中的信息错误，请重新选择!");
-			}
+            var selRecords=new Array();
+//          var records=tree.getChecked();
+//          if(records.length<=0){
+                records=tree.getSelectionModel().getSelection();
+//          }
+
+            if (records.length == 1) {                       
+                if (records[0].get("level") < 99) {
+                    self.msgbox("请选择岗位");
+                    return false;
+                }
+            }
+
+            Ext.each(records, function(rec) {
+                if (rec.get("level") == 99)
+                    selRecords.push(rec);
+            });
+
+            if (selRecords.length == 0) {
+                self.msgbox("请选择岗位");
+                return false;
+
+            }else if(selRecords.length>0){
+                win.callback(win,selRecords);
+                win.close();
+            }
 		}
 	}
 });

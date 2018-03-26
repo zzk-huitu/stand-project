@@ -22,10 +22,13 @@ import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.zd.core.constant.AdminType;
@@ -59,8 +62,9 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
 
-	// @Value("${virtualFileUrl}")
-	// private String virtualFileUrl;
+
+	@Value("${virtualFileUrl}")
+	private String virtualFileUrl;
 
 	// 测试jedis
 	// @Resource
@@ -192,8 +196,9 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 			else
 				session.setAttribute(SESSION_SYS_ISSCHOOLADMIN, 0);
 		}
-
-		// session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
+		
+		//图片的虚拟目录
+		session.setAttribute("SESSION_SYS_VFU",virtualFileUrl);
 
 		result.put("result", 1);
 		writeJSON(response, jsonBuilder.toJson(result));

@@ -85,7 +85,7 @@
                 comm.add("semester","${SESSION_SYS_USER.semester}");
                 comm.add("studyYeahname","${SESSION_SYS_USER.studyYearname}");   
 
-                //comm.add("fileUrl","${SESSION_SYS_VFU}");   //虚拟文件夹目录
+                comm.add("virtualFileUrl","${SESSION_SYS_VFU}");   //虚拟文件夹目录
 
                 //延迟关闭
                 setTimeout(function(){

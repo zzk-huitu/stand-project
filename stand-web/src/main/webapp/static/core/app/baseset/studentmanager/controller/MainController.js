@@ -404,7 +404,9 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                         break;
                     case 'detail':
                         var userInfoContainer = tabItem.down("container[ref=studentBaseInfo]");
+                        insertObj.zp = comm.get("virtualFileUrl")+"/"+insertObj.zp;     //给照片的路径，加上一个虚拟路径
                         userInfoContainer.setData(insertObj);
+
                         self.asyncAjax({
                             url: comm.get('baseUrl') + "/SysUser/userRoleList",
                             params: {
@@ -647,8 +649,11 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                 deptJobField.hide(); 
 
                 self.setFormValue(formDeptObj, insertObj);
+                
                 //显示照片
-                objDetForm.down('image[ref=newsImage]').setSrc(insertObj.zp);
+                if(insertObj.zp!=null)
+                    objDetForm.down('image[ref=photoImage]').setSrc(comm.get("virtualFileUrl")+"/"+insertObj.zp);   
+              
             }, 30);
 
         } else if (tabItem.itemPKV && tabItem.itemPKV != pkValue) {     //判断是否点击的是同一条数据，不同则替换数据

@@ -402,8 +402,30 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                         deptJobStore.load();
                         break;
                     case 'detail':
+                    
+                        /*处理数据字典值*/
+                        var ddCodes = ['XLM', 'ZZMMM'];
+                        var propNames = ['xlm', 'zzmmm'];
+                        for (var i = 0; i < ddCodes.length; i++) {
+                            var ddItem = factory.DDCache.getItemByDDCode(ddCodes[i]);   //取出字典项值
+                            var resultVal = "";
+                            var value = insertObj[propNames[i]];        //原始值
+                            for (var j = 0; j < ddItem.length; j++) {   //遍历该字典所有值
+                                var ddObj = ddItem[j];
+                                if (value == ddObj["itemCode"]) {       //判断
+                                    resultVal = ddObj["itemName"];      
+                                    break;
+                                }
+                            }
+                            insertObj[propNames[i]] = resultVal;    //替换为具体值
+                        }
+
                         var userInfoContainer = tabItem.down("container[ref=teacherBaseInfo]");
-                        userInfoContainer.setData(insertObj);
+                        insertObj.zp = comm.get("virtualFileUrl")+"/"+insertObj.zp;  //给照片的路径，加上一个虚拟路径
+                        userInfoContainer.setData(insertObj);       //设置到Data中
+                        console.log(insertObj);
+
+                        /*读取此用户的角色列表*/
                         self.asyncAjax({
                             url: comm.get('baseUrl') + "/SysUser/userRoleList",
                             params: {
@@ -645,8 +667,11 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                 deptJobField.hide();  
 
                 self.setFormValue(formDeptObj, insertObj);
+
                 //显示照片
-                objDetForm.down('image[ref=newsImage]').setSrc(insertObj.zp);
+                if(insertObj.zp!=null)
+                    objDetForm.down('image[ref=photoImage]').setSrc(comm.get("virtualFileUrl")+"/"+insertObj.zp);   
+
             }, 30);
 
         } else if (tabItem.itemPKV && tabItem.itemPKV != pkValue) {     //判断是否点击的是同一条数据，不同则替换数据
