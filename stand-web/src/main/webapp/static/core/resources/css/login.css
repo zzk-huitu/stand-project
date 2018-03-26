@@ -65,7 +65,7 @@ padding: 28px; position: absolute; top: 50px;
 .but_box:hover{
 	background-color: #177fd2;
     transition: background-color 0.3s;
-}
+}.
 
 #yzz{
     width: 95px;
