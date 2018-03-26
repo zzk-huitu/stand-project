@@ -25,17 +25,35 @@ Ext.define("core.baseset.studentmanager.view.DetailHtml", {
                         '<li style="font-size:14px;">曾用名：{cym}</li>',
                         '<li style="font-size:14px;">姓名拼音：{xmpy}</li>',
                         '<li style="font-size:14px;">英文姓名：{ywxm}</li>',
-                        '<li title={sfzjh} style="font-size:14px;">身份证号码：{sfzjh}</li>', 
+                        
                         '<li style="font-size:14px;">出生日期：{csrq}</li>',
-                        '<li style="font-size:14px;">账号状态：',
-                        '<tpl if="state == 0">正常<tpl else>锁定</tpl></li>',
+                        '<li title={sfzjh} style="font-size:14px;">身份证号码：{sfzjh}</li>', 
+                        '<li style="font-size:14px;">政治面貌：{zzmmm}</li>',
+                        
                         '<li style="font-size:14px;">学籍号：{xjh}</li>',
+                        '<li style="font-size:14px;">健康状况：{jkzkm}</li>',
+                        '<li style="font-size:14px;">血型：{xxm}</li>',
+                       
+                        '<li style="font-size:14px;">国籍：{gjdqm}</li>',
+                        '<li style="font-size:14px;">港澳台侨外：{gatqwm}</li>',
+                        '<li style="font-size:14px;">民族：{mzm}</li>',
+                        
+                        '<li style="font-size:14px;">信仰宗教：{xyzjm}</li>',
+                        '<li style="font-size:14px;">户口所在地：{hkszdxzqhm}</li>',
+                        '<li style="font-size:14px;">户口性质：{hklbm}</li>',
+                        
                         '<li style="font-size:14px;">是否独生子女：{sfdszn}</li>',
                         '<li style="font-size:14px;">是否流动人口：{sfldrk}</li>',
+                        '<li style="font-size:14px;">账号状态：',
+                        '<tpl if="state == 0">正常<tpl else>锁定</tpl></li>',
+                        
+                        
+                        '<li style="font-size:14px;">毕业院校：{byxx}</li>',
                         '<li style="font-size:14px;">特长：{tc}</li>',
+                        '<li style="font-size:14px;">现住址: {currentAddress}</li>',
+                        
                         '<li style="font-size:14px;">创建时间：{createTime}</li>',
                         '<li style="font-size:14px;">创建人：{createUser}</li>',
-                        '<li style="font-size:14px;">现住址: {xzz}</li>',
                         '<div style="clear:both"></div>',
                     '</ul>',
                 '</div>',

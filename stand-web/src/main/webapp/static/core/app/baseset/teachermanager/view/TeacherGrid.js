@@ -134,7 +134,7 @@ Ext.define("core.baseset.teachermanager.view.TeacherGrid", {
             width:80,
         }, {
             text: "编制",
-            dataIndex: "zxxbzlb",
+            dataIndex: "bzlbm",
             ddCode: "ZXXBZLB",
             columnType: "basecombobox",
             minWidth:80,

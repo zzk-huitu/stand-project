@@ -191,23 +191,17 @@ Ext.define("core.system.user.view.UserForm", {
             name: "zzmmm",
             ddCode: "ZZMMM"
         }, {
-            fieldLabel: "学历",
-            columnWidth: 0.5,
-            name: "xlm",
-            xtype: "basecombobox",
-            ddCode: "XLM"
-        }]
-    }, {
-        xtype: 'container',
-        layout: "column", // 从左往右的布局
-        items: [ {
             columnWidth: .5,
             xtype: "datetimefield",
             dateType:'date',
             fieldLabel: "出生日期",
             name: "csrq",
             maxValue:new Date()
-        },{
+        }]
+    }, {
+        xtype: 'container',
+        layout: "column", // 从左往右的布局
+        items: [{
             columnWidth: .5,
             beforeLabelTextTpl: "",
             fieldLabel: '电子邮箱',
@@ -215,6 +209,15 @@ Ext.define("core.system.user.view.UserForm", {
             xtype: 'textfield',
             allowBlank: true,           
             vtype:'email'
+        },{
+            columnWidth: .5,
+            beforeLabelTextTpl: comm.get("required"),
+            xtype: "basecombobox",
+            fieldLabel: "账号状态",
+            name: "state",
+            ddCode: "ACCOUNTSTATE",
+            allowBlank: false,
+            blankText: ""
         }]
     }, {
         xtype: 'container',
@@ -241,15 +244,6 @@ Ext.define("core.system.user.view.UserForm", {
             name: "deptId",
             xtype: "textfield",
             hidden:true
-        },{
-            columnWidth: .5,
-            beforeLabelTextTpl: comm.get("required"),
-            xtype: "basecombobox",
-            fieldLabel: "账号状态",
-            name: "state",
-            ddCode: "ACCOUNTSTATE",
-            allowBlank: false,
-            blankText: ""
         }]
     }]
 

@@ -200,13 +200,13 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         items: [{
             fieldLabel: "户口所在地",
             columnWidth: 0.5,
-            name: "hkszd",
+            name: "hkszdxzqhm",
             xtype: "basecombobox",
             ddCode: "XZQHM"
         }, {
             fieldLabel: "户口性质",
             columnWidth: 0.5,
-            name: "hkxzm",
+            name: "hklbm",
             xtype: "basecombobox",
             ddCode: "HKLBM"
         }]
@@ -240,7 +240,7 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         items: [{
             fieldLabel: "现住址",
             columnWidth: 1,
-            name: "xzz",
+            name: "currentAddress",
             xtype: "textfield",
             maxLength: 128,
             maxLengthText: "最多128个字符,汉字占2个字符",
@@ -264,10 +264,10 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
                 maxLength:30,
                 maxLengthText: "最多30个字符"
             }, {
-                fieldLabel: "班号",
+                fieldLabel: "毕业院校",
                 width:'100%',
                 grow: true,
-                name: "classNumb",
+                name: "byxx",
                 xtype: "textfield",
                 maxLength:30,
                 maxLengthText: "最多30个字符"

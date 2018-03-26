@@ -404,8 +404,8 @@ Ext.define("core.baseset.teachermanager.controller.MainController", {
                     case 'detail':
                     
                         /*处理数据字典值*/
-                        var ddCodes = ['XLM', 'ZZMMM'];
-                        var propNames = ['xlm', 'zzmmm'];
+                        var ddCodes = ['XLM', 'ZZMMM','ZXXBZLB','HYZKM','JKZKM','XZQHM','GJDQM','GATQWM','XYZJM','XXM','XZQHM','HKLBM','MZM'];
+                        var propNames = ['xlm', 'zzmmm','bzlbm','hyzkm','jkzkm','csdm','gjdqm','gatqwm','xyzjm','xxm','hkszd','hkxzm','mzm'];
                         for (var i = 0; i < ddCodes.length; i++) {
                             var ddItem = factory.DDCache.getItemByDDCode(ddCodes[i]);   //取出字典项值
                             var resultVal = "";

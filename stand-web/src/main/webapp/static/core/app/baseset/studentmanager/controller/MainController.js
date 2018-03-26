@@ -403,6 +403,22 @@ Ext.define("core.baseset.studentmanager.controller.MainController", {
                         deptJobStore.load();
                         break;
                     case 'detail':
+                        /*处理数据字典值*/
+                        var ddCodes = ['XLM', 'ZZMMM','ZXXBZLB','HYZKM','JKZKM','XZQHM','GJDQM','GATQWM','XYZJM','XXM','XZQHM','HKLBM','MZM'];
+                        var propNames = ['xlm', 'zzmmm','bzlbm','hyzkm','jkzkm','csdm','gjdqm','gatqwm','xyzjm','xxm','hkszdxzqhm','hklbm','mzm'];
+                        for (var i = 0; i < ddCodes.length; i++) {
+                            var ddItem = factory.DDCache.getItemByDDCode(ddCodes[i]);   //取出字典项值
+                            var resultVal = "";
+                            var value = insertObj[propNames[i]];        //原始值
+                            for (var j = 0; j < ddItem.length; j++) {   //遍历该字典所有值
+                                var ddObj = ddItem[j];
+                                if (value == ddObj["itemCode"]) {       //判断
+                                    resultVal = ddObj["itemName"];      
+                                    break;
+                                }
+                            }
+                            insertObj[propNames[i]] = resultVal;    //替换为具体值
+                        }
                         var userInfoContainer = tabItem.down("container[ref=studentBaseInfo]");
                         insertObj.zp = comm.get("virtualFileUrl")+"/"+insertObj.zp;     //给照片的路径，加上一个虚拟路径
                         userInfoContainer.setData(insertObj);

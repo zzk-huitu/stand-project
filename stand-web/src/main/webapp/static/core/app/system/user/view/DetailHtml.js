@@ -24,7 +24,7 @@ Ext.define("core.system.user.view.DetailHtml", {
             '<li style="width:50%" title="{sfzjh}">身份证件号：{sfzjh}</li>',
             '<li style="width:50%" title="{zzmmm}">政治面貌：{zzmmm}</li>',
             '<li style="width:50%" title="{zxxbzlb}">编制：{zxxbzlb}</li>',
-            '<li style="width:50%" title="{date}">出生日期：{date}</li>',
+            '<li style="width:50%" title="{date}">出生日期：{csrq}</li>',
             '<li style="width:50%" title="{mobile}">移动电话：{mobile}</li>',
             '<li style="width:50%" title="{dzxx}">电子邮箱：{dzxx}</li>',
             '<li style="width:50%">账号状态：',
