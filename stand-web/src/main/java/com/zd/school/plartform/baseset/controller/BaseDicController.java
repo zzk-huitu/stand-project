@@ -1,32 +1,29 @@
 
 package com.zd.school.plartform.baseset.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.zd.core.annotation.Auth;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.StatuVeriable;
-import com.zd.core.constant.TreeVeriable;
 import com.zd.core.controller.core.FrameWorkController;
-import com.zd.core.util.BeanUtils;
 import com.zd.core.util.JsonBuilder;
 import com.zd.core.util.StringUtils;
 import com.zd.school.plartform.baseset.model.BaseDic;
 import com.zd.school.plartform.baseset.model.BaseDicTree;
 import com.zd.school.plartform.baseset.service.BaseDicService;
 import com.zd.school.plartform.system.model.SysUser;
-
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
+import com.zd.school.redis.service.DicItemRedisService;
 
 /**
  * 数据字典
@@ -38,10 +35,10 @@ import java.util.List;
 public class BaseDicController extends FrameWorkController<BaseDic> implements Constant {
 
     @Resource
-    BaseDicService thisService; // service层接口
+    private BaseDicService thisService; // service层接口
     
     @Resource
-	private RedisTemplate<String, Object> redisTemplate;
+    private DicItemRedisService dicItemRedisService;
     
     /**
      * 数据字典类别列表
@@ -150,7 +147,7 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
             }
         }
     }
-
+    
     /**
      * 更新字典
      * 删除redis的缓存数据，下次读取时再存入redis
@@ -189,16 +186,15 @@ public class BaseDicController extends FrameWorkController<BaseDic> implements C
         
         // 获取当前的操作用户  
         SysUser currentUser = getCurrentSysUser();     
-        entity=thisService.doUpdateEntity(entity, currentUser.getXm(),null);
-       
-        // 删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();			
-		hashOper.delete("baseDicItem", entity.getDicCode());
+        entity=thisService.doUpdateEntity(entity, currentUser.getXm(),null);           
      			
         if(entity==null)
        	 	writeJSON(response, jsonBuilder.returnFailureJson("\"修改失败，请重试或联系管理员！\""));
-        else        
+        else{
+        	// 删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
+            dicItemRedisService.deleteByDicCode(entity.getDicCode());
+            
         	writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
-        
+        }
     }
 }

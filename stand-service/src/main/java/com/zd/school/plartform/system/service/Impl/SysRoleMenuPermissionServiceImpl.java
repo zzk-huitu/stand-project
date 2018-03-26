@@ -22,6 +22,7 @@ import com.zd.school.plartform.system.service.SysPerimissonService;
 import com.zd.school.plartform.system.service.SysRoleMenuPermissionService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
+import com.zd.school.redis.service.UserRedisService;
 
 @Service
 @Transactional
@@ -29,7 +30,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		implements SysRoleMenuPermissionService {
 	
 	@Resource  
-	private RedisTemplate<String, Object> redisTemplate;  	
+	private UserRedisService userRedisService;
 	
 	@Resource
 	public void setSysRoleMenuPermissionDao(SysRoleMenuPermissionDao dao) {
@@ -101,9 +102,6 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		}
 		
 		//删除此role的相关用户的redis功能权限数据
-	
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		
 		List<SysUser> roleUsers = userSerive.getUserByRoleId(roleId).getResultList();
 		Object[] userIds=new String[roleUsers.size()];
 		for(int i=0;i<roleUsers.size();i++){
@@ -112,8 +110,8 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		if(userIds.length>0){
 			//若更新了功能权限，就删除它们
 			if(isUpdate==true){
-				hashOper.delete("userAuth", userIds);
-				hashOper.delete("userBtn", userIds);
+				userRedisService.deleteAuthByUser(userIds);
+				userRedisService.deleteBtnByUser(userIds);
 			}		
 		}
 	
@@ -132,9 +130,7 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		}
 		
 		
-		//删除此role的相关用户的redis功能权限数据
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-				
+		//删除此role的相关用户的redis功能权限数据				
 		List<SysUser> roleUsers = userSerive.getUserByRoleId(roleId).getResultList();
 		Object[] userIds=new String[roleUsers.size()];
 		for(int i=0;i<roleUsers.size();i++){
@@ -143,8 +139,8 @@ public class SysRoleMenuPermissionServiceImpl extends BaseServiceImpl<SysRoleMen
 		if(userIds.length>0){
 			if(row>0){
 				//若更新了功能权限，就删除它们
-				hashOper.delete("userAuth", userIds);
-				hashOper.delete("userBtn", userIds);
+				userRedisService.deleteAuthByUser(userIds);
+				userRedisService.deleteBtnByUser(userIds);
 			}
 		}
 		

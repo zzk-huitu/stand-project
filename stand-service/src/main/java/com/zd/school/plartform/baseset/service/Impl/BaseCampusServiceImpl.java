@@ -25,6 +25,7 @@ import com.zd.school.plartform.baseset.service.BaseCampusService;
 import com.zd.school.plartform.baseset.service.BaseRoomareaService;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysOrgService;
+import com.zd.school.redis.service.DeptRedisService;
 
 /**
  * 
@@ -51,7 +52,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 	private SysOrgService orgService;
 	
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 	
 	@Override
 	public BaseCampus doAdd(BaseCampus entity, SysUser currentUser)
@@ -98,7 +99,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		orgService.merge(orgSave);
 		
 		//删除所有redis部门缓存数据，以免产生误会
-		this.delDeptTreeAll();
+		deptRedisService.deleteDeptTreeAll();
 		
 		return entity;
 	}
@@ -149,7 +150,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 		}
 			
 		//删除所有redis部门缓存数据，以免产生误会
-		this.delDeptTreeAll();
+		deptRedisService.deleteDeptTreeAll();
 		
 		// TODO Auto-generated method stub
 		return entity;
@@ -211,7 +212,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 			rs = this.doLogicDelOrRestore(s3, StatuVeriable.ISDELETE, currentUser.getXm());
 			
 			//删除所有redis部门缓存数据，以免产生误会
-			this.delDeptTreeAll();
+			deptRedisService.deleteDeptTreeAll();
 			
 		} else {
 			rs = false;
@@ -222,16 +223,7 @@ public class BaseCampusServiceImpl extends BaseServiceImpl<BaseCampus> implement
 	}
 	
 	
-	/**
-	 * 当用户在进行（增加、删除、编辑部门的时候，就删除当前所有用户的缓存，以免产生误会）
-	 * 
-	 */
-	public void delDeptTreeAll() {
-		// TODO Auto-generated method stub
-		redisTemplate.delete("userRightDeptTree");
-		redisTemplate.delete("userRightDeptClassTree");	
-	}
-
+	
 	//根据房间获取这个房间初中或者高中的ID（校区ID）
 	@Override
 	public String getCampusIdByRoom(BuildRoominfo roominfo) {

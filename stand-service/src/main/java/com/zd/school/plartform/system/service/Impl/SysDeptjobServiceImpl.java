@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -30,6 +29,7 @@ import com.zd.school.plartform.system.service.SysJobService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.redis.service.DeptRedisService;
 
 /**
  * 
@@ -51,7 +51,7 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 	}
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DeptRedisService deptRedisService;
 
 	@Resource
 	private SysOrgService deptService;
@@ -416,13 +416,10 @@ public class SysDeptjobServiceImpl extends BaseServiceImpl<BaseDeptjob> implemen
 		/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
 		String hql = "select userId from BaseUserdeptjob o where o.deptjobId=? and o.isDelete=0 ";
 		List<String> userIds = this.queryEntityByHql(hql, deptJob.getUuid());
-		
+					
 		if(userIds.size()>0){
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userRightDeptTree", userIds.toArray());
-			hashOper.delete("userRightDeptClassTree",userIds.toArray());
-			hashOper.delete("userRightDeptDisciplineTree",userIds.toArray());
-		}		
+			deptRedisService.deleteDeptTreeByUsers(userIds.toArray());
+		}
 	}
 	
 	

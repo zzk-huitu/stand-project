@@ -64,10 +64,10 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 	 @Resource
 	 BaseClassDormAllotService classDormService;
 
-	@Resource
-	public void setJwOfficeallotDao(BaseOfficeAllotDao dao) {
+	 @Resource
+	 public void setJwOfficeallotDao(BaseOfficeAllotDao dao) {
 		this.dao = dao;
-	}
+	 }
 
 	/**
 	 * uuid：需要进行设置门禁权限的学生ID或教师ID；

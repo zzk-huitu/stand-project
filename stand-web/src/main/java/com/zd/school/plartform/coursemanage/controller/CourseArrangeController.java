@@ -148,6 +148,7 @@ public class CourseArrangeController extends FrameWorkController<JwCourseArrange
 		else
 			writeJSON(response, jsonBuilder.returnSuccessJson(jsonBuilder.toJson(entity)));
 	}
+    
     @Auth("COURSETABLE_delete")
 	@RequestMapping("/doDelete")
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {

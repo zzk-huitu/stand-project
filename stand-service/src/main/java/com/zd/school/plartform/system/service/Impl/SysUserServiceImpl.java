@@ -18,8 +18,6 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -48,6 +46,7 @@ import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysRoleService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.redis.service.UserRedisService;
 import com.zd.school.student.studentinfo.model.StuBaseinfo;
 import com.zd.school.teacher.teacherinfo.model.TeaTeacherbase;
 import com.zd.school.teacher.teacherinfo.service.TeaTeacherbaseService;
@@ -85,7 +84,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 	private SysMenuPermissionService menuPermissionService;
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private UserRedisService userRedisService;
 
 	@Resource
 	private BaseDicitemService dicitemService;
@@ -766,10 +765,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		// TODO Auto-generated method stub
 		HashMap<String, Set<String>> map = new HashMap<>();
 
-		// 若redis中不存在此人员的数据，就去查库（redis的相关数据，在用户被修改角色的时候，会删除）
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object userAuth = hashOper.get("userAuth", sysUser.getUuid());
-		Object userBtn = hashOper.get("userBtn", sysUser.getUuid());
+		// 若redis中不存在此人员的数据，就去查库（redis的相关数据，在用户被修改角色的时候，会删除）		
+		Object userAuth = userRedisService.getAuthByUser(sysUser.getUuid());
+		Object userBtn = userRedisService.getBtnByUser(sysUser.getUuid());
+				
 		if (userAuth != null && userBtn != null) { // 若存在，表明，没有更新更新redis，则不需要设置
 			// 如果session为空，表明是初次登录进来，所以设置
 			if (session.getAttribute(Constant.SESSION_SYS_AUTH) == null
@@ -803,14 +802,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		// 设置登录用户的功能权限（使用redis hash类型存储）
 		if(userRMP_AUTH.size()==0)
-			hashOper.put("userAuth", sysUser.getUuid(), null);
+			userRedisService.setAuthByUser(sysUser.getUuid(), null);
 		else
-			hashOper.put("userAuth", sysUser.getUuid(), userRMP_AUTH);
+			userRedisService.setAuthByUser(sysUser.getUuid(), userRMP_AUTH);
 		
 		if(userRMP_BTN.size()==0)
-			hashOper.put("userBtn", sysUser.getUuid(), null);
+			userRedisService.setBtnByUser(sysUser.getUuid(), null);
 		else
-			hashOper.put("userBtn", sysUser.getUuid(), userRMP_BTN);
+			userRedisService.setBtnByUser(sysUser.getUuid(), userRMP_BTN);
 
 		return map;
 
@@ -833,8 +832,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		if (setUserId.size() > 0) {
 			/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userMenuTree", setUserId.toArray());
+			userRedisService.deleteMenuTreeByUser(setUserId.toArray());			
 		}
 	}
 
@@ -851,18 +849,16 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 
 		if (setUserId.size() > 0) {
 			/* 删除用户的菜单redis数据，以至于下次刷新或请求时，可以加载最新数据 */
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			hashOper.delete("userMenuTree", setUserId.toArray());
+			userRedisService.deleteMenuTreeByUser(setUserId.toArray());
 		}
 	}
 
 	@Override
 	public void deleteUserRoleRedis(String ... userId) {
-		// TODO Auto-generated method stub
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		hashOper.delete("userAuth", userId);
-		hashOper.delete("userBtn", userId);
-		hashOper.delete("userMenuTree", userId);
+		// TODO Auto-generated method stub/*
+		userRedisService.deleteAuthByUser(userId);
+		userRedisService.deleteBtnByUser(userId);
+		userRedisService.deleteMenuTreeByUser(userId);
 	}
 
 	@Override

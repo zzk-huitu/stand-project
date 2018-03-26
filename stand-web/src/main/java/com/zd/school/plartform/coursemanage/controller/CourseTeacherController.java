@@ -228,6 +228,7 @@ public class CourseTeacherController extends FrameWorkController<JwCourseteacher
 		else
 			writeJSON(response, jsonBuilder.returnFailureJson("\"设置任课教师失败\""));
 	}
+	
 	@Auth("TEACHERCOURSE_replace")
 	@RequestMapping("/doReplaceCourseTeacher")
 	public void doReplaceTeacher(HttpServletRequest request, HttpServletResponse response)

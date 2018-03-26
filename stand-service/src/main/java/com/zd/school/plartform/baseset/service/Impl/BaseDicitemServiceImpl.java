@@ -1,25 +1,18 @@
 package com.zd.school.plartform.baseset.service.Impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zd.core.constant.StatuVeriable;
 import com.zd.core.service.BaseServiceImpl;
-import com.zd.core.util.BeanUtils;
+import com.zd.school.plartform.baseset.dao.BaseDicitemDao;
 import com.zd.school.plartform.baseset.model.BaseDic;
 import com.zd.school.plartform.baseset.model.BaseDicitem;
-import com.zd.school.plartform.baseset.dao.BaseDicitemDao;
 import com.zd.school.plartform.baseset.service.BaseDicService;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
+import com.zd.school.redis.service.DicItemRedisService;
 
 /**
  * 
@@ -43,7 +36,7 @@ public class BaseDicitemServiceImpl extends BaseServiceImpl<BaseDicitem> impleme
 	private BaseDicService dictionaryService;
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private DicItemRedisService dicItemRedisService;
 
 	@Override
 	public BaseDicitem doAdd(BaseDicitem entity, String xm) {
@@ -55,9 +48,9 @@ public class BaseDicitemServiceImpl extends BaseServiceImpl<BaseDicitem> impleme
 		if (entity != null) {
 			// 删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
 			BaseDic baseDic = dictionaryService.get(entity.getDicId());
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();	
-			//if(hashOper.hasKey("baseDicItem", baseDic.getDicCode())==true)
-			hashOper.delete("baseDicItem", baseDic.getDicCode());
+			
+			dicItemRedisService.deleteByDicCode( baseDic.getDicCode());
+			
 		}
 		return entity;
 	}
@@ -71,8 +64,8 @@ public class BaseDicitemServiceImpl extends BaseServiceImpl<BaseDicitem> impleme
 		
 		if (entity != null) {
 			// 删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();			
-			hashOper.delete("baseDicItem", entity.getDicCode());
+			dicItemRedisService.deleteByDicCode( entity.getDicCode());
+			
 		}
 		return entity;
 
@@ -86,8 +79,8 @@ public class BaseDicitemServiceImpl extends BaseServiceImpl<BaseDicitem> impleme
 			BaseDicitem baseDicItem=this.get(delIds.split(",")[0]);
 			if(baseDicItem!=null){
 				//删除reids中的此数据字典缓存，以至于下次请求时重新从库中获取
-				HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-				hashOper.delete("baseDicItem", baseDicItem.getDicCode());
+				dicItemRedisService.deleteByDicCode( baseDicItem.getDicCode());
+				
 			}
 		}
 		

@@ -63,6 +63,7 @@ import com.zd.school.plartform.system.service.SysMenuService;
 import com.zd.school.plartform.system.service.SysOrgService;
 import com.zd.school.plartform.system.service.SysUserService;
 import com.zd.school.plartform.system.service.SysUserdeptjobService;
+import com.zd.school.redis.service.UserRedisService;
 
 /**
  * 用户管理
@@ -91,7 +92,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	SysOrgService sysOrgService;
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private UserRedisService userRedisService;
 
 	/**
 	 * list查询 @Title: list @Description: TODO @param @param entity
@@ -256,9 +257,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 		SysUser currentUser = (SysUser) session.getAttribute(SESSION_SYS_USER);
 		String strData = null;
 
-		// 设置value序列化方式为json
-		HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-		Object userMenuTree = hashOper.get("userMenuTree", currentUser.getUuid());
+		//获取缓存数据
+		Object userMenuTree = userRedisService.getMenuTreeByUser(currentUser.getUuid());
 
 		if (userMenuTree == null) { // 若存在，则不需要设置
 			String node = request.getParameter("node");
@@ -272,7 +272,8 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 					false);
 			strData = jsonBuilder.buildList(lists, excludes);
 
-			hashOper.put("userMenuTree", currentUser.getUuid(), strData);
+			//存入redis中
+			userRedisService.setMenuTreeByUser(currentUser.getUuid(), strData);
 
 		} else {
 			strData = (String) userMenuTree;
@@ -856,8 +857,10 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			throws IOException {
 		try {
 			SysUser sysUser = getCurrentSysUser();
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+			
+			//获取缓存数据
+			Object userDeskFunc = userRedisService.getDeskFuncByUser(sysUser.getUuid());
+			
 			String[] strs = menuCodes.split(",");
 
 			Set<String> set = null;
@@ -867,7 +870,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				set = new HashSet<>();
 			}
 			set.addAll(Arrays.asList(strs));
-			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			//存入redis中
+			userRedisService.setDeskFuncByUser(sysUser.getUuid(), set);
 
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"设置成功！\""));
 
@@ -888,8 +893,10 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 			throws IOException {
 		try {
 			SysUser sysUser = getCurrentSysUser();
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+			
+			//获取缓存数据
+			Object userDeskFunc = userRedisService.getDeskFuncByUser(sysUser.getUuid());
+			
 			String[] strs = menuCodes.split(",");
 
 			Set<String> set = null;
@@ -899,7 +906,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 				set = new HashSet<>();
 			}
 			set.removeAll(Arrays.asList(strs));
-			hashOper.put("userDeskFunc", sysUser.getUuid(), set);
+			
+			//存入redis中
+			userRedisService.setDeskFuncByUser(sysUser.getUuid(), set);		
 
 			writeJSON(response, jsonBuilder.returnSuccessJson("\"取消成功！\""));
 
@@ -919,8 +928,9 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	public void getUserDeskFunc(HttpServletResponse response) throws IOException {
 		try {
 			SysUser sysUser = getCurrentSysUser();
-			HashOperations<String, String, Object> hashOper = redisTemplate.opsForHash();
-			Object userDeskFunc = hashOper.get("userDeskFunc", sysUser.getUuid());
+			
+			//获取缓存数据
+			Object userDeskFunc = userRedisService.getDeskFuncByUser(sysUser.getUuid());
 
 			Set<String> set = (Set<String>) userDeskFunc;
 			String returnStr = set.stream().collect(Collectors.joining(","));
