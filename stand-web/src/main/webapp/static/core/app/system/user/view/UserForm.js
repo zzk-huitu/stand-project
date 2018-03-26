@@ -189,10 +189,12 @@ Ext.define("core.system.user.view.UserForm", {
             fieldLabel: "主部门岗位",
             name: "deptJob",
             xtype: "basetreefield",
+            funcPanel:"deptJobfuncpanel",
             ddCode: "DEPTJOBTREE",
             rootId: "ROOT",
             configInfo: {
                 multiSelect: false,
+                controller : "system.user.othercontroller",
                 fieldInfo: "deptJob~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
@@ -203,7 +205,7 @@ Ext.define("core.system.user.view.UserForm", {
         }, {
             fieldLabel: "部门岗位ID",
             columnWidth: 0.5,
-            name: "deptIddeptId",
+            name: "deptId",
             xtype: "textfield",
             hidden:true
         }, {

@@ -99,6 +99,15 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
                 return false;
             }
         },
+        
+        //重写form表单中选取部门岗位时候的只能选择叶子节点的事件
+        "mtsswinview[funcPanel=studentmanagerdeptJobfuncpanel] button[ref=ssOkBtn]": {
+            beforeclick: function(btn) {
+            	// console.log(1);
+                this.doAddStudentDeptJob(btn);
+                return false;
+            }
+        },
 
     },
 
@@ -566,5 +575,42 @@ Ext.define("core.baseset.studentmanager.controller.OtherController", {
 
         baseGrid.getStore().getProxy().extraParams.filter="[]";
         win.close();
-    }
+    },
+    
+    doAddStudentDeptJob:function(btn){
+    	var self = this;
+		var win=btn.up("mtsswinview");
+		//树形查询处理
+		if(win.queryType=="mttreeview"){
+			var tree=win.down("mttreeview");
+			var selRecords=new Array();
+			records=tree.getSelectionModel().getSelection();
+			//处理记录是否禁用
+			Ext.each(records,function(rec){
+				if(!rec.raw.disabled){
+					if (records.length == 1) {                       
+		                if (records[0].get("level") < 99) {
+		                    self.msgbox("请选择岗位");
+		                    return false;
+		                }
+		            }
+		            Ext.each(records, function(rec) {
+		                if (rec.get("level") == 99)
+		                	selRecords.push(rec);
+		            });
+		            if (selRecords.length == 0) {
+		                self.msgbox("请选择岗位");
+		                return false;
+		            }
+					selRecords.push(rec);
+				}
+			});
+			if(selRecords.length>0 || win.isEmpty){
+				win.callback(win,selRecords);
+				win.close();
+			}else{
+				alert("你选中的信息错误，请重新选择!");
+			}
+		}
+	}
 });

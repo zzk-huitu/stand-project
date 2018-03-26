@@ -98,12 +98,14 @@ Ext.define("core.baseset.studentmanager.view.DetailForm", {
         items: [{
             columnWidth: .5,
             fieldLabel: "主部门岗位",
+            funcPanel:"studentmanagerdeptJobfuncpanel",
             name: "deptJob",
             xtype: "basetreefield",
             ddCode: "DEPTJOBTREE",
             rootId: "ROOT",
             configInfo: {
                 multiSelect: false,
+                controller : "baseset.studentmanager.othercontroller",
                 fieldInfo: "deptJob~deptId,text~id",
                 whereSql: " and isDelete='0' ",
                 orderSql: " order by parentNode,orderIndex asc",
