@@ -25,9 +25,9 @@ Ext.define("core.wisdomclass.redflag.view.MainLayout", {
        // whereSql:" where isDelete=0",
 	    tabConfig:{         //zzk：2017-6-1加入，用于对tab操作提供基本配置数据
             titleField:'className',   //指定这个模块，主表格界面的名称的字段名，用于显示在tab标签页上面
-            addTitle:'增加班训内容',
-            editTitle:'编辑班训内容',
-            detailTitle:'班训内容详情'
+            addTitle:'增加流动红旗',
+            editTitle:'编辑流动红旗',
+            detailTitle:'流动红旗详情'
         }
 	},
 
