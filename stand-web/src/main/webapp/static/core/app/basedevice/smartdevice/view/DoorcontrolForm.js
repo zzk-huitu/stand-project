@@ -75,17 +75,17 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 }]
             }, {
                 xtype: 'radiogroup',
-                fieldLabel: '名单方式',
+                fieldLabel: '认证方式',
                 //name: 'tlvs[5].valInt',
                 vertical: true,
                 items: [{
                     width:100,
-                    boxLabel: '黑名单',
+                    boxLabel: '物理卡号',
                     name: 'tlvs[5].valInt',
                     inputValue: 0
                 }, {
                     width:100,
-                    boxLabel: '白名单',
+                    boxLabel: '卡流水号',
                     inputValue: 1,
                     name: 'tlvs[5].valInt',
                     checked: true
@@ -271,17 +271,17 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 }]
             }, {
                 xtype: 'radiogroup',
-                fieldLabel: '卡机绑定',
+                fieldLabel: '锁状态检测',
                 //name: 'tlvs[13].valInt',
                 vertical: true,
                 items: [{
                     width: 100,
-                    boxLabel: '绑定',
+                    boxLabel: '启用',
                     name: 'tlvs[13].valInt',
                     inputValue: 0,
                 }, {
                     width: 100,
-                    boxLabel: '不绑定',
+                    boxLabel: '不启用',
                     name: 'tlvs[13].valInt',
                     inputValue: 1,
                     checked: true
