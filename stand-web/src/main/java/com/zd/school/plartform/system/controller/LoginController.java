@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
+import com.zd.core.constant.ModuleNumlType;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
@@ -64,7 +65,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		
 	@Value("${virtualFileUrl}")
 	private String virtualFileUrl;
-
+	
 	// 测试jedis
 	// @Resource
 	// private RedisTemplate<String, Object> redisTemplate;
@@ -374,7 +375,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		hashOper.delete("userRightDeptClassTree", sysUser.getUuid());
 		hashOper.delete("userRightDeptDisciplineTree", sysUser.getUuid());
 		
-		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));
+		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));		
 	}
 
 }
