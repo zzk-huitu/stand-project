@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
 
-	<!-- ======================== 调度任务类 ======================== -->  	
+	<!-- ======================== 调度任务类1 ======================== -->  	
 	<bean id="LogJobQuartz" class="com.zd.core.security.LogJobQuartz"/> 
 	
 	<!-- ======================== 指定调度任务执行的类和方法 ======================== -->  
@@ -22,7 +22,8 @@
 	    <property name="jobDetail" ref="LogJobQuartzMethod"></property>  
 	    <property name="cronExpression" value="0 0 2 * * ?"></property>  
 	</bean>  
-	  
+	 	 
+	
 	<!-- ======================== 调度工厂 ======================== -->  
 	<bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
 	    <property name="triggers">  
