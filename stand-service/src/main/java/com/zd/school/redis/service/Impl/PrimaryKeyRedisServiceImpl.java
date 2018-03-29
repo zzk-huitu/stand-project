@@ -23,8 +23,9 @@ public class PrimaryKeyRedisServiceImpl implements PrimaryKeyRedisService{
 	
 	private static Logger logger = Logger.getLogger(PrimaryKeyRedisServiceImpl.class);
 	
-	private static SimpleDateFormat dateSdf=new SimpleDateFormat("yyyyMMdd");
-	private static SimpleDateFormat dateTimeSdf=new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+	private static SimpleDateFormat dateTimeSdf1=new SimpleDateFormat("yyyyMMddHHmmss");
+	private static SimpleDateFormat dateTimeSdf2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static SimpleDateFormat dateSdf=new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Override
 	public String getId(String code) {
@@ -37,7 +38,7 @@ public class PrimaryKeyRedisServiceImpl implements PrimaryKeyRedisService{
 			return null;
 		}
 		String incrValue=StringUtils.addString(String.valueOf(idValue),"0",6,"L");
-		String dateStr=getDate();
+		String dateStr=getDateTime();
 		return dateStr+code+incrValue;	
 	}
 
@@ -62,15 +63,15 @@ public class PrimaryKeyRedisServiceImpl implements PrimaryKeyRedisService{
 		//若value==1，表明此值是重新开始设定的
 		if(value==1){
 			//设置缓存过期时间  					
-			Date date=dateTimeSdf.parse(dateSdf.format(new Date())+" "+"23:59:59");	//当前的日期加上23:59:59
+			Date date=dateTimeSdf2.parse(dateSdf.format(new Date())+" "+"23:59:59");	//当前的日期加上23:59:59
 			op.expireAt(date);          
 		}
 		       
 		return value;
 	}
 	
-	private String getDate(){	
-		String value=dateSdf.format(new Date());
+	private String getDateTime(){	
+		String value=dateTimeSdf1.format(new Date());
 		return value;
 	}
 

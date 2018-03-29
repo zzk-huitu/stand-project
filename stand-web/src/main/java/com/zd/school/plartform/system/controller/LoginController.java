@@ -32,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
-import com.zd.core.constant.ModuleNumlType;
+import com.zd.core.constant.ModuleNumType;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
@@ -71,7 +71,7 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 	// private RedisTemplate<String, Object> redisTemplate;
 	// @Resource
 	// private StringRedisTemplate stringRedisTemplate;
-
+	
 	@RequestMapping("/login")
 	public void login(SysUser sysUserModel, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -377,5 +377,4 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));		
 	}
-
 }
