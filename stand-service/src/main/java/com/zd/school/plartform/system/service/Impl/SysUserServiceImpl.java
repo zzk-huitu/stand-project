@@ -469,17 +469,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 		int row = 0;
 		try {
 			// 1.查询该数据源中的此用户的信息
-			String sql = "select UserId as userId,convert(varchar,EmployeeID) as employeeId,DepartmentID as departmentId,"
+			String sql = "select User_Id as userId,convert(varchar,EmployeeID) as employeeId,DepartmentID as departmentId,"
 					+ " convert(varchar(36),EmployeeName) as employeeName,"
 					+ " employeeStrId,sid,convert(varchar(1),sexId) sexId,identifier, convert(varchar(36),employeeTel) as employeeTel "
 					+ " from Tc_Employee ";
 			// + " where DepartmentID='"+departmentId+"'"
-			// + " order by userId asc";
+			// + " order by User_Id asc";
 
 			if (departmentId != null) // 当此值为具体的值的时候，表明同步的是某个班级、部门的人员
 				sql += " where DepartmentID='" + departmentId + "'";
 
-			sql += " order by userId asc";
+			sql += " order by User_Id asc";
 
 			List<SysUserToUP> upUserInfos = this.queryEntityBySql(sql, SysUserToUP.class);
 
@@ -501,7 +501,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 							// sqlDelete = "delete from Tc_Employee where
 							// UserId='" + UserId + "'"; 物理删除
 							// 现在每次同步都会更新这个值，理应判断之后就不同步的，但是影响不大。
-							sqlSb.append(" update Tc_Employee set EmployeeStatusID='26' where UserId='"
+							sqlSb.append(" update Tc_Employee set EmployeeStatusID='26' where User_Id='"
 									+ currentUser.getUserId() + "';");// 逻辑删除
 
 							// 更改此人的卡片状态为2
@@ -567,7 +567,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 								sqlUpdate += ",employeeTel='" + currentUser.getEmployeeTel() + "'";
 
 							sqlUpdate += ",EmployeeStatusID='24' " // ,CardTypeID="+cardTypeId+"现在不更新卡类了（胡洋确定及肯定）
-									+ " where UserId='" + currentUser.getUserId() + "';";
+									+ " where User_Id='" + currentUser.getUserId() + "';";
 				
 
 							sqlSb.append(sqlUpdate);
@@ -589,7 +589,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 					// cardTypeId = 3;
 					// }
 
-					String sqlInsert = "insert into Tc_Employee(UserId,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,employeeTel,cardid,CardTypeID,EmployeeStatusID,PositionId) "
+					String sqlInsert = "insert into Tc_Employee(User_Id,DepartmentID,EmployeeName,EmployeeStrID,SID,EmployeePWD,SexID,identifier,employeeTel,cardid,CardTypeID,EmployeeStatusID,PositionId) "
 							+ "values('" + currentUser.getUserId() + "','" + currentUser.getDepartmentId() + "','"
 							+ currentUser.getEmployeeName() + "'," + "'" + currentUser.getEmployeeStrId() + "','"
 							+ currentUser.getSid() + "','" + currentUser.getEmployeePwd() + "'";
@@ -609,7 +609,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
 					else
 						sqlInsert += ",'" + currentUser.getEmployeeTel() + "'";
 
-					sqlInsert += ",0," + cardTypeId + ",24,19);";
+					sqlInsert += ",0," + cardTypeId + ",24,0);";
 
 					sqlSb.append(sqlInsert);	
 				}

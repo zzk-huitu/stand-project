@@ -151,7 +151,8 @@ public class StuBaseinfo extends SysUser implements Serializable {
     public String getSfzjlxm() {
         return sfzjlxm;
     }
-
+    
+    /*若主表有了此字段，那么此表不需要再次声明
     @FieldInfo(name = "身份证件号")
     @Column(name = "SFZJH", length = 20, nullable = true)
     private String sfzjh;
@@ -162,7 +163,7 @@ public class StuBaseinfo extends SysUser implements Serializable {
 
     public String getSfzjh() {
         return sfzjh;
-    }
+    }*/
 
     @FieldInfo(name = "婚姻状况码")
     @Column(name = "HYZKM", length = 10, nullable = true)

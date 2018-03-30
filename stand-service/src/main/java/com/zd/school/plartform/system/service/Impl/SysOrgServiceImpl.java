@@ -1034,7 +1034,7 @@ public class SysOrgServiceImpl extends BaseServiceImpl<BaseOrg> implements SysOr
 		// TODO Auto-generated method stub
 		this.getSession().doWork((x)->{
 			SysUserToUP sut=null;
-			String sqlUpdate = " update Tc_Employee set DepartmentID=? where UserId=?";
+			String sqlUpdate = " update Tc_Employee set DepartmentID=? where User_Id=?";
 			PreparedStatement ps=x.prepareStatement(sqlUpdate);
 			for(int i=0;i<userInfos.size();i++){
 				sut=userInfos.get(i);

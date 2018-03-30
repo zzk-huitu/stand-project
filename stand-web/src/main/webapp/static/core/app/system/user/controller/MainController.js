@@ -1177,7 +1177,7 @@ Ext.define("core.system.user.controller.MainController", {
 
                 self.setFormValue(formDeptObj, insertObj);
                 //显示照片
-                objDetForm.down('image[ref=newsImage]').setSrc(insertObj.zp);
+                //objDetForm.down('image[ref=newsImage]').setSrc(insertObj.zp);
             }, 30);
 
         } else if (tabItem.itemPKV && tabItem.itemPKV != pkValue) {     //判断是否点击的是同一条数据，不同则替换数据
