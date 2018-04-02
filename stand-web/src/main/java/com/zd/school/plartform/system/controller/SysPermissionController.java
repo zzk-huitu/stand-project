@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zd.core.constant.Constant;
@@ -19,7 +18,6 @@ import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.model.extjs.QueryResult;
 import com.zd.core.util.BeanUtils;
 import com.zd.core.util.StringUtils;
-import com.zd.school.plartform.system.model.SysDatapermission;
 import com.zd.school.plartform.system.model.SysPermission;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.service.SysPerimissonService;
@@ -53,7 +51,7 @@ public class SysPermissionController extends FrameWorkController<SysPermission> 
     */
    @RequestMapping(value = { "/list" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
            org.springframework.web.bind.annotation.RequestMethod.POST })
-   public void list(@ModelAttribute SysDatapermission entity, HttpServletRequest request, HttpServletResponse response)
+   public void list(HttpServletRequest request, HttpServletResponse response)
            throws IOException {
        String strData = ""; // 返回给js的数据
        QueryResult<SysPermission> qr = thisService.queryPageResult(super.start(request), super.limit(request),

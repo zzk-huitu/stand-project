@@ -13,13 +13,9 @@ import com.zd.core.annotation.FieldInfo;
 import com.zd.core.model.BaseEntity;
 
 /**
- * 
- * ClassName: SysDeptright Function: TODO ADD FUNCTION. Reason: TODO ADD
- * REASON(可选). Description: 用户权限部门(SYS_T_DEPTRIGHT)实体类. date: 2017-04-06
+ * 用户部门权限
+ * @author Administrator
  *
- * @author luoyibo 创建文件
- * @version 0.1
- * @since JDK 1.8
  */
 
 @Entity

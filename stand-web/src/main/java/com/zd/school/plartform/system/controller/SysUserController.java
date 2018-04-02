@@ -24,11 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,7 +50,6 @@ import com.zd.school.plartform.baseset.model.BaseOrgChkTree;
 import com.zd.school.plartform.baseset.model.BaseUserdeptjob;
 import com.zd.school.plartform.baseset.service.BaseDicitemService;
 import com.zd.school.plartform.system.model.CardUserInfoToUP;
-import com.zd.school.plartform.system.model.SysDatapermission;
 import com.zd.school.plartform.system.model.SysMenuTree;
 import com.zd.school.plartform.system.model.SysRole;
 import com.zd.school.plartform.system.model.SysUser;
@@ -487,7 +482,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 
 	@RequestMapping(value = { "/userList" }, method = { org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void getUserlist(@ModelAttribute SysDatapermission entity, HttpServletRequest request,
+	public void getUserlist( HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		QueryResult<SysUser> qr = thisService.queryPageResult(super.start(request), super.limit(request),
@@ -500,7 +495,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	@RequestMapping(value = { "/selectedUserlist" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void getSelectedUserlist(@ModelAttribute SysDatapermission entity, HttpServletRequest request,
+	public void getSelectedUserlist( HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 		String ids = request.getParameter("ids");
@@ -521,7 +516,7 @@ public class SysUserController extends FrameWorkController<SysUser> implements C
 	@RequestMapping(value = { "/userDeptJobList" }, method = {
 			org.springframework.web.bind.annotation.RequestMethod.GET,
 			org.springframework.web.bind.annotation.RequestMethod.POST })
-	public void getUserDeptJobList(@ModelAttribute SysDatapermission entity, HttpServletRequest request,
+	public void getUserDeptJobList( HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String strData = ""; // 返回给js的数据
 
