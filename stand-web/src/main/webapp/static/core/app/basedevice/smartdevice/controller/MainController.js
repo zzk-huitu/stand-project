@@ -587,8 +587,12 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                             if (data.tlvs){
                                 for (var k = 0; k < data.tlvs.length; k++) {
                                     if (data.tlvs[k].tag == 0x1006) {
-                                        objForm.down("[ref=tlvsvalInt]").setValue(data.tlvs[0].valInt);
-                                    } else if (data.tlvs[k].valStr != '') {
+                                        objForm.down("[ref=tlvsvalInt]").setValue(data.tlvs[k].valInt);
+
+                                    }  else if (data.tlvs[k].tag == 0xC006) {
+                                        objForm.down("[ref=tlvsval3Int]").setValue(data.tlvs[k].valInt);
+
+                                    }  else if (data.tlvs[k].valStr != '') {
                                         var item = data.tlvs[k].valStr.split('&');
                                         for (var i = 0; i < item.length; i++) {
                                             var arr1 = item[i].split('#');
@@ -640,9 +644,9 @@ Ext.define("core.basedevice.smartdevice.controller.MainController", {
                                     };
                                 }
                                 if (data.tlvs[2].valInt != null && data.tlvs[2].valInt!= '') {
-                                    objForm.down("[ref=tlvsva2Int]").setValue(String(data.tlvs[2].valInt));
+                                    objForm.down("[ref=tlvsval2Int]").setValue(String(data.tlvs[2].valInt));
                                 }else{
-                                    objForm.down("[ref=tlvsva2Int]").setValue("0");
+                                    objForm.down("[ref=tlvsval2Int]").setValue("0");
                                 }
                             }
                         }

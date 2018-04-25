@@ -80,14 +80,14 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 vertical: true,
                 items: [{
                     width:100,
+                    boxLabel: '卡流水号',
+                    inputValue: 0,
+                    name: 'tlvs[5].valInt',
+                },{
+                    width:100,
                     boxLabel: '物理卡号',
                     name: 'tlvs[5].valInt',
-                    inputValue: 0
-                }, {
-                    width:100,
-                    boxLabel: '卡流水号',
-                    inputValue: 1,
-                    name: 'tlvs[5].valInt',
+                    inputValue: 1,                
                     checked: true
                 }]
             }, {
@@ -274,17 +274,17 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 fieldLabel: '锁状态检测',
                 //name: 'tlvs[13].valInt',
                 vertical: true,
-                items: [{
-                    width: 100,
-                    boxLabel: '启用',
-                    name: 'tlvs[13].valInt',
-                    inputValue: 0,
-                }, {
+                items: [ {
                     width: 100,
                     boxLabel: '不启用',
                     name: 'tlvs[13].valInt',
-                    inputValue: 1,
+                    inputValue: 0,
                     checked: true
+                },{
+                    width: 100,
+                    boxLabel: '启用',
+                    name: 'tlvs[13].valInt',
+                    inputValue: 1,
                 }]
             }]
         }]

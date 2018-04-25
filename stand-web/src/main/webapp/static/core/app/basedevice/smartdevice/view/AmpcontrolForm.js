@@ -6,7 +6,7 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
        xtype: "fieldset",
        title: '开关基础参数',
        layout:'form',
-       width:'99%',
+       width:'100%',
        style: {
             fontSize: '16px',
             color: '#C44444',
@@ -19,7 +19,6 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
             xtype: "textfield"
         },
         items: [{
-
             xtype: "container",
             layout: "column", // 从左往右的布局
             items: [{
@@ -46,8 +45,7 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 name:'tlvs[2].valInt',
                 fieldLabel: '接线类型',
                 xtype: 'basecombobox',
-                name: 'tlvs[2].valInt',
-                ref: 'tlvsva2Int',
+                ref: 'tlvsval2Int',
                 ddCode: "JXLX",            
                 allowBlank: false,
                 value: "1",
@@ -56,11 +54,30 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                 xtype: "label",
                 html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>次（取值范围1-300）</font>"
             }*/]
-        }]
+        },{
+            xtype: "container",
+            layout: "column", // 从左往右的布局
+            items: [{
+                columnWidth: 0.4,
+                name:'tlvs[3].valInt',
+                ref: 'tlvsval3Int',
+                fieldLabel: '动作时间',
+                xtype: 'numberfield',
+                value: 0,
+                maxValue: 200,
+                minValue: 0,
+                allowBlank: false,
+                allowDecimals: false
+            }, {
+                columnWidth: 0.6,
+                xtype: "label",
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒（取值范围0-200；投影幕布或窗帘开电动作时间）</font>"
+            }]
+        },]
     },{
         xtype: "container",
         layout: "column", // 从左往右的布局    
-        width:'99%',
+        width:'100%',
         items:[{
             ref: 'lItems1',
             margin:"5 5 5 0",
@@ -90,11 +107,41 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                     xtype: "basecombobox",
                     ddCode: "SWITCHTERMTYPE",
                     value: '1'
-                },{
-                    columnWidth: 0.5,                
+                }, {
+                    columnWidth: 0.5,
+                    xtype: 'textfield',
+                    name: 'notes',
+                    length:20,
+                    fieldLabel: '开关名称',
+                    //beforeLabelTextTpl: comm.get("required"),
+                    allowBlank: true,
+                }]
+            },{
+                xtype: "container",
+                layout: "column", // 从左往右的布局
+                items: [{
+                    //columnWidth: 0.25,
+                    width:120,                
                     xtype: "checkboxfield",
                     name: "on",
                     fieldLabel: "是否启用",
+                    listeners:{
+                        change :function(field,newValue){
+                            var fieldset=field.up("fieldset");
+                            var notesField=fieldset.down('field[name=notes]');
+                            if(newValue==false){                            
+                                //notesField.hide();
+                                notesField.allowBlank=true;
+                            }else{
+                                //notesField.show();
+                                notesField.allowBlank=false;
+                            }
+                        }
+                    }
+                },{
+                    columnWidth: 0.8,
+                    xtype: "label",
+                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>* 启用后可在课牌微信中控制这一路开关</font>"
                 }]
             },{
                 xtype: "container",
@@ -229,10 +276,6 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                         inputValue: 1,
                     }]
                 }]
-            }, {
-                xtype: 'textarea',
-                name: 'notes',
-                fieldLabel: '描述',
             }]
         },{
             ref: 'lItems2',
@@ -263,11 +306,40 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                     xtype: "basecombobox",
                     ddCode: "SWITCHTERMTYPE",
                     value: '1'
-                },{
-                    columnWidth: 0.5,                
+                }, {
+                    columnWidth: 0.5,
+                    xtype: 'textfield',
+                    name: 'notes',
+                    length:20,
+                    fieldLabel: '开关名称',
+                    allowBlank: true,
+                }]
+            },{
+                xtype: "container",
+                layout: "column", // 从左往右的布局
+                items: [{
+                    //columnWidth: 0.5,   
+                    width:120,             
                     xtype: "checkboxfield",
                     name: "on",
                     fieldLabel: "是否启用",
+                    listeners:{
+                        change :function(field,newValue){
+                            var fieldset=field.up("fieldset");
+                            var notesField=fieldset.down('field[name=notes]');
+                            if(newValue==false){                            
+                                //notesField.hide();
+                                notesField.allowBlank=true;
+                            }else{
+                                //notesField.show();
+                                notesField.allowBlank=false;
+                            }
+                        }
+                    }
+                },{
+                    columnWidth: 0.8,
+                    xtype: "label",
+                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>* 启用后可在课牌微信中控制这一路开关</font>"
                 }]
             },{
                 xtype: "container",
@@ -402,10 +474,6 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                         inputValue: 1,
                     }]
                 }]
-            }, {
-                xtype: 'textarea',
-                name: 'notes',
-                fieldLabel: '描述',
             }]
         },{
             ref: 'lItems3',
@@ -436,11 +504,40 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                     xtype: "basecombobox",
                     ddCode: "SWITCHTERMTYPE",
                     value: '1'
-                },{
-                    columnWidth: 0.5,                
+                }, {
+                    columnWidth: 0.5,
+                    xtype: 'textfield',
+                    name: 'notes',
+                    length:20,
+                    fieldLabel: '开关名称',
+                    allowBlank: true,
+                }]
+            },{
+                xtype: "container",
+                layout: "column", // 从左往右的布局
+                items: [{
+                    //columnWidth: 0.5,    
+                    width:120,            
                     xtype: "checkboxfield",
                     name: "on",
                     fieldLabel: "是否启用",
+                    listeners:{
+                        change :function(field,newValue){
+                            var fieldset=field.up("fieldset");
+                            var notesField=fieldset.down('field[name=notes]');
+                            if(newValue==false){                            
+                                //notesField.hide();
+                                notesField.allowBlank=true;
+                            }else{
+                                //notesField.show();
+                                notesField.allowBlank=false;
+                            }
+                        }
+                    }
+                },{
+                    columnWidth: 0.8,
+                    xtype: "label",
+                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>* 启用后可在课牌微信中控制这一路开关</font>"
                 }]
             },{
                 xtype: "container",
@@ -575,10 +672,6 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                         inputValue: 1,
                     }]
                 }]
-            }, {
-                xtype: 'textarea',
-                name: 'notes',
-                fieldLabel: '描述',
             }]
         },{
             ref: 'lItems4',
@@ -609,11 +702,40 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                     xtype: "basecombobox",
                     ddCode: "SWITCHTERMTYPE",
                     value: '1'
-                },{
-                    columnWidth: 0.5,                
+                }, {
+                    columnWidth: 0.5,
+                    xtype: 'textfield',
+                    name: 'notes',
+                    length:20,
+                    fieldLabel: '开关名称',
+                    allowBlank: true,
+                }]
+            },{
+                xtype: "container",
+                layout: "column", // 从左往右的布局
+                items: [{
+                    //columnWidth: 0.5,
+                    width:120,                
                     xtype: "checkboxfield",
                     name: "on",
                     fieldLabel: "是否启用",
+                    listeners:{
+                        change :function(field,newValue){
+                            var fieldset=field.up("fieldset");
+                            var notesField=fieldset.down('field[name=notes]');
+                            if(newValue==false){                            
+                                //notesField.hide();
+                                notesField.allowBlank=true;
+                            }else{
+                                //notesField.show();
+                                notesField.allowBlank=false;
+                            }
+                        }
+                    }
+                },{
+                    columnWidth: 0.8,
+                    xtype: "label",
+                    html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>* 启用后可在课牌微信中控制这一路开关</font>"
                 }]
             },{
                 xtype: "container",
@@ -748,10 +870,6 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
                         inputValue: 1,
                     }]
                 }]
-            }, {
-                xtype: 'textarea',
-                name: 'notes',
-                fieldLabel: '描述',
             }]
         }]
     },{
@@ -837,5 +955,8 @@ Ext.define("core.basedevice.smartdevice.view.AmpcontrolForm", {
         "tlvs[2].len": 1, //接线类型
         "tlvs[2].type": 1,
         "tlvs[2].tag": 0xC007,
+        "tlvs[3].len": 1, //投影动作时间
+        "tlvs[3].type": 1,
+        "tlvs[3].tag": 0xC006,
     }
 });

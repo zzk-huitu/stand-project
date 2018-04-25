@@ -189,7 +189,7 @@ Ext.define("core.basedevice.smartdevice.controller.OtherController", {
             str = str.substring(0, str.length - 1);
             notes = notes.substring(0, notes.length - 1);
             var xtjg = objForm.down('[ref=tlvsvalInt]').getValue();
-            var switchConnectType=objForm.down('[ref=tlvsva2Int]').getValue();
+            var switchConnectType=objForm.down('[ref=tlvsval2Int]').getValue();
           
             params['tlvs[1].valStr']= str;
             params['tlvs[0].valInt']= xtjg;
