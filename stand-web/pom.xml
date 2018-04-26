@@ -114,7 +114,7 @@
 					</webAppConfig>
 					<!-- 配置的停止jetty服务 -->
 					<stopKey>shutdown</stopKey>
-					<stopPort>9999</stopPort>
+					<stopPort>9099</stopPort>
 					
 					<!-- 额外监听目录 -->  
 			        <contextHandlers>  
