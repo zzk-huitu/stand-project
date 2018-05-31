@@ -128,7 +128,7 @@ Ext.define("core.basedevice.smartdevice.view.DkBaseParamForm", {
             }, {
                 columnWidth: 0.6,
                 xtype: "label",
-                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>安</font>"        
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>毫安</font>"        
             }]
         }, {
             width:300,

@@ -22,7 +22,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             margin:"5 5 5 0",
             flex: 1,
             xtype: "fieldset",
-            height:315,
+            height:280,
             title: null,
             layout:'form',
             style: {
@@ -90,7 +90,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                     inputValue: 1,                
                     checked: true
                 }]
-            }, {
+            },/* 硬件不支持{
                 xtype: 'radiogroup',
                 fieldLabel: '自动锁卡',
                 //name: 'tlvs[4].valInt',
@@ -107,7 +107,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                     name: 'tlvs[4].valInt',
                     checked: true
                 }]
-            }, {
+            }, */{
                 xtype: 'radiogroup',
                 fieldLabel: '未关门报警',
                 //name: 'tlvs[10].valInt',
@@ -149,7 +149,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 items: [{
                     columnWidth:0.5,
                     labelWidth:80,
-                    fieldLabel: '关门延时',
+                    fieldLabel: '未关门延时',
                     xtype: 'numberfield',
                     name: 'tlvs[11].valInt',
                     value: 3,
@@ -167,7 +167,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
             margin:"5 5 5 0",
             flex: 1,
             xtype: "fieldset",
-            height:315,
+            height:280,
             title: null,
             layout:'form',
             style: {
@@ -201,7 +201,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                     xtype: "label",
                     html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>毫秒 （取值范围5000-60000）</font>"     
                 }]
-            }, {
+            }, /*硬件不支持{
                 xtype: 'radiogroup',
                 fieldLabel: '卡片有效期',
                 //name: 'tlvs[7].valInt',
@@ -218,7 +218,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                     name: 'tlvs[7].valInt',
                     inputValue: 1,
                 }]
-            }, {
+            }, */{
                 xtype: 'radiogroup',
                 fieldLabel: '门状态',
                 //name: 'tlvs[3].valInt',            

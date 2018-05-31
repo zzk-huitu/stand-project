@@ -2,7 +2,8 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
 	extend: "core.base.view.BaseGrid",
 	alias: "widget.smartcontrol.userauthority.maingrid",
 	dataUrl: comm.get("baseUrl") + "/BaseMjUserright/mjrightlist", //数据获取地址
-	model:"com.zd.school.control.device.model.MjUserright", //对应的数据模型
+	//model:"com.zd.school.control.device.model.MjUserright", //对应的数据模型
+    model:"com.zd.school.teacher.teacherinfo.model.ViewUserRoom", //对应的数据模型
     menuCode:"USER_ACCESS_CONTROL",
     al: false,
     pageDisplayInfo:false,
@@ -20,11 +21,17 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
         },'->',{
             xtype: 'tbtext', 
             html:'快速搜索：'
-        },{
+        },/*{使用门禁记录的方式
             xtype:'textfield',
             name:'termName',
             funCode: 'girdFastSearchText',
             emptyText: '请输入设备名称',
+            width:120
+        }*/{
+            xtype:'textfield',
+            name:'roomName',
+            funCode: 'girdFastSearchText',
+            emptyText: '请输入房间名称',
             width:120
         },{
             xtype: 'button',            
@@ -34,7 +41,7 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
         }]
     },
     defSort: [{
-        property: 'termId',
+        property:'ROOM_NAME',//'termId',
         direction: 'ASC'
     }],
     panelButtomBar:{},
@@ -67,6 +74,16 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
         flex:0.8,
     },{
         text: "房间名称",
+        dataIndex: "room_NAME",
+        minWidth:80,
+        flex:0.8,
+    },{
+        text: "房间类型",
+        dataIndex: "room_TYPE",
+        minWidth:80,
+        flex:0.8,
+    }/*{
+        text: "房间名称",
         dataIndex: "roomName",
         minWidth:80,
         flex:0.8,
@@ -80,6 +97,6 @@ Ext.define("core.smartcontrol.userauthority.view.MainGrid", {
         dataIndex: "termSN",
         minWidth:120,
         flex:1,
-    }]
+    }*/]
     }
 });

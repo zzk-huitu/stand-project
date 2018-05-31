@@ -426,7 +426,8 @@ Ext.define("core.smartcontrol.useraccess.controller.MainController", {
         //附带参赛
         proxy.extraParams={
             roomId:roomId,
-            roomLeaf:roomLeaf
+            roomLeaf:roomLeaf,
+            filter: '[{"type":"string","comparison":"=","value":"4","field":"termTypeID"}]'
         }
         store.loadPage(1); 
     }

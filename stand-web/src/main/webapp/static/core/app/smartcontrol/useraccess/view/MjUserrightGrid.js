@@ -54,7 +54,8 @@ Ext.define("core.smartcontrol.useraccess.view.MjUserrightGrid", {
     panelButtomBar:null,
     
     extParams: {
-        whereSql: ""
+        whereSql: "",
+        filter: '[{"type":"string","comparison":"=","value":"4","field":"termTypeID"}]'
     },
     columns: {        
         defaults:{

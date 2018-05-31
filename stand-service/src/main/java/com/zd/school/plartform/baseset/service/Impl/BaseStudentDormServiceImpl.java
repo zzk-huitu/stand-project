@@ -295,7 +295,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 			studentDorm=new DormStudentDorm();
 			this.allotStudentDorm(studentDorm, jwClassDormAllot, studentId[i], inAllotCount++, currentUser.getUuid());
 			
-			roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);				
+			//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);				
 		}
 		
 		/*处理是否混合班级宿舍*/
@@ -554,7 +554,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 						stuId = tempList.get(count - dormBedCount + m).getUserId();
 						this.allotStudentDorm(studentDorm, classDormEntity, stuId, m, userCh);
 
-						roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+						//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 					}
 					notAllotBedCount = classStuCount - count;// 班级还没有分配床位的人数
 																// count：已经入住的人数
@@ -578,7 +578,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 							stuId = tempList.get(count - dormBedCount + n).getUserId();
 							this.allotStudentDorm(studentDorm, classDormEntity, stuId, n, userCh);
 
-							roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+							//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 						}
 						notAllotBedCount = 0;
 						// 此时宿舍肯定无法全部使用完那么将此宿舍加入到混合宿舍列表，并且将其最大床位数记录下来
@@ -631,7 +631,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 								stuId = tempList.get(count - dormBedCount + n1).getUserId();
 								this.allotStudentDorm(studentDorm, classDormEntity, stuId, n1, userCh);
 
-								roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+								//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 							}
 							notAllotBedCount = 0;
 							// 此时宿舍肯定无法全部使用完那么将此宿舍加入到混合宿舍列表，并且将其最大床位数记录下来
@@ -657,7 +657,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 								stuId = tempList.get(count - dormBedCount + n2).getUserId();
 								this.allotStudentDorm(studentDorm, classDormEntity, stuId, bedNum + n2, userCh);
 
-								roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+								//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 							}
 							if (overCount > 0) {// 表示混合宿舍可以入住的人数大于该班级还未入住的人数
 								mixDorm.add(studentDorm);
@@ -689,7 +689,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 							stuId = tempList.get(count + n3).getUserId();// 该班级已经入住的人数
 							this.allotStudentDorm(studentDorm, classDormEntity, stuId, bedNum + n3, userCh);
 
-							roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+							//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 						}
 						mixDormBedCount.put(studentDorm.getUuid(), overCount);
 						break;
@@ -703,7 +703,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 							stuId = tempList.get(count + n4).getUserId();
 							this.allotStudentDorm(studentDorm, classDormEntity, stuId, bedNum + n4, userCh);
 
-							roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+							//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 						}
 						notAllotBedCount -= mixInBedCount;
 						count += mixInBedCount;// 已经入住的人数
@@ -780,7 +780,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 					stuId = tempList.get(n1).getUserId();
 					this.allotStudentDorm(studentDorm, classDormEntity, stuId, bedNum + n1, userCh);
 
-					roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+					//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 				}
 
 				if (overCount > 0) {// 表示混合宿舍可以入住的人数大于该班级还未入住的人数
@@ -811,7 +811,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 							stuId = tempList.get(count - dormBedCount + m).getUserId();
 							this.allotStudentDorm(studentDorm, classDormEntity, stuId, m, userCh);
 
-							roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+							//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 						}
 
 						notAllotBedCount = classStuCount - count;// 班级还没有分配床位的人数
@@ -835,7 +835,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 							stuId = tempList.get(count - dormBedCount + n).getUserId();
 							this.allotStudentDorm(studentDorm, classDormEntity, stuId, n, userCh);
 
-							roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
+							//roomaAllotService.mjUserRight(studentDorm.getStuId(), null, null, studentDorm, null);
 						}
 						notAllotBedCount = 0;
 
@@ -909,7 +909,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 					stuList.remove(0);
 					dorm = this.merge(dormStudentDorm);
 
-					roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
+					//roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
 					resultCount++;
 				} else {
 					break;
@@ -945,7 +945,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 						stuList.remove(0);
 						dorm = this.merge(dormStudentDorm);
 
-						roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
+						//roomaAllotService.mjUserRight(dorm.getStuId(), null, null, dorm, null);
 						resultCount++;
 					} else {
 						break;
@@ -1072,7 +1072,7 @@ public class BaseStudentDormServiceImpl extends BaseServiceImpl<DormStudentDorm>
 		DormStudentDorm dorm = null;
 		for (int i = 0; i < delIds.length; i++) {
 			dorm = this.get(delIds[i]);
-			roomaAllotService.mjUserRight(null, null, dorm.getStuId(), dorm, null);
+			//roomaAllotService.mjUserRight(null, null, dorm.getStuId(), dorm, null);
 			this.doLogicDelOrRestore(delIds[i], StatuVeriable.ISDELETE,userId);
 			
 			classDormSet.add(dorm.getCdormId());

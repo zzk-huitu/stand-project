@@ -89,7 +89,7 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 		for (String id : outId) {
 			entity = this.get(id);
 			// 解除门禁权限
-			officeAllotService.mjUserRight(null, entity.getRoomId(), entity.getTteacId(), null, null);
+			//officeAllotService.mjUserRight(null, entity.getRoomId(), entity.getTteacId(), null, null);
 			
 			entity.setOutTime(new Date());
 			entity.setInout(1);
@@ -150,7 +150,7 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 			entity = this.merge(perEntity);
 
 			// 写入门禁权限
-			officeAllotService.mjUserRight(tteacIdArr[i], entity.getRoomId(), null, null, null);
+			//officeAllotService.mjUserRight(tteacIdArr[i], entity.getRoomId(), null, null, null);
 			/*
 			 * List<PtTerm> ptTrems = ptTermService.queryByProerties("roomId",
 			 * entity.getRoomId()); for (PtTerm ptTerm : ptTrems) { MjUserright
@@ -184,7 +184,7 @@ public class BaseTeacherDormServiceImpl extends BaseServiceImpl<DormTeacherDorm>
 		for (String id : delId) {
 			entity = this.get(id);
 			// 解除门禁权限
-			officeAllotService.mjUserRight(null, entity.getRoomId(), entity.getTteacId(), null, null);			
+			//officeAllotService.mjUserRight(null, entity.getRoomId(), entity.getTteacId(), null, null);			
 			flag = this.deleteByPK(id);
 		}
 				

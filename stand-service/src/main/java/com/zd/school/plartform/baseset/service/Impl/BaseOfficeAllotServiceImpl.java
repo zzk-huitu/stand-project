@@ -170,7 +170,8 @@ public class BaseOfficeAllotServiceImpl extends BaseServiceImpl<JwOfficeAllot> i
 			entity.setOrderIndex(orderIndex);// 排序
 			this.merge(entity); // 执行添加方法
 			
-			qxflag=this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
+			//2018-5-30分配房间、宿舍时，不再手动添加权限数据了。
+			//qxflag=this.mjUserRight(strId[i], entity.getRoomId(), entity.getUuid(), null, null);
 			/*if(!qxflag){ 
 				flag = false;
 				hashMap.put("flag", flag);
