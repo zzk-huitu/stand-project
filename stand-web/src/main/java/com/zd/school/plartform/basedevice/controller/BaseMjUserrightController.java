@@ -324,13 +324,13 @@ public class BaseMjUserrightController extends FrameWorkController<MjUserright> 
 		
 		if (StringUtils.isNotEmpty(roomId) && !AdminType.ADMIN_ORG_ID.equals(roomId)) {
 			if ("1".equals(roomLeaf)) { // 当选择的区域为房间时
-				querySql = " and ROOM_ID ='" + roomId + "'";
+				querySql += " and ROOM_ID ='" + roomId + "'";
 			} else { // 当选择的区域不为房间时
 				List<String> roomList = getRoomIds(roomId);
 
 				if (!roomList.isEmpty()) {
 					String roomIds = roomList.stream().collect(Collectors.joining("','", "'", "'"));
-					querySql = " and ROOM_ID in (" + roomIds + ")";
+					querySql += " and ROOM_ID in (" + roomIds + ")";
 
 				} else { // 若区域之下没有房间，则直接返回空数据
 
