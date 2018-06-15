@@ -33,7 +33,7 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
             }, {
                 columnWidth: 0.6,
                 xtype: "label",
-                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒（取值范围1-300）</font>"
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>赫兹（取值范围1-300K）</font>"
             }]
         },{
             xtype: "container",
@@ -44,14 +44,14 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
                 fieldLabel: '心跳间隔',
                 xtype: 'numberfield',
                 value: 60,
-                maxValue: 300,
+                maxValue: 255,
                 minValue: 1,
                 allowBlank: false,
                 allowDecimals: false
             }, {
                 columnWidth: 0.6,
                 xtype: "label",
-                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒（取值范围1-300）</font>"
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>秒（取值范围1-255）</font>"
             }]
         },{
             xtype: "container",
@@ -62,14 +62,14 @@ Ext.define("core.basedevice.smartdevice.view.InfraredParamForm", {
                 fieldLabel: '发送次数',
                 xtype: 'numberfield',
                 value: 60,
-                maxValue: 300,
+                maxValue: 255,
                 minValue: 1,
                 allowBlank: false,
                 allowDecimals: false
             }, {
                 columnWidth: 0.6,
                 xtype: "label",
-                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>次（取值范围1-300）</font>"
+                html: "<font style='color: rgb(196, 68, 68);font-size: 14px;line-height: 30px;padding-left: 10px;'>次（取值范围1-255）</font>"
             }]
         }]
     },{

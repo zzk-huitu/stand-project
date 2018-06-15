@@ -109,7 +109,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 }]
             }, */{
                 xtype: 'radiogroup',
-                fieldLabel: '未关门报警',
+                fieldLabel: '<span data-qtitle="温馨提示" data-qshowdelay="100" data-qwidth="200" data-qtip="锁需具备锁状态反馈功能。">未关门报警</span>',
                 //name: 'tlvs[10].valInt',
                 vertical: true,
                 items: [{
@@ -120,19 +120,19 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                     checked: true
                 }, {
                     width:100,
-                    boxLabel: '报警',
+                    boxLabel: '<span data-qtitle="温馨提示" data-qshowdelay="100" data-qwidth="200" data-qtip="锁需具备锁状态反馈功能。">报警</span>',
                     name: 'tlvs[10].valInt',
                     inputValue: 1,
                 }]
-            }, {
+            },{
                 xtype: "container",
                 layout: "column", // 从左往右的布局
                 items: [{
-                    columnWidth: 0.5,
+                    columnWidth:0.5,
                     labelWidth:80,
-                    fieldLabel: '开门延迟',
+                    fieldLabel: '未关门延时',
                     xtype: 'numberfield',
-                    name: 'tlvs[9].valInt',
+                    name: 'tlvs[11].valInt',
                     value: 3,
                     maxValue: 300,
                     minValue: 1,
@@ -147,11 +147,11 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 xtype: "container",
                 layout: "column", // 从左往右的布局
                 items: [{
-                    columnWidth:0.5,
+                    columnWidth: 0.5,
                     labelWidth:80,
-                    fieldLabel: '未关门延时',
+                    fieldLabel: '开门延迟',
                     xtype: 'numberfield',
-                    name: 'tlvs[11].valInt',
+                    name: 'tlvs[9].valInt',
                     value: 3,
                     maxValue: 300,
                     minValue: 1,
@@ -220,18 +220,18 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 }]
             }, */{
                 xtype: 'radiogroup',
-                fieldLabel: '门状态',
+                fieldLabel: '锁类型',
                 //name: 'tlvs[3].valInt',            
                 vertical: true,
                 items: [{
                     width: 100,
-                    boxLabel: '常闭',
+                    boxLabel: '常闭锁',
                     name: 'tlvs[3].valInt',
                     inputValue: 0,
                     checked: true
                 }, {
                     width: 100,
-                    boxLabel: '常开',
+                    boxLabel: '常开锁',
                     inputValue: 1,
                     name: 'tlvs[3].valInt',
                 }]
@@ -271,7 +271,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
                 }]
             }, {
                 xtype: 'radiogroup',
-                fieldLabel: '锁状态检测',
+                fieldLabel: '关门即上锁',
                 //name: 'tlvs[13].valInt',
                 vertical: true,
                 items: [ {
@@ -293,6 +293,7 @@ Ext.define("core.basedevice.smartdevice.view.DoorcontrolForm", {
         xtype: "fieldset",
         title: '允许卡类',
         layout:'column',
+        hidden:true,
         style: {
             fontSize: '16px',
             color: '#C44444',

@@ -190,7 +190,20 @@ public class BasePtIrDeviceBrandController extends FrameWorkController<PtIrDevic
 			throws IOException, IllegalAccessException, InvocationTargetException {
 
 		// 入库前检查代码
-
+		PtIrDeviceBrand bar = null;
+		Integer level = entity.getLevel();
+		if (level != 4){
+			if (thisService.IsFieldExist("brandname", entity.getBrandname(), entity.getUuid()," isDelete=0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'" + entity.getBrandname() + "已存在'"));
+				return;
+			}
+		}else if (level == 4) {
+			if (thisService.IsFieldExist("productModel", entity.getProductModel(), entity.getUuid()," isDelete=0")) {
+				writeJSON(response, jsonBuilder.returnFailureJson("'" + entity.getProductModel() + "已存在'"));
+				return;
+			}
+		}
+		
 		// 获取当前的操作用户
 		SysUser currentUser = getCurrentSysUser();
 		try {

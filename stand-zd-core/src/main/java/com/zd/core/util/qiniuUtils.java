@@ -1,6 +1,7 @@
 package com.zd.core.util;
 
 import java.io.File;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
@@ -10,6 +11,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 
 public class qiniuUtils {
 	
@@ -20,8 +22,15 @@ public class qiniuUtils {
 	 * 获取上传凭证 
 	 */  
 	public static String getUploadCredential() {  
-	    Auth auth = Auth.create(accessKey, secretKey);  
-	    String upToken = auth.uploadToken(bucket);  
+	    Auth auth = Auth.create(accessKey, secretKey); 
+	    
+	    //定义上传凭证
+	    StringMap putPolicy = new StringMap();
+	    putPolicy.put("callbackUrl", "http://10.10.8.136:9005/login/testQiniuBack");
+	    putPolicy.put("callbackBody", "{\"key\":\"$(key)\",\"hash\":\"$(etag)\",\"bucket\":\"$(bucket)\",\"fsize\":$(fsize),\"user\":\"$(x:user)\",\"age\",$(x:age)}");
+	    putPolicy.put("callbackBodyType", "application/json");
+	    long expireSeconds = 3600;
+	    String upToken = auth.uploadToken(bucket, null, expireSeconds, putPolicy);
 	    System.out.println(upToken);  
 	    return upToken;  
 	}  
@@ -46,11 +55,21 @@ public class qiniuUtils {
 	    // 默认不指定key的情况下，以文件内容的hash值作为文件名  
 	    String key = null;  
 	    try {  
+	    	//传入参数的方式
+	    	StringMap params=new StringMap();
+	    	params.put("x:user", "zzk");
+	    	params.put("x:age", 12);
+	    	
 	    	File f=new File(localFilePath);
-	        Response response = uploadManager.put(f, key, upToken);  
+	        Response response = uploadManager.put(f, key, upToken,params, null, false);  
 	        //Response response = uploadManager.put(localFilePath, key, upToken); 
 	        // 解析上传成功的结果  
-	        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);  
+	        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+	        
+	        //将结果json字符串转为hashmap或实体类
+	        HashMap<String,Object> map=response.jsonToObject(HashMap.class);
+	        
+	        System.out.println(response.bodyString());
 	        System.out.println(putRet.key);  
 	        System.out.println(putRet.hash);  
 	        return putRet;  
@@ -65,9 +84,9 @@ public class qiniuUtils {
 	    }  
 	    return null;  
 	}  
-	/*
-	@Test
-	public void test() {  
-	    fileUpload(Zone.zone2(),getUploadCredential(),"I:\\develop\\搭建环境相关\\一苇旅行需求分析说明书.docx");  
-	} */ 
+	
+	// @Test
+	// public void test() {
+	// fileUpload(Zone.zone2(),getUploadCredential(),"I:\\develop\\搭建环境相关\\七牛.txt");
+	// }
 }		

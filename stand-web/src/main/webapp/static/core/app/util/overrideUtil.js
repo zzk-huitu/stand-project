@@ -381,8 +381,9 @@ Ext.override(Ext.form.field.Time,{
             return me.rawToValue(me.callParent(arguments)); //原有的处理方式
         else{
             var format = me.submitFormat || me.format,
-                value = me.value;
-     
+                value = me.callParent(arguments);   //这里获取最后修改的值
+                //value = me.value; //此处获取的值不对
+                    
             return value ? Ext.Date.format(value, format) : null;
         }
     }

@@ -68,7 +68,7 @@ public class StuBaseinfoController extends FrameWorkController<StuBaseinfo> impl
 
 			// 取得当前上传文件的文件名称
 			String myFileName = file.getOriginalFilename();
-
+		    
 			if (myFileName.trim() != "") {// 如果名称不为“”,说明该文件存在，否则说明该文件不存在
 				// 重命名上传后的文件名
 //				String type = myFileName.substring(myFileName.lastIndexOf("."));

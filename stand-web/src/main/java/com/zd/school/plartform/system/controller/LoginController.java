@@ -30,12 +30,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.qiniu.common.Zone;
 import com.zd.core.constant.AdminType;
 import com.zd.core.constant.Constant;
 import com.zd.core.constant.ModuleNumType;
 import com.zd.core.controller.core.FrameWorkController;
 import com.zd.core.util.DateUtil;
 import com.zd.core.util.ModelUtil;
+import com.zd.core.util.qiniuUtils;
 import com.zd.school.plartform.system.model.SysUser;
 import com.zd.school.plartform.system.model.SysUserLoginLog;
 import com.zd.school.plartform.system.service.SysRoleService;
@@ -376,5 +378,17 @@ public class LoginController extends FrameWorkController<SysUser> implements Con
 		hashOper.delete("userRightDeptDisciplineTree", sysUser.getUuid());
 		
 		writeJSON(response, jsonBuilder.returnSuccessJson("\"缓存清除成功\""));		
+	}
+	
+	@RequestMapping("/testQiniu")
+	public void testQiniu() throws IOException {
+		String upToken=qiniuUtils.getUploadCredential();
+		qiniuUtils.fileUpload(Zone.zone2(),upToken,"I:\\develop\\搭建环境相关\\七牛.txt");  
+		
+	}
+	
+	@RequestMapping("/testQiniuBack")
+	public void testQiniuBack(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		System.out.println("回调");
 	}
 }
